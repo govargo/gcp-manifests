@@ -19,15 +19,14 @@ variable "region" {
   default     = "asia-northeast1"
 }
 
-variable "location" {
-  description = "The location (region or zone) in which the cluster master will be created"
-  type        = string
-  default     = "asia-northeast1-a"
+variable "zones" {
+  description = "The zones to host the cluster in (optional if regional cluster / required if zonal)"
+  type        = list(string)
 }
 
 variable "node_locations" {
   description = "The list of zones in which the cluster's nodes are located"
-  type        = list(string)
+  type        = string
 }
 
 variable "default_max_pods_per_node" {
@@ -73,7 +72,7 @@ variable "enable_tpu" {
 }
 
 variable "initial_node_count" {
-  description = ""
+  description = "The initial number of nodes for the pool. In regional or multi-zonal clusters, this is the number of nodes per zone. Changing this will force recreation of the resource. Defaults to the value of min_count"
   type        = number
   default     = 1
 }
@@ -96,6 +95,12 @@ variable "services_secondary_range_name" {
   default     = "service"
 }
 
+variable "identity_namespace" {
+  description = "The workload pool to attach all Kubernetes service accounts to. (Default value of enabled automatically sets project-based pool [project_id].svc.id.goog)"
+  type        = string
+  default     = "enabled"
+}
+
 variable "logging_service" {
   description = "The logging service that the cluster should write logs to"
   type        = string
@@ -108,6 +113,7 @@ variable "monitoring_service" {
   default     = "monitoring.googleapis.com/kubernetes"
 }
 
+
 variable "node_provisioning" {
   description = "Whether node auto-provisioning is enabled"
   type        = bool
@@ -115,16 +121,16 @@ variable "node_provisioning" {
 
 }
 
-variable "disabled_http_load_balancing" {
-  description = "Addon http_load_balancing disabled"
+variable "http_load_balancing" {
+  description = "Enable httpload balancer addon"
   type        = bool
-  default     = false
+  default     = true
 }
 
-variable "disabled_horizontal_pod_autoscaling" {
-  description = "Addon horizontal_pod_autoscaling disabled"
+variable "horizontal_pod_autoscaling" {
+  description = "Enable horizontal pod autoscaling addon"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "autoscaling_profile" {
@@ -169,6 +175,47 @@ variable "machine_type" {
   default     = "n1-standard-2"
 }
 
+variable "auto_repair" {
+  description = "Whether the nodes will be automatically repaired"
+  type        = bool
+  default     = true
+}
+
+variable "auto_upgrade" {
+  description = "Whether the nodes will be automatically upgraded"
+  type        = bool
+  default     = true
+}
+
+variable "autoscaling" {
+  description = "Configuration required by cluster autoscaler to adjust the size of the node pool to the current cluster usage"
+  type        = bool
+  default     = true
+}
+
+variable "service_account" {
+  description = "The service account to run nodes as if not overridden in node_pools. The create_service_account variable default value (true) will cause a cluster-specific service account to be created."
+  type        = string
+}
+
+variable "min_count" {
+  description = "Minimum number of nodes in the NodePool. Must be >=0 and <= max_count. Should be used when autoscaling is true"
+  type        = number
+  default     = 0
+}
+
+variable "max_count" {
+  description = "Maximum number of nodes in the NodePool. Must be >= min_count"
+  type        = number
+  default     = 100
+}
+
+variable "local_ssd_count" {
+  description = "The amount of local SSD disks that will be attached to each cluster node and may be used as a hostpath volume or a local PersistentVolume."
+  type        = number
+  default     = 0
+}
+
 variable "min_cpu_platform" {
   description = "Minimum CPU platform to be used by this instance"
   type        = string
@@ -187,7 +234,7 @@ variable "preemptible" {
   default     = false
 }
 
-variable "metadata_mode" {
+variable "node_metadata" {
   description = "How to expose the node metadata to the workload running on the node"
   type        = string
   default     = "GKE_METADATA"
@@ -205,7 +252,7 @@ variable "pod_security_policy_config" {
   default     = false
 }
 
-variable "channel" {
+variable "release_channel" {
   description = "Configuration options for the Release channel"
   type        = string
   default     = "STABLE"
