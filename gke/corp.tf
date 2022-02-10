@@ -1,20 +1,12 @@
-data "google_client_config" "default" {}
-
-provider "kubernetes" {
-  host                   = "https://${module.app-0.endpoint}"
-  token                  = data.google_client_config.default.access_token
-  cluster_ca_certificate = base64decode(module.app-0.ca_certificate)
-}
-
-module "app-0" {
+module "corp-0" {
   source                     = "terraform-google-modules/kubernetes-engine/google"
   project_id                 = var.gcp_project_id
-  name                       = "app-0"
+  name                       = "corp-0"
   regional                   = true
   region                     = var.region
   zones                      = var.zones
   network                    = var.gcp_project_name
-  subnetwork                 = var.region
+  subnetwork                 = "corp-0"
   ip_range_pods              = var.cluster_secondary_range_name
   ip_range_services          = var.services_secondary_range_name
   http_load_balancing        = var.http_load_balancing
