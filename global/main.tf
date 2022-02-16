@@ -44,6 +44,25 @@ resource "google_compute_subnetwork" "subnetwork_corp-0" {
   ]
 }
 
+resource "google_compute_subnetwork" "subnetwork_misc-0" {
+  name                     = "misc-0"
+  project                  = var.gcp_project_id
+  ip_cidr_range            = "10.130.0.0/24"
+  region                   = var.region
+  network                  = google_compute_network.vpc_network.id
+  private_ip_google_access = var.private_ip_google_access
+  secondary_ip_range = [
+    {
+      range_name    = "pod"
+      ip_cidr_range = "102.64.0.0/14"
+    },
+    {
+      range_name    = "service"
+      ip_cidr_range = "102.68.0.0/20"
+    }
+  ]
+}
+
 ## Org Policy
 module "disable_policy_requireOsLogin" {
   source  = "terraform-google-modules/org-policy/google"

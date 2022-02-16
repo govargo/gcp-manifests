@@ -1,13 +1,13 @@
-module "app-0" {
+module "misc-0" {
   source                     = "terraform-google-modules/kubernetes-engine/google//modules/private-cluster"
   project_id                 = var.gcp_project_id
-  name                       = "app-0"
+  name                       = "misc-0"
   regional                   = true
   region                     = var.region
   zones                      = var.zones
   network                    = var.gcp_project_name
-  subnetwork                 = "app-0"
-  master_ipv4_cidr_block     = "10.0.0.0/28"
+  subnetwork                 = "misc-0"
+  master_ipv4_cidr_block     = "11.0.0.0/28"
   ip_range_pods              = var.cluster_secondary_range_name
   ip_range_services          = var.services_secondary_range_name
   enable_private_endpoint    = false
