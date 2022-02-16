@@ -44,6 +44,46 @@ resource "google_compute_subnetwork" "subnetwork_corp-0" {
   ]
 }
 
+module "nat_address" {
+  source       = "terraform-google-modules/address/google"
+  version      = "3.1.1"
+  project_id   = var.gcp_project_id
+  region       = var.region
+  address_type = "EXTERNAL"
+  names = [
+    "app-0-nat-gateway",
+    "misc-0-nat-gateway"
+  ]
+}
+
+module "cloud_router_app-0" {
+  source  = "terraform-google-modules/cloud-router/google"
+  version = "~> 1.3.0"
+  project = var.gcp_project_id
+  name    = "app-0-router"
+  network = var.gcp_project_name
+  region  = var.region
+
+  nats = [{
+    name                               = "app-0-nat-gateway",
+    nat_ip_allocate_option             = "MANUAL_ONLY",
+    nat_ips                            = ["app-0-nat-gateway"]
+    source_subnetwork_ip_ranges_to_nat = "LIST_OF_SUBNETWORKS"
+    log_config = {
+      enable : true,
+      filter : "ERRORS_ONLY"
+    }
+    subnetworks = [{
+      name                    = "app-0",
+      source_ip_ranges_to_nat = ["ALL_IP_RANGES"]
+    }]
+  }]
+
+  depends_on = [
+    module.nat_address,
+  ]
+}
+
 resource "google_compute_subnetwork" "subnetwork_misc-0" {
   name                     = "misc-0"
   project                  = var.gcp_project_id
@@ -60,6 +100,34 @@ resource "google_compute_subnetwork" "subnetwork_misc-0" {
       range_name    = "service"
       ip_cidr_range = "102.68.0.0/20"
     }
+  ]
+}
+
+module "cloud_router_misc-0" {
+  source  = "terraform-google-modules/cloud-router/google"
+  version = "~> 1.3.0"
+  project = var.gcp_project_id
+  name    = "misc-0-router"
+  network = var.gcp_project_name
+  region  = var.region
+
+  nats = [{
+    name                               = "misc-0-nat-gateway",
+    nat_ip_allocate_option             = "MANUAL_ONLY",
+    nat_ips                            = ["misc-0-nat-gateway"]
+    source_subnetwork_ip_ranges_to_nat = "LIST_OF_SUBNETWORKS"
+    log_config = {
+      enable : true,
+      filter : "ERRORS_ONLY"
+    }
+    subnetworks = [{
+      name                    = "misc-0",
+      source_ip_ranges_to_nat = ["ALL_IP_RANGES"]
+    }]
+  }]
+
+  depends_on = [
+    module.nat_address,
   ]
 }
 
