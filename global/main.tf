@@ -183,3 +183,29 @@ module "disable_policy_restrictVpcPeering" {
   project_id       = var.gcp_project_id
   exclude_projects = ["${var.organization_id}"]
 }
+
+module "disable_policy_uniformBucketLevelAccess" {
+  source  = "terraform-google-modules/org-policy/google"
+  version = "~> 5.1.0"
+
+  constraint       = "constraints/storage.uniformBucketLevelAccess"
+  policy_type      = "boolean"
+  organization_id  = var.organization_id
+  enforce          = true
+  policy_for       = "project"
+  project_id       = var.gcp_project_id
+  exclude_projects = ["${var.organization_id}"]
+}
+
+module "disable_policy_publicAccessPrevention" {
+  source  = "terraform-google-modules/org-policy/google"
+  version = "~> 5.1.0"
+
+  constraint       = "constraints/storage.publicAccessPrevention"
+  policy_type      = "boolean"
+  organization_id  = var.organization_id
+  enforce          = true
+  policy_for       = "project"
+  project_id       = var.gcp_project_id
+  exclude_projects = ["${var.organization_id}"]
+}
