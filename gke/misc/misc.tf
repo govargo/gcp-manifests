@@ -71,3 +71,28 @@ module "misc-0" {
   }
 
 }
+
+
+module "private-dns-zone" {
+  source  = "terraform-google-modules/cloud-dns/google"
+  version = "4.1.0"
+  project_id = var.gcp_project_id
+  type       = "private"
+  name       = "private-kentaiso-org"
+  domain     = "kentaiso.org."
+
+  private_visibility_config_networks = [
+    "https://www.googleapis.com/compute/v1/projects/${var.gcp_project_id}/global/networks/${var.gcp_project_name}"
+  ]
+
+  recordsets = [
+    {
+      name    = "argocd"
+      type    = "A"
+      ttl     = 60
+      records = [
+        "34.117.133.126",
+      ]
+    },
+  ]
+}
