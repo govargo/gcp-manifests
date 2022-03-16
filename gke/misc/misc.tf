@@ -73,26 +73,59 @@ module "misc-0" {
 }
 
 
-module "private-dns-zone" {
-  source  = "terraform-google-modules/cloud-dns/google"
-  version = "4.1.0"
+module "main-dns-zone" {
+  source     = "terraform-google-modules/cloud-dns/google"
+  version    = "4.1.0"
   project_id = var.gcp_project_id
-  type       = "private"
-  name       = "private-kentaiso-org"
+  type       = "public"
+  name       = "kentaiso-org"
   domain     = "kentaiso.org."
 
-  private_visibility_config_networks = [
-    "https://www.googleapis.com/compute/v1/projects/${var.gcp_project_id}/global/networks/${var.gcp_project_name}"
-  ]
+  dnssec_config = {
+    kind          = "dns#managedZoneDnsSecConfig"
+    non_existence = "nsec3"
+    state         = "on"
+
+    default_key_specs = {
+      algorithm  = "rsasha256"
+      key_length = 2048
+      key_type   = "keySigning"
+      kind       = "dns#dnsKeySpec"
+    }
+  }
 
   recordsets = [
     {
-      name    = "argocd"
-      type    = "A"
-      ttl     = 60
+      name = "argocd"
+      type = "A"
+      ttl  = 60
       records = [
         "34.117.133.126",
       ]
     },
   ]
+}
+
+## ServiceAccount
+module "argocd_secretmanager_sa" {
+  source        = "terraform-google-modules/service-accounts/google"
+  version       = "4.1.1"
+  project_id    = var.gcp_project_id
+  names         = ["argocd-secretmanager"]
+  display_name  = "ArgoCD SecretManager ServiceAccount"
+}
+
+module "argocd_secretmanager" {
+  source  = "terraform-google-modules/iam/google//modules/secret_manager_iam"
+  project = var.gcp_project_id
+  secrets = ["client_id", "client_secret"]
+  mode    = "additive"
+
+  bindings = {
+    "roles/secretmanager.secretAccessor" = [
+      "serviceAccount:${module.argocd_secretmanager_sa.service_account.email}"
+    ]
+  }
+
+  depends_on = [module.argocd_secretmanager_sa]
 }
