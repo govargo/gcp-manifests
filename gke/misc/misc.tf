@@ -106,13 +106,32 @@ module "main-dns-zone" {
   ]
 }
 
+## Secret
+resource "google_secret_manager_secret" "client_id" {
+  project   = var.gcp_project_id
+  secret_id = "client_id"
+
+  replication {
+    automatic = true
+  }
+}
+
+resource "google_secret_manager_secret" "client_secret" {
+  project   = var.gcp_project_id
+  secret_id = "client_secret"
+
+  replication {
+    automatic = true
+  }
+}
+
 ## ServiceAccount
 module "argocd_secretmanager_sa" {
-  source        = "terraform-google-modules/service-accounts/google"
-  version       = "4.1.1"
-  project_id    = var.gcp_project_id
-  names         = ["argocd-secretmanager"]
-  display_name  = "ArgoCD SecretManager ServiceAccount"
+  source       = "terraform-google-modules/service-accounts/google"
+  version      = "4.1.1"
+  project_id   = var.gcp_project_id
+  names        = ["argocd-secretmanager"]
+  display_name = "ArgoCD SecretManager ServiceAccount"
 }
 
 module "argocd_secretmanager" {
