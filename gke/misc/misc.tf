@@ -130,8 +130,22 @@ module "argocd_secretmanager_sa" {
   source       = "terraform-google-modules/service-accounts/google"
   version      = "4.1.1"
   project_id   = var.gcp_project_id
-  names        = ["argocd-secretmanager"]
+  names        = ["argocd-dex-server"]
   display_name = "ArgoCD SecretManager ServiceAccount"
+}
+
+module "argocd_workloadIdentity_binding" {
+  source = "terraform-google-modules/iam/google//modules/service_accounts_iam"
+  version = "7.4.0"
+
+  service_accounts = [module.argocd_secretmanager_sa.email]
+  project          = var.gcp_project_id
+  mode             = "additive"
+  bindings = {
+    "roles/iam.workloadIdentityUser" = [
+      "serviceAccount:${var.gcp_project_id}.svc.id.goog[argocd/argocd-dex-server]"
+    ]
+  }
 }
 
 module "argocd_secretmanager" {
