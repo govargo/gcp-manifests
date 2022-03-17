@@ -1,0 +1,118 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ template "sscd.fullname" . }}-keep-crds
+{{ include "sscd.labels" . | indent 2 }}
+  annotations:
+    helm.sh/hook: pre-upgrade
+    helm.sh/hook-delete-policy: "hook-succeeded,before-hook-creation"
+    helm.sh/hook-weight: "2"
+rules:
+  - apiGroups: ["apiextensions.k8s.io"]
+    resources: ["customresourcedefinitions"]
+    verbs: ["get", "patch"]
+{{- if .Values.rbac.pspEnabled }}
+  - apiGroups: ['policy']
+    resources: ['podsecuritypolicies']
+    verbs:     ['use']
+    resourceNames:
+    - allow-keep-crds
+{{- end }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ template "sscd.fullname" . }}-keep-crds
+{{ include "sscd.labels" . | indent 2 }}
+  annotations:
+    helm.sh/hook: pre-upgrade
+    helm.sh/hook-delete-policy: "hook-succeeded,before-hook-creation"
+    helm.sh/hook-weight: "2"
+subjects:
+  - kind: ServiceAccount
+    name: {{ template "sscd.fullname" . }}-keep-crds
+    namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: ClusterRole
+  name: {{ template "sscd.fullname" . }}-keep-crds
+  apiGroup: rbac.authorization.k8s.io
+---
+{{- if .Values.rbac.pspEnabled }}
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: allow-keep-crds
+  annotations:
+    helm.sh/hook: pre-upgrade
+    helm.sh/hook-delete-policy: "hook-succeeded,before-hook-creation"
+    helm.sh/hook-weight: "2"
+spec:
+  fsGroup:
+    rule: RunAsAny
+  runAsUser:
+    rule: RunAsAny
+  seLinux:
+    rule: RunAsAny
+  supplementalGroups:
+    rule: RunAsAny
+  volumes:
+  - secret
+{{- end }}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ template "sscd.fullname" . }}-keep-crds
+  namespace: {{ .Release.Namespace }}
+{{ include "sscd.labels" . | indent 2 }}
+  annotations:
+    helm.sh/hook: pre-upgrade
+    helm.sh/hook-delete-policy: "hook-succeeded,before-hook-creation"
+    helm.sh/hook-weight: "2"
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: secrets-store-csi-driver-keep-crds
+  namespace: {{ .Release.Namespace }}
+{{ include "sscd.labels" . | indent 2 }}
+  annotations:
+    helm.sh/hook: pre-upgrade
+    helm.sh/hook-weight: "2"
+    helm.sh/hook-delete-policy: "hook-succeeded,before-hook-creation"
+spec:
+  backoffLimit: 0
+  template:
+    metadata:
+      name: {{ template "sscd.fullname" . }}-keep-crds
+      {{- if .Values.linux.crds.annotations }}
+      annotations:
+        {{ toYaml .Values.linux.crds.annotations}}
+      {{- end }}
+    spec:
+      serviceAccountName: {{ template "sscd.fullname" . }}-keep-crds
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | indent 6 }}
+      {{- end }}
+      restartPolicy: Never
+      containers:
+      - name: crds-keep
+        image: "{{ .Values.linux.crds.image.repository }}:{{ .Values.linux.crds.image.tag }}"
+        args:
+        - patch
+        - crd
+        - secretproviderclasses.secrets-store.csi.x-k8s.io
+        - secretproviderclasspodstatuses.secrets-store.csi.x-k8s.io
+        - -p
+        - '{"metadata":{"annotations": {"helm.sh/resource-policy": "keep"}}}'
+        imagePullPolicy: {{ .Values.linux.crds.image.pullPolicy }}
+      nodeSelector:
+        kubernetes.io/os: linux
+{{- if .Values.linux.nodeSelector }}
+{{- toYaml .Values.linux.nodeSelector | nindent 8 }}
+{{- end }}
+{{- with .Values.linux.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+{{- end }}
