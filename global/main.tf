@@ -140,7 +140,10 @@ module "gke_workload_adress" {
   address_type = "EXTERNAL"
   global       = true
   names = [
-    "argocd-ip"
+    "argocd-ip",
+    "app-0-prometheus-ip",
+    "corp-0-prometheus-ip",
+    "misc-0-prometheus-ip"
   ]
 }
 
