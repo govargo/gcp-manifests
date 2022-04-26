@@ -1,0 +1,4 @@
+ingress:
+  managedcertificate:
+    enabled: false
+  hosts: []
