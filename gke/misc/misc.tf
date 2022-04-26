@@ -141,7 +141,7 @@ module "argocd_secretmanager_sa" {
 }
 
 module "argocd_workloadIdentity_binding" {
-  source = "terraform-google-modules/iam/google//modules/service_accounts_iam"
+  source  = "terraform-google-modules/iam/google//modules/service_accounts_iam"
   version = "7.4.0"
 
   service_accounts = [module.argocd_secretmanager_sa.email]
