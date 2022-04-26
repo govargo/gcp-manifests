@@ -131,22 +131,6 @@ module "cloud_router_misc-0" {
   ]
 }
 
-## Network
-module "gke_workload_adress" {
-  source       = "terraform-google-modules/address/google"
-  version      = "3.1.1"
-  project_id   = var.gcp_project_id
-  region       = var.region
-  address_type = "EXTERNAL"
-  global       = true
-  names = [
-    "argocd-ip",
-    "app-0-prometheus-ip",
-    "corp-0-prometheus-ip",
-    "misc-0-prometheus-ip"
-  ]
-}
-
 ## Org Policy
 module "disable_policy_requireOsLogin" {
   source  = "terraform-google-modules/org-policy/google"

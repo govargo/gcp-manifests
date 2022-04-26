@@ -72,6 +72,19 @@ module "misc-0" {
 
 }
 
+## Network
+module "gke_workload_adress" {
+  source       = "terraform-google-modules/address/google"
+  version      = "3.1.1"
+  project_id   = var.gcp_project_id
+  region       = var.region
+  address_type = "EXTERNAL"
+  global       = true
+  names = [
+    "argocd-ip",
+    "misc-0-prometheus-ip"
+  ]
+}
 
 module "main-dns-zone" {
   source     = "terraform-google-modules/cloud-dns/google"
