@@ -2,7 +2,10 @@
 apiVersion: networking.gke.io/v1
 kind: ManagedCertificate
 metadata:
-  name: managed-cert
+  name: {{ template "server.fullname" . }}
+  labels:
+    {{- include "server.labels" . | nindent 4 }}
+{{ include "namespace" . | indent 2 }}
 spec:
   domains:
   {{- range .Values.ingress.hosts }}

@@ -4,6 +4,9 @@ ingress:
   hosts:
   - misc-0-prometheus.kentaiso.org
 
+backendConfig:
+  enabled: true
+
 prometheus:
   serviceAccounts:
     alertmanager:
