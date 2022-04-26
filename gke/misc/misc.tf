@@ -73,7 +73,7 @@ module "misc-0" {
 }
 
 ## Network
-module "gke_workload_adress" {
+module "gke_workload_address" {
   source       = "terraform-google-modules/address/google"
   version      = "3.1.1"
   project_id   = var.gcp_project_id
@@ -86,37 +86,30 @@ module "gke_workload_adress" {
   ]
 }
 
-module "main-dns-zone" {
-  source     = "terraform-google-modules/cloud-dns/google"
-  version    = "4.1.0"
-  project_id = var.gcp_project_id
-  type       = "public"
-  name       = "kentaiso-org"
-  domain     = "kentaiso.org."
+resource "google_dns_record_set" "argocd" {
+  project      = var.gcp_project_id
+  managed_zone = "${var.gcp_project_name}-org"
 
-  dnssec_config = {
-    kind          = "dns#managedZoneDnsSecConfig"
-    non_existence = "nsec3"
-    state         = "on"
+  name = "argocd.kentaiso.org."
+  type = "A"
+  ttl  = 60
 
-    default_key_specs = {
-      algorithm  = "rsasha256"
-      key_length = 2048
-      key_type   = "keySigning"
-      kind       = "dns#dnsKeySpec"
-    }
-  }
+  rrdatas = [module.gke_workload_address.addresses[0]]
 
-  recordsets = [
-    {
-      name = "argocd"
-      type = "A"
-      ttl  = 60
-      records = [
-        "34.117.133.126",
-      ]
-    },
-  ]
+  depends_on = [module.gke_workload_address]
+}
+
+resource "google_dns_record_set" "prometheus" {
+  project      = var.gcp_project_id
+  managed_zone = "${var.gcp_project_name}-org"
+
+  name = "misc-0-prometheus.kentaiso.org."
+  type = "A"
+  ttl  = 60
+
+  rrdatas = [module.gke_workload_address.addresses[1]]
+
+  depends_on = [module.gke_workload_address]
 }
 
 ## Secret

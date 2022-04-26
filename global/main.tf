@@ -131,6 +131,28 @@ module "cloud_router_misc-0" {
   ]
 }
 
+module "main-dns-zone" {
+  source     = "terraform-google-modules/cloud-dns/google"
+  version    = "4.1.0"
+  project_id = var.gcp_project_id
+  type       = "public"
+  name       = "kentaiso-org"
+  domain     = "kentaiso.org."
+
+  dnssec_config = {
+    kind          = "dns#managedZoneDnsSecConfig"
+    non_existence = "nsec3"
+    state         = "on"
+
+    default_key_specs = {
+      algorithm  = "rsasha256"
+      key_length = 2048
+      key_type   = "keySigning"
+      kind       = "dns#dnsKeySpec"
+    }
+  }
+}
+
 ## Org Policy
 module "disable_policy_requireOsLogin" {
   source  = "terraform-google-modules/org-policy/google"
