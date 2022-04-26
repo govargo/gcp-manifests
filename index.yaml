@@ -1,0 +1,19 @@
+apiVersion: v1
+entries:
+  prometheus:
+  - apiVersion: v2
+    appVersion: 2.34.0
+    created: "2022-04-26T12:53:30.313973767Z"
+    dependencies:
+    - alias: prometheus
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 15.8.5
+    description: A Helm chart for Prometheus included GKE specific resources
+    digest: 726b27753c881bf56d135d0c067c2903339ed4c70608f87c92dbd34d7e02aab9
+    name: prometheus
+    type: application
+    urls:
+    - https://github.com/govargo/gcp-manifests/releases/download/prometheus-15.8.5/prometheus-15.8.5.tgz
+    version: 15.8.5
+generated: "2022-04-26T12:53:30.314071623Z"
