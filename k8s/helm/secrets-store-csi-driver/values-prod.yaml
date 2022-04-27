@@ -71,7 +71,11 @@ linux:
   additionalProvidersDirs: 
     - /var/run/secrets-store-csi-providers
   nodeSelector: {}
-  tolerations: []
+  tolerations:
+  - effect: NoExecute
+    operator: Exists
+  - effect: NoSchedule
+    operator: Exists
   metricsAddr: ":8095"
   env: []
   priorityClassName: ""
