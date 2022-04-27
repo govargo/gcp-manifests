@@ -172,7 +172,7 @@ variable "image_type" {
 variable "machine_type" {
   description = "The name of a Google Compute Engine machine type"
   type        = string
-  default     = "n1-standard-2"
+  default     = "n2-standard-2"
 }
 
 variable "auto_repair" {

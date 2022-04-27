@@ -26,7 +26,7 @@ module "misc-0" {
 
   node_pools = [
     {
-      name               = "default-pool"
+      name               = "kube-system-pool"
       machine_type       = var.machine_type
       node_locations     = var.node_locations
       min_count          = var.min_count
@@ -41,17 +41,61 @@ module "misc-0" {
       service_account    = var.service_account
       preemptible        = var.preemptible
       initial_node_count = var.initial_node_count
+    },
+    {
+      name               = "argocd-pool"
+      machine_type       = var.machine_type
+      node_locations     = var.node_locations
+      min_count          = var.min_count
+      max_count          = var.max_count
+      local_ssd_count    = var.local_ssd_count
+      disk_size_gb       = var.disk_size_gb
+      disk_type          = var.disk_type
+      image_type         = var.image_type
+      auto_repair        = var.auto_repair
+      auto_upgrade       = var.auto_upgrade
+      autoscaling        = var.autoscaling
+      service_account    = var.service_account
+      preemptible        = var.preemptible
+      initial_node_count = var.initial_node_count
+    },
+    {
+      name               = "prometheus-pool"
+      machine_type       = "n2-highmem-2"
+      node_locations     = "asia-northeast1-a"
+      min_count          = 1
+      max_count          = 1
+      local_ssd_count    = var.local_ssd_count
+      disk_size_gb       = var.disk_size_gb
+      disk_type          = var.disk_type
+      image_type         = var.image_type
+      auto_repair        = var.auto_repair
+      auto_upgrade       = var.auto_upgrade
+      autoscaling        = false
+      service_account    = var.service_account
+      preemptible        = var.preemptible
+      initial_node_count = var.initial_node_count
     }
   ]
 
   node_pools_oauth_scopes = {
     all = []
 
-    default-pool = var.oauth_scopes
+    kube-system-pool = var.oauth_scopes
+    argocd-pool      = var.oauth_scopes
+    prometheus-pool  = var.oauth_scopes
   }
 
   node_pools_labels = {
     all = {}
+
+    argocd-pool = {
+      app = "argocd"
+    }
+
+    prometheus-pool = {
+      app = "prometheus"
+    }
   }
 
   node_pools_metadata = {
@@ -60,13 +104,33 @@ module "misc-0" {
 
   node_pools_taints = {
     all = []
+
+    argocd-pool = [
+      {
+        key    = "app"
+        value  = "argocd"
+        effect = "NO_SCHEDULE"
+      },
+    ]
+
+    prometheus-pool = [
+      {
+        key    = "app"
+        value  = "prometheus"
+        effect = "NO_SCHEDULE"
+      },
+    ]
   }
 
   node_pools_tags = {
     all = []
 
-    default-pool = [
-      "default-pool",
+    argocd-pool = [
+      "argocd",
+    ]
+
+    prometheus-pool = [
+      "prometheus",
     ]
   }
 
