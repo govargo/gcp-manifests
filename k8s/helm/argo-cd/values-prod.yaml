@@ -204,9 +204,14 @@ controller:
     portName: https-controller
 
   # -- [Node selector]
-  nodeSelector: {}
+  nodeSelector:
+    app: argocd
   # -- [Tolerations] for use with node taints
-  tolerations: []
+  tolerations:
+  - key: "app"
+    operator: "Equal"
+    value: "argocd"
+    effect: "NoSchedule"
   # -- Assign custom [affinity] rules to the deployment
   affinity: {}
 
@@ -507,9 +512,14 @@ dex:
   servicePortMetrics: 5558
 
   # -- [Node selector]
-  nodeSelector: {}
+  nodeSelector:
+    app: argocd
   # -- [Tolerations] for use with node taints
-  tolerations: []
+  tolerations:
+  - key: "app"
+    operator: "Equal"
+    value: "argocd"
+    effect: "NoSchedule"
   # -- Assign custom [affinity] rules to the deployment
   affinity: {}
 
@@ -614,9 +624,14 @@ redis:
   podLabels: {}
 
   # -- [Node selector]
-  nodeSelector: {}
+  nodeSelector:
+    app: argocd
   # -- [Tolerations] for use with node taints
-  tolerations: []
+  tolerations:
+  - key: "app"
+    operator: "Equal"
+    value: "argocd"
+    effect: "NoSchedule"
   # -- Assign custom [affinity] rules to the deployment
   affinity: {}
 
@@ -886,9 +901,14 @@ server:
   volumes: []
 
   # -- [Node selector]
-  nodeSelector: {}
+  nodeSelector:
+    app: argocd
   # -- [Tolerations] for use with node taints
-  tolerations: []
+  tolerations:
+  - key: "app"
+    operator: "Equal"
+    value: "argocd"
+    effect: "NoSchedule"
   # -- Assign custom [affinity] rules to the deployment
   affinity: {}
 
@@ -1504,9 +1524,14 @@ repoServer:
   #    emptyDir: {}
 
   # -- [Node selector]
-  nodeSelector: {}
+  nodeSelector:
+    app: argocd
   # -- [Tolerations] for use with node taints
-  tolerations: []
+  tolerations:
+  - key: "app"
+    operator: "Equal"
+    value: "argocd"
+    effect: "NoSchedule"
   # -- Assign custom [affinity] rules to the deployment
   affinity: {}
 
@@ -1987,10 +2012,15 @@ applicationSet:
     #   memory: 128Mi
 
   # -- [Node selector]
-  nodeSelector: {}
+  nodeSelector:
+    app: argocd
 
   # -- [Tolerations] for use with node taints
-  tolerations: []
+  tolerations:
+  - key: "app"
+    operator: "Equal"
+    value: "argocd"
+    effect: "NoSchedule"
 
   # -- Assign custom [affinity] rules
   affinity: {}
@@ -2095,7 +2125,8 @@ notifications:
   imagePullSecrets: []
 
   # -- [Node selector]
-  nodeSelector: {}
+  nodeSelector:
+    app: argocd
 
   # -- The deployment strategy to use to replace existing pods with new ones
   updateStrategy:
@@ -2431,7 +2462,11 @@ notifications:
     #     attachments: "[{\n  \"title\": \"{{ .app.metadata.name}}\",\n  \"title_link\":\"{{.context.argocdUrl}}/applications/{{.app.metadata.name}}\",\n  \"color\": \"#18be52\",\n  \"fields\": [\n  {\n    \"title\": \"Sync Status\",\n    \"value\": \"{{.app.status.sync.status}}\",\n    \"short\": true\n  },\n  {\n    \"title\": \"Repository\",\n    \"value\": \"{{.app.spec.source.repoURL}}\",\n    \"short\": true\n  }\n  {{range $index, $c := .app.status.conditions}}\n  {{if not $index}},{{end}}\n  {{if $index}},{{end}}\n  {\n    \"title\": \"{{$c.type}}\",\n    \"value\": \"{{$c.message}}\",\n    \"short\": true\n  }\n  {{end}}\n  ]\n}]    "
 
   # -- [Tolerations] for use with node taints
-  tolerations: []
+  tolerations:
+  - key: "app"
+    operator: "Equal"
+    value: "argocd"
+    effect: "NoSchedule"
 
   # -- The trigger defines the condition when the notification should be sent
   ## For more information: https://argocd-notifications.readthedocs.io/en/stable/triggers/
@@ -2537,7 +2572,12 @@ notifications:
       affinity: {}
 
       # -- [Tolerations] for use with node taints
-      tolerations: []
+      tolerations:
+      - key: "app"
+        operator: "Equal"
+        value: "argocd"
+        effect: "NoSchedule"
 
       # -- [Node selector]
-      nodeSelector: {}
+      nodeSelector:
+        app: argocd
