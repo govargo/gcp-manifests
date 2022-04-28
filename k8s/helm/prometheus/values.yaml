@@ -25,3 +25,6 @@ storageClass:
   allowedTopologies:
     enabled: false
     expressions: []
+
+# -- Array of extra K8s manifests to deploy
+extraObjects: []
