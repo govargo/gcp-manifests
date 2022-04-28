@@ -16,4 +16,15 @@ entries:
     urls:
     - https://github.com/govargo/gcp-manifests/releases/download/prometheus-15.8.5/prometheus-15.8.5.tgz
     version: 15.8.5
-generated: "2022-04-26T12:53:30.314071623Z"
+  secrets-store-csi-driver-provider-gcp:
+  - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2022-04-28T13:10:16.614380187Z"
+    description: A Helm chart for Google Cloud Plugin for Secret Store CSI Driver
+    digest: a872ee82ddabe90bc8e5acc7fa244d521250df5e6f46ed568716273c37066ff4
+    name: secrets-store-csi-driver-provider-gcp
+    type: application
+    urls:
+    - https://github.com/govargo/gcp-manifests/releases/download/secrets-store-csi-driver-provider-gcp-0.1.0/secrets-store-csi-driver-provider-gcp-0.1.0.tgz
+    version: 0.1.0
+generated: "2022-04-28T13:10:16.614393913Z"
