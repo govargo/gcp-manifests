@@ -69,9 +69,9 @@ extraObjects:
       provider: gcp
       parameters:
         secrets: |
-          - resourceName: "projects/kentaiso-330205/secrets/client_id/versions/latest"
+          - resourceName: "projects/kentaiso-330205/secrets/argocd_client_id/versions/latest"
             path: client_id
-          - resourceName: "projects/kentaiso-330205/secrets/client_secret/versions/latest"
+          - resourceName: "projects/kentaiso-330205/secrets/argocd_client_secret/versions/latest"
             path: client_secret
       secretObjects:
       - secretName: argocd-secrets-store
