@@ -46,7 +46,7 @@ module "app-0" {
       name               = "prometheus-pool"
       machine_type       = "n2-highmem-2"
       node_locations     = "asia-northeast1-a"
-      min_count          = 1
+      min_count          = var.min_count
       max_count          = 1
       local_ssd_count    = var.local_ssd_count
       disk_size_gb       = var.disk_size_gb
@@ -54,7 +54,7 @@ module "app-0" {
       image_type         = var.image_type
       auto_repair        = var.auto_repair
       auto_upgrade       = var.auto_upgrade
-      autoscaling        = false
+      autoscaling        = var.autoscaling
       service_account    = var.service_account
       preemptible        = var.preemptible
       initial_node_count = var.initial_node_count
