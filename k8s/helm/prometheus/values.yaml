@@ -14,3 +14,14 @@ backendConfig:
       type: HTTP
       requestPath: /healthz
       port: 8080
+
+storageClass:
+  enabled: false
+  type: pd-standard
+  provisioner: kubernetes.io/gce-pd
+  allowVolumeExpansion: true
+  reclaimPolicy: Delete
+  volumeBindingMode: Immediate
+  allowedTopologies:
+    enabled: false
+    expressions: []
