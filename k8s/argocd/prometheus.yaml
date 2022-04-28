@@ -37,7 +37,7 @@ spec:
                  iap:
                    enabled: true
                    oauthclientCredentials:
-                     secretName: iap-secret
+                     secretName: "{{cluster}}-prometheus-secrets"
 
              storageClass:
                enabled: true
@@ -521,7 +521,8 @@ spec:
                    fsGroup: 65534
                
                  service:
-                   annotations: {}
+                   annotations:
+                     cloud.google.com/backend-config: '{"ports": {"80":"{{cluster}}-prometheus-server"}}'
                    labels: {}
                    clusterIP: ""
                
