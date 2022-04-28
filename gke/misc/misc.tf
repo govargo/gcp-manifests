@@ -177,18 +177,36 @@ resource "google_dns_record_set" "prometheus" {
 }
 
 ## Secret
-resource "google_secret_manager_secret" "client_id" {
+resource "google_secret_manager_secret" "argocd_client_id" {
   project   = var.gcp_project_id
-  secret_id = "client_id"
+  secret_id = "argocd_client_id"
 
   replication {
     automatic = true
   }
 }
 
-resource "google_secret_manager_secret" "client_secret" {
+resource "google_secret_manager_secret" "argocd_client_secret" {
   project   = var.gcp_project_id
-  secret_id = "client_secret"
+  secret_id = "argocd_client_secret"
+
+  replication {
+    automatic = true
+  }
+}
+
+resource "google_secret_manager_secret" "prometheus_client_id" {
+  project   = var.gcp_project_id
+  secret_id = "prometheus_client_id"
+
+  replication {
+    automatic = true
+  }
+}
+
+resource "google_secret_manager_secret" "prometheus_client_secret" {
+  project   = var.gcp_project_id
+  secret_id = "prometheus_client_secret"
 
   replication {
     automatic = true
@@ -216,13 +234,17 @@ module "argocd_workloadIdentity_binding" {
       "serviceAccount:${var.gcp_project_id}.svc.id.goog[argocd/argocd-dex-server]"
     ]
   }
+
+  depends_on = [module.argocd_secretmanager_sa]
 }
 
 module "argocd_secretmanager" {
   source  = "terraform-google-modules/iam/google//modules/secret_manager_iam"
+  version = "7.4.1"
+
   project = var.gcp_project_id
-  secrets = ["client_id", "client_secret"]
-  mode    = "additive"
+  secrets = ["argocd_client_id", "argocd_client_secret"]
+  mode    = "authoritative"
 
   bindings = {
     "roles/secretmanager.secretAccessor" = [
@@ -230,5 +252,53 @@ module "argocd_secretmanager" {
     ]
   }
 
-  depends_on = [module.argocd_secretmanager_sa]
+  depends_on = [
+    module.argocd_secretmanager_sa,
+    google_secret_manager_secret.argocd_client_id,
+    google_secret_manager_secret.argocd_client_secret
+  ]
+}
+
+module "prometheus_secretmanager_sa" {
+  source       = "terraform-google-modules/service-accounts/google"
+  version      = "4.1.1"
+  project_id   = var.gcp_project_id
+  names        = ["misc-0-prometheus-server"]
+  display_name = "Prometheus SecretManager ServiceAccount"
+}
+
+module "prometheus_workloadIdentity_binding" {
+  source  = "terraform-google-modules/iam/google//modules/service_accounts_iam"
+  version = "7.4.0"
+
+  service_accounts = [module.prometheus_secretmanager_sa.email]
+  project          = var.gcp_project_id
+  mode             = "additive"
+  bindings = {
+    "roles/iam.workloadIdentityUser" = [
+      "serviceAccount:${var.gcp_project_id}.svc.id.goog[monitoring/misc-0-prometheus-server]"
+    ]
+  }
+  depends_on = [module.prometheus_secretmanager_sa]
+}
+
+module "prometheus_secretmanager" {
+  source  = "terraform-google-modules/iam/google//modules/secret_manager_iam"
+  version = "7.4.1"
+
+  project = var.gcp_project_id
+  secrets = ["prometheus_client_id", "prometheus_client_secret"]
+  mode    = "authoritative"
+
+  bindings = {
+    "roles/secretmanager.secretAccessor" = [
+      "serviceAccount:${module.prometheus_secretmanager_sa.service_account.email}"
+    ]
+  }
+
+  depends_on = [
+    module.prometheus_secretmanager_sa,
+    google_secret_manager_secret.prometheus_client_id,
+    google_secret_manager_secret.prometheus_client_secret
+  ]
 }
