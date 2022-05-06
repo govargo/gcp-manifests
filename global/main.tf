@@ -231,3 +231,16 @@ module "disable_policy_publicAccessPrevention" {
   project_id       = var.gcp_project_id
   exclude_projects = ["${var.organization_id}"]
 }
+
+## Service Account
+module "workflows_sa" {
+  source       = "terraform-google-modules/service-accounts/google"
+  version      = "v4.1.1"
+  project_id   = var.gcp_project_id
+  names        = ["workflows-executor"]
+  display_name = "Cloud Workflows Executor Service Account"
+
+  project_roles = [
+    "${var.gcp_project_id}=>roles/container.admin"
+  ]
+}
