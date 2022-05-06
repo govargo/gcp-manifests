@@ -60,7 +60,7 @@ module "misc-0" {
       initial_node_count = var.initial_node_count
     },
     {
-      name               = "prometheus-pool"
+      name               = "monitoring-pool"
       machine_type       = "n2-highmem-2"
       node_locations     = "asia-northeast1-a"
       min_count          = var.min_count
@@ -83,7 +83,7 @@ module "misc-0" {
 
     kube-system-pool = var.oauth_scopes
     argocd-pool      = var.oauth_scopes
-    prometheus-pool  = var.oauth_scopes
+    monitoring-pool  = var.oauth_scopes
   }
 
   node_pools_labels = {
@@ -93,8 +93,8 @@ module "misc-0" {
       app = "argocd"
     }
 
-    prometheus-pool = {
-      app = "prometheus"
+    monitoring-pool = {
+      app = "monitoring"
     }
   }
 
@@ -113,10 +113,10 @@ module "misc-0" {
       },
     ]
 
-    prometheus-pool = [
+    monitoring-pool = [
       {
         key    = "app"
-        value  = "prometheus"
+        value  = "monitoring"
         effect = "NO_SCHEDULE"
       },
     ]
@@ -129,8 +129,8 @@ module "misc-0" {
       "argocd",
     ]
 
-    prometheus-pool = [
-      "prometheus",
+    monitoring-pool = [
+      "monitoring",
     ]
   }
 
