@@ -100,12 +100,14 @@ spec:
                  enabled: false
 
                kubeStateMetrics:
+                 podAnnotations:
+                   cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
                  nodeSelector:
-                   app: prometheus
+                   app: monitoring
                  tolerations:
                  - key: "app"
                    operator: "Equal"
-                   value: "prometheus"
+                   value: "monitoring"
                    effect: "NoSchedule"
 
                nodeExporter:
@@ -298,17 +300,16 @@ spec:
                  ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
                  ##
                  tolerations:
-                 tolerations:
                  - key: "app"
                    operator: "Equal"
-                   value: "prometheus"
+                   value: "monitoring"
                    effect: "NoSchedule"
                
                  ## Node labels for Prometheus server pod assignment
                  ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
                  ##
                  nodeSelector:
-                   app: prometheus
+                   app: monitoring
                
                  ## Pod affinity
                  ##
@@ -433,7 +434,8 @@ spec:
                    ##
                    enabled: true
                
-                   annotations: {}
+                   annotations:
+                     cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
                    labels: {}
                    podManagementPolicy: OrderedReady
                
