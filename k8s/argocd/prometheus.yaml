@@ -90,9 +90,9 @@ spec:
                    annotations: {}
                  server:
                    create: true
-                   name:
+                   name: prometheus-server
                    annotations:
-                     iam.gke.io/gcp-service-account: "{{cluster}}-prometheus-server@kentaiso-330205.iam.gserviceaccount.com"
+                     iam.gke.io/gcp-service-account: "prometheus-server@kentaiso-330205.iam.gserviceaccount.com"
                
                alertmanager:
                  ## If false, alertmanager will not be installed
