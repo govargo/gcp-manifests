@@ -277,7 +277,7 @@ module "prometheus_secretmanager_sa" {
   source       = "terraform-google-modules/service-accounts/google"
   version      = "4.1.1"
   project_id   = var.gcp_project_id
-  names        = ["misc-0-prometheus-server"]
+  names        = ["prometheus-server"]
   display_name = "Prometheus SecretManager ServiceAccount"
 }
 
@@ -290,7 +290,7 @@ module "prometheus_workloadIdentity_binding" {
   mode             = "additive"
   bindings = {
     "roles/iam.workloadIdentityUser" = [
-      "serviceAccount:${var.gcp_project_id}.svc.id.goog[monitoring/misc-0-prometheus-server]"
+      "serviceAccount:${var.gcp_project_id}.svc.id.goog[monitoring/prometheus-server]"
     ]
   }
   depends_on = [module.prometheus_secretmanager_sa]
