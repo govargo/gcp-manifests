@@ -146,7 +146,8 @@ module "gke_workload_address" {
   global       = true
   names = [
     "argocd-ip",
-    "misc-0-prometheus-ip"
+    "misc-0-prometheus-ip",
+    "grafana-ip"
   ]
 }
 
@@ -172,6 +173,19 @@ resource "google_dns_record_set" "prometheus" {
   ttl  = 60
 
   rrdatas = [module.gke_workload_address.addresses[1]]
+
+  depends_on = [module.gke_workload_address]
+}
+
+resource "google_dns_record_set" "grafana" {
+  project      = var.gcp_project_id
+  managed_zone = "${var.gcp_project_name}-org"
+
+  name = "grafana.kentaiso.org."
+  type = "A"
+  ttl  = 60
+
+  rrdatas = [module.gke_workload_address.addresses[2]]
 
   depends_on = [module.gke_workload_address]
 }
