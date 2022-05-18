@@ -1,3 +1,5 @@
+fullnameOverride: csi-secrets-store-provider-gcp
+
 # -- Additional annotations to add to metadata
 additionalAnnotations: {}
   # foo: bar
