@@ -55,6 +55,23 @@ module "corp-0" {
       service_account    = var.service_account
       preemptible        = var.preemptible
       initial_node_count = var.initial_node_count
+    },
+    {
+      name               = "open-match-pool"
+      machine_type       = var.machine_type
+      node_locations     = var.node_locations
+      min_count          = var.min_count
+      max_count          = var.max_count
+      local_ssd_count    = var.local_ssd_count
+      disk_size_gb       = var.disk_size_gb
+      disk_type          = var.disk_type
+      image_type         = var.image_type
+      auto_repair        = var.auto_repair
+      auto_upgrade       = var.auto_upgrade
+      autoscaling        = var.autoscaling
+      service_account    = var.service_account
+      preemptible        = var.preemptible
+      initial_node_count = var.initial_node_count
     }
   ]
 
@@ -63,6 +80,7 @@ module "corp-0" {
 
     kube-system-pool = var.oauth_scopes
     monitoring-pool  = var.oauth_scopes
+    open-match-pool  = var.oauth_scopes
   }
 
   node_pools_labels = {
@@ -70,6 +88,10 @@ module "corp-0" {
 
     monitoring-pool = {
       app = "monitoring"
+    }
+
+    open-match-pool = {
+      app = "open-match"
     }
   }
 
@@ -87,6 +109,14 @@ module "corp-0" {
         effect = "NO_SCHEDULE"
       },
     ]
+
+    open-match-pool = [
+      {
+        key    = "app"
+        value  = "open-match"
+        effect = "NO_SCHEDULE"
+      },
+    ]
   }
 
   node_pools_tags = {
@@ -95,8 +125,11 @@ module "corp-0" {
     monitoring-pool = [
       "monitoring",
     ]
-  }
 
+    open-match-pool = [
+      "open-match",
+    ]
+  }
 }
 
 ## Network
