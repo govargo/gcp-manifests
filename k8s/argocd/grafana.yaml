@@ -14,6 +14,17 @@ spec:
       name: "{{cluster}}-grafana"
     spec:
       project: default
+      ignoreDifferences:
+      - group: ""
+        kind: Secret
+        name: "{{cluster}}-grafana"
+        jsonPointers:
+        - /data/admin-password
+      - group: apps
+        kind: Deployment
+        name: "{{cluster}}-grafana"
+        jsonPointers:
+        - /spec/template/metadata/annotations
       source:
         chart: grafana
         repoURL: https://grafana.github.io/helm-charts
