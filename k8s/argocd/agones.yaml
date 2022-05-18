@@ -14,6 +14,9 @@ spec:
       name: "agones"
     spec:
       project: default
+      syncPolicy:
+        syncOptions:
+          - CreateNamespace=true
       source:
         chart: agones
         repoURL: https://agones.dev/chart/stable
