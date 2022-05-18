@@ -569,7 +569,7 @@ spec:
                    iap:
                      enabled: true
                      oauthclientCredentials:
-                       secretName: misc-0-prometheus-secrets
+                       secretName: "{{cluster}}-prometheus-secrets"
 
              pushgateway:
                ## If false, pushgateway will not be installed
