@@ -124,7 +124,7 @@ spec:
                  create: true
                replica:
                  disableCommands: [] # don't disable 'FLUSH-' commands
-                 replicaCount: 3
+                 replicaCount: 1
                  persistence:
                    enabled: false
                  resources:
