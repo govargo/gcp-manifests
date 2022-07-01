@@ -1,0 +1,53 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: managed-prometheus
+  namespace: argocd
+spec:
+  generators:
+  - list:
+      elements:
+      - cluster: app-0
+        name: gke_kentaiso-330205_asia-northeast1_app-0
+      - cluster: corp-0
+        name: gke_kentaiso-330205_asia-northeast1_corp-0
+      - cluster: misc-0
+        name: gke_kentaiso-330205_asia-northeast1_misc-0
+  template:
+    metadata:
+      name: "{{cluster}}-managed-prometheus"
+    spec:
+      project: default
+      syncPolicy:
+        syncOptions:
+          - CreateNamespace=true
+      source:
+        repoURL: https://github.com/GoogleCloudPlatform/prometheus-engine.git
+        targetRevision: v0.4.3
+        path: manifests
+      ignoreDifferences:
+      - group: apps
+        kind: Deployment
+        name: rule-evaluator
+        namespace: gmp-system
+        jsonPointers:
+        - /spec/template/spec/containers/0/args
+        - /spec/template/spec/containers/0/livenessProbe
+        - /spec/template/spec/containers/0/readinessProbe
+        - /spec/template/spec/containers/0/ports
+        - /spec/template/spec/containers/0/volumeMounts
+        - /spec/template/spec/containers/1/args
+        - /spec/template/spec/containers/1/ports
+        - /spec/template/spec/containers/1/resources/limits/memory
+        - /spec/template/spec/containers/1/volumeMounts
+        - /spec/template/spec/volumes
+      - group: ""
+        kind: ConfigMap
+        name: rule-evaluator
+        namespace: gmp-system
+        jsonPointers:
+        - /data
+        - /metadata
+      destination:
+        name: "{{name}}"
+        namespace: gmp-system
