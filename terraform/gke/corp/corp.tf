@@ -131,29 +131,3 @@ module "corp-0" {
     ]
   }
 }
-
-## Network
-module "gke_workload_address" {
-  source       = "terraform-google-modules/address/google"
-  version      = "3.1.1"
-  project_id   = var.gcp_project_id
-  region       = var.region
-  address_type = "EXTERNAL"
-  global       = true
-  names = [
-    "corp-0-prometheus-ip"
-  ]
-}
-
-resource "google_dns_record_set" "prometheus" {
-  project      = var.gcp_project_id
-  managed_zone = "${var.gcp_project_name}-org"
-
-  name = "corp-0-prometheus.kentaiso.org."
-  type = "A"
-  ttl  = 60
-
-  rrdatas = [module.gke_workload_address.addresses[0]]
-
-  depends_on = [module.gke_workload_address]
-}
