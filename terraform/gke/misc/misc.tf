@@ -146,7 +146,6 @@ module "gke_workload_address" {
   global       = true
   names = [
     "argocd-ip",
-    "misc-0-prometheus-ip",
     "grafana-ip"
   ]
 }
@@ -164,19 +163,6 @@ resource "google_dns_record_set" "argocd" {
   depends_on = [module.gke_workload_address]
 }
 
-resource "google_dns_record_set" "prometheus" {
-  project      = var.gcp_project_id
-  managed_zone = "${var.gcp_project_name}-org"
-
-  name = "misc-0-prometheus.kentaiso.org."
-  type = "A"
-  ttl  = 60
-
-  rrdatas = [module.gke_workload_address.addresses[1]]
-
-  depends_on = [module.gke_workload_address]
-}
-
 resource "google_dns_record_set" "grafana" {
   project      = var.gcp_project_id
   managed_zone = "${var.gcp_project_name}-org"
@@ -185,7 +171,7 @@ resource "google_dns_record_set" "grafana" {
   type = "A"
   ttl  = 60
 
-  rrdatas = [module.gke_workload_address.addresses[2]]
+  rrdatas = [module.gke_workload_address.addresses[1]]
 
   depends_on = [module.gke_workload_address]
 }
@@ -203,24 +189,6 @@ resource "google_secret_manager_secret" "argocd_client_id" {
 resource "google_secret_manager_secret" "argocd_client_secret" {
   project   = var.gcp_project_id
   secret_id = "argocd_client_secret"
-
-  replication {
-    automatic = true
-  }
-}
-
-resource "google_secret_manager_secret" "prometheus_client_id" {
-  project   = var.gcp_project_id
-  secret_id = "prometheus_client_id"
-
-  replication {
-    automatic = true
-  }
-}
-
-resource "google_secret_manager_secret" "prometheus_client_secret" {
-  project   = var.gcp_project_id
-  secret_id = "prometheus_client_secret"
 
   replication {
     automatic = true
@@ -291,48 +259,37 @@ module "argocd_secretmanager" {
   ]
 }
 
-module "prometheus_secretmanager_sa" {
+module "gmp_collector_sa" {
   source       = "terraform-google-modules/service-accounts/google"
   version      = "4.1.1"
   project_id   = var.gcp_project_id
-  names        = ["prometheus-server"]
-  display_name = "Prometheus SecretManager ServiceAccount"
+  names        = ["collector"]
+  display_name = "Google Managed Prometheus Collector ServiceAccount"
 }
 
-module "prometheus_workloadIdentity_binding" {
+module "gmp_collector_workloadIdentity_binding" {
   source  = "terraform-google-modules/iam/google//modules/service_accounts_iam"
   version = "7.4.0"
 
-  service_accounts = [module.prometheus_secretmanager_sa.email]
+  service_accounts = [module.gmp_collector_sa.email]
   project          = var.gcp_project_id
   mode             = "additive"
   bindings = {
     "roles/iam.workloadIdentityUser" = [
-      "serviceAccount:${var.gcp_project_id}.svc.id.goog[monitoring/prometheus-server]"
+      "serviceAccount:${var.gcp_project_id}.svc.id.goog[gmp-system/collector]"
     ]
   }
-  depends_on = [module.prometheus_secretmanager_sa]
+  depends_on = [module.gmp_collector_sa]
 }
 
-module "prometheus_secretmanager" {
-  source  = "terraform-google-modules/iam/google//modules/secret_manager_iam"
-  version = "7.4.1"
+module "gmp_collector_monitoring_viewer_binding" {
+  source                  = "terraform-google-modules/iam/google//modules/member_iam"
+  service_account_address = "collector@${var.gcp_project_id}.iam.gserviceaccount.com"
+  prefix                  = "serviceAccount"
+  project_id              = var.gcp_project_id
+  project_roles           = ["roles/monitoring.metricWriter"]
 
-  project = var.gcp_project_id
-  secrets = ["prometheus_client_id", "prometheus_client_secret"]
-  mode    = "authoritative"
-
-  bindings = {
-    "roles/secretmanager.secretAccessor" = [
-      "serviceAccount:${module.prometheus_secretmanager_sa.service_account.email}"
-    ]
-  }
-
-  depends_on = [
-    module.prometheus_secretmanager_sa,
-    google_secret_manager_secret.prometheus_client_id,
-    google_secret_manager_secret.prometheus_client_secret
-  ]
+  depends_on = [module.gmp_collector_sa]
 }
 
 module "grafana_secretmanager_sa" {
