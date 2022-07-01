@@ -20,8 +20,10 @@ func main() {
 
 	w := worker.New(c, "createCluster", worker.Options{})
 
+	w.RegisterWorkflow(workflows.CreateGlobalResourcesWorkflow)
 	w.RegisterWorkflow(workflows.CreateClustersWorkflow)
-	w.RegisterActivity(activities.Activity)
+	w.RegisterActivity(activities.CreateGlobalResources)
+	w.RegisterActivity(activities.CreateMiscCluster)
 
 	err = w.Run(worker.InterruptCh())
 	if err != nil {

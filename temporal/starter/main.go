@@ -24,12 +24,12 @@ func main() {
 		TaskQueue: "createCluster",
 	}
 
-	we, err := c.ExecuteWorkflow(context.Background(), workflowOptions, workflows.CreateClustersWorkflow, "Temporal")
+	ctx := context.Background()
+	we, err := c.ExecuteWorkflow(ctx, workflowOptions, workflows.CreateClustersWorkflow, "CreateCluster")
 	if err != nil {
 		log.Fatalln("Unable to execute workflow", err)
 	}
-
-	log.Println("Started workflow", "WorkflowID", we.GetID(), "RunID", we.GetRunID())
+	log.Println("Started CreateCluster workflow", "WorkflowID", we.GetID(), "RunID", we.GetRunID())
 
 	// Synchronously wait for the workflow completion.
 	var result string
