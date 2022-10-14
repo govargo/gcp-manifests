@@ -1,5 +1,6 @@
 module "corp-0" {
   source                     = "terraform-google-modules/kubernetes-engine/google"
+  version                    = "23.2.0"
   project_id                 = var.gcp_project_id
   name                       = "corp-0"
   regional                   = true
@@ -12,6 +13,7 @@ module "corp-0" {
   http_load_balancing        = var.http_load_balancing
   horizontal_pod_autoscaling = var.horizontal_pod_autoscaling
   network_policy             = var.network_policy
+  filestore_csi_driver       = var.filestore_csi_driver
   create_service_account     = false
   default_max_pods_per_node  = var.default_max_pods_per_node
   identity_namespace         = var.identity_namespace
@@ -29,26 +31,12 @@ module "corp-0" {
       min_count          = var.min_count
       max_count          = var.max_count
       local_ssd_count    = var.local_ssd_count
+      spot               = var.spot
       disk_size_gb       = var.disk_size_gb
       disk_type          = var.disk_type
       image_type         = var.image_type
-      auto_repair        = var.auto_repair
-      auto_upgrade       = var.auto_upgrade
-      autoscaling        = var.autoscaling
-      service_account    = var.service_account
-      preemptible        = var.preemptible
-      initial_node_count = var.initial_node_count
-    },
-    {
-      name               = "monitoring-pool"
-      machine_type       = "n2-highmem-2"
-      node_locations     = "asia-northeast1-a"
-      min_count          = var.min_count
-      max_count          = 1
-      local_ssd_count    = var.local_ssd_count
-      disk_size_gb       = var.disk_size_gb
-      disk_type          = var.disk_type
-      image_type         = var.image_type
+      enable_gcfs        = var.enable_gcfs
+      enable_gvnic       = var.enable_gvnic
       auto_repair        = var.auto_repair
       auto_upgrade       = var.auto_upgrade
       autoscaling        = var.autoscaling
@@ -63,9 +51,12 @@ module "corp-0" {
       min_count          = var.min_count
       max_count          = var.max_count
       local_ssd_count    = var.local_ssd_count
+      spot               = var.spot
       disk_size_gb       = var.disk_size_gb
       disk_type          = var.disk_type
       image_type         = var.image_type
+      enable_gcfs        = var.enable_gcfs
+      enable_gvnic       = var.enable_gvnic
       auto_repair        = var.auto_repair
       auto_upgrade       = var.auto_upgrade
       autoscaling        = var.autoscaling
@@ -79,16 +70,11 @@ module "corp-0" {
     all = []
 
     kube-system-pool = var.oauth_scopes
-    monitoring-pool  = var.oauth_scopes
     open-match-pool  = var.oauth_scopes
   }
 
   node_pools_labels = {
     all = {}
-
-    monitoring-pool = {
-      app = "monitoring"
-    }
 
     open-match-pool = {
       app = "open-match"
@@ -102,14 +88,6 @@ module "corp-0" {
   node_pools_taints = {
     all = []
 
-    monitoring-pool = [
-      {
-        key    = "app"
-        value  = "monitoring"
-        effect = "NO_SCHEDULE"
-      },
-    ]
-
     open-match-pool = [
       {
         key    = "app"
@@ -121,10 +99,6 @@ module "corp-0" {
 
   node_pools_tags = {
     all = []
-
-    monitoring-pool = [
-      "monitoring",
-    ]
 
     open-match-pool = [
       "open-match",

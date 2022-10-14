@@ -133,6 +133,12 @@ variable "horizontal_pod_autoscaling" {
   default     = true
 }
 
+variable "filestore_csi_driver" {
+  description = "Enable Filestore CSI driver addon"
+  type        = bool
+  default     = false
+}
+
 variable "autoscaling_profile" {
   description = "Autoscaling Profile"
   type        = string
@@ -169,10 +175,22 @@ variable "image_type" {
   default     = "ubuntu_containerd"
 }
 
+variable "enable_gcfs" {
+  description = "Google Container File System (gcfs) has to be enabled for image streaming to be active"
+  type        = bool
+  default     = false
+}
+
+variable "enable_gvnic" {
+  description = "gVNIC (GVE) is an alternative to the virtIO-based ethernet driver"
+  type        = bool
+  default     = false
+}
+
 variable "machine_type" {
   description = "The name of a Google Compute Engine machine type"
   type        = string
-  default     = "n2-standard-2"
+  default     = "e2-standard-2"
 }
 
 variable "auto_repair" {
@@ -214,6 +232,12 @@ variable "local_ssd_count" {
   description = "The amount of local SSD disks that will be attached to each cluster node and may be used as a hostpath volume or a local PersistentVolume."
   type        = number
   default     = 0
+}
+
+variable "spot" {
+  description = "A boolean that represents whether the underlying node VMs are spot"
+  type        = bool
+  default     = false
 }
 
 variable "min_cpu_platform" {

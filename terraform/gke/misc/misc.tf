@@ -1,5 +1,6 @@
 module "misc-0" {
   source                     = "terraform-google-modules/kubernetes-engine/google//modules/private-cluster"
+  version                    = "23.2.0"
   project_id                 = var.gcp_project_id
   name                       = "misc-0"
   regional                   = true
@@ -15,6 +16,7 @@ module "misc-0" {
   http_load_balancing        = var.http_load_balancing
   horizontal_pod_autoscaling = var.horizontal_pod_autoscaling
   network_policy             = var.network_policy
+  filestore_csi_driver       = var.filestore_csi_driver
   create_service_account     = false
   default_max_pods_per_node  = var.default_max_pods_per_node
   identity_namespace         = var.identity_namespace
@@ -32,9 +34,12 @@ module "misc-0" {
       min_count          = var.min_count
       max_count          = var.max_count
       local_ssd_count    = var.local_ssd_count
+      spot               = var.spot
       disk_size_gb       = var.disk_size_gb
       disk_type          = var.disk_type
       image_type         = var.image_type
+      enable_gcfs        = var.enable_gcfs
+      enable_gvnic       = var.enable_gvnic
       auto_repair        = var.auto_repair
       auto_upgrade       = var.auto_upgrade
       autoscaling        = var.autoscaling
@@ -49,26 +54,12 @@ module "misc-0" {
       min_count          = var.min_count
       max_count          = var.max_count
       local_ssd_count    = var.local_ssd_count
+      spot               = var.spot
       disk_size_gb       = var.disk_size_gb
       disk_type          = var.disk_type
       image_type         = var.image_type
-      auto_repair        = var.auto_repair
-      auto_upgrade       = var.auto_upgrade
-      autoscaling        = var.autoscaling
-      service_account    = var.service_account
-      preemptible        = var.preemptible
-      initial_node_count = var.initial_node_count
-    },
-    {
-      name               = "monitoring-pool"
-      machine_type       = "n2-highmem-2"
-      node_locations     = "asia-northeast1-a"
-      min_count          = var.min_count
-      max_count          = 1
-      local_ssd_count    = var.local_ssd_count
-      disk_size_gb       = var.disk_size_gb
-      disk_type          = var.disk_type
-      image_type         = var.image_type
+      enable_gcfs        = var.enable_gcfs
+      enable_gvnic       = var.enable_gvnic
       auto_repair        = var.auto_repair
       auto_upgrade       = var.auto_upgrade
       autoscaling        = var.autoscaling
@@ -83,7 +74,6 @@ module "misc-0" {
 
     kube-system-pool = var.oauth_scopes
     argocd-pool      = var.oauth_scopes
-    monitoring-pool  = var.oauth_scopes
   }
 
   node_pools_labels = {
@@ -91,10 +81,6 @@ module "misc-0" {
 
     argocd-pool = {
       app = "argocd"
-    }
-
-    monitoring-pool = {
-      app = "monitoring"
     }
   }
 
@@ -112,14 +98,6 @@ module "misc-0" {
         effect = "NO_SCHEDULE"
       },
     ]
-
-    monitoring-pool = [
-      {
-        key    = "app"
-        value  = "monitoring"
-        effect = "NO_SCHEDULE"
-      },
-    ]
   }
 
   node_pools_tags = {
@@ -127,10 +105,6 @@ module "misc-0" {
 
     argocd-pool = [
       "argocd",
-    ]
-
-    monitoring-pool = [
-      "monitoring",
     ]
   }
 
