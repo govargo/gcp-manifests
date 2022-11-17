@@ -20,7 +20,7 @@ spec:
       source:
         chart: agones
         repoURL: https://agones.dev/chart/stable
-        targetRevision: 1.23.0
+        targetRevision: 1.27.0
         helm:
           releaseName: "agones"
           values: |
@@ -239,6 +239,52 @@ spec:
              helm:
                installTests: false
 
+      ignoreDifferences:
+      - group: ""
+        kind: Secret
+        name: agones-cert
+        namespace: agones-system
+        jsonPointers:
+        - /data
+      - group: ""
+        kind: Secret
+        name: allocator-client-ca
+        namespace: agones-system
+        jsonPointers:
+        - /data
+      - group: ""
+        kind: Secret
+        name: allocator-tls
+        namespace: agones-system
+        jsonPointers:
+        - /data
+      - group: ""
+        kind: Secret
+        name: allocator-tls-ca
+        namespace: agones-system
+        jsonPointers:
+        - /data
+      - group: ""
+        kind: Secret
+        name: allocator-client.default
+        namespace: "{{name}}"
+        jsonPointers:
+        - /data
+      - group: admissionregistration.k8s.io
+        kind: MutatingWebhookConfiguration
+        name: agones-mutation-webhook
+        jsonPointers:
+        - /webhooks/clientConfig/caBundle
+      - group: admissionregistration.k8s.io
+        kind: ValidatingWebhookConfiguration
+        name: agones-validation-webhook
+        jsonPointers:
+        - /webhooks/clientConfig/caBundle
+      - group: apiregistration.k8s.io
+        kind: APIService
+        name: v1.allocation.agones.dev
+        jsonPointers:
+        - /spec/caBundle
       destination:
         name: "{{name}}"
         namespace: agones-system
