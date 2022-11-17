@@ -20,7 +20,7 @@ spec:
       source:
         chart: open-match
         repoURL: https://open-match.dev/chart/stable
-        targetRevision: v1.4.0-rc.1
+        targetRevision: v1.5.0
         helm:
           releaseName: "open-match"
           values: |
