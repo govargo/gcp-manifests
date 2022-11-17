@@ -23,7 +23,7 @@ spec:
           - CreateNamespace=true
       source:
         repoURL: https://github.com/GoogleCloudPlatform/prometheus-engine.git
-        targetRevision: v0.4.3
+        targetRevision: v0.5.0
         path: manifests
       ignoreDifferences:
       - group: apps
@@ -48,6 +48,13 @@ spec:
         jsonPointers:
         - /data
         - /metadata
+      - group: ""
+        kind: Secret
+        name: alertmanager
+        namespace: gmp-system
+        jsonPointers:
+        - /data
+        - /metadata/labels
       destination:
         name: "{{name}}"
         namespace: gmp-system
