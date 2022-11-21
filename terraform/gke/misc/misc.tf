@@ -256,7 +256,7 @@ module "gmp_collector_workloadIdentity_binding" {
   depends_on = [module.gmp_collector_sa]
 }
 
-module "gmp_collector_monitoring_viewer_binding" {
+module "gmp_collector_monitoring_writer_binding" {
   source                  = "terraform-google-modules/iam/google//modules/member_iam"
   service_account_address = "collector@${var.gcp_project_id}.iam.gserviceaccount.com"
   prefix                  = "serviceAccount"
