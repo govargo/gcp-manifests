@@ -1,3 +1,39 @@
+## Service APIs
+
+locals {
+  services = toset([
+    "artifactregistry.googleapis.com",
+    "autoscaling.googleapis.com",
+    "bigquery.googleapis.com",
+    "cloudapis.googleapis.com",
+    "compute.googleapis.com",
+    "container.googleapis.com",
+    "logging.googleapis.com",
+    "monitoring.googleapis.com",
+    "cloudbuild.googleapis.com",
+    "cloudresourcemanager.googleapis.com",
+    "containerregistry.googleapis.com",
+    "iam.googleapis.com",
+    "iap.googleapis.com",
+  ])
+}
+
+resource "google_project_service" "service" {
+  for_each = local.services
+  project  = var.gcp_project_id
+  service  = each.value
+}
+
+## Storage
+resource "google_storage_bucket" "project-storage" {
+  name          = var.gcp_project_id
+  location      = "asia-northeast1"
+  force_destroy = true
+
+  public_access_prevention    = "enforced"
+  uniform_bucket_level_access = true
+}
+
 ## VPC Network
 resource "google_compute_network" "vpc_network" {
   name                    = var.gcp_project_name
@@ -251,4 +287,25 @@ resource "google_project_iam_binding" "defaultSA_binding" {
     "serviceAccount:${data.google_compute_default_service_account.default.email}",
   ]
   depends_on = [google_project_iam_custom_role.gmp-rule-evaluator-role]
+}
+
+resource "google_cloudbuild_trigger" "little-server-build-trigger" {
+  project  = var.gcp_project_id
+  location = "asia-northeast1"
+  name     = "little-server-build-trigger"
+  filename = "cloudbuild.yaml"
+
+  github {
+    owner = "govargo"
+    name  = "little-quest-server"
+    push {
+      branch = "^main$"
+    }
+  }
+
+  substitutions = {
+    "_BUCKET_NAME" = "kentaiso-330205"
+  }
+
+  include_build_logs = "INCLUDE_BUILD_LOGS_WITH_STATUS"
 }
