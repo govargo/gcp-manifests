@@ -15,6 +15,7 @@ locals {
     "containerregistry.googleapis.com",
     "iam.googleapis.com",
     "iap.googleapis.com",
+    "networkmanagement.googleapis.com",
   ])
 }
 
@@ -308,4 +309,13 @@ resource "google_cloudbuild_trigger" "little-server-build-trigger" {
   }
 
   include_build_logs = "INCLUDE_BUILD_LOGS_WITH_STATUS"
+}
+
+resource "google_artifact_registry_repository" "docker_repository" {
+  provider = google-beta
+
+  location      = "asia-northeast1"
+  repository_id = "little-quest"
+  description   = "Docker repository"
+  format        = "DOCKER"
 }
