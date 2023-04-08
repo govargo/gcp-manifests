@@ -83,7 +83,7 @@ resource "google_compute_subnetwork" "subnetwork_corp-0" {
 
 module "nat_address" {
   source       = "terraform-google-modules/address/google"
-  version      = "3.1.1"
+  version      = "3.1.2"
   project_id   = var.gcp_project_id
   region       = var.region
   address_type = "EXTERNAL"
@@ -95,7 +95,7 @@ module "nat_address" {
 
 module "cloud_router_app-0" {
   source  = "terraform-google-modules/cloud-router/google"
-  version = "~> 1.3.0"
+  version = "~> 5.0.0"
   project = var.gcp_project_id
   name    = "app-0-router"
   network = var.gcp_project_name
@@ -142,7 +142,7 @@ resource "google_compute_subnetwork" "subnetwork_misc-0" {
 
 module "cloud_router_misc-0" {
   source  = "terraform-google-modules/cloud-router/google"
-  version = "~> 1.3.0"
+  version = "~> 5.0.0"
   project = var.gcp_project_id
   name    = "misc-0-router"
   network = var.gcp_project_name
@@ -170,7 +170,7 @@ module "cloud_router_misc-0" {
 
 module "main-dns-zone" {
   source     = "terraform-google-modules/cloud-dns/google"
-  version    = "4.1.0"
+  version    = "4.2.1"
   project_id = var.gcp_project_id
   type       = "public"
   name       = "kentaiso-org"
@@ -193,7 +193,7 @@ module "main-dns-zone" {
 ## Org Policy
 module "disable_policy_requireOsLogin" {
   source  = "terraform-google-modules/org-policy/google"
-  version = "~> 5.1.0"
+  version = "~> 5.2.2"
 
   constraint       = "constraints/compute.requireOsLogin"
   policy_type      = "boolean"
@@ -206,7 +206,7 @@ module "disable_policy_requireOsLogin" {
 
 module "disable_policy_vmExternalIpAccess" {
   source  = "terraform-google-modules/org-policy/google"
-  version = "~> 5.1.0"
+  version = "~> 5.2.2"
 
   constraint       = "constraints/compute.vmExternalIpAccess"
   policy_type      = "list"
@@ -219,7 +219,7 @@ module "disable_policy_vmExternalIpAccess" {
 
 module "disable_policy_requireShieldedVm" {
   source  = "terraform-google-modules/org-policy/google"
-  version = "~> 5.1.0"
+  version = "~> 5.2.2"
 
   constraint       = "constraints/compute.requireShieldedVm"
   policy_type      = "boolean"
@@ -232,7 +232,7 @@ module "disable_policy_requireShieldedVm" {
 
 module "disable_policy_restrictVpcPeering" {
   source  = "terraform-google-modules/org-policy/google"
-  version = "~> 5.1.0"
+  version = "~> 5.2.2"
 
   constraint       = "constraints/compute.restrictVpcPeering"
   policy_type      = "list"
@@ -245,7 +245,7 @@ module "disable_policy_restrictVpcPeering" {
 
 module "disable_policy_uniformBucketLevelAccess" {
   source  = "terraform-google-modules/org-policy/google"
-  version = "~> 5.1.0"
+  version = "~> 5.2.2"
 
   constraint       = "constraints/storage.uniformBucketLevelAccess"
   policy_type      = "boolean"
@@ -258,7 +258,7 @@ module "disable_policy_uniformBucketLevelAccess" {
 
 module "disable_policy_publicAccessPrevention" {
   source  = "terraform-google-modules/org-policy/google"
-  version = "~> 5.1.0"
+  version = "~> 5.2.2"
 
   constraint       = "constraints/storage.publicAccessPrevention"
   policy_type      = "boolean"
@@ -269,6 +269,7 @@ module "disable_policy_publicAccessPrevention" {
   exclude_projects = ["${var.organization_id}"]
 }
 
+## Service Acount
 data "google_compute_default_service_account" "default" {
 }
 
@@ -290,6 +291,7 @@ resource "google_project_iam_binding" "defaultSA_binding" {
   depends_on = [google_project_iam_custom_role.gmp-rule-evaluator-role]
 }
 
+## Cloud Build
 resource "google_cloudbuild_trigger" "little-server-build-trigger" {
   project  = var.gcp_project_id
   location = "asia-northeast1"
@@ -311,6 +313,7 @@ resource "google_cloudbuild_trigger" "little-server-build-trigger" {
   include_build_logs = "INCLUDE_BUILD_LOGS_WITH_STATUS"
 }
 
+## Artifact Registry
 resource "google_artifact_registry_repository" "docker_repository" {
   provider = google-beta
 
