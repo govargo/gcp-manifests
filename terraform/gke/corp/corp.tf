@@ -1,6 +1,6 @@
 module "corp-0" {
   source                     = "terraform-google-modules/kubernetes-engine/google"
-  version                    = "23.2.0"
+  version                    = "25.0.0"
   project_id                 = var.gcp_project_id
   name                       = "corp-0"
   regional                   = true
@@ -14,6 +14,8 @@ module "corp-0" {
   horizontal_pod_autoscaling = var.horizontal_pod_autoscaling
   network_policy             = var.network_policy
   filestore_csi_driver       = var.filestore_csi_driver
+  enable_shielded_nodes      = var.enable_shielded_nodes
+  gke_backup_agent_config    = var.gke_backup_agent_config
   create_service_account     = false
   default_max_pods_per_node  = var.default_max_pods_per_node
   identity_namespace         = var.identity_namespace
@@ -28,8 +30,11 @@ module "corp-0" {
       name               = "kube-system-pool"
       machine_type       = var.machine_type
       node_locations     = var.node_locations
-      min_count          = var.min_count
-      max_count          = var.max_count
+      min_count          = null
+      max_count          = null
+      total_min_count    = var.total_min_count
+      total_max_count    = var.total_max_count
+      location_policy    = var.location_policy
       local_ssd_count    = var.local_ssd_count
       spot               = var.spot
       disk_size_gb       = var.disk_size_gb
@@ -40,6 +45,9 @@ module "corp-0" {
       auto_repair        = var.auto_repair
       auto_upgrade       = var.auto_upgrade
       autoscaling        = var.autoscaling
+      strategy           = var.strategy
+      max_surge          = var.max_surge
+      max_unavailable    = var.max_unavailable
       service_account    = var.service_account
       preemptible        = var.preemptible
       initial_node_count = var.initial_node_count
@@ -48,8 +56,11 @@ module "corp-0" {
       name               = "open-match-pool"
       machine_type       = var.machine_type
       node_locations     = var.node_locations
-      min_count          = var.min_count
-      max_count          = var.max_count
+      min_count          = null
+      max_count          = null
+      total_min_count    = var.total_min_count
+      total_max_count    = var.total_max_count
+      location_policy    = var.location_policy
       local_ssd_count    = var.local_ssd_count
       spot               = var.spot
       disk_size_gb       = var.disk_size_gb
@@ -60,6 +71,9 @@ module "corp-0" {
       auto_repair        = var.auto_repair
       auto_upgrade       = var.auto_upgrade
       autoscaling        = var.autoscaling
+      strategy           = var.strategy
+      max_surge          = var.max_surge
+      max_unavailable    = var.max_unavailable
       service_account    = var.service_account
       preemptible        = var.preemptible
       initial_node_count = var.initial_node_count

@@ -157,6 +157,12 @@ variable "network_policy" {
   default     = false
 }
 
+variable "gke_backup_agent_config" {
+  description = "Whether Backup for GKE agent is enabled for this cluster"
+  type        = bool
+  default     = false
+}
+
 variable "disk_size_gb" {
   description = "Size of the disk attached to each node"
   type        = number
@@ -211,6 +217,24 @@ variable "autoscaling" {
   default     = true
 }
 
+variable "strategy" {
+  description = "The upgrade stragey to be used for upgrading the nodes"
+  type        = string
+  default     = "SURGE"
+}
+
+variable "max_surge" {
+  description = "The number of additional nodes that can be added to the node pool during an upgrade. Increasing max_surge raises the number of nodes that can be upgraded simultaneously"
+  type        = number
+  default     = 3
+}
+
+variable "max_unavailable" {
+  description = "The number of nodes that can be simultaneously unavailable during an upgrade. Increasing max_unavailable raises the number of nodes that can be upgraded in parallel"
+  type        = number
+  default     = 0
+}
+
 variable "service_account" {
   description = "The service account to run nodes as if not overridden in node_pools. The create_service_account variable default value (true) will cause a cluster-specific service account to be created."
   type        = string
@@ -228,6 +252,24 @@ variable "max_count" {
   default     = 100
 }
 
+variable "total_min_count" {
+  description = "Total minimum number of nodes in the NodePool. Must be >=0 and <= total_max_node_count"
+  type        = number
+  default     = 0
+}
+
+variable "total_max_count" {
+  description = "Total maximum number of nodes in the NodePool. Must be >= total_min_node_count"
+  type        = number
+  default     = 100
+}
+
+variable "location_policy" {
+  description = "Location policy specifies the algorithm used when scaling-up the node pool"
+  type        = string
+  default     = "BALANCED"
+}
+
 variable "local_ssd_count" {
   description = "The amount of local SSD disks that will be attached to each cluster node and may be used as a hostpath volume or a local PersistentVolume."
   type        = number
@@ -237,7 +279,7 @@ variable "local_ssd_count" {
 variable "spot" {
   description = "A boolean that represents whether the underlying node VMs are spot"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "min_cpu_platform" {
@@ -298,16 +340,4 @@ variable "node_count" {
   description = "Node pool count"
   type        = number
   default     = 1
-}
-
-variable "max_surge" {
-  description = "Max surge of nodepool upgrade"
-  type        = number
-  default     = 1
-}
-
-variable "max_unavailable" {
-  description = "Max unavailable of nodepool upgrade"
-  type        = number
-  default     = 0
 }
