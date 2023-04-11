@@ -16,6 +16,8 @@ locals {
     "iam.googleapis.com",
     "iap.googleapis.com",
     "networkmanagement.googleapis.com",
+    "servicenetworking.googleapis.com",
+    "sqladmin.googleapis.com"
   ])
 }
 
