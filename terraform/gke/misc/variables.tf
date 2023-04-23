@@ -8,6 +8,11 @@ variable "gcp_project_name" {
   type        = string
 }
 
+variable "env" {
+  description = "environment(e.g. dev, stg, prod)"
+  type        = string
+}
+
 variable "subnetwork" {
   description = "Subnetwork"
   type        = string

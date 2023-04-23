@@ -123,3 +123,17 @@ module "app-0" {
     ]
   }
 }
+
+## Cloud Pub/Sub Topic
+resource "google_pubsub_topic" "production-realtime-data-analytics" {
+  project = var.gcp_project_id
+  name    = "${var.env}-realtime-data-analytics"
+
+  labels = {
+    env  = "production",
+    case = "realtime-data-analytics"
+  }
+
+  message_retention_duration = "86600s"
+}
+
