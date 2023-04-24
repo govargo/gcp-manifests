@@ -275,24 +275,6 @@ module "disable_policy_publicAccessPrevention" {
 data "google_compute_default_service_account" "default" {
 }
 
-resource "google_project_iam_custom_role" "gmp-rule-evaluator-role" {
-  role_id     = "ruleevaluator"
-  title       = "GMP Rule Evaluator"
-  description = "GMP Rule Evaluator Monitoring role"
-  permissions = ["monitoring.timeSeries.create", "monitoring.timeSeries.list"]
-  stage       = "GA"
-}
-
-resource "google_project_iam_binding" "defaultSA_binding" {
-  project = var.gcp_project_id
-  role    = "projects/${var.gcp_project_id}/roles/${google_project_iam_custom_role.gmp-rule-evaluator-role.role_id}"
-
-  members = [
-    "serviceAccount:${data.google_compute_default_service_account.default.email}",
-  ]
-  depends_on = [google_project_iam_custom_role.gmp-rule-evaluator-role]
-}
-
 ## Cloud Build
 resource "google_cloudbuild_trigger" "little-server-build-trigger" {
   project  = var.gcp_project_id
