@@ -38,7 +38,7 @@ module "app-0" {
       max_count          = null
       total_min_count    = var.total_min_count
       total_max_count    = var.total_max_count
-      location_policy    = var.location_policy
+      location_policy    = "ANY"
       local_ssd_count    = var.local_ssd_count
       spot               = var.spot
       disk_size_gb       = var.disk_size_gb
@@ -64,7 +64,7 @@ module "app-0" {
       max_count          = null
       total_min_count    = var.total_min_count
       total_max_count    = var.total_max_count
-      location_policy    = var.location_policy
+      location_policy    = "ANY"
       local_ssd_count    = var.local_ssd_count
       spot               = var.spot
       disk_size_gb       = var.disk_size_gb
