@@ -1,21 +1,14 @@
-{{- if .Values.rbac.create -}}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-{{- if .Values.additionalAnnotations }}
-  annotations:
-{{ toYaml .Values.additionalAnnotations | indent 4 }}
-{{- end }}
+  name: {{ include "secrets-store-csi-driver-provider-gcp.clusterRoleBindingName" . }}
   labels:
-    {{- include "secrets-store-csi-driver-provider-gcp.labels" . | indent 4 }}
-  name: {{ template "secrets-store-csi-driver-provider-gcp.serviceAccountName" . }}-rolebinding
-  namespace: {{ template "secrets-store-csi-driver-provider-gcp.namespace" . }}
+    {{- include "secrets-store-csi-driver-provider-gcp.labels" . | nindent 4 }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: {{ template "secrets-store-csi-driver-provider-gcp.serviceAccountName" . }}-role
+  name: {{ include "secrets-store-csi-driver-provider-gcp.clusterRoleName" . }}
 subjects:
-- kind: ServiceAccount
-  name: {{ template "secrets-store-csi-driver-provider-gcp.serviceAccountName" . }}
-  namespace: {{ template "secrets-store-csi-driver-provider-gcp.namespace" . }}
-{{- end -}}
+  - kind: ServiceAccount
+    name: {{ include "secrets-store-csi-driver-provider-gcp.serviceAccountName" . }}
+    namespace: kube-system
