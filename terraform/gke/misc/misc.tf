@@ -135,7 +135,6 @@ module "gke_workload_address" {
   global       = true
   names = [
     "argocd-ip",
-    "grafana-ip"
   ]
 }
 
@@ -148,19 +147,6 @@ resource "google_dns_record_set" "argocd" {
   ttl  = 60
 
   rrdatas = [module.gke_workload_address.addresses[0]]
-
-  depends_on = [module.gke_workload_address]
-}
-
-resource "google_dns_record_set" "grafana" {
-  project      = var.gcp_project_id
-  managed_zone = "${var.gcp_project_name}-org"
-
-  name = "grafana.kentaiso.org."
-  type = "A"
-  ttl  = 60
-
-  rrdatas = [module.gke_workload_address.addresses[1]]
 
   depends_on = [module.gke_workload_address]
 }
@@ -178,24 +164,6 @@ resource "google_secret_manager_secret" "argocd_client_id" {
 resource "google_secret_manager_secret" "argocd_client_secret" {
   project   = var.gcp_project_id
   secret_id = "argocd_client_secret"
-
-  replication {
-    automatic = true
-  }
-}
-
-resource "google_secret_manager_secret" "grafana_client_id" {
-  project   = var.gcp_project_id
-  secret_id = "grafana_client_id"
-
-  replication {
-    automatic = true
-  }
-}
-
-resource "google_secret_manager_secret" "grafana_client_secret" {
-  project   = var.gcp_project_id
-  secret_id = "grafana_client_secret"
 
   replication {
     automatic = true
@@ -304,7 +272,7 @@ module "gmp_ruleevaluator_workloadIdentity_binding" {
   depends_on = [module.gmp_ruleevaluator_sa]
 }
 
-resource "google_project_iam_custom_role" "gmp-rule-evaluator-role" {
+resource "google_project_iam_custom_role" "gmp_rule_evaluator_role" {
   role_id     = "ruleevaluator"
   title       = "GMP Rule Evaluator"
   description = "GMP Rule Evaluator Monitoring role"
@@ -312,56 +280,12 @@ resource "google_project_iam_custom_role" "gmp-rule-evaluator-role" {
   stage       = "GA"
 }
 
-resource "google_project_iam_binding" "defaultSA_binding" {
+resource "google_project_iam_binding" "gmp_rule_evaluator_binding" {
   project = var.gcp_project_id
-  role    = "projects/${var.gcp_project_id}/roles/${google_project_iam_custom_role.gmp-rule-evaluator-role.role_id}"
+  role    = "projects/${var.gcp_project_id}/roles/${google_project_iam_custom_role.gmp_rule_evaluator_role.role_id}"
 
   members = [
     "serviceAccount:${module.gmp_ruleevaluator_sa.email}",
   ]
-  depends_on = [google_project_iam_custom_role.gmp-rule-evaluator-role]
-}
-
-module "grafana_secretmanager_sa" {
-  source       = "terraform-google-modules/service-accounts/google"
-  version      = "4.1.1"
-  project_id   = var.gcp_project_id
-  names        = ["grafana"]
-  display_name = "Grafana SecretManager ServiceAccount"
-}
-
-module "grafana_workloadIdentity_binding" {
-  source  = "terraform-google-modules/iam/google//modules/service_accounts_iam"
-  version = "7.4.0"
-
-  service_accounts = [module.grafana_secretmanager_sa.email]
-  project          = var.gcp_project_id
-  mode             = "additive"
-  bindings = {
-    "roles/iam.workloadIdentityUser" = [
-      "serviceAccount:${var.gcp_project_id}.svc.id.goog[monitoring/grafana]"
-    ]
-  }
-  depends_on = [module.grafana_secretmanager_sa]
-}
-
-module "grafana_secretmanager" {
-  source  = "terraform-google-modules/iam/google//modules/secret_manager_iam"
-  version = "7.4.1"
-
-  project = var.gcp_project_id
-  secrets = ["grafana_client_id", "grafana_client_secret"]
-  mode    = "authoritative"
-
-  bindings = {
-    "roles/secretmanager.secretAccessor" = [
-      "serviceAccount:${module.grafana_secretmanager_sa.service_account.email}"
-    ]
-  }
-
-  depends_on = [
-    module.grafana_secretmanager_sa,
-    google_secret_manager_secret.grafana_client_id,
-    google_secret_manager_secret.grafana_client_secret
-  ]
+  depends_on = [google_project_iam_custom_role.gmp_rule_evaluator_role]
 }
