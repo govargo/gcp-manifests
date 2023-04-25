@@ -20,7 +20,7 @@ spec:
       source:
         chart: agones
         repoURL: https://agones.dev/chart/stable
-        targetRevision: 1.27.0
+        targetRevision: 1.30.0
         helm:
           releaseName: "agones"
           values: |
@@ -54,7 +54,8 @@ spec:
                    annotations: {}
                createPriorityClass: true
                priorityClassName: agones-system
-               controller:
+               cloudProduct: "auto"
+               controller: &controllerValues
                  resources: {}
                  #  requests:
                  #    cpu: 1
@@ -102,8 +103,25 @@ spec:
                    periodSeconds: 3
                    failureThreshold: 3
                    timeoutSeconds: 1
+                 allocationBatchWaitTime: 500ms
+                 replicas: 2
+                 pdb:
+                     minAvailable: 1
+               extensions:
+                 <<: *controllerValues
+                 pdb:
+                     minAvailable: 1
+                 replicas: 2
+                 readiness:
+                   initialDelaySeconds: 3
+                   periodSeconds: 3
+                   failureThreshold: 3
                ping:
                  install: false
+                 pdb:
+                   enabled: false
+                   minAvailable: 1
+                 updateStrategy: {}
                  resources: {}
                    # requests:
                    #   cpu: 1
@@ -147,6 +165,10 @@ spec:
                    timeoutSeconds: 1
                allocator:
                  install: true
+                 pdb:
+                   enabled: false
+                   minAvailable: 1
+                 updateStrategy: {}
                  apiServerQPS: 400
                  apiServerQPSBurst: 500
                  logLevel: info
@@ -209,11 +231,16 @@ spec:
                  disableTLS: false
                  remoteAllocationTimeout: 10s
                  totalRemoteAllocationTimeout: 30s
+                 allocationBatchWaitTime: 500ms
                image:
-                 registry: gcr.io/agones-images
-                 tag: 1.23.0
+                 registry: us-docker.pkg.dev/agones-images/release
+                 tag: 1.30.0
                  controller:
                    name: agones-controller
+                   pullPolicy: IfNotPresent
+                 # extensions settings ignored unless `SplitControllerAndExtensions` feature gate is enabled
+                 extensions:
+                   name: agones-extensions
                    pullPolicy: IfNotPresent
                  sdk:
                    name: agones-sdk
