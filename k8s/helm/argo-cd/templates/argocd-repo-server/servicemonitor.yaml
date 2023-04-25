@@ -3,9 +3,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: {{ template "argo-cd.repoServer.fullname" . }}
-  {{- with .Values.repoServer.metrics.serviceMonitor.namespace }}
-  namespace: {{ . }}
-  {{- end }}
+  namespace: {{ default .Release.Namespace .Values.repoServer.metrics.serviceMonitor.namespace | default }}
   labels:
     {{- include "argo-cd.labels" (dict "context" . "component" .Values.repoServer.name "name" .Values.repoServer.name) | nindent 4 }}
     {{- with .Values.repoServer.metrics.serviceMonitor.selector }}
@@ -14,9 +12,13 @@ metadata:
     {{- with .Values.repoServer.metrics.serviceMonitor.additionalLabels }}
       {{- toYaml . | nindent 4 }}
     {{- end }}
+  {{- with .Values.repoServer.metrics.serviceMonitor.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   endpoints:
-    - port: metrics
+    - port: {{ .Values.repoServer.metrics.service.portName }}
       {{- with .Values.repoServer.metrics.serviceMonitor.interval }}
       interval: {{ . }}
       {{- end }}
@@ -27,6 +29,13 @@ spec:
       {{- end }}
       {{- with .Values.repoServer.metrics.serviceMonitor.metricRelabelings }}
       metricRelabelings:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.repoServer.metrics.serviceMonitor.scheme }}
+      scheme: {{ . }}
+      {{- end }}
+      {{- with .Values.repoServer.metrics.serviceMonitor.tlsConfig }}
+      tlsConfig:
         {{- toYaml . | nindent 8 }}
       {{- end }}
   namespaceSelector:

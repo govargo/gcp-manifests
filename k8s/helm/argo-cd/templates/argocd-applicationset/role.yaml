@@ -1,7 +1,9 @@
+{{- if .Values.applicationSet.enabled }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: {{ template "argo-cd.applicationSet.fullname" . }}
+  name: {{ include "argo-cd.applicationSet.fullname" . }}
+  namespace: {{ .Release.Namespace | quote }}
   labels:
     {{- include "argo-cd.labels" (dict "context" . "component" .Values.applicationSet.name "name" .Values.applicationSet.name) | nindent 4 }}
 rules:
@@ -9,7 +11,6 @@ rules:
     - argoproj.io
     resources:
     - applications
-    - appprojects
     - applicationsets
     - applicationsets/finalizers
     verbs:
@@ -29,16 +30,32 @@ rules:
     - patch
     - update
   - apiGroups:
+    - argoproj.io
+    resources:
+    - appprojects
+    verbs:
+    - get
+  - apiGroups:
     - ""
     resources:
     - events
     verbs:
     - create
+    - get
+    - list
+    - patch
+    - watch
+  - apiGroups:
+    - ""
+    resources:
+    - configmaps
+    verbs:
+    - create
+    - update
     - delete
     - get
     - list
     - patch
-    - update
     - watch
   - apiGroups:
     - ""
@@ -47,18 +64,6 @@ rules:
     verbs:
     - get
     - list
-    - watch
-  - apiGroups:
-    - ""
-    resources:
-    - configmaps
-    verbs:
-    - create
-    - delete
-    - get
-    - list
-    - patch
-    - update
     - watch
   - apiGroups:
     - apps
@@ -81,3 +86,4 @@ rules:
     - patch
     - update
     - watch
+{{- end }}

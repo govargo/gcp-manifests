@@ -3,9 +3,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: {{ template "argo-cd.controller.fullname" . }}
-  {{- with .Values.controller.metrics.serviceMonitor.namespace }}
-  namespace: {{ . }}
-  {{- end }}
+  namespace: {{ default .Release.Namespace .Values.controller.metrics.serviceMonitor.namespace | quote }}
   labels:
     {{- include "argo-cd.labels" (dict "context" . "component" .Values.controller.name "name" .Values.controller.name) | nindent 4 }}
     {{- with .Values.controller.metrics.serviceMonitor.selector }}
@@ -14,9 +12,13 @@ metadata:
     {{- with .Values.controller.metrics.serviceMonitor.additionalLabels }}
       {{- toYaml . | nindent 4 }}
     {{- end }}
+  {{- with .Values.controller.metrics.serviceMonitor.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   endpoints:
-    - port: metrics
+    - port: {{ .Values.controller.metrics.service.portName }}
       {{- with .Values.controller.metrics.serviceMonitor.interval }}
       interval: {{ . }}
       {{- end }}
@@ -27,6 +29,13 @@ spec:
       {{- end }}
       {{- with .Values.controller.metrics.serviceMonitor.metricRelabelings }}
       metricRelabelings:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.controller.metrics.serviceMonitor.scheme }}
+      scheme: {{ . }}
+      {{- end }}
+      {{- with .Values.controller.metrics.serviceMonitor.tlsConfig }}
+      tlsConfig:
         {{- toYaml . | nindent 8 }}
       {{- end }}
   namespaceSelector:

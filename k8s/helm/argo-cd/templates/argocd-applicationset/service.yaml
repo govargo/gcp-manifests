@@ -1,3 +1,4 @@
+{{- if .Values.applicationSet.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -8,12 +9,17 @@ metadata:
   {{- end }}
 {{- end }}
   name: {{ template "argo-cd.applicationSet.fullname" . }}
+  namespace: {{ .Release.Namespace | quote }}
   labels:
     {{- include "argo-cd.labels" (dict "context" . "component" .Values.applicationSet.name "name" .Values.applicationSet.name) | nindent 4 }}
+{{- with .Values.applicationSet.service.labels }}
+{{- toYaml . | nindent 4 }}
+{{- end }}
 spec:
   ports:
   - name: {{ .Values.applicationSet.service.portName }}
     port: {{ .Values.applicationSet.service.port }}
-    targetPort: {{ .Values.applicationSet.containerPort }}
+    targetPort: webhook
   selector:
     {{- include "argo-cd.selectorLabels" (dict "context" . "name" .Values.applicationSet.name) | nindent 4 }}
+{{- end }}

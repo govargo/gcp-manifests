@@ -1,11 +1,9 @@
-{{- if and .Values.notifications.metrics.enabled .Values.notifications.metrics.serviceMonitor.enabled }}
+{{- if and .Values.notifications.enabled .Values.notifications.metrics.enabled .Values.notifications.metrics.serviceMonitor.enabled }}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: {{ template "argo-cd.notifications.fullname" . }}
-  {{- if .Values.notifications.metrics.serviceMonitor.namespace }}
-  namespace: {{ .Values.notifications.metrics.serviceMonitor.namespace }}
-  {{- end }}
+  namespace: {{ default .Release.Namespace .Values.notifications.metrics.serviceMonitor.namespace | quote }}
   labels:
     {{- include "argo-cd.labels" (dict "context" . "component" .Values.notifications.name "name" .Values.notifications.name) | nindent 4 }}
     {{- with .Values.notifications.metrics.serviceMonitor.selector }}
@@ -14,15 +12,34 @@ metadata:
     {{- if .Values.notifications.metrics.serviceMonitor.additionalLabels }}
       {{- toYaml .Values.notifications.metrics.serviceMonitor.additionalLabels | nindent 4 }}
     {{- end }}
+  {{- with .Values.notifications.metrics.serviceMonitor.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   endpoints:
-    - port: metrics
+    - port: {{ .Values.notifications.metrics.service.portName }}
       path: /metrics
       {{- if .Values.notifications.metrics.serviceMonitor.interval }}
       interval: {{ .Values.notifications.metrics.serviceMonitor.interval }}
       {{- end }}
       {{- if .Values.notifications.metrics.serviceMonitor.scrapeTimeout }}
       scrapeTimeout: {{ .Values.notifications.metrics.serviceMonitor.scrapeTimeout }}
+      {{- end }}
+      {{- with .Values.notifications.metrics.serviceMonitor.scheme }}
+      scheme: {{ . }}
+      {{- end }}
+      {{- with .Values.notifications.metrics.serviceMonitor.tlsConfig }}
+      tlsConfig:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.notifications.metrics.serviceMonitor.relabelings }}
+      relabelings:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.notifications.metrics.serviceMonitor.metricRelabelings }}
+      metricRelabelings:
+        {{- toYaml . | nindent 8 }}
       {{- end }}
   namespaceSelector:
     matchNames:
