@@ -17,6 +17,7 @@ spec:
       syncPolicy:
         syncOptions:
           - CreateNamespace=true
+          - ServerSideApply=true
       source:
         chart: agones
         repoURL: https://agones.dev/chart/stable
@@ -56,10 +57,10 @@ spec:
                priorityClassName: agones-system
                cloudProduct: "auto"
                controller: &controllerValues
-                 resources: {}
-                 #  requests:
-                 #    cpu: 1
-                 #    memory: 256Mi
+                 resources:
+                   requests:
+                     cpu: 100m
+                     memory: 256Mi
                  nodeSelector: {}
                  annotations: {}
                  tolerations: []
@@ -173,10 +174,10 @@ spec:
                  apiServerQPSBurst: 500
                  logLevel: info
                  annotations: {}
-                 resources: {}
-                   # requests:
-                   #   cpu: 1
-                   #   memory: 256Mi
+                 resources:
+                   requests:
+                     cpu: 100m
+                     memory: 256Mi
                  healthCheck:
                    initialDelaySeconds: 3
                    periodSeconds: 3
