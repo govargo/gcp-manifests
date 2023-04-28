@@ -20,7 +20,7 @@ spec:
       project: default
       syncPolicy:
         syncOptions:
-          - CreateNamespace=true
+        - CreateNamespace=true
       source:
         chart: prometheus-node-exporter
         repoURL: https://prometheus-community.github.io/helm-charts

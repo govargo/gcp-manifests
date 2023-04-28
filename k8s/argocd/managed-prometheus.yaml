@@ -20,7 +20,8 @@ spec:
       project: default
       syncPolicy:
         syncOptions:
-          - CreateNamespace=true
+        - CreateNamespace=true
+        - RespectIgnoreDifferences=true
       source:
         repoURL: https://github.com/GoogleCloudPlatform/prometheus-engine.git
         targetRevision: v0.6.1

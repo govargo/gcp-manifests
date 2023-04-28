@@ -16,8 +16,9 @@ spec:
       project: default
       syncPolicy:
         syncOptions:
-          - CreateNamespace=true
-          - ServerSideApply=true
+        - CreateNamespace=true
+        - ServerSideApply=true
+        - RespectIgnoreDifferences=true
       source:
         chart: agones
         repoURL: https://agones.dev/chart/stable
