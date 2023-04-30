@@ -11,18 +11,18 @@ locals {
 
 module "private-service-access" {
   source        = "GoogleCloudPlatform/sql-db/google//modules/private_service_access"
-  version       = "14.1.0"
+  version       = "15.0.0"
   project_id    = var.gcp_project_id
   vpc_network   = var.gcp_project_name
   ip_version    = "IPV4"
-  address       = "10.125.40.0"
-  prefix_length = 24
+  address       = "192.168.0.0"
+  prefix_length = 16
 }
 
 module "private-mysql-db" {
   source               = "GoogleCloudPlatform/sql-db/google//modules/mysql"
-  version              = "14.1.0"
-  name                 = "production"
+  version              = "15.0.0"
+  name                 = "${var.env}-mysql"
   random_instance_name = false
   project_id           = var.gcp_project_id
 
@@ -37,7 +37,7 @@ module "private-mysql-db" {
   maintenance_window_hour         = 12
   maintenance_window_update_track = "stable"
 
-  //database_flags = [{ name = "long_query_time", value = 1 }]
+  ##database_flags = [{ name = "long_query_time", value = 1 }]
 
   disk_autoresize       = true
   disk_autoresize_limit = 100
@@ -53,7 +53,6 @@ module "private-mysql-db" {
     query_string_length     = 1024
     record_application_tags = true
     record_client_address   = true
-
   }
 
   ip_configuration = {
@@ -75,7 +74,7 @@ module "private-mysql-db" {
     retention_unit                 = "COUNT"
   }
 
-  // Read replica configurations
+  ## Read replica configurations
   read_replica_name_suffix = "-read-replica"
   replica_database_version = var.database_version
   read_replicas = [

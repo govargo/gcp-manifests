@@ -8,6 +8,11 @@ variable "gcp_project_name" {
   type        = string
 }
 
+variable "env" {
+  description = "environment(e.g. dev, stg, prod)"
+  type        = string
+}
+
 variable "database_version" {
   description = "The MySQL, PostgreSQL or SQL Server version to use"
   type        = string
