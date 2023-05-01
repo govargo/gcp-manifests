@@ -2,12 +2,12 @@ module "corp-0" {
   source                     = "terraform-google-modules/kubernetes-engine/google"
   version                    = "25.0.0"
   project_id                 = var.gcp_project_id
-  name                       = "corp-0"
+  name                       = "${var.env}-corp-0"
   regional                   = true
   region                     = var.region
   zones                      = var.zones
   network                    = var.gcp_project_name
-  subnetwork                 = "corp-0"
+  subnetwork                 = "${var.env}-corp-0"
   ip_range_pods              = var.cluster_secondary_range_name
   ip_range_services          = var.services_secondary_range_name
   http_load_balancing        = var.http_load_balancing

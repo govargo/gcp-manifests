@@ -2,12 +2,12 @@ module "misc-0" {
   source                       = "terraform-google-modules/kubernetes-engine/google//modules/private-cluster"
   version                      = "25.0.0"
   project_id                   = var.gcp_project_id
-  name                         = "misc-0"
+  name                         = "${var.env}-misc-0"
   regional                     = true
   region                       = var.region
   zones                        = var.zones
   network                      = var.gcp_project_name
-  subnetwork                   = "misc-0"
+  subnetwork                   = "${var.env}-misc-0"
   master_ipv4_cidr_block       = "11.0.0.0/28"
   ip_range_pods                = var.cluster_secondary_range_name
   ip_range_services            = var.services_secondary_range_name
@@ -287,5 +287,8 @@ resource "google_project_iam_binding" "gmp_rule_evaluator_binding" {
   members = [
     "serviceAccount:${module.gmp_ruleevaluator_sa.email}",
   ]
-  depends_on = [google_project_iam_custom_role.gmp_rule_evaluator_role]
+  depends_on = [
+    google_project_iam_custom_role.gmp_rule_evaluator_role,
+    module.gmp_ruleevaluator_sa,
+  ]
 }
