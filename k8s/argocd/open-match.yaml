@@ -8,7 +8,7 @@ spec:
   - list:
       elements:
       - cluster: corp-0
-        name: gke_kentaiso-330205_asia-northeast1_corp-0
+        name: gke_kentaiso-330205_asia-northeast1_prod-corp-0
   template:
     metadata:
       name: "open-match"
