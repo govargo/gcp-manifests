@@ -253,11 +253,11 @@ repoServer:
   # -- Resource limits and requests for the repo server pods
   resources:
     requests:
-      cpu: 10m
-      memory: 64Mi
-    limits:
-      cpu: 50m
+      cpu: 100m
       memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
 
   # -- [Node selector]
   nodeSelector:
