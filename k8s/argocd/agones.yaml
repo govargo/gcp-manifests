@@ -8,7 +8,7 @@ spec:
   - list:
       elements:
       - cluster: corp-0
-        name: gke_kentaiso-330205_asia-northeast1_corp-0
+        name: gke_kentaiso-330205_asia-northeast1_prod-corp-0
   template:
     metadata:
       name: "agones"
@@ -296,19 +296,19 @@ spec:
       - group: ""
         kind: Secret
         name: allocator-client.default
-        namespace: "{{name}}"
+        namespace: corp-0
         jsonPointers:
         - /data
       - group: admissionregistration.k8s.io
         kind: MutatingWebhookConfiguration
         name: agones-mutation-webhook
         jsonPointers:
-        - /webhooks/clientConfig/caBundle
+        - /webhooks/0/clientConfig/caBundle
       - group: admissionregistration.k8s.io
         kind: ValidatingWebhookConfiguration
         name: agones-validation-webhook
         jsonPointers:
-        - /webhooks/clientConfig/caBundle
+        - /webhooks/0/clientConfig/caBundle
       - group: apiregistration.k8s.io
         kind: APIService
         name: v1.allocation.agones.dev
