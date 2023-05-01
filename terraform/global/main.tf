@@ -17,7 +17,8 @@ locals {
     "iap.googleapis.com",
     "networkmanagement.googleapis.com",
     "servicenetworking.googleapis.com",
-    "sqladmin.googleapis.com"
+    "sqladmin.googleapis.com",
+    "redis.googleapis.com"
   ])
 }
 
@@ -30,6 +31,7 @@ resource "google_project_service" "service" {
 ## Storage
 resource "google_storage_bucket" "project-storage" {
   name          = var.gcp_project_id
+  project       = var.gcp_project_id
   location      = "asia-northeast1"
   force_destroy = true
 
@@ -46,7 +48,7 @@ resource "google_compute_network" "vpc_network" {
 }
 
 resource "google_compute_subnetwork" "subnetwork_app-0" {
-  name                     = "app-0"
+  name                     = "${var.env}-app-0"
   project                  = var.gcp_project_id
   ip_cidr_range            = "10.128.0.0/24"
   region                   = var.region
@@ -64,11 +66,11 @@ resource "google_compute_subnetwork" "subnetwork_app-0" {
   ]
 }
 
-resource "google_compute_subnetwork" "subnetwork_corp-0" {
-  name                     = "corp-0"
+resource "google_compute_subnetwork" "subnetwork_app-1" {
+  name                     = "${var.env}-app-1"
   project                  = var.gcp_project_id
   ip_cidr_range            = "10.129.0.0/24"
-  region                   = var.region
+  region                   = "us-central1"
   network                  = google_compute_network.vpc_network.id
   private_ip_google_access = var.private_ip_google_access
   secondary_ip_range = [
@@ -83,48 +85,8 @@ resource "google_compute_subnetwork" "subnetwork_corp-0" {
   ]
 }
 
-module "nat_address" {
-  source       = "terraform-google-modules/address/google"
-  version      = "3.1.2"
-  project_id   = var.gcp_project_id
-  region       = var.region
-  address_type = "EXTERNAL"
-  names = [
-    "app-0-nat-gateway",
-    "misc-0-nat-gateway"
-  ]
-}
-
-module "cloud_router_app-0" {
-  source  = "terraform-google-modules/cloud-router/google"
-  version = "~> 5.0.0"
-  project = var.gcp_project_id
-  name    = "app-0-router"
-  network = var.gcp_project_name
-  region  = var.region
-
-  nats = [{
-    name                               = "app-0-nat-gateway",
-    nat_ip_allocate_option             = "MANUAL_ONLY",
-    nat_ips                            = ["app-0-nat-gateway"]
-    source_subnetwork_ip_ranges_to_nat = "LIST_OF_SUBNETWORKS"
-    log_config = {
-      enable : true,
-      filter : "ERRORS_ONLY"
-    }
-    subnetworks = [{
-      name                    = "app-0",
-      source_ip_ranges_to_nat = ["ALL_IP_RANGES"]
-    }]
-  }]
-
-  depends_on = [
-    module.nat_address,
-  ]
-}
-
-resource "google_compute_subnetwork" "subnetwork_misc-0" {
-  name                     = "misc-0"
+resource "google_compute_subnetwork" "subnetwork_corp-0" {
+  name                     = "${var.env}-corp-0"
   project                  = var.gcp_project_id
   ip_cidr_range            = "10.130.0.0/24"
   region                   = var.region
@@ -142,41 +104,143 @@ resource "google_compute_subnetwork" "subnetwork_misc-0" {
   ]
 }
 
-module "cloud_router_misc-0" {
+module "nat_address_asia_northeast1" {
+  source       = "terraform-google-modules/address/google"
+  version      = "3.1.2"
+  project_id   = var.gcp_project_id
+  region       = var.region
+  address_type = "EXTERNAL"
+  names = [
+    "${var.env}-app-0-nat-gateway",
+    "${var.env}-misc-0-nat-gateway"
+  ]
+}
+
+module "nat_address_us_central1" {
+  source       = "terraform-google-modules/address/google"
+  version      = "3.1.2"
+  project_id   = var.gcp_project_id
+  region       = "us-central1"
+  address_type = "EXTERNAL"
+  names = [
+    "${var.env}-app-1-nat-gateway",
+  ]
+}
+
+module "cloud_router_app-0" {
   source  = "terraform-google-modules/cloud-router/google"
   version = "~> 5.0.0"
   project = var.gcp_project_id
-  name    = "misc-0-router"
+  name    = "${var.env}-app-0-router"
   network = var.gcp_project_name
   region  = var.region
 
   nats = [{
-    name                               = "misc-0-nat-gateway",
+    name                               = "${var.env}-app-0-nat-gateway",
     nat_ip_allocate_option             = "MANUAL_ONLY",
-    nat_ips                            = ["misc-0-nat-gateway"]
+    nat_ips                            = ["${var.env}-app-0-nat-gateway"]
     source_subnetwork_ip_ranges_to_nat = "LIST_OF_SUBNETWORKS"
     log_config = {
       enable : true,
       filter : "ERRORS_ONLY"
     }
     subnetworks = [{
-      name                    = "misc-0",
+      name                    = "${var.env}-app-0",
       source_ip_ranges_to_nat = ["ALL_IP_RANGES"]
     }]
   }]
 
   depends_on = [
-    module.nat_address,
+    module.nat_address_asia_northeast1,
+    google_compute_subnetwork.subnetwork_app-0,
+  ]
+}
+
+module "cloud_router_app-1" {
+  source  = "terraform-google-modules/cloud-router/google"
+  version = "~> 5.0.0"
+  project = var.gcp_project_id
+  name    = "${var.env}-app-1-router"
+  network = var.gcp_project_name
+  region  = "us-central1"
+
+  nats = [{
+    name                               = "${var.env}-app-1-nat-gateway",
+    nat_ip_allocate_option             = "MANUAL_ONLY",
+    nat_ips                            = ["${var.env}-app-1-nat-gateway"]
+    source_subnetwork_ip_ranges_to_nat = "LIST_OF_SUBNETWORKS"
+    log_config = {
+      enable : true,
+      filter : "ERRORS_ONLY"
+    }
+    subnetworks = [{
+      name                    = "${var.env}-app-1",
+      source_ip_ranges_to_nat = ["ALL_IP_RANGES"]
+    }]
+  }]
+
+  depends_on = [
+    module.nat_address_us_central1,
+    google_compute_subnetwork.subnetwork_app-1,
+  ]
+}
+
+resource "google_compute_subnetwork" "subnetwork_misc-0" {
+  name                     = "${var.env}-misc-0"
+  project                  = var.gcp_project_id
+  ip_cidr_range            = "10.131.0.0/24"
+  region                   = var.region
+  network                  = google_compute_network.vpc_network.id
+  private_ip_google_access = var.private_ip_google_access
+  secondary_ip_range = [
+    {
+      range_name    = "pod"
+      ip_cidr_range = "103.64.0.0/14"
+    },
+    {
+      range_name    = "service"
+      ip_cidr_range = "103.68.0.0/20"
+    }
+  ]
+}
+
+module "cloud_router_misc-0" {
+  source  = "terraform-google-modules/cloud-router/google"
+  version = "~> 5.0.0"
+  project = var.gcp_project_id
+  name    = "${var.env}-misc-0-router"
+  network = var.gcp_project_name
+  region  = var.region
+
+  nats = [{
+    name                               = "${var.env}-misc-0-nat-gateway",
+    nat_ip_allocate_option             = "MANUAL_ONLY",
+    nat_ips                            = ["${var.env}-misc-0-nat-gateway"]
+    source_subnetwork_ip_ranges_to_nat = "LIST_OF_SUBNETWORKS"
+    log_config = {
+      enable : true,
+      filter : "ERRORS_ONLY"
+    }
+    subnetworks = [{
+      name                    = "${var.env}-misc-0",
+      source_ip_ranges_to_nat = ["ALL_IP_RANGES"]
+    }]
+  }]
+
+  depends_on = [
+    module.nat_address_asia_northeast1,
+    google_compute_subnetwork.subnetwork_misc-0
   ]
 }
 
 module "main-dns-zone" {
-  source     = "terraform-google-modules/cloud-dns/google"
-  version    = "4.2.1"
-  project_id = var.gcp_project_id
-  type       = "public"
-  name       = "kentaiso-org"
-  domain     = "kentaiso.org."
+  source         = "terraform-google-modules/cloud-dns/google"
+  version        = "5.0.0"
+  project_id     = var.gcp_project_id
+  type           = "public"
+  name           = "kentaiso-org"
+  domain         = "kentaiso.org."
+  enable_logging = false
 
   dnssec_config = {
     kind          = "dns#managedZoneDnsSecConfig"
@@ -189,7 +253,17 @@ module "main-dns-zone" {
       key_type   = "keySigning"
       kind       = "dns#dnsKeySpec"
     }
+    default_key_specs = {
+      algorithm  = "rsasha256"
+      key_length = 1024
+      key_type   = "zoneSigning"
+      kind       = "dns#dnsKeySpec"
+    }
   }
+
+  depends_on = [
+    google_compute_network.vpc_network
+  ]
 }
 
 ## Org Policy
@@ -291,7 +365,7 @@ resource "google_cloudbuild_trigger" "little-server-build-trigger" {
   }
 
   substitutions = {
-    "_BUCKET_NAME" = "kentaiso-330205"
+    "_BUCKET_NAME" = var.gcp_project_id
   }
 
   include_build_logs = "INCLUDE_BUILD_LOGS_WITH_STATUS"
@@ -301,7 +375,7 @@ resource "google_cloudbuild_trigger" "little-server-build-trigger" {
 resource "google_artifact_registry_repository" "docker_repository" {
   provider = google-beta
 
-  location      = "asia-northeast1"
+  location      = var.region
   repository_id = "little-quest"
   description   = "Docker repository"
   format        = "DOCKER"
