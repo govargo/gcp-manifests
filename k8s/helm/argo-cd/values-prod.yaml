@@ -63,6 +63,15 @@ controller:
   podAnnotations:
     cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
 
+  # -- Resource limits and requests for the application controller pods
+  resources:
+    requests:
+      cpu: 10m
+      memory: 100Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
   # -- [Node selector]
   nodeSelector:
     app: argocd
@@ -97,6 +106,15 @@ dex:
       volumeAttributes:
         secretProviderClass: argocd-secrets-store
 
+  # -- Resource limits and requests for dex
+  resources:
+    requests:
+      cpu: 100m
+      memory: 10Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
   # -- [Node selector]
   nodeSelector:
     app: argocd
@@ -108,6 +126,15 @@ dex:
     effect: "NoSchedule"
 
 redis:
+  # -- Resource limits and requests for redis
+  resources:
+    requests:
+      cpu: 100m
+      memory: 64Mi
+    limits:
+      cpu: 1000m
+      memory: 256Mi
+
   # -- [Node selector]
   nodeSelector:
     app: argocd
@@ -128,6 +155,15 @@ server:
     minReplicas: 1
     # -- Maximum number of replicas for the Argo CD server [HPA]
     maxReplicas: 5
+
+  # -- Resource limits and requests for the Argo CD server
+  resources:
+    requests:
+      cpu: 100m
+      memory: 64Mi
+    limits:
+      cpu: 500m
+      memory: 128Mi
 
   # -- [Node selector]
   nodeSelector:
@@ -214,6 +250,15 @@ repoServer:
     # -- Maximum number of replicas for the repo server [HPA]
     maxReplicas: 5
 
+  # -- Resource limits and requests for the repo server pods
+  resources:
+    requests:
+      cpu: 10m
+      memory: 64Mi
+    limits:
+      cpu: 50m
+      memory: 128Mi
+
   # -- [Node selector]
   nodeSelector:
     app: argocd
@@ -229,6 +274,15 @@ applicationSet:
   # -- The number of ApplicationSet controller pods to run
   replicaCount: 2
 
+  # -- Resource limits and requests for the ApplicationSet controller pods.
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+
   # -- [Node selector]
   nodeSelector:
     app: argocd
@@ -241,6 +295,15 @@ applicationSet:
     effect: "NoSchedule"
 
 notifications:
+  # -- Resource limits and requests for the notifications controller
+  resources:
+    requests:
+      cpu: 10m
+      memory: 128Mi
+    limits:
+      cpu: 100m
+      memory: 128Mi
+
   # -- [Node selector]
   nodeSelector:
     app: argocd
@@ -257,7 +320,7 @@ notifications:
 # Check the redis-ha chart for more properties
 redis-ha:
   # -- Enables the Redis HA subchart and disables the custom Redis single node deployment
-  enabled: true
+  enabled: false
   ## Prometheus redis-exporter sidecar
   exporter:
     # -- Enable Prometheus redis-exporter sidecar
