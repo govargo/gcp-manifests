@@ -20,4 +20,6 @@ resource "google_spanner_database" "usesr_database" {
   ddl                      = []
   database_dialect         = var.database_dialect
   deletion_protection      = false
+
+  depends_on = [google_spanner_instance.prod_instance]
 }
