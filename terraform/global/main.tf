@@ -18,7 +18,8 @@ locals {
     "networkmanagement.googleapis.com",
     "servicenetworking.googleapis.com",
     "sqladmin.googleapis.com",
-    "redis.googleapis.com"
+    "redis.googleapis.com",
+    "spanner.googleapis.com"
   ])
 }
 
