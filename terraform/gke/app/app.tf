@@ -95,7 +95,7 @@ module "app-0" {
     all = {}
 
     app-pool = {
-      app = "little"
+      app = "little-quest"
     }
   }
 
@@ -109,7 +109,7 @@ module "app-0" {
     app-pool = [
       {
         key    = "app"
-        value  = "little"
+        value  = "little-quest"
         effect = "NO_SCHEDULE"
       },
     ]
@@ -119,7 +119,7 @@ module "app-0" {
     all = []
 
     app-pool = [
-      "little",
+      "little-quest",
     ]
   }
 }
