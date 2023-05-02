@@ -124,6 +124,41 @@ module "app-0" {
   }
 }
 
+## Service Account
+module "little_quest_sa" {
+  source       = "terraform-google-modules/service-accounts/google"
+  version      = "4.1.1"
+  project_id   = var.gcp_project_id
+  names        = ["little-quest"]
+  display_name = "Little Quest ServiceAccount"
+}
+
+module "little_quest_workloadIdentity_binding" {
+  source  = "terraform-google-modules/iam/google//modules/service_accounts_iam"
+  version = "7.4.0"
+
+  service_accounts = [module.little_quest_sa.email]
+  project          = var.gcp_project_id
+  mode             = "additive"
+  bindings = {
+    "roles/iam.workloadIdentityUser" = [
+      "serviceAccount:${var.gcp_project_id}.svc.id.goog[little-quest/little-quest]"
+    ]
+  }
+  depends_on = [module.little_quest_sa]
+}
+
+resource "google_project_iam_member" "little_quest_binding" {
+  project = var.gcp_project_id
+  role    = "roles/spanner.databaseUser"
+
+  member = "serviceAccount:${module.little_quest_sa.email}"
+
+  depends_on = [
+    module.little_quest_sa,
+  ]
+}
+
 ## Cloud Pub/Sub Topic
 resource "google_pubsub_topic" "production-realtime-data-analytics" {
   project = var.gcp_project_id

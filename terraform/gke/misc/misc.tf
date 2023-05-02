@@ -280,13 +280,12 @@ resource "google_project_iam_custom_role" "gmp_rule_evaluator_role" {
   stage       = "GA"
 }
 
-resource "google_project_iam_binding" "gmp_rule_evaluator_binding" {
+resource "google_project_iam_member" "gmp_rule_evaluator_binding" {
   project = var.gcp_project_id
   role    = "projects/${var.gcp_project_id}/roles/${google_project_iam_custom_role.gmp_rule_evaluator_role.role_id}"
 
-  members = [
-    "serviceAccount:${module.gmp_ruleevaluator_sa.email}",
-  ]
+  member = "serviceAccount:${module.gmp_ruleevaluator_sa.email}"
+
   depends_on = [
     google_project_iam_custom_role.gmp_rule_evaluator_role,
     module.gmp_ruleevaluator_sa,
