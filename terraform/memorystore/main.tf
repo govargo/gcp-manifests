@@ -2,7 +2,7 @@ module "memorystore" {
   source  = "terraform-google-modules/memorystore/google"
   version = "7.1.0"
 
-  name          = "${var.env}-redis"
+  name          = "${var.env}-redis-instance"
   project       = var.gcp_project_id
   enable_apis   = var.enable_apis
   region        = var.region

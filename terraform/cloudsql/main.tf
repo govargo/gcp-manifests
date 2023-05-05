@@ -22,7 +22,7 @@ module "private-service-access" {
 module "private-mysql-db" {
   source               = "GoogleCloudPlatform/sql-db/google//modules/mysql"
   version              = "15.0.0"
-  name                 = "${var.env}-mysql"
+  name                 = "${var.env}-mysql-instance"
   random_instance_name = false
   project_id           = var.gcp_project_id
 

@@ -1,7 +1,7 @@
 resource "google_spanner_instance" "prod_instance" {
   project = var.gcp_project_id
 
-  name             = "${var.env}-spanner"
+  name             = "${var.env}-spanner-instance"
   config           = "regional-asia-northeast1"
   display_name     = "Spanner Production Instance"
   processing_units = 100
