@@ -5,6 +5,7 @@ locals {
     "artifactregistry.googleapis.com",
     "autoscaling.googleapis.com",
     "bigquery.googleapis.com",
+    "bigquerydatatransfer.googleapis.com",
     "cloudapis.googleapis.com",
     "compute.googleapis.com",
     "container.googleapis.com",
@@ -344,6 +345,20 @@ module "disable_policy_publicAccessPrevention" {
   policy_for       = "project"
   project_id       = var.gcp_project_id
   exclude_projects = ["${var.organization_id}"]
+}
+
+## BigQuery dataset
+resource "google_bigquery_dataset" "billing_export" {
+  project = var.gcp_project_id
+
+  dataset_id    = "all_billing_data"
+  friendly_name = "cloud_billing_billing_export"
+  description   = "Cloud Billing data export to BigQuery"
+  location      = "asia-northeast1"
+
+  labels = {
+    role = "billing"
+  }
 }
 
 ## Service Acount
