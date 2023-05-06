@@ -396,3 +396,55 @@ resource "google_artifact_registry_repository" "docker_repository" {
   description   = "Docker repository"
   format        = "DOCKER"
 }
+
+## Secret
+resource "google_secret_manager_secret" "mysql_user_password" {
+  project   = var.gcp_project_id
+  secret_id = "mysql_user_password"
+
+  labels = {
+    role = "mysql_user_password"
+  }
+
+  lifecycle {
+    prevent_destroy = true
+  }
+
+  replication {
+    automatic = true
+  }
+}
+
+resource "google_secret_manager_secret" "mysql_root_password" {
+  project   = var.gcp_project_id
+  secret_id = "mysql_root_password"
+
+  labels = {
+    role = "mysql_root_password"
+  }
+
+  lifecycle {
+    prevent_destroy = true
+  }
+
+  replication {
+    automatic = true
+  }
+}
+
+resource "google_secret_manager_secret" "redis_password" {
+  project   = var.gcp_project_id
+  secret_id = "redis_password"
+
+  labels = {
+    role = "redis_password"
+  }
+
+  lifecycle {
+    prevent_destroy = true
+  }
+
+  replication {
+    automatic = true
+  }
+}
