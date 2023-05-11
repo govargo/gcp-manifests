@@ -365,6 +365,30 @@ resource "google_bigquery_dataset" "billing_export" {
 data "google_compute_default_service_account" "default" {
 }
 
+resource "google_project_iam_member" "allow_image_pull" {
+  project = var.gcp_project_id
+  role   = "roles/artifactregistry.reader"
+  member = "serviceAccount:${data.google_compute_default_service_account.default.email}"
+}
+
+resource "google_project_iam_member" "allow_logging_writer" {
+  project = var.gcp_project_id
+  role   = "roles/logging.logWriter"
+  member = "serviceAccount:${data.google_compute_default_service_account.default.email}"
+}
+
+resource "google_project_iam_member" "allow_pubsub_publisher" {
+  project = var.gcp_project_id
+  role   = "roles/pubsub.publisher"
+  member = "serviceAccount:${data.google_compute_default_service_account.default.email}"
+}
+
+resource "google_project_iam_member" "allow_monitoring_writer" {
+  project = var.gcp_project_id
+  role   = "roles/monitoring.metricWriter"
+  member = "serviceAccount:${data.google_compute_default_service_account.default.email}"
+}
+
 ## Cloud Build
 resource "google_cloudbuild_trigger" "little-server-build-trigger" {
   project  = var.gcp_project_id
