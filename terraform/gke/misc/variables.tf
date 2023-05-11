@@ -41,9 +41,27 @@ variable "default_max_pods_per_node" {
 }
 
 variable "enable_binary_authorization" {
-  description = "Enable Binary Authorization for this cluster"
+  description = "Enable BinAuthZ Admission controller"
   type        = bool
   default     = false
+}
+
+variable "enable_cost_allocation" {
+  description = "Enables Cost Allocation Feature and the cluster name and namespace of your GKE workloads appear in the labels field of the billing export to BigQuery"
+  type        = bool
+  default     = true
+}
+
+variable "enable_network_egress_export" {
+  description = "Whether to enable network egress metering for this cluster. If enabled, a daemonset will be created in the cluster to meter network egress traffic"
+  type        = bool
+  default     = false
+}
+
+variable "enable_resource_consumption_export" {
+  description = "Whether to enable resource consumption metering on this cluster. When enabled, a table will be created in the resource export BigQuery dataset to store resource consumption data. The resulting table can be joined with the resource usage table or with BigQuery billing export"
+  type        = bool
+  default     = true
 }
 
 variable "enable_intranode_visibility" {
@@ -72,6 +90,12 @@ variable "enable_shielded_nodes" {
 
 variable "enable_tpu" {
   description = "Whether to enable Cloud TPU resources in this cluster"
+  type        = bool
+  default     = false
+}
+
+variable "dns_cache" {
+  description = "The status of the NodeLocal DNSCache addon"
   type        = bool
   default     = false
 }
@@ -134,6 +158,12 @@ variable "http_load_balancing" {
 
 variable "horizontal_pod_autoscaling" {
   description = "Enable horizontal pod autoscaling addon"
+  type        = bool
+  default     = true
+}
+
+variable "enable_vertical_pod_autoscaling" {
+  description = "Vertical Pod Autoscaling automatically adjusts the resources of pods controlled by it"
   type        = bool
   default     = true
 }

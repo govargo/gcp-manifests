@@ -1,33 +1,39 @@
 module "misc-0" {
-  source                       = "terraform-google-modules/kubernetes-engine/google//modules/private-cluster"
-  version                      = "25.0.0"
-  project_id                   = var.gcp_project_id
-  name                         = "${var.env}-misc-0"
-  regional                     = true
-  region                       = var.region
-  zones                        = var.zones
-  network                      = var.gcp_project_name
-  subnetwork                   = "${var.env}-misc-0"
-  master_ipv4_cidr_block       = "11.0.0.0/28"
-  ip_range_pods                = var.cluster_secondary_range_name
-  ip_range_services            = var.services_secondary_range_name
-  enable_private_endpoint      = false
-  enable_private_nodes         = true
-  master_global_access_enabled = true
-  http_load_balancing          = var.http_load_balancing
-  horizontal_pod_autoscaling   = var.horizontal_pod_autoscaling
-  network_policy               = var.network_policy
-  filestore_csi_driver         = var.filestore_csi_driver
-  enable_shielded_nodes        = var.enable_shielded_nodes
-  gke_backup_agent_config      = var.gke_backup_agent_config
-  create_service_account       = false
-  default_max_pods_per_node    = var.default_max_pods_per_node
-  identity_namespace           = var.identity_namespace
-  logging_service              = var.logging_service
-  monitoring_service           = var.monitoring_service
-  node_metadata                = var.node_metadata
-  release_channel              = var.release_channel
-  remove_default_node_pool     = true
+  source                           = "terraform-google-modules/kubernetes-engine/google//modules/private-cluster"
+  version                          = "25.0.0"
+  project_id                       = var.gcp_project_id
+  name                             = "${var.env}-misc-0"
+  regional                         = true
+  region                           = var.region
+  zones                            = var.zones
+  network                          = var.gcp_project_name
+  subnetwork                       = "${var.env}-misc-0"
+  master_ipv4_cidr_block           = "11.0.0.0/28"
+  ip_range_pods                    = var.cluster_secondary_range_name
+  ip_range_services                = var.services_secondary_range_name
+  enable_private_endpoint          = false
+  enable_private_nodes             = true
+  master_global_access_enabled     = true
+  http_load_balancing              = var.http_load_balancing
+  horizontal_pod_autoscaling       = var.horizontal_pod_autoscaling
+  enable_vertical_pod_autoscaling  = var.enable_vertical_pod_autoscaling
+  network_policy                   = var.network_policy
+  filestore_csi_driver             = var.filestore_csi_driver
+  enable_shielded_nodes            = var.enable_shielded_nodes
+  gke_backup_agent_config          = var.gke_backup_agent_config
+  create_service_account           = false
+  default_max_pods_per_node        = var.default_max_pods_per_node
+  identity_namespace               = var.identity_namespace
+  logging_service                  = var.logging_service
+  monitoring_service               = var.monitoring_service
+  node_metadata                    = var.node_metadata
+  enable_binary_authorization      = var.enable_binary_authorization
+  enable_cost_allocation           = var.enable_cost_allocation
+  release_channel                  = var.release_channel
+  dns_cache                        = var.dns_cache
+  resource_usage_export_dataset_id = "all_billing_data"
+  enable_network_egress_export     = var.enable_network_egress_export
+  remove_default_node_pool         = true
 
   node_pools = [
     {
@@ -156,6 +162,14 @@ resource "google_secret_manager_secret" "argocd_client_id" {
   project   = var.gcp_project_id
   secret_id = "argocd_client_id"
 
+  labels = {
+    role = "argocd_client_id"
+  }
+
+  lifecycle {
+    prevent_destroy = true
+  }
+
   replication {
     automatic = true
   }
@@ -164,6 +178,14 @@ resource "google_secret_manager_secret" "argocd_client_id" {
 resource "google_secret_manager_secret" "argocd_client_secret" {
   project   = var.gcp_project_id
   secret_id = "argocd_client_secret"
+
+  labels = {
+    role = "argocd_client_secret"
+  }
+
+  lifecycle {
+    prevent_destroy = true
+  }
 
   replication {
     automatic = true
@@ -249,12 +271,25 @@ module "gmp_collector_monitoring_writer_binding" {
   depends_on = [module.gmp_collector_sa]
 }
 
+resource "google_project_iam_custom_role" "gmp_rule_evaluator_role" {
+  role_id     = "ruleevaluator"
+  title       = "GMP Rule Evaluator"
+  description = "GMP Rule Evaluator Monitoring role"
+  permissions = ["monitoring.timeSeries.create", "monitoring.timeSeries.list"]
+  stage       = "GA"
+}
+
 module "gmp_ruleevaluator_sa" {
   source       = "terraform-google-modules/service-accounts/google"
   version      = "4.1.1"
   project_id   = var.gcp_project_id
   names        = ["rule-evaluator"]
   display_name = "Google Managed Prometheus Rule-Evaluator ServiceAccount"
+  project_roles = [
+    "${var.gcp_project_id}=>roles/monitoring.viewer",
+    "${var.gcp_project_id}=>projects/${var.gcp_project_id}/roles/${google_project_iam_custom_role.gmp_rule_evaluator_role.role_id}",
+  ]
+  depends_on = [google_project_iam_custom_role.gmp_rule_evaluator_role]
 }
 
 module "gmp_ruleevaluator_workloadIdentity_binding" {
@@ -270,24 +305,4 @@ module "gmp_ruleevaluator_workloadIdentity_binding" {
     ]
   }
   depends_on = [module.gmp_ruleevaluator_sa]
-}
-
-resource "google_project_iam_custom_role" "gmp_rule_evaluator_role" {
-  role_id     = "ruleevaluator"
-  title       = "GMP Rule Evaluator"
-  description = "GMP Rule Evaluator Monitoring role"
-  permissions = ["monitoring.timeSeries.create", "monitoring.timeSeries.list"]
-  stage       = "GA"
-}
-
-resource "google_project_iam_member" "gmp_rule_evaluator_binding" {
-  project = var.gcp_project_id
-  role    = "projects/${var.gcp_project_id}/roles/${google_project_iam_custom_role.gmp_rule_evaluator_role.role_id}"
-
-  member = "serviceAccount:${module.gmp_ruleevaluator_sa.email}"
-
-  depends_on = [
-    google_project_iam_custom_role.gmp_rule_evaluator_role,
-    module.gmp_ruleevaluator_sa,
-  ]
 }
