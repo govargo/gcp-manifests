@@ -1,4 +1,4 @@
-module "memorystore" {
+module "memorystore_redis" {
   source  = "terraform-google-modules/memorystore/google"
   version = "7.1.0"
 
@@ -20,11 +20,10 @@ module "memorystore" {
   }
   memory_size_gb          = 1
   read_replicas_mode      = var.read_replicas_mode
-  replica_count           = 1
   transit_encryption_mode = var.transit_encryption_mode
 
   maintenance_policy = {
-    ## This is SUNDAY 00:00 in JST due to UTC
+    ## This is SUNDAY 00:00 in JST, which is converted by UTC
     day = "SATURDAY"
     start_time = {
       hours   = 15
@@ -35,6 +34,13 @@ module "memorystore" {
   }
 }
 
+resource "google_secret_manager_secret_version" "redis_password" {
+  secret      = "projects/${var.gcp_project_id}/secrets/redis_password"
+  secret_data = module.memorystore_redis.auth_string
+
+  depends_on = [module.memorystore_redis.auth_string]
+}
+
 resource "google_dns_record_set" "redis_endpoint" {
   project      = var.gcp_project_id
   managed_zone = "${var.gcp_project_name}-org"
@@ -43,7 +49,7 @@ resource "google_dns_record_set" "redis_endpoint" {
   type = "A"
   ttl  = 60
 
-  rrdatas = [module.memorystore.host]
+  rrdatas = [module.memorystore_redis.host]
 
-  depends_on = [module.memorystore.host]
+  depends_on = [module.memorystore_redis.host]
 }

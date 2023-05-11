@@ -28,7 +28,7 @@ variable "zone" {
 variable "auth_enabled" {
   description = "Indicates whether OSS Redis AUTH is enabled for the instance. If set to true AUTH is enabled on the instance"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "connect_mode" {
