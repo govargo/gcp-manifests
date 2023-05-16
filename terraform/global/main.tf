@@ -20,7 +20,12 @@ locals {
     "servicenetworking.googleapis.com",
     "sqladmin.googleapis.com",
     "redis.googleapis.com",
-    "spanner.googleapis.com"
+    "spanner.googleapis.com",
+    "storage.googleapis.com",
+    "storage-component.googleapis.com",
+    "dataflow.googleapis.com",
+    "notebooks.googleapis.com",
+    "aiplatform.googleapis.com"
   ])
 }
 
