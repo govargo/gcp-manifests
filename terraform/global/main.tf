@@ -360,7 +360,7 @@ resource "google_bigquery_dataset" "billing_export" {
   dataset_id    = "all_billing_data"
   friendly_name = "cloud_billing_billing_export"
   description   = "Cloud Billing data export to BigQuery"
-  location      = "asia-northeast1"
+  location      = var.region
 
   labels = {
     role = "billing"
