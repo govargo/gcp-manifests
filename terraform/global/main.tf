@@ -24,6 +24,7 @@ locals {
     "storage.googleapis.com",
     "storage-component.googleapis.com",
     "dataflow.googleapis.com",
+    "datapipelines.googleapis.com",
     "notebooks.googleapis.com",
     "aiplatform.googleapis.com"
   ])
