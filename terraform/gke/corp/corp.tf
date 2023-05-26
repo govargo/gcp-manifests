@@ -1,3 +1,6 @@
+data "google_compute_default_service_account" "default" {
+}
+
 module "corp-0" {
   source                           = "terraform-google-modules/kubernetes-engine/google"
   version                          = "25.0.0"
@@ -54,7 +57,7 @@ module "corp-0" {
       strategy           = var.strategy
       max_surge          = var.max_surge
       max_unavailable    = var.max_unavailable
-      service_account    = var.service_account
+      service_account    = data.google_compute_default_service_account.default.email
       preemptible        = var.preemptible
       initial_node_count = var.initial_node_count
     },
@@ -80,7 +83,7 @@ module "corp-0" {
       strategy           = var.strategy
       max_surge          = var.max_surge
       max_unavailable    = var.max_unavailable
-      service_account    = var.service_account
+      service_account    = data.google_compute_default_service_account.default.email
       preemptible        = var.preemptible
       initial_node_count = var.initial_node_count
     }

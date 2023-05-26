@@ -142,7 +142,6 @@ variable "monitoring_service" {
   default     = "monitoring.googleapis.com/kubernetes"
 }
 
-
 variable "node_provisioning" {
   description = "Whether node auto-provisioning is enabled"
   type        = bool

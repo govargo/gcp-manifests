@@ -1,10 +1,12 @@
+data "google_compute_default_service_account" "default" {
+}
+
 module "misc-0" {
   source                           = "terraform-google-modules/kubernetes-engine/google//modules/private-cluster"
   version                          = "25.0.0"
   project_id                       = var.gcp_project_id
   name                             = "${var.env}-misc-0"
-  regional                         = true
-  region                           = var.region
+  regional                         = false
   zones                            = var.zones
   network                          = var.gcp_project_name
   subnetwork                       = "${var.env}-misc-0"
@@ -58,7 +60,7 @@ module "misc-0" {
       strategy           = var.strategy
       max_surge          = var.max_surge
       max_unavailable    = var.max_unavailable
-      service_account    = var.service_account
+      service_account    = data.google_compute_default_service_account.default.email
       preemptible        = var.preemptible
       initial_node_count = var.initial_node_count
     },
@@ -84,7 +86,7 @@ module "misc-0" {
       strategy           = var.strategy
       max_surge          = var.max_surge
       max_unavailable    = var.max_unavailable
-      service_account    = var.service_account
+      service_account    = data.google_compute_default_service_account.default.email
       preemptible        = var.preemptible
       initial_node_count = var.initial_node_count
     }
