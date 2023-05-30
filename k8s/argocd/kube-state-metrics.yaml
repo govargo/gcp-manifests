@@ -12,7 +12,7 @@ spec:
       - cluster: corp-0
         name: gke_kentaiso-330205_asia-northeast1_prod-corp-0
       - cluster: misc-0
-        name: gke_kentaiso-330205_asia-northeast1_prod-misc-0
+        name: gke_kentaiso-330205_asia-northeast1-a_prod-misc-0
   template:
     metadata:
       name: "{{cluster}}-kube-state-metrics"
