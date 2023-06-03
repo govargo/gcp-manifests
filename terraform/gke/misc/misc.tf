@@ -1,10 +1,13 @@
+data "google_project" "project" {
+}
+
 data "google_compute_default_service_account" "default" {
 }
 
 module "misc-0" {
   source                           = "terraform-google-modules/kubernetes-engine/google//modules/private-cluster"
   version                          = "25.0.0"
-  project_id                       = var.gcp_project_id
+  project_id                       = data.google_project.project.project_id
   name                             = "${var.env}-misc-0"
   regional                         = false
   zones                            = var.zones
@@ -137,7 +140,7 @@ module "misc-0" {
 module "gke_workload_address" {
   source       = "terraform-google-modules/address/google"
   version      = "3.1.1"
-  project_id   = var.gcp_project_id
+  project_id   = data.google_project.project.project_id
   region       = var.region
   address_type = "EXTERNAL"
   global       = true
@@ -147,7 +150,7 @@ module "gke_workload_address" {
 }
 
 resource "google_dns_record_set" "argocd" {
-  project      = var.gcp_project_id
+  project      = data.google_project.project.project_id
   managed_zone = "${var.gcp_project_name}-org"
 
   name = "argocd.kentaiso.org."
@@ -161,7 +164,7 @@ resource "google_dns_record_set" "argocd" {
 
 ## Secret
 resource "google_secret_manager_secret" "argocd_client_id" {
-  project   = var.gcp_project_id
+  project   = data.google_project.project.project_id
   secret_id = "argocd_client_id"
 
   labels = {
@@ -178,7 +181,7 @@ resource "google_secret_manager_secret" "argocd_client_id" {
 }
 
 resource "google_secret_manager_secret" "argocd_client_secret" {
-  project   = var.gcp_project_id
+  project   = data.google_project.project.project_id
   secret_id = "argocd_client_secret"
 
   labels = {
@@ -196,9 +199,10 @@ resource "google_secret_manager_secret" "argocd_client_secret" {
 
 ## ServiceAccount
 module "argocd_secretmanager_sa" {
-  source       = "terraform-google-modules/service-accounts/google"
-  version      = "4.1.1"
-  project_id   = var.gcp_project_id
+  source     = "terraform-google-modules/service-accounts/google"
+  version    = "4.1.1"
+  project_id = data.google_project.project.project_id
+
   names        = ["argocd-dex-server"]
   display_name = "ArgoCD SecretManager ServiceAccount"
 }
@@ -206,13 +210,13 @@ module "argocd_secretmanager_sa" {
 module "argocd_workloadIdentity_binding" {
   source  = "terraform-google-modules/iam/google//modules/service_accounts_iam"
   version = "7.4.0"
+  project = data.google_project.project.project_id
 
   service_accounts = [module.argocd_secretmanager_sa.email]
-  project          = var.gcp_project_id
   mode             = "additive"
   bindings = {
     "roles/iam.workloadIdentityUser" = [
-      "serviceAccount:${var.gcp_project_id}.svc.id.goog[argocd/argocd-dex-server]"
+      "serviceAccount:${data.google_project.project.project_id}.svc.id.goog[argocd/argocd-dex-server]"
     ]
   }
 
@@ -222,8 +226,8 @@ module "argocd_workloadIdentity_binding" {
 module "argocd_secretmanager" {
   source  = "terraform-google-modules/iam/google//modules/secret_manager_iam"
   version = "7.4.1"
+  project = data.google_project.project.project_id
 
-  project = var.gcp_project_id
   secrets = ["argocd_client_id", "argocd_client_secret"]
   mode    = "authoritative"
 
@@ -243,7 +247,7 @@ module "argocd_secretmanager" {
 module "gmp_collector_sa" {
   source       = "terraform-google-modules/service-accounts/google"
   version      = "4.1.1"
-  project_id   = var.gcp_project_id
+  project_id   = data.google_project.project.project_id
   names        = ["collector"]
   display_name = "Google Managed Prometheus Collector ServiceAccount"
 }
@@ -251,23 +255,24 @@ module "gmp_collector_sa" {
 module "gmp_collector_workloadIdentity_binding" {
   source  = "terraform-google-modules/iam/google//modules/service_accounts_iam"
   version = "7.4.0"
+  project = data.google_project.project.project_id
 
   service_accounts = [module.gmp_collector_sa.email]
-  project          = var.gcp_project_id
   mode             = "additive"
   bindings = {
     "roles/iam.workloadIdentityUser" = [
-      "serviceAccount:${var.gcp_project_id}.svc.id.goog[gmp-system/collector]"
+      "serviceAccount:${data.google_project.project.project_id}.svc.id.goog[gmp-system/collector]"
     ]
   }
   depends_on = [module.gmp_collector_sa]
 }
 
 module "gmp_collector_monitoring_writer_binding" {
-  source                  = "terraform-google-modules/iam/google//modules/member_iam"
-  service_account_address = "collector@${var.gcp_project_id}.iam.gserviceaccount.com"
+  source     = "terraform-google-modules/iam/google//modules/member_iam"
+  project_id = data.google_project.project.project_id
+
+  service_account_address = "collector@${data.google_project.project.project_id}.iam.gserviceaccount.com"
   prefix                  = "serviceAccount"
-  project_id              = var.gcp_project_id
   project_roles           = ["roles/monitoring.metricWriter"]
 
   depends_on = [module.gmp_collector_sa]
@@ -282,14 +287,15 @@ resource "google_project_iam_custom_role" "gmp_rule_evaluator_role" {
 }
 
 module "gmp_ruleevaluator_sa" {
-  source       = "terraform-google-modules/service-accounts/google"
-  version      = "4.1.1"
-  project_id   = var.gcp_project_id
+  source     = "terraform-google-modules/service-accounts/google"
+  version    = "4.1.1"
+  project_id = data.google_project.project.project_id
+
   names        = ["rule-evaluator"]
   display_name = "Google Managed Prometheus Rule-Evaluator ServiceAccount"
   project_roles = [
-    "${var.gcp_project_id}=>roles/monitoring.viewer",
-    "${var.gcp_project_id}=>projects/${var.gcp_project_id}/roles/${google_project_iam_custom_role.gmp_rule_evaluator_role.role_id}",
+    "${data.google_project.project.project_id}=>roles/monitoring.viewer",
+    "${data.google_project.project.project_id}=>projects/${data.google_project.project.project_id}/roles/${google_project_iam_custom_role.gmp_rule_evaluator_role.role_id}",
   ]
   depends_on = [google_project_iam_custom_role.gmp_rule_evaluator_role]
 }
@@ -297,13 +303,13 @@ module "gmp_ruleevaluator_sa" {
 module "gmp_ruleevaluator_workloadIdentity_binding" {
   source  = "terraform-google-modules/iam/google//modules/service_accounts_iam"
   version = "7.4.0"
+  project = data.google_project.project.project_id
 
   service_accounts = [module.gmp_ruleevaluator_sa.email]
-  project          = var.gcp_project_id
   mode             = "additive"
   bindings = {
     "roles/iam.workloadIdentityUser" = [
-      "serviceAccount:${var.gcp_project_id}.svc.id.goog[gmp-system/rule-evaluator]"
+      "serviceAccount:${data.google_project.project.project_id}.svc.id.goog[gmp-system/rule-evaluator]"
     ]
   }
   depends_on = [module.gmp_ruleevaluator_sa]

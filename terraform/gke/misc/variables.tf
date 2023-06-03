@@ -1,8 +1,3 @@
-variable "gcp_project_id" {
-  description = "GCP project id"
-  type        = string
-}
-
 variable "gcp_project_name" {
   description = "GCP project name"
   type        = string
@@ -267,11 +262,6 @@ variable "max_unavailable" {
   description = "The number of nodes that can be simultaneously unavailable during an upgrade. Increasing max_unavailable raises the number of nodes that can be upgraded in parallel"
   type        = number
   default     = 0
-}
-
-variable "service_account" {
-  description = "The service account to run nodes as if not overridden in node_pools. The create_service_account variable default value (true) will cause a cluster-specific service account to be created."
-  type        = string
 }
 
 variable "min_count" {

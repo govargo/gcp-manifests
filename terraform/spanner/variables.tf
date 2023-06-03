@@ -1,13 +1,3 @@
-variable "gcp_project_id" {
-  description = "GCP project id"
-  type        = string
-}
-
-variable "gcp_project_name" {
-  description = "GCP project name"
-  type        = string
-}
-
 variable "env" {
   description = "environment(e.g. dev, stg, prod)"
   type        = string

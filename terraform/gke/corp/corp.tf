@@ -1,10 +1,13 @@
+data "google_project" "project" {
+}
+
 data "google_compute_default_service_account" "default" {
 }
 
 module "corp-0" {
   source                           = "terraform-google-modules/kubernetes-engine/google"
   version                          = "25.0.0"
-  project_id                       = var.gcp_project_id
+  project_id                       = data.google_project.project.project_id
   name                             = "${var.env}-corp-0"
   regional                         = true
   region                           = var.region

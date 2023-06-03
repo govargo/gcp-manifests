@@ -1,5 +1,8 @@
+data "google_project" "project" {
+}
+
 resource "google_spanner_instance" "prod_instance" {
-  project = var.gcp_project_id
+  project = data.google_project.project.project_id
 
   name             = "${var.env}-spanner-instance"
   config           = "regional-asia-northeast1"
@@ -9,10 +12,14 @@ resource "google_spanner_instance" "prod_instance" {
     "env" = "production"
   }
   force_destroy = true
+
+  lifecycle {
+    ignore_changes = [processing_units]
+  }
 }
 
 resource "google_spanner_database" "usesr_database" {
-  project = var.gcp_project_id
+  project = data.google_project.project.project_id
 
   instance                 = google_spanner_instance.prod_instance.name
   name                     = "user_data"

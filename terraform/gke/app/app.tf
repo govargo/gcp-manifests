@@ -1,10 +1,13 @@
+data "google_project" "project" {
+}
+
 data "google_compute_default_service_account" "default" {
 }
 
 module "app-0" {
   source                           = "terraform-google-modules/kubernetes-engine/google//modules/private-cluster"
   version                          = "25.0.0"
-  project_id                       = var.gcp_project_id
+  project_id                       = data.google_project.project.project_id
   name                             = "${var.env}-app-0"
   regional                         = true
   region                           = var.region
@@ -137,7 +140,7 @@ module "app-0" {
 module "gke_workload_address" {
   source       = "terraform-google-modules/address/google"
   version      = "3.1.1"
-  project_id   = var.gcp_project_id
+  project_id   = data.google_project.project.project_id
   region       = var.region
   address_type = "EXTERNAL"
   global       = true
@@ -147,10 +150,10 @@ module "gke_workload_address" {
 }
 
 resource "google_dns_record_set" "little_quest" {
-  project      = var.gcp_project_id
+  project      = data.google_project.project.project_id
   managed_zone = "${var.gcp_project_name}-org"
 
-  name = "little-quest.kentaiso.org."
+  name = "little-quest.${var.gcp_project_name}.org."
   type = "A"
   ttl  = 60
 
@@ -171,31 +174,32 @@ resource "google_project_iam_custom_role" "pubsub_custom_publisher" {
 module "little_quest_sa" {
   source       = "terraform-google-modules/service-accounts/google"
   version      = "4.1.1"
-  project_id   = var.gcp_project_id
+  project_id   = data.google_project.project.project_id
+
   names        = ["little-quest"]
   display_name = "Little Quest ServiceAccount"
   project_roles = [
-    "${var.gcp_project_id}=>roles/secretmanager.secretAccessor",
-    "${var.gcp_project_id}=>roles/monitoring.viewer",
-    "${var.gcp_project_id}=>roles/monitoring.metricWriter",
-    "${var.gcp_project_id}=>roles/cloudtrace.agent",
-    "${var.gcp_project_id}=>roles/cloudprofiler.agent",
-    "${var.gcp_project_id}=>roles/cloudsql.client",
-    "${var.gcp_project_id}=>roles/spanner.databaseUser",
-    "${var.gcp_project_id}=>projects/${var.gcp_project_id}/roles/${google_project_iam_custom_role.pubsub_custom_publisher.role_id}",
+    "${data.google_project.project.project_id}=>roles/secretmanager.secretAccessor",
+    "${data.google_project.project.project_id}=>roles/monitoring.viewer",
+    "${data.google_project.project.project_id}=>roles/monitoring.metricWriter",
+    "${data.google_project.project.project_id}=>roles/cloudtrace.agent",
+    "${data.google_project.project.project_id}=>roles/cloudprofiler.agent",
+    "${data.google_project.project.project_id}=>roles/cloudsql.client",
+    "${data.google_project.project.project_id}=>roles/spanner.databaseUser",
+    "${data.google_project.project.project_id}=>projects/${data.google_project.project.project_id}/roles/${google_project_iam_custom_role.pubsub_custom_publisher.role_id}",
   ]
 }
 
 module "little_quest_workloadIdentity_binding" {
   source  = "terraform-google-modules/iam/google//modules/service_accounts_iam"
   version = "7.4.0"
+  project = data.google_project.project.project_id
 
   service_accounts = [module.little_quest_sa.email]
-  project          = var.gcp_project_id
   mode             = "additive"
   bindings = {
     "roles/iam.workloadIdentityUser" = [
-      "serviceAccount:${var.gcp_project_id}.svc.id.goog[little-quest/little-quest]"
+      "serviceAccount:${data.google_project.project.project_id}.svc.id.goog[little-quest/little-quest]"
     ]
   }
   depends_on = [module.little_quest_sa]

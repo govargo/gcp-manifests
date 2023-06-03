@@ -1,3 +1,6 @@
+data "google_project" "project" {
+}
+
 data "google_secret_manager_secret_version" "mysql_root_password" {
   secret = "mysql_root_password"
 }
@@ -9,7 +12,8 @@ data "google_secret_manager_secret_version" "mysql_user_password" {
 module "private-service-access" {
   source        = "GoogleCloudPlatform/sql-db/google//modules/private_service_access"
   version       = "15.0.0"
-  project_id    = var.gcp_project_id
+  project_id    = data.google_project.project.project_id
+
   vpc_network   = var.gcp_project_name
   ip_version    = "IPV4"
   address       = "192.168.0.0"
@@ -21,7 +25,7 @@ module "cloudsql_mysql" {
   version              = "15.0.0"
   name                 = "${var.env}-mysql-instance"
   random_instance_name = false
-  project_id           = var.gcp_project_id
+  project_id           = data.google_project.project.project_id
 
   deletion_protection = false
 
@@ -56,7 +60,7 @@ module "cloudsql_mysql" {
     ipv4_enabled                                  = var.ipv4_enabled
     enable_private_path_for_google_cloud_services = true
     require_ssl                                   = var.require_ssl
-    private_network                               = "projects/${var.gcp_project_id}/global/networks/${var.gcp_project_name}"
+    private_network                               = "${data.google_project.project.id}/global/networks/${var.gcp_project_name}"
     allocated_ip_range                            = "google-managed-services-${var.gcp_project_name}"
     authorized_networks                           = []
   }
@@ -84,7 +88,7 @@ module "cloudsql_mysql" {
 }
 
 resource "google_sql_user" "users" {
-  project = var.gcp_project_id
+  project = data.google_project.project.project_id
 
   name     = "little-quest"
   host     = "%"
@@ -96,7 +100,7 @@ resource "google_sql_user" "users" {
 }
 
 resource "google_dns_record_set" "mysql_primary_endpoint" {
-  project      = var.gcp_project_id
+  project      = data.google_project.project.project_id
   managed_zone = "${var.gcp_project_name}-org"
 
   name = "cloudsql-mysql-primary.${var.gcp_project_name}.org."
