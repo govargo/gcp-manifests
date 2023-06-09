@@ -44,7 +44,7 @@ resource "google_project_service" "service" {
 resource "google_storage_bucket" "project-storage" {
   name          = data.google_project.project.project_id
   project       = data.google_project.project.project_id
-  location      = "asia-northeast1"
+  location      = var.region
   force_destroy = true
 
   public_access_prevention    = "enforced"
@@ -426,7 +426,7 @@ resource "google_project_iam_member" "allow_monitoring_writer" {
 ## Cloud Build
 resource "google_cloudbuild_trigger" "little-server-build-trigger" {
   project  = data.google_project.project.project_id
-  location = "asia-northeast1"
+  location = var.region
   name     = "little-server-build-trigger"
   filename = "cloudbuild.yaml"
 
