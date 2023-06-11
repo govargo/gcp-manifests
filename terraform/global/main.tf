@@ -41,7 +41,7 @@ resource "google_project_service" "service" {
 }
 
 ## Storage
-resource "google_storage_bucket" "project-storage" {
+resource "google_storage_bucket" "project_storage" {
   name          = data.google_project.project.project_id
   project       = data.google_project.project.project_id
   location      = var.region
@@ -53,16 +53,16 @@ resource "google_storage_bucket" "project-storage" {
 
 ## VPC Network
 resource "google_compute_network" "vpc_network" {
-  name                    = var.gcp_project_name
-  project                 = data.google_project.project.project_id
+  name    = var.gcp_project_name
+  project = data.google_project.project.project_id
 
   auto_create_subnetworks = var.auto_create_subnetworks
   routing_mode            = var.routing_mode
 }
 
-resource "google_compute_subnetwork" "subnetwork_app-0" {
-  name                     = "${var.env}-app-0"
-  project                  = data.google_project.project.project_id
+resource "google_compute_subnetwork" "subnetwork_app_0" {
+  name    = "${var.env}-app-0"
+  project = data.google_project.project.project_id
 
   ip_cidr_range            = "10.128.0.0/24"
   region                   = var.region
@@ -80,9 +80,9 @@ resource "google_compute_subnetwork" "subnetwork_app-0" {
   ]
 }
 
-resource "google_compute_subnetwork" "subnetwork_app-1" {
-  name                     = "${var.env}-app-1"
-  project                  = data.google_project.project.project_id
+resource "google_compute_subnetwork" "subnetwork_app_1" {
+  name    = "${var.env}-app-1"
+  project = data.google_project.project.project_id
 
   ip_cidr_range            = "10.129.0.0/24"
   region                   = "us-central1"
@@ -100,9 +100,9 @@ resource "google_compute_subnetwork" "subnetwork_app-1" {
   ]
 }
 
-resource "google_compute_subnetwork" "subnetwork_corp-0" {
-  name                     = "${var.env}-corp-0"
-  project                  = data.google_project.project.project_id
+resource "google_compute_subnetwork" "subnetwork_corp_0" {
+  name    = "${var.env}-corp-0"
+  project = data.google_project.project.project_id
 
   ip_cidr_range            = "10.130.0.0/24"
   region                   = var.region
@@ -121,10 +121,10 @@ resource "google_compute_subnetwork" "subnetwork_corp-0" {
 }
 
 module "nat_address_asia_northeast1" {
-  source       = "terraform-google-modules/address/google"
-  version      = "3.1.2"
-  project_id   = data.google_project.project.project_id
-  region       = var.region
+  source     = "terraform-google-modules/address/google"
+  version    = "3.1.2"
+  project_id = data.google_project.project.project_id
+  region     = var.region
 
   address_type = "EXTERNAL"
   names = [
@@ -134,9 +134,9 @@ module "nat_address_asia_northeast1" {
 }
 
 module "nat_address_us_central1" {
-  source       = "terraform-google-modules/address/google"
-  version      = "3.1.2"
-  project_id   = data.google_project.project.project_id
+  source     = "terraform-google-modules/address/google"
+  version    = "3.1.2"
+  project_id = data.google_project.project.project_id
 
   region       = "us-central1"
   address_type = "EXTERNAL"
@@ -145,7 +145,7 @@ module "nat_address_us_central1" {
   ]
 }
 
-module "cloud_router_app-0" {
+module "cloud_router_app_0" {
   source  = "terraform-google-modules/cloud-router/google"
   version = "~> 5.0.0"
   project = data.google_project.project.project_id
@@ -171,11 +171,11 @@ module "cloud_router_app-0" {
 
   depends_on = [
     module.nat_address_asia_northeast1,
-    google_compute_subnetwork.subnetwork_app-0,
+    google_compute_subnetwork.subnetwork_app_0,
   ]
 }
 
-module "cloud_router_app-1" {
+module "cloud_router_app_1" {
   source  = "terraform-google-modules/cloud-router/google"
   version = "~> 5.0.0"
   project = data.google_project.project.project_id
@@ -201,13 +201,13 @@ module "cloud_router_app-1" {
 
   depends_on = [
     module.nat_address_us_central1,
-    google_compute_subnetwork.subnetwork_app-1,
+    google_compute_subnetwork.subnetwork_app_1,
   ]
 }
 
-resource "google_compute_subnetwork" "subnetwork_misc-0" {
-  name                     = "${var.env}-misc-0"
-  project                  = data.google_project.project.project_id
+resource "google_compute_subnetwork" "subnetwork_misc_0" {
+  name    = "${var.env}-misc-0"
+  project = data.google_project.project.project_id
 
   ip_cidr_range            = "10.131.0.0/24"
   region                   = var.region
@@ -225,7 +225,7 @@ resource "google_compute_subnetwork" "subnetwork_misc-0" {
   ]
 }
 
-module "cloud_router_misc-0" {
+module "cloud_router_misc_0" {
   source  = "terraform-google-modules/cloud-router/google"
   version = "~> 5.0.0"
   project = data.google_project.project.project_id
@@ -251,14 +251,14 @@ module "cloud_router_misc-0" {
 
   depends_on = [
     module.nat_address_asia_northeast1,
-    google_compute_subnetwork.subnetwork_misc-0
+    google_compute_subnetwork.subnetwork_misc_0
   ]
 }
 
-module "main-dns-zone" {
-  source         = "terraform-google-modules/cloud-dns/google"
-  version        = "5.0.0"
-  project_id     = data.google_project.project.project_id
+module "main_dns_zone" {
+  source     = "terraform-google-modules/cloud-dns/google"
+  version    = "5.0.0"
+  project_id = data.google_project.project.project_id
 
   type           = "public"
   name           = "kentaiso-org"
@@ -291,9 +291,9 @@ module "main-dns-zone" {
 
 ## Org Policy
 module "disable_policy_requireOsLogin" {
-  source  = "terraform-google-modules/org-policy/google"
-  version = "~> 5.2.2"
-  project_id       = data.google_project.project.project_id
+  source     = "terraform-google-modules/org-policy/google"
+  version    = "~> 5.2.2"
+  project_id = data.google_project.project.project_id
 
   constraint       = "constraints/compute.requireOsLogin"
   policy_type      = "boolean"
@@ -304,9 +304,9 @@ module "disable_policy_requireOsLogin" {
 }
 
 module "disable_policy_vmExternalIpAccess" {
-  source  = "terraform-google-modules/org-policy/google"
-  version = "~> 5.2.2"
-  project_id       = data.google_project.project.project_id
+  source     = "terraform-google-modules/org-policy/google"
+  version    = "~> 5.2.2"
+  project_id = data.google_project.project.project_id
 
   constraint       = "constraints/compute.vmExternalIpAccess"
   policy_type      = "list"
@@ -317,9 +317,9 @@ module "disable_policy_vmExternalIpAccess" {
 }
 
 module "disable_policy_requireShieldedVm" {
-  source  = "terraform-google-modules/org-policy/google"
-  version = "~> 5.2.2"
-  project_id       = data.google_project.project.project_id
+  source     = "terraform-google-modules/org-policy/google"
+  version    = "~> 5.2.2"
+  project_id = data.google_project.project.project_id
 
   constraint       = "constraints/compute.requireShieldedVm"
   policy_type      = "boolean"
@@ -330,9 +330,9 @@ module "disable_policy_requireShieldedVm" {
 }
 
 module "disable_policy_restrictVpcPeering" {
-  source  = "terraform-google-modules/org-policy/google"
-  version = "~> 5.2.2"
-  project_id       = data.google_project.project.project_id
+  source     = "terraform-google-modules/org-policy/google"
+  version    = "~> 5.2.2"
+  project_id = data.google_project.project.project_id
 
   constraint       = "constraints/compute.restrictVpcPeering"
   policy_type      = "list"
@@ -343,9 +343,9 @@ module "disable_policy_restrictVpcPeering" {
 }
 
 module "disable_policy_uniformBucketLevelAccess" {
-  source  = "terraform-google-modules/org-policy/google"
-  version = "~> 5.2.2"
-  project_id       = data.google_project.project.project_id
+  source     = "terraform-google-modules/org-policy/google"
+  version    = "~> 5.2.2"
+  project_id = data.google_project.project.project_id
 
   constraint       = "constraints/storage.uniformBucketLevelAccess"
   policy_type      = "boolean"
@@ -356,9 +356,9 @@ module "disable_policy_uniformBucketLevelAccess" {
 }
 
 module "disable_policy_publicAccessPrevention" {
-  source  = "terraform-google-modules/org-policy/google"
-  version = "~> 5.2.2"
-  project_id       = data.google_project.project.project_id
+  source     = "terraform-google-modules/org-policy/google"
+  version    = "~> 5.2.2"
+  project_id = data.google_project.project.project_id
 
   constraint       = "constraints/storage.publicAccessPrevention"
   policy_type      = "boolean"
@@ -401,30 +401,30 @@ data "google_compute_default_service_account" "default" {
 
 resource "google_project_iam_member" "allow_image_pull" {
   project = data.google_project.project.project_id
-  role   = "roles/artifactregistry.reader"
-  member = "serviceAccount:${data.google_compute_default_service_account.default.email}"
+  role    = "roles/artifactregistry.reader"
+  member  = "serviceAccount:${data.google_compute_default_service_account.default.email}"
 }
 
 resource "google_project_iam_member" "allow_logging_writer" {
   project = data.google_project.project.project_id
-  role   = "roles/logging.logWriter"
-  member = "serviceAccount:${data.google_compute_default_service_account.default.email}"
+  role    = "roles/logging.logWriter"
+  member  = "serviceAccount:${data.google_compute_default_service_account.default.email}"
 }
 
 resource "google_project_iam_member" "allow_pubsub_publisher" {
   project = data.google_project.project.project_id
-  role   = "roles/pubsub.publisher"
-  member = "serviceAccount:${data.google_compute_default_service_account.default.email}"
+  role    = "roles/pubsub.publisher"
+  member  = "serviceAccount:${data.google_compute_default_service_account.default.email}"
 }
 
 resource "google_project_iam_member" "allow_monitoring_writer" {
   project = data.google_project.project.project_id
-  role   = "roles/monitoring.metricWriter"
-  member = "serviceAccount:${data.google_compute_default_service_account.default.email}"
+  role    = "roles/monitoring.metricWriter"
+  member  = "serviceAccount:${data.google_compute_default_service_account.default.email}"
 }
 
 ## Cloud Build
-resource "google_cloudbuild_trigger" "little-server-build-trigger" {
+resource "google_cloudbuild_trigger" "little_server_build_trigger" {
   project  = data.google_project.project.project_id
   location = var.region
   name     = "little-server-build-trigger"
