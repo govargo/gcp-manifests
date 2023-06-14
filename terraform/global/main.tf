@@ -30,7 +30,8 @@ locals {
     "datapipelines.googleapis.com",
     "notebooks.googleapis.com",
     "aiplatform.googleapis.com",
-    "datastudio.googleapis.com"
+    "datastudio.googleapis.com",
+    "dataform.googleapis.com"
   ])
 }
 
