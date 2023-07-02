@@ -1,5 +1,5 @@
 variable "gcp_project_name" {
-  description = "GCP project name"
+  description = "Google Cloud project name"
   type        = string
 }
 
