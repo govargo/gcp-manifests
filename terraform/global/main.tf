@@ -31,7 +31,8 @@ locals {
     "notebooks.googleapis.com",
     "aiplatform.googleapis.com",
     "datastudio.googleapis.com",
-    "dataform.googleapis.com"
+    "dataform.googleapis.com",
+    "datastream.googleapis.com"
   ])
 }
 
@@ -424,6 +425,12 @@ resource "google_project_iam_member" "allow_monitoring_writer" {
   member  = "serviceAccount:${data.google_compute_default_service_account.default.email}"
 }
 
+resource "google_project_iam_member" "allow_cloudsql_client" {
+  project = data.google_project.project.project_id
+  role    = "roles/cloudsql.client"
+  member  = "serviceAccount:${data.google_compute_default_service_account.default.email}"
+}
+
 ## Cloud Build
 resource "google_cloudbuild_trigger" "little_server_build_trigger" {
   project  = data.google_project.project.project_id
@@ -506,4 +513,20 @@ resource "google_secret_manager_secret" "redis_password" {
   replication {
     automatic = true
   }
+}
+
+resource "google_compute_firewall" "allow_iap_ssh" {
+  name        = "allow-iap-ssh-ingress"
+  network     = google_compute_network.vpc_network.id
+  description = "Allow SSH via IAP to Compute VMs"
+
+  direction = "INGRESS"
+
+  allow {
+    protocol = "tcp"
+    ports    = ["22"]
+  }
+
+  source_ranges = ["35.235.240.0/20"]
+  target_tags   = ["allow-datastream"]
 }
