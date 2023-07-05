@@ -153,7 +153,7 @@ resource "google_dns_record_set" "argocd" {
   project      = data.google_project.project.project_id
   managed_zone = "${var.gcp_project_name}-org"
 
-  name = "argocd.kentaiso.org."
+  name = "argocd.${var.gcp_project_name}.org."
   type = "A"
   ttl  = 60
 
