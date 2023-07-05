@@ -464,12 +464,29 @@ resource "google_artifact_registry_repository" "docker_repository" {
 }
 
 ## Secret
-resource "google_secret_manager_secret" "mysql_user_password" {
+resource "google_secret_manager_secret" "mysql_little_quest_user_password" {
   project   = data.google_project.project.project_id
-  secret_id = "mysql_user_password"
+  secret_id = "mysql_little_quest_user_password"
 
   labels = {
-    role = "mysql_user_password"
+    role = "mysql_little_quest_user_password"
+  }
+
+  lifecycle {
+    prevent_destroy = true
+  }
+
+  replication {
+    automatic = true
+  }
+}
+
+resource "google_secret_manager_secret" "mysql_datastream_user_password" {
+  project   = data.google_project.project.project_id
+  secret_id = "mysql_datastream_user_password"
+
+  labels = {
+    role = "mysql_datastream_user_password"
   }
 
   lifecycle {
@@ -497,6 +514,7 @@ resource "google_secret_manager_secret" "mysql_root_password" {
     automatic = true
   }
 }
+
 
 resource "google_secret_manager_secret" "redis_password" {
   project   = data.google_project.project.project_id
@@ -528,5 +546,5 @@ resource "google_compute_firewall" "allow_iap_ssh" {
   }
 
   source_ranges = ["35.235.240.0/20"]
-  target_tags   = ["allow-datastream"]
+  target_tags   = ["allow-datastream-to-cloudsql"]
 }

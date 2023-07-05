@@ -5,8 +5,12 @@ data "google_secret_manager_secret_version" "mysql_root_password" {
   secret = "mysql_root_password"
 }
 
-data "google_secret_manager_secret_version" "mysql_user_password" {
-  secret = "mysql_user_password"
+data "google_secret_manager_secret_version" "mysql_little_quest_user_password" {
+  secret = "mysql_little_quest_user_password"
+}
+
+data "google_secret_manager_secret_version" "mysql_datastream_user_password" {
+  secret = "mysql_datastream_user_password"
 }
 
 module "private-service-access" {
@@ -66,9 +70,9 @@ module "cloudsql_mysql" {
   }
 
   backup_configuration = {
-    enabled                        = false
-    binary_log_enabled             = false
-    point_in_time_recovery_enabled = false
+    enabled                        = true
+    binary_log_enabled             = true
+    point_in_time_recovery_enabled = true
     start_time                     = "23:00"
     location                       = null
     transaction_log_retention_days = 1
@@ -87,14 +91,26 @@ module "cloudsql_mysql" {
   depends_on = [module.private-service-access.peering_completed]
 }
 
-resource "google_sql_user" "users" {
+resource "google_sql_user" "little_quest_user" {
   project = data.google_project.project.project_id
 
   name     = "little-quest"
   host     = "%"
   instance = module.cloudsql_mysql.instance_name
   type     = "BUILT_IN"
-  password = data.google_secret_manager_secret_version.mysql_user_password.secret_data
+  password = data.google_secret_manager_secret_version.mysql_little_quest_user_password.secret_data
+
+  depends_on = [module.cloudsql_mysql]
+}
+
+resource "google_sql_user" "datastream_user" {
+  project = data.google_project.project.project_id
+
+  name     = "datastream"
+  host     = "%"
+  instance = module.cloudsql_mysql.instance_name
+  type     = "BUILT_IN"
+  password = data.google_secret_manager_secret_version.mysql_datastream_user_password.secret_data
 
   depends_on = [module.cloudsql_mysql]
 }
