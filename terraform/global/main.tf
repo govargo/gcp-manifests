@@ -33,7 +33,9 @@ locals {
     "datastudio.googleapis.com",
     "dataform.googleapis.com",
     "datastream.googleapis.com",
-    "workflows.googleapis.com"
+    "workflows.googleapis.com",
+    "workflowexecutions.googleapis.com",
+    "cloudscheduler.googleapis.com"
   ])
 }
 
