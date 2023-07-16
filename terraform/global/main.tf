@@ -32,7 +32,8 @@ locals {
     "aiplatform.googleapis.com",
     "datastudio.googleapis.com",
     "dataform.googleapis.com",
-    "datastream.googleapis.com"
+    "datastream.googleapis.com",
+    "workflows.googleapis.com"
   ])
 }
 
