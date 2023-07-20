@@ -32,6 +32,8 @@ locals {
     "aiplatform.googleapis.com",
     "datastudio.googleapis.com",
     "dataform.googleapis.com",
+    "datalineage.googleapis.com",
+    "datacatalog.googleapis.com",
     "datastream.googleapis.com",
     "workflows.googleapis.com",
     "workflowexecutions.googleapis.com",
@@ -377,10 +379,11 @@ module "disable_policy_publicAccessPrevention" {
 resource "google_bigquery_dataset" "billing_export" {
   project = data.google_project.project.project_id
 
-  dataset_id    = "all_billing_data"
-  friendly_name = "cloud_billing_billing_export"
-  description   = "Cloud Billing data export to BigQuery"
-  location      = var.region
+  dataset_id            = "all_billing_data"
+  friendly_name         = "cloud_billing_billing_export"
+  description           = "Cloud Billing data export to BigQuery"
+  location              = var.region
+  storage_billing_model = "PHYSICAL"
 
   labels = {
     role = "billing"
