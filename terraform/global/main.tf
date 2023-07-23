@@ -34,6 +34,7 @@ locals {
     "dataform.googleapis.com",
     "datalineage.googleapis.com",
     "datacatalog.googleapis.com",
+    "dataplex.googleapis.com",
     "datastream.googleapis.com",
     "workflows.googleapis.com",
     "workflowexecutions.googleapis.com",
