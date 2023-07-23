@@ -133,3 +133,53 @@ module "corp-0" {
     ]
   }
 }
+
+module "agones_allocator_sa" {
+  source     = "terraform-google-modules/service-accounts/google"
+  version    = "4.1.1"
+  project_id = data.google_project.project.project_id
+
+  names        = ["agones-allocator"]
+  display_name = "Agones Allocator ServiceAccount"
+  project_roles = ["${data.google_project.project.project_id}=>roles/monitoring.metricWriter"]
+}
+
+module "agones_allocator_workloadIdentity_binding" {
+  source  = "terraform-google-modules/iam/google//modules/service_accounts_iam"
+  version = "7.4.0"
+  project = data.google_project.project.project_id
+
+  service_accounts = [module.agones_allocator_sa.email]
+  mode             = "additive"
+  bindings = {
+    "roles/iam.workloadIdentityUser" = [
+      "serviceAccount:${data.google_project.project.project_id}.svc.id.goog[agones-system/agones-allocator]"
+    ]
+  }
+  depends_on = [module.agones_allocator_sa]
+}
+
+module "agones_controller_sa" {
+  source     = "terraform-google-modules/service-accounts/google"
+  version    = "4.1.1"
+  project_id = data.google_project.project.project_id
+
+  names        = ["agones-controller"]
+  display_name = "Agones Controller ServiceAccount"
+  project_roles = ["${data.google_project.project.project_id}=>roles/monitoring.metricWriter"]
+}
+
+module "agones_controller_workloadIdentity_binding" {
+  source  = "terraform-google-modules/iam/google//modules/service_accounts_iam"
+  version = "7.4.0"
+  project = data.google_project.project.project_id
+
+  service_accounts = [module.agones_controller_sa.email]
+  mode             = "additive"
+  bindings = {
+    "roles/iam.workloadIdentityUser" = [
+      "serviceAccount:${data.google_project.project.project_id}.svc.id.goog[agones-system/agones-controller]"
+    ]
+  }
+  depends_on = [module.agones_controller_sa]
+}
