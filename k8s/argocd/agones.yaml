@@ -47,10 +47,12 @@ spec:
                serviceaccount:
                  allocator:
                    name: agones-allocator
-                   annotations: {}
+                   annotations:
+                     iam.gke.io/gcp-service-account: agones-allocator@kentaiso-330205.iam.gserviceaccount.com
                  controller:
                    name: agones-controller
-                   annotations: {}
+                   annotations:
+                     iam.gke.io/gcp-service-account: agones-controller@kentaiso-330205.iam.gserviceaccount.com
                  sdk:
                    name: agones-sdk
                    annotations: {}
