@@ -1,7 +1,7 @@
 terraform {
   backend "gcs" {
     bucket = "kentaiso-terraform-bucket"
-    prefix = "terraform/firestore"
+    prefix = "terraform/firebase"
   }
   required_providers {
     google = {

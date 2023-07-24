@@ -1,6 +1,4 @@
-data "google_project" "project" {
-}
-
+# Firestore
 resource "google_firestore_database" "default" {
   project = data.google_project.project.project_id
 
