@@ -1,0 +1,46 @@
+main:
+  steps:
+  - init:
+      assign:
+      - repository: projects/${projectId}/locations/${region}/repositories/prod-little-quest-dataform
+  - intermediate_datawarehouse:
+      call: dataform_workflow
+      args:
+        repository: $${repository}
+        tag: intermediate
+      result: intermediate_result
+  - output_datamart:
+      call: dataform_workflow
+      args:
+        repository: $${repository}
+        tag: output
+      result: output_result
+  - returnResult:
+      return: $${intermediate_result + ", " + output_result}
+
+dataform_workflow:
+  params: [repository, tag]
+  steps:
+  - createCompilationResult:
+      call: http.post
+      args:
+        url: $${"https://dataform.googleapis.com/v1beta1/" + repository + "/compilationResults"}
+        auth:
+          type: OAuth2
+        body:
+          gitCommitish: main-workspace
+      result: compilationResult
+  - createWorkflowInvocation:
+      call: http.post
+      args:
+        url: $${"https://dataform.googleapis.com/v1beta1/" + repository + "/workflowInvocations"}
+        auth:
+          type: OAuth2
+        body:
+          compilationResult: $${compilationResult.body.name}
+          invocationConfig:
+            includedTags:
+            - $${tag}
+      result: workflowInvocation
+  - complete:
+      return: $${workflowInvocation.body.name}
