@@ -18,7 +18,7 @@ resource "google_compute_instance" "datastream_cloudsql_proxy" {
 
   name         = "datastream-cloudsql-proxy"
   machine_type = "e2-micro"
-  zone         = "us-central1-a"
+  zone         = "${var.region}-a"
 
   tags = ["allow-datastream-to-cloudsql"]
 
@@ -34,10 +34,16 @@ resource "google_compute_instance" "datastream_cloudsql_proxy" {
     }
   }
 
+  scheduling {
+    preemptible        = true
+    automatic_restart  = false
+    provisioning_model = "SPOT"
+  }
+
   network_interface {
     network            = var.gcp_project_name
     subnetwork_project = data.google_project.project.project_id
-    subnetwork         = "${var.env}-app-1"
+    subnetwork         = "${var.env}-app-0"
     stack_type         = "IPV4_ONLY"
   }
 
