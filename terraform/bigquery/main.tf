@@ -136,3 +136,19 @@ module "little_quest_datamart" {
     role     = "datamart"
   }
 }
+
+# BigQuery cost analysis dataset
+module "bigquery_cost_analysis" {
+  source     = "terraform-google-modules/bigquery/google"
+  version    = "6.0.0"
+  project_id = data.google_project.project.project_id
+
+  dataset_id   = "bigquery_cost_analysis"
+  dataset_name = "bigquery_cost_analysis"
+  description  = "BigQuery Cost Analysis"
+  location     = var.region
+
+  dataset_labels = {
+    billable = "true"
+  }
+}
