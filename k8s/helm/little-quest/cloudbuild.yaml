@@ -12,3 +12,19 @@ steps:
       gcloud auth application-default print-access-token | helm registry login -u oauth2accesstoken \
         --password-stdin https://${LOCATION}-docker.pkg.dev
     waitFor: ['-']
+
+  # Generate helm package for Little Quest
+  - name: gcr.io/cloud-builders/gcloud
+    id: helm-package
+    entrypoint: /bin/bash
+    args:
+    - -c
+    - |
+      helm package ./
+
+options:
+  volumes:
+  - name: apt-lists
+    path: /var/lib/apt/lists
+  - name: apt-archives
+    path: /var/cache/apt/archives
