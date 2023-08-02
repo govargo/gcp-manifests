@@ -20,7 +20,7 @@ steps:
     args:
     - -c
     - |
-      helm package ./
+      helm package ./k8s/helm/little-quest
 
 options:
   volumes:
@@ -28,3 +28,5 @@ options:
     path: /var/lib/apt/lists
   - name: apt-archives
     path: /var/cache/apt/archives
+  - name: bin
+    path: /usr/local/bin
