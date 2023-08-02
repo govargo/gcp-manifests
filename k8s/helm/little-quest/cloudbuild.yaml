@@ -6,8 +6,11 @@ steps:
     args:
     - -c
     - |
-      apt-get --allow-releaseinfo-change update && \
-      apt-get install -y helm &&
+      curl https://baltocdn.com/helm/signing.asc | gpg --dearmor | sudo tee /usr/share/keyrings/helm.gpg > /dev/null
+      apt-get install apt-transport-https --yes
+      echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/helm.gpg] https://baltocdn.com/helm/stable/debian/ all main" | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list
+      apt-get --allow-releaseinfo-change update
+      apt-get install -y helm
       gcloud auth application-default print-access-token | helm registry login -u oauth2accesstoken \
-      --password-stdin https://${LOCATION}-docker.pkg.dev
+        --password-stdin https://${LOCATION}-docker.pkg.dev
     waitFor: ['-']
