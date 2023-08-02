@@ -1,0 +1,11 @@
+{{- if .Values.ingress.backendConfig.enabled }}
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: {{ include "little-quest.fullname" . }}
+  labels:
+    {{- include "little-quest.labels" . | nindent 4 }}
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  {{- toYaml .Values.ingress.backendConfig.spec | nindent 2 }}
+{{- end }}

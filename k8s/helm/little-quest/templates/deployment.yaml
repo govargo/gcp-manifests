@@ -1,0 +1,173 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "little-quest.fullname" . }}
+  labels:
+    {{- include "little-quest.labels" . | nindent 4 }}
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "little-quest.selectorLabels" . | nindent 6 }}
+  {{- with .Values.strategy }}
+  strategy:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "little-quest.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "little-quest.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.migrate }}
+          command: ["/little"]
+          args: ["migrate"]
+          {{- end }}
+          ports:
+          - name: http
+            containerPort: {{ .Values.containerPort }}
+            protocol: TCP
+          env:
+          - name: APP_ENV
+            value: {{ .Values.env | quote }}
+          - name: PORT
+            value: {{ .Values.containerPort | default "80" | quote }}
+          - name: TZ
+            value: {{ .Values.timeZone | default "Asia/Tokyo" | quote }}
+          - name: GOOGLE_CLOUD_PROJECT
+            value: {{ .Values.googleCloudProjectId | quote }}
+          - name: SPANNER_PROJECT
+            value: {{ .Values.googleCloudProjectId | quote }}
+          - name: SPANNER_INSTANCE
+            value: {{ .Values.spanner.instance | quote }}
+          - name: SPANNER_DATABASE
+            value: {{ .Values.spanner.database | quote }}
+          - name: MASTER_MYSQL_HOST
+            value: {{ .Values.mysql.host | quote }}
+          - name: MASTER_MYSQL_PORT
+            value: {{ .Values.mysql.port | quote }}
+          - name: MASTER_MYSQL_DBNAME
+            value: {{ .Values.mysql.dbName | quote }}
+          - name: MASTER_MYSQL_USERNAME
+            value: {{ .Values.mysql.userName | quote }}
+          - name: MASTER_MYSQL_USER_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: middleware-env
+                key: mysql_password
+          - name: REDIS_HOSTNAME
+            value: {{ .Values.redis.host | quote }}
+          - name: REDIS_PORT
+            value: {{ .Values.redis.port | quote }}
+          - name: REDIS_DBNUMBER
+            value: {{ .Values.redis.dbNumber | quote }}
+          - name: REDIS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: middleware-env
+                key: redis_password
+          - name: OTEL_SAMPLING_RATE
+            value: {{ .Values.cloudTrace.samplingRate | default 0.1 | quote }}
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: NAMESPACE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: CONTAINER_NAME
+            value: {{ .Chart.Name }}
+          - name: OTEL_RESOURCE_ATTRIBUTES
+            value: k8s.pod.name=$(POD_NAME),k8s.namespace.name=$(NAMESPACE_NAME),k8s.container.name=$(CONTAINER_NAME)
+          {{- with .Values.liveness }}
+          livenessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.readiness }}
+          readinessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.startup }}
+          startupProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          {{- with .Values.volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 10 }}
+          {{- end }}
+        {{- if .Values.cloudSqlProxy.enabled }}
+        - name: cloud-sql-proxy
+          image: "{{ .Values.cloudSqlProxy.image.repository }}:{{ .Values.cloudSqlProxy.image.tag }}"
+          {{- with .Values.cloudSqlProxy.args }}
+          args:
+            {{- toYaml . | nindent 10 }}
+          {{- end }}
+          ports:
+          - name: healthcheck
+            containerPort: {{ .Values.cloudSqlProxy.containerPort }}
+            protocol: TCP
+          {{- with .Values.cloudSqlProxy.securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.cloudSqlProxy.liveness }}
+          livenessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.cloudSqlProxy.readiness }}
+          readinessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.cloudSqlProxy.startup }}
+          startupProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.cloudSqlProxy.resources | nindent 12 }}
+        {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{- toYaml . | nindent 6 }}
+        labelSelector:
+          matchLabels:
+          {{- include "little-quest.selectorLabels" $ | nindent 12 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 6 }}
+      {{- end }}
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      {{- with .Values.volumes }}
+      volumes:
+        {{- toYaml . | nindent 6 }}
+      {{- end }}

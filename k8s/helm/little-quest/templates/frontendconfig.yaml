@@ -1,0 +1,11 @@
+{{- if .Values.ingress.frontendConfig.enabled }}
+apiVersion: networking.gke.io/v1beta1
+kind: FrontendConfig
+metadata:
+  name: {{ include "little-quest.fullname" . }}
+  labels:
+    {{- include "little-quest.labels" . | nindent 4 }}
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  {{- toYaml .Values.ingress.frontendConfig.spec | nindent 2 }}
+{{- end }}

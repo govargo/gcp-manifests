@@ -1,0 +1,13 @@
+steps:
+  # Run helm install and helm registry login
+  - name: gcr.io/cloud-builders/gcloud
+    id: helm-registry-login
+    entrypoint: /bin/bash
+    args:
+    - -c
+    - |
+      apt-get --allow-releaseinfo-change update && \
+      apt-get install -y helm &&
+      gcloud auth application-default print-access-token | helm registry login -u oauth2accesstoken \
+      --password-stdin https://${LOCATION}-docker.pkg.dev
+    waitFor: ['-']

@@ -1,0 +1,14 @@
+{{- if .Values.ingress.managedCertificate.enabled }}
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: {{ include "little-quest.fullname" . }}
+  labels:
+    {{- include "little-quest.labels" . | nindent 4 }}
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  domains:
+    {{- with .Values.ingress.managedCertificate.domains }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+{{- end }}
