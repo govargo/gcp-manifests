@@ -1,0 +1,310 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: little-quest
+  namespace: argocd
+  annotations:
+    argocd-image-updater.argoproj.io/write-back-method: argocd
+    argocd-image-updater.argoproj.io/image-list: little=asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/little-quest
+    argocd-image-updater.argoproj.io/little.update-strategy: latest
+    argocd-image-updater.argoproj.io/little.ignore-tags: latest
+    argocd-image-updater.argoproj.io/little.force-update: "true"
+    argocd-image-updater.argoproj.io/little.helm.image-name: image.repository
+    argocd-image-updater.argoproj.io/little.helm.image-tag: image.tag
+spec:
+  project: default
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+    automated:
+      prune: true
+      selfHeal: true
+  source:
+    repoURL: asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/charts
+    chart: little-quest
+    targetRevision: 0.1.0
+    helm:
+      releaseName: "little-quest"
+      values: |
+        # Default values for little-quest.
+        # This is a YAML-formatted file.
+        # Declare variables to be passed into your templates.
+        image:
+          repository: asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/little-quest
+          pullPolicy: IfNotPresent
+
+        imagePullSecrets: []
+        nameOverride: ""
+        fullnameOverride: ""
+
+        migrate: false
+
+        serviceAccount:
+          # Specifies whether a service account should be created
+          create: true
+          # Annotations to add to the service account
+          annotations:
+            iam.gke.io/gcp-service-account: little-quest@kentaiso-330205.iam.gserviceaccount.com
+          # The name of the service account to use.
+          # If not set and create is true, a name is generated using the fullname template
+          name: ""
+
+        podAnnotations: {} 
+
+        strategy:
+          type: RollingUpdate
+          rollingUpdate:
+            maxSurge: 25%
+            maxUnavailable: 25%
+
+        # Pod's containerPort
+        containerPort: 18080
+
+        podSecurityContext: {}
+          # fsGroup: 2000
+
+        securityContext: {}
+          # capabilities:
+          #   drop:
+          #   - ALL
+          # readOnlyRootFilesystem: true
+          # runAsNonRoot: true
+          # runAsUser: 1000
+
+        liveness:
+          httpGet:
+            path: /healthz
+            port: http
+          periodSeconds: 10
+          successThreshold: 1
+          failureThreshold: 5
+          timeoutSeconds: 10
+
+        readiness:
+          httpGet:
+            path: /readiness
+            port: http
+          periodSeconds: 10
+          successThreshold: 1
+          failureThreshold: 5
+          timeoutSeconds: 10
+
+        startup:
+          httpGet:
+            path: /readiness
+            port: http
+          periodSeconds: 10
+          initialDelaySeconds: 5
+          successThreshold: 1
+          failureThreshold: 10
+          timeoutSeconds: 10
+
+        resources:
+          # We usually recommend not to specify default resources and to leave this as a conscious
+          # choice for the user. This also increases chances charts run on environments with little
+          # resources, such as Minikube. If you do want to specify resources, uncomment the following
+          # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 1000m
+            memory: 512Mi
+
+        ## Cloud SQL Proxy sidecar
+        cloudSqlProxy:
+          enabled: true
+          image:
+            repository: gcr.io/cloud-sql-connectors/cloud-sql-proxy
+            tag: 2.2.0
+          args:
+          - "--http-address=0.0.0.0"
+          - "--structured-logs"
+          - "--private-ip"
+          - "--port=3306"
+          - "--max-sigterm-delay=10s"
+          - "--prometheus=true"
+          - "--telemetry-project=kentaiso-330205"
+          - "--disable-traces=true"
+          - "--health-check=true"
+          - "kentaiso-330205:asia-northeast1:prod-mysql-instance"
+
+          containerPort: 9090
+
+          securityContext:
+             # The default Cloud SQL Auth Proxy image runs as the
+             # "nonroot" user and group (uid: 65532) by default.
+             runAsNonRoot: true
+             readOnlyRootFilesystem: true
+             allowPrivilegeEscalation : false
+
+          liveness:
+            httpGet:
+              path: /liveness
+              port: 9090
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 5
+            timeoutSeconds: 10
+
+          readiness:
+            httpGet:
+               path: /readiness
+               port: 9090
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 5
+            timeoutSeconds: 10
+
+          startup:
+            httpGet:
+              path: /startup
+              port: 9090
+            periodSeconds: 10
+            initialDelaySeconds: 3
+            successThreshold: 1
+            failureThreshold: 5
+            timeoutSeconds: 10
+
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+            limits:
+              cpu: 1
+              memory: 2Gi
+
+        nodeSelector:
+          app: little-quest
+
+        tolerations:
+        - key: "app"
+          operator: "Equal"
+          value: "little-quest"
+          effect: "NoSchedule"
+
+        affinity: {}
+
+        topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: topology.kubernetes.io/zone
+          whenUnsatisfiable: ScheduleAnyway
+
+        terminationGracePeriodSeconds: 30
+
+        ## Additional volumeMounts
+        volumeMounts:
+        - name: middleware-env
+          mountPath: /var/secrets
+          readOnly: true
+
+        ## Additional Volumes
+        volumes:
+        - name: middleware-env
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: little-quest
+
+        maxUnavailable: 1
+
+        service:
+          annotations:
+            cloud.google.com/neg: '{"ingress": true}'
+            cloud.google.com/backend-config: '{"ports": {"80":"little-quest"}}'
+          type: ClusterIP
+          port: 80
+
+        ingress:
+          enabled: true
+          className: ""
+          annotations:
+            kubernetes.io/ingress.global-static-ip-name: "little-quest-ip"
+            networking.gke.io/managed-certificates: "little-quest"
+            networking.gke.io/v1beta1.FrontendConfig: "little-quest"
+          hosts:
+            - host: little-quest.kentaiso.org
+              paths:
+                - path: /*
+                  pathType: ImplementationSpecific
+          tls: []
+          #  - secretName: chart-example-tls
+          #    hosts:
+          #      - chart-example.local
+
+          managedCertificate:
+            enabled: true
+            domains:
+            - little-quest.kentaiso.org
+
+          backendConfig:
+            enabled: true
+            spec:
+              healthCheck:
+                checkIntervalSec: 30
+                timeoutSec: 5
+                healthyThreshold: 1
+                unhealthyThreshold: 10
+                type: HTTP
+                requestPath: /healthz
+                port: 18080
+
+          frontendConfig:
+            enabled: true
+            spec:
+              redirectToHttps:
+                enabled: true
+                responseCodeName: MOVED_PERMANENTLY_DEFAULT
+
+        autoscaling:
+          enabled: true
+          minReplicas: 1
+          maxReplicas: 100
+          targetCPUUtilizationPercentage: 70
+          # targetMemoryUtilizationPercentage: 70
+
+        secret:
+          annotations: {}
+
+        # environment(e.g. development, staging, production)
+        env: production
+
+        # Time Zone
+        timeZone: Asia/Tokyo
+
+        # Google Cloud ProjectId
+        googleCloudProjectId: kentaiso-330205
+
+        # Cloud Trace sampling rate
+        cloudTrace:
+          samplingRate: 1.0
+
+        # Cloud Spanner info
+        spanner:
+          instance: prod-spanner-instance
+          database: user_data
+
+        # MySQL info
+        mysql:
+          host: localhost
+          port: 3306
+          dbName: master_data
+          userName: little-quest
+
+        # Redis info
+        redis:
+          host: memorystore-redis-0.kentaiso.org.
+          port: 6379
+          dbNumber: 0
+
+  ignoreDifferences:
+  - group: apps
+    kind: Deployment
+    name: little-quest
+    namespace: little-quest
+    jsonPointers:
+    - /spec/template/spec/containers/0/image
+  destination:
+    name: "gke_kentaiso-330205_asia-northeast1_prod-app-0"
+    namespace: little-quest
