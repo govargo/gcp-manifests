@@ -299,6 +299,23 @@ module "main_dns_zone" {
   ]
 }
 
+module "demo_dns_zone" {
+  source     = "terraform-google-modules/cloud-dns/google"
+  version    = "5.0.0"
+  project_id = data.google_project.project.project_id
+
+  type           = "public"
+  name           = "kentaiso-demo"
+  domain         = "kentaiso.demo.altostrat.com."
+  enable_logging = false
+
+  dnssec_config = {}
+
+  depends_on = [
+    google_compute_network.vpc_network
+  ]
+}
+
 ## Org Policy
 module "disable_policy_requireOsLogin" {
   source     = "terraform-google-modules/org-policy/google"
@@ -450,6 +467,27 @@ resource "google_cloudbuild_trigger" "little_server_build_trigger" {
   github {
     owner = "govargo"
     name  = "little-quest-server"
+    push {
+      branch = "^main$"
+    }
+  }
+
+  substitutions = {
+    "_BUCKET_NAME" = data.google_project.project.project_id
+  }
+
+  include_build_logs = "INCLUDE_BUILD_LOGS_WITH_STATUS"
+}
+
+resource "google_cloudbuild_trigger" "little_quest_helm_chart_build_trigger" {
+  project  = data.google_project.project.project_id
+  location = var.region
+  name     = "little-quest-helm-chart-build-trigger"
+  filename = "k8s/helm/little-quest/cloudbuild.yaml"
+
+  github {
+    owner = "govargo"
+    name  = "gcp-manifests"
     push {
       branch = "^main$"
     }

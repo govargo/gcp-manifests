@@ -241,6 +241,40 @@ server:
 
 ## Repo Server
 repoServer:
+  serviceAccount:
+    annotations:
+      iam.gke.io/gcp-service-account: argocd-repo-server@kentaiso-330205.iam.gserviceaccount.com
+
+  initContainers:
+  - name: download-tools
+    image: alpine:3
+    command: [ sh, -c ]
+    args:
+    - |
+      cd /var/run/docker-credential-gcr
+      wget -qO - https://github.com/GoogleCloudPlatform/docker-credential-gcr/releases/download/v2.1.8/docker-credential-gcr_linux_amd64-2.1.8.tar.gz | tar xz
+      PATH=.:$PATH HOME=/var/run/config docker-credential-gcr configure-docker --registries=asia-northeast1-docker.pkg.dev
+      chmod +r /var/run/config/.docker/config.json
+    volumeMounts:
+    - mountPath: /var/run/docker-credential-gcr
+      name: docker-credential-gcr
+    - mountPath: /var/run/config/.docker
+      name: docker-config
+
+  volumeMounts:
+  - mountPath: /usr/local/bin/docker-credential-gcr
+    name: docker-credential-gcr
+    subPath: docker-credential-gcr
+    readOnly: true
+  - mountPath: /home/argocd/.docker
+    name: docker-config
+    readOnly: true
+  volumes:
+  - emptyDir: {}
+    name: docker-credential-gcr
+  - emptyDir: {}
+    name: docker-config
+
   ## Repo server Horizontal Pod Autoscaler
   autoscaling:
     # -- Enable Horizontal Pod Autoscaler ([HPA]) for the repo server

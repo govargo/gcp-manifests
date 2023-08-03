@@ -225,6 +225,32 @@ module "argocd_workloadIdentity_binding" {
   depends_on = [module.argocd_secretmanager_sa]
 }
 
+module "argocd_repo_server_sa" {
+  source     = "terraform-google-modules/service-accounts/google"
+  version    = "4.1.1"
+  project_id = data.google_project.project.project_id
+
+  names        = ["argocd-repo-server"]
+  display_name = "ArgoCD Repo server ServiceAccount"
+  project_roles = ["${data.google_project.project.project_id}=>roles/artifactregistry.reader"]
+}
+
+module "argocd_repo_server_workloadIdentity_binding" {
+  source  = "terraform-google-modules/iam/google//modules/service_accounts_iam"
+  version = "7.4.0"
+  project = data.google_project.project.project_id
+
+  service_accounts = [module.argocd_repo_server_sa.email]
+  mode             = "additive"
+  bindings = {
+    "roles/iam.workloadIdentityUser" = [
+      "serviceAccount:${data.google_project.project.project_id}.svc.id.goog[argocd/argocd-repo-server]"
+    ]
+  }
+
+  depends_on = [module.argocd_repo_server_sa]
+}
+
 module "argocd_secretmanager" {
   source  = "terraform-google-modules/iam/google//modules/secret_manager_iam"
   version = "7.4.1"
@@ -315,4 +341,30 @@ module "gmp_ruleevaluator_workloadIdentity_binding" {
     ]
   }
   depends_on = [module.gmp_ruleevaluator_sa]
+}
+
+module "argocd_image_updater_sa" {
+  source     = "terraform-google-modules/service-accounts/google"
+  version    = "4.1.1"
+  project_id = data.google_project.project.project_id
+
+  names        = ["argocd-image-updater"]
+  display_name = "ArgoCD image updater ServiceAccount"
+  project_roles = ["${data.google_project.project.project_id}=>roles/artifactregistry.reader"]
+  depends_on = [google_project_iam_custom_role.gmp_rule_evaluator_role]
+}
+
+module "argocd_image_updater_workloadIdentity_binding" {
+  source  = "terraform-google-modules/iam/google//modules/service_accounts_iam"
+  version = "7.4.0"
+  project = data.google_project.project.project_id
+
+  service_accounts = [module.argocd_image_updater_sa.email]
+  mode             = "additive"
+  bindings = {
+    "roles/iam.workloadIdentityUser" = [
+      "serviceAccount:${data.google_project.project.project_id}.svc.id.goog[argocd/argocd-image-updater]"
+    ]
+  }
+  depends_on = [module.argocd_image_updater_sa]
 }
