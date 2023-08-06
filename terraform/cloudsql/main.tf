@@ -117,9 +117,9 @@ resource "google_sql_user" "datastream_user" {
 
 resource "google_dns_record_set" "mysql_primary_endpoint" {
   project      = data.google_project.project.project_id
-  managed_zone = "${var.gcp_project_name}-org"
+  managed_zone = "${var.gcp_project_name}-demo"
 
-  name = "cloudsql-mysql-primary.${var.gcp_project_name}.org."
+  name = "cloudsql-mysql-primary.${var.gcp_project_name}.demo.altostrat.com."
   type = "A"
   ttl  = 60
 

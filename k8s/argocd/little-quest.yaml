@@ -224,7 +224,7 @@ spec:
             networking.gke.io/managed-certificates: "little-quest"
             networking.gke.io/v1beta1.FrontendConfig: "little-quest"
           hosts:
-            - host: little-quest.kentaiso.org
+            - host: little-quest.kentaiso.demo.altostrat.com
               paths:
                 - path: /*
                   pathType: ImplementationSpecific
@@ -236,7 +236,7 @@ spec:
           managedCertificate:
             enabled: true
             domains:
-            - little-quest.kentaiso.org
+            - little-quest.kentaiso.demo.altostrat.com
 
           backendConfig:
             enabled: true
@@ -294,7 +294,7 @@ spec:
 
         # Redis info
         redis:
-          host: memorystore-redis-0.kentaiso.org.
+          host: memorystore-redis-0.kentaiso.demo.altostrat.com.
           port: 6379
           dbNumber: 0
 
@@ -304,6 +304,7 @@ spec:
     name: little-quest
     namespace: little-quest
     jsonPointers:
+    - /spec/replicas
     - /spec/template/spec/containers/0/image
   destination:
     name: "gke_kentaiso-330205_asia-northeast1_prod-app-0"

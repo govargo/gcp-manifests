@@ -4,7 +4,7 @@ configs:
   ## Ref: https://github.com/argoproj/argo-cd/blob/master/docs/operator-manual/argocd-cm.yaml
   cm:
     # -- Argo CD's externally facing base URL (optional). Required when configuring SSO
-    url: "https://argocd.kentaiso.org"
+    url: "https://argocd.kentaiso.demo.altostrat.com"
 
     # Dex configuration
     dex.config: |
@@ -186,7 +186,7 @@ server:
     enabled: true
     # -- Additional ingress annotations
     annotations:
-      kubernetes.io/ingress.global-static-ip-name: "argocd-ip"
+      kubernetes.io/ingress.global-static-ip-name: "argocd-server-ip"
       networking.gke.io/managed-certificates: "argocd-server"
       networking.gke.io/v1beta1.FrontendConfig: "argocd-server"
 
@@ -195,11 +195,11 @@ server:
     ## Hostnames must be provided if Ingress is enabled.
     ## Secrets must be manually created in the namespace
     hosts:
-       - argocd.kentaiso.org
+    - argocd.kentaiso.demo.altostrat.com
 
     # -- List of ingress paths
     paths:
-      - /*
+    - /*
     # -- Ingress path type. One of `Exact`, `Prefix` or `ImplementationSpecific`
     pathType: ImplementationSpecific
     # -- Uses `server.service.servicePortHttps` instead `server.service.servicePortHttp`
@@ -226,7 +226,7 @@ server:
     enabled: true
     # -- Domains for the Google Managed Certificate
     domains:
-    - argocd.kentaiso.org
+    - argocd.kentaiso.demo.altostrat.com
 
   ## Create a Google FrontendConfig Custom Resource, for use with the GKE Ingress Controller
   ## https://cloud.google.com/kubernetes-engine/docs/how-to/ingress-features#configuring_ingress_features_through_frontendconfig_parameters

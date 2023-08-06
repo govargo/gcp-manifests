@@ -265,40 +265,6 @@ module "cloud_router_misc_0" {
   ]
 }
 
-module "main_dns_zone" {
-  source     = "terraform-google-modules/cloud-dns/google"
-  version    = "5.0.0"
-  project_id = data.google_project.project.project_id
-
-  type           = "public"
-  name           = "kentaiso-org"
-  domain         = "kentaiso.org."
-  enable_logging = false
-
-  dnssec_config = {
-    kind          = "dns#managedZoneDnsSecConfig"
-    non_existence = "nsec3"
-    state         = "on"
-
-    default_key_specs = {
-      algorithm  = "rsasha256"
-      key_length = 2048
-      key_type   = "keySigning"
-      kind       = "dns#dnsKeySpec"
-    }
-    default_key_specs = {
-      algorithm  = "rsasha256"
-      key_length = 1024
-      key_type   = "zoneSigning"
-      kind       = "dns#dnsKeySpec"
-    }
-  }
-
-  depends_on = [
-    google_compute_network.vpc_network
-  ]
-}
-
 module "demo_dns_zone" {
   source     = "terraform-google-modules/cloud-dns/google"
   version    = "5.0.0"

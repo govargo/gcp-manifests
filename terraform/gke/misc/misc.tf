@@ -135,7 +135,6 @@ module "misc-0" {
       "argocd",
     ]
   }
-
 }
 
 ## Network
@@ -147,15 +146,15 @@ module "gke_workload_address" {
   address_type = "EXTERNAL"
   global       = true
   names = [
-    "argocd-ip",
+    "argocd-server-ip",
   ]
 }
 
-resource "google_dns_record_set" "argocd" {
+resource "google_dns_record_set" "argocd_server" {
   project      = data.google_project.project.project_id
-  managed_zone = "${var.gcp_project_name}-org"
+  managed_zone = "${var.gcp_project_name}-demo"
 
-  name = "argocd.${var.gcp_project_name}.org."
+  name = "argocd.${var.gcp_project_name}.demo.altostrat.com."
   type = "A"
   ttl  = 60
 
