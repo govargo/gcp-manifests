@@ -457,59 +457,6 @@ resource "google_project_iam_member" "allow_cloudsql_client" {
   member  = "serviceAccount:${data.google_compute_default_service_account.default.email}"
 }
 
-## Cloud Build
-resource "google_cloudbuild_trigger" "little_server_build_trigger" {
-  project  = data.google_project.project.project_id
-  location = var.region
-  name     = "little-server-build-trigger"
-  filename = "cloudbuild.yaml"
-
-  github {
-    owner = "govargo"
-    name  = "little-quest-server"
-    push {
-      branch = "^main$"
-    }
-  }
-
-  substitutions = {
-    "_BUCKET_NAME" = data.google_project.project.project_id
-  }
-
-  include_build_logs = "INCLUDE_BUILD_LOGS_WITH_STATUS"
-}
-
-resource "google_cloudbuild_trigger" "little_quest_helm_chart_build_trigger" {
-  project  = data.google_project.project.project_id
-  location = var.region
-  name     = "little-quest-helm-chart-build-trigger"
-  filename = "k8s/helm/little-quest/cloudbuild.yaml"
-
-  github {
-    owner = "govargo"
-    name  = "gcp-manifests"
-    push {
-      branch = "^main$"
-    }
-  }
-
-  substitutions = {
-    "_BUCKET_NAME" = data.google_project.project.project_id
-  }
-
-  include_build_logs = "INCLUDE_BUILD_LOGS_WITH_STATUS"
-}
-
-## Artifact Registry
-resource "google_artifact_registry_repository" "docker_repository" {
-  provider = google-beta
-
-  location      = var.region
-  repository_id = "little-quest"
-  description   = "Docker repository"
-  format        = "DOCKER"
-}
-
 ## Secret
 resource "google_secret_manager_secret" "mysql_little_quest_user_password" {
   project   = data.google_project.project.project_id
