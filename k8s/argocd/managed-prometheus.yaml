@@ -24,7 +24,7 @@ spec:
         - RespectIgnoreDifferences=true
       source:
         repoURL: https://github.com/GoogleCloudPlatform/prometheus-engine.git
-        targetRevision: v0.6.1
+        targetRevision: v0.7.1
         path: manifests
       ignoreDifferences:
       - group: apps
