@@ -75,8 +75,12 @@ resource "google_cloud_run_v2_service" "cloud_build_notifier" {
   name     = "cloud-build-notifier"
   location = var.region
 
+  ingress = "INGRESS_TRAFFIC_ALL"
   template {
     execution_environment = "EXECUTION_ENVIRONMENT_GEN2"
+    scaling {
+      max_instance_count = 1
+    }
     containers {
       image = "us-east1-docker.pkg.dev/gcb-release/cloud-build-notifiers/googlechat:googlechat-0.2.4"
       env {
