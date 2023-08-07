@@ -17,6 +17,7 @@ locals {
     "cloudbuild.googleapis.com",
     "cloudresourcemanager.googleapis.com",
     "containerregistry.googleapis.com",
+    "run.googleapis.com",
     "iam.googleapis.com",
     "iap.googleapis.com",
     "networkmanagement.googleapis.com",
