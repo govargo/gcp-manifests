@@ -59,7 +59,7 @@ sudo apt -y install wget
 wget https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.6.0/cloud-sql-proxy.linux.amd64 -O /usr/local/bin/cloud-sql-proxy
 chmod +x /usr/local/bin/cloud-sql-proxy
 cloud-sql-proxy --http-address=0.0.0.0 --address 0.0.0.0 --port 3306 --private-ip --telemetry-project=${data.google_project.project.project_id} \
-  --structured-logs --max-sigterm-delay=10s --disable-traces=true --disable-metrics==true --health-check=true \
+  --structured-logs --max-sigterm-delay=10s --disable-traces=true --disable-metrics=true --health-check=true \
   ${data.google_project.project.project_id}:${var.region}:prod-mysql-instance
 EOF
 
