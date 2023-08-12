@@ -49,7 +49,7 @@ module "cloud_build_notifier_secret_accessor_binding" {
       "serviceAccount:${module.cloud_build_notifier_sa.email}"
     ]
   }
-  depends_on = [module.cloud_build_notifier_sa]
+  depends_on = [module.cloud_build_notifier_sa, google_secret_manager_secret.cloud_build_notifier_url]
 }
 
 module "cloud_run_pubsub_invoker_sa" {
