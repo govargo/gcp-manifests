@@ -18,6 +18,8 @@ locals {
     "cloudresourcemanager.googleapis.com",
     "containerregistry.googleapis.com",
     "run.googleapis.com",
+    "cloudfunctions.googleapis.com",
+    "eventarc.googleapis.com",
     "iam.googleapis.com",
     "iap.googleapis.com",
     "networkmanagement.googleapis.com",
@@ -509,4 +511,20 @@ resource "google_compute_firewall" "allow_iap_ssh" {
 
   source_ranges = ["35.235.240.0/20"]
   target_tags   = ["allow-datastream-to-cloudsql"]
+}
+
+## Cloud Pub/Sub
+module "gke_cluster_upgrade_notification" {
+  source     = "terraform-google-modules/pubsub/google"
+  version    = "5.0.0"
+  project_id = data.google_project.project.project_id
+
+  topic                            = "gke-cluster-upgrade-notification"
+  create_topic                     = true
+  grant_token_creator              = true
+  topic_message_retention_duration = "604800s"
+  topic_labels = {
+    env  = "production",
+    case = "gke-cluster-upgrade-notification"
+  }
 }

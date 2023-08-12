@@ -42,6 +42,8 @@ module "app-0" {
   resource_usage_export_dataset_id     = "all_billing_data"
   enable_network_egress_export         = var.enable_network_egress_export
   remove_default_node_pool             = true
+  notification_config_topic            = "projects/${data.google_project.project.project_id}/topics/gke-cluster-upgrade-notification"
+
 
   node_pools = [
     {
