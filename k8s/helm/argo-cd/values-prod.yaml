@@ -11,8 +11,8 @@ configs:
       connectors:
       - config:
           issuer: https://accounts.google.com
-          clientID: $argocd-secrets-store:client_id
-          clientSecret: $argocd-secrets-store:client_secret
+          clientID: $argocd-dex-secrets-store:client_id
+          clientSecret: $argocd-dex-secrets-store:client_secret
         type: oidc
         id: google
         name: Google
@@ -33,29 +33,50 @@ configs:
 
 # -- Array of extra K8s manifests to deploy
 extraObjects:
-  - apiVersion: secrets-store.csi.x-k8s.io/v1
-    kind: SecretProviderClass
-    metadata:
-      name: argocd-secrets-store
-      namespace: argocd
-    spec:
-      provider: gcp
-      parameters:
-        secrets: |
-          - resourceName: "projects/kentaiso-330205/secrets/argocd_client_id/versions/latest"
-            path: client_id
-          - resourceName: "projects/kentaiso-330205/secrets/argocd_client_secret/versions/latest"
-            path: client_secret
-      secretObjects:
-      - secretName: argocd-secrets-store
-        type: Opaque
-        labels:
-          app.kubernetes.io/part-of: argocd
-        data:
-        - objectName: client_id
-          key: client_id
-        - objectName: client_secret
-          key: client_secret
+- apiVersion: secrets-store.csi.x-k8s.io/v1
+  kind: SecretProviderClass
+  metadata:
+    name: argocd-dex-secrets-store
+    namespace: argocd
+  spec:
+    provider: gcp
+    parameters:
+      secrets: |
+        - resourceName: "projects/kentaiso-330205/secrets/argocd_client_id/versions/latest"
+          path: client_id
+        - resourceName: "projects/kentaiso-330205/secrets/argocd_client_secret/versions/latest"
+          path: client_secret
+    secretObjects:
+    - secretName: argocd-dex-secrets-store
+      type: Opaque
+      labels:
+        app.kubernetes.io/part-of: argocd
+      data:
+      - objectName: client_id
+        key: client_id
+      - objectName: client_secret
+        key: client_secret
+
+- apiVersion: secrets-store.csi.x-k8s.io/v1
+  kind: SecretProviderClass
+  metadata:
+    name: argocd-notifications-secret
+    namespace: argocd
+  spec:
+    provider: gcp
+    parameters:
+      secrets: |
+        - resourceName: "projects/kentaiso-330205/secrets/argocd_notification_webhook_url/versions/latest"
+          path: google_chat_webhook_url
+    secretObjects:
+    - secretName: argocd-notifications-secret
+      type: Opaque
+      labels:
+        app.kubernetes.io/part-of: argocd
+      data:
+      - objectName: google_chat_webhook_url
+        key: google_chat_webhook_url
+
 
 ## Controller
 controller:
@@ -93,18 +114,18 @@ dex:
 
   # -- Additional volumeMounts to the dex main container
   volumeMounts:
-  - name: argocd-secrets-store
+  - name: argocd-dex-secrets-store
     mountPath: /var/secrets
     readOnly: true
 
   # -- Extra volumes to the dex pod
   volumes:
-  - name: argocd-secrets-store
+  - name: argocd-dex-secrets-store
     csi:
       driver: secrets-store.csi.k8s.io
       readOnly: true
       volumeAttributes:
-        secretProviderClass: argocd-secrets-store
+        secretProviderClass: argocd-dex-secrets-store
 
   # -- Resource limits and requests for dex
   resources:
@@ -154,7 +175,7 @@ server:
     # -- Minimum number of replicas for the Argo CD server [HPA]
     minReplicas: 1
     # -- Maximum number of replicas for the Argo CD server [HPA]
-    maxReplicas: 5
+    maxReplicas: 2
 
   # -- Resource limits and requests for the Argo CD server
   resources:
@@ -282,7 +303,7 @@ repoServer:
     # -- Minimum number of replicas for the repo server [HPA]
     minReplicas: 1
     # -- Maximum number of replicas for the repo server [HPA]
-    maxReplicas: 5
+    maxReplicas: 2
 
   # -- Resource limits and requests for the repo server pods
   resources:
@@ -329,6 +350,33 @@ applicationSet:
     effect: "NoSchedule"
 
 notifications:
+  # -- Configures notification services such as slack, email or custom webhook
+  # @default -- See [values.yaml]
+  ## For more information: https://argocd-notifications.readthedocs.io/en/stable/services/overview/
+  notifiers:
+    service.googlechat: |
+      webhooks:
+        spaceName: $google_chat_webhook_url
+
+  # -- Additional volumeMounts to the dex main container
+  extraVolumeMounts:
+  - name: argocd-notifications-secret
+    mountPath: /var/secrets
+    readOnly: true
+
+  # -- Extra volumes to the dex pod
+  extraVolumes:
+  - name: argocd-notifications-secret
+    csi:
+      driver: secrets-store.csi.k8s.io
+      readOnly: true
+      volumeAttributes:
+        secretProviderClass: argocd-notifications-secret
+
+  secret:
+    # -- Whether helm chart creates notifications controller secret
+    create: false
+
   # -- Resource limits and requests for the notifications controller
   resources:
     requests:
@@ -348,6 +396,113 @@ notifications:
     operator: "Equal"
     value: "argocd"
     effect: "NoSchedule"
+
+  serviceAccount:
+    # -- Create notifications controller service account
+    create: true
+    # -- Notification controller service account name
+    name: argocd-notifications
+    # -- Annotations applied to created service account
+    annotations:
+      iam.gke.io/gcp-service-account: argocd-notifications@kentaiso-330205.iam.gserviceaccount.com
+    # -- Labels applied to created service account
+    labels: {}
+    # -- Automount API credentials for the Service Account
+    automountServiceAccountToken: true
+
+  templates:
+    template.app-deployed: |
+      googlechat:
+        cards: |
+          - header:
+              title: ArgoCD App Deploy Notification
+            sections:
+              - widgets:
+                  - textParagraph:
+                      text: The app {{ .app.metadata.name }} is now running new version of deployments manifests
+              - widgets:
+                  - keyValue:
+                      topLabel: Repository
+                      content: {{ call .repo.RepoURLToHTTPS .app.spec.source.repoURL }}
+                  - keyValue:
+                      topLabel: Revision
+                      content: {{ .app.spec.source.targetRevision }}
+    template.app-health-degraded: |
+      googlechat:
+        cards: |
+          - header:
+              title: ArgoCD App Degrade Notification
+            sections:
+              - widgets:
+                  - textParagraph:
+                      text: The app {{ .app.metadata.name }} has degraded
+              - widgets:
+                  - keyValue:
+                      topLabel: Repository
+                      content: {{ call .repo.RepoURLToHTTPS .app.spec.source.repoURL }}
+                  - keyValue:
+                      topLabel: Revision
+                      content: {{ .app.spec.source.targetRevision }}
+    template.app-sync-failed: |
+      googlechat:
+        cards: |
+          - header:
+              title: ArgoCD App Sync Fail Notification
+            sections:
+              - widgets:
+                  - textParagraph:
+                      text: The app {{ .app.metadata.name }} sync has been failed
+              - widgets:
+                  - keyValue:
+                      topLabel: Repository
+                      content: {{ call .repo.RepoURLToHTTPS .app.spec.source.repoURL }}
+                  - keyValue:
+                      topLabel: Revision
+                      content: {{ .app.spec.source.targetRevision }}
+    template.app-sync-succeeded: |
+      googlechat:
+        cards: |
+          - header:
+              title: ArgoCD App Sync Notification
+            sections:
+              - widgets:
+                  - textParagraph:
+                      text: The app {{ .app.metadata.name }} has successfully synced!
+              - widgets:
+                  - keyValue:
+                      topLabel: Repository
+                      content: {{ call .repo.RepoURLToHTTPS .app.spec.source.repoURL }}
+                  - keyValue:
+                      topLabel: Revision
+                      content: {{ .app.spec.source.targetRevision }}
+
+  triggers:
+    trigger.on-deployed: |
+      - description: Application is synced and healthy. Triggered once per commit.
+        oncePer: app.status.sync.revision
+        send:
+        - app-deployed
+        when: app.status.operationState.phase in ['Succeeded'] and app.status.health.status == 'Healthy'
+    trigger.on-health-degraded: |
+      - description: Application has degraded
+        send:
+        - app-health-degraded
+        when: app.status.health.status == 'Degraded'
+    trigger.on-sync-failed: |
+      - description: Application syncing has failed
+        send:
+        - app-sync-failed
+        when: app.status.operationState.phase in ['Error', 'Failed']
+    trigger.on-sync-status-unknown: |
+      - description: Application status is 'Unknown'
+        send:
+        - app-sync-status-unknown
+        when: app.status.sync.status == 'Unknown'
+    trigger.on-sync-succeeded: |
+      - description: Application syncing has succeeded
+        send:
+        - app-sync-succeeded
+        when: app.status.operationState.phase in ['Succeeded']
 
 # This key configures Redis-HA subchart and when enabled (redis-ha.enabled=true)
 # the custom redis deployment is omitted

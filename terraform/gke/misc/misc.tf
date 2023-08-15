@@ -51,7 +51,7 @@ module "misc-0" {
       min_count          = null
       max_count          = null
       total_min_count    = var.total_min_count
-      total_max_count    = var.total_max_count
+      total_max_count    = 1
       location_policy    = "ANY"
       local_ssd_count    = var.local_ssd_count
       spot               = var.spot
@@ -77,7 +77,7 @@ module "misc-0" {
       min_count          = null
       max_count          = null
       total_min_count    = var.total_min_count
-      total_max_count    = var.total_max_count
+      total_max_count    = 1
       location_policy    = "ANY"
       local_ssd_count    = var.local_ssd_count
       spot               = var.spot
@@ -199,22 +199,39 @@ resource "google_secret_manager_secret" "argocd_client_secret" {
   }
 }
 
+resource "google_secret_manager_secret" "argocd_notification_webhook_url" {
+  project   = data.google_project.project.project_id
+  secret_id = "argocd_notification_webhook_url"
+
+  labels = {
+    role = "argocd_notification_webhook_url"
+  }
+
+  lifecycle {
+    prevent_destroy = true
+  }
+
+  replication {
+    automatic = true
+  }
+}
+
 ## ServiceAccount
-module "argocd_secretmanager_sa" {
+module "argocd_dex_server_sa" {
   source     = "terraform-google-modules/service-accounts/google"
   version    = "4.1.1"
   project_id = data.google_project.project.project_id
 
   names        = ["argocd-dex-server"]
-  display_name = "ArgoCD SecretManager ServiceAccount"
+  display_name = "ArgoCD Dex Server ServiceAccount"
 }
 
-module "argocd_workloadIdentity_binding" {
+module "argocd_dex_server_workloadIdentity_binding" {
   source  = "terraform-google-modules/iam/google//modules/service_accounts_iam"
   version = "7.4.0"
   project = data.google_project.project.project_id
 
-  service_accounts = [module.argocd_secretmanager_sa.email]
+  service_accounts = [module.argocd_dex_server_sa.email]
   mode             = "additive"
   bindings = {
     "roles/iam.workloadIdentityUser" = [
@@ -222,7 +239,28 @@ module "argocd_workloadIdentity_binding" {
     ]
   }
 
-  depends_on = [module.argocd_secretmanager_sa]
+  depends_on = [module.argocd_dex_server_sa]
+}
+
+module "argocd_dex_server_secret_accessor_binding" {
+  source  = "terraform-google-modules/iam/google//modules/secret_manager_iam"
+  version = "7.4.1"
+  project = data.google_project.project.project_id
+
+  secrets = ["argocd_client_id", "argocd_client_secret"]
+  mode    = "authoritative"
+
+  bindings = {
+    "roles/secretmanager.secretAccessor" = [
+      "serviceAccount:${module.argocd_dex_server_sa.service_account.email}"
+    ]
+  }
+
+  depends_on = [
+    module.argocd_dex_server_sa,
+    google_secret_manager_secret.argocd_client_id,
+    google_secret_manager_secret.argocd_client_secret
+  ]
 }
 
 module "argocd_repo_server_sa" {
@@ -251,25 +289,44 @@ module "argocd_repo_server_workloadIdentity_binding" {
   depends_on = [module.argocd_repo_server_sa]
 }
 
-module "argocd_secretmanager" {
-  source  = "terraform-google-modules/iam/google//modules/secret_manager_iam"
-  version = "7.4.1"
+module "argocd_notifications_controller_sa" {
+  source     = "terraform-google-modules/service-accounts/google"
+  version    = "4.1.1"
+  project_id = data.google_project.project.project_id
+
+  names         = ["argocd-notifications"]
+  display_name  = "ArgoCD Notifications Controller ServiceAccount"
+}
+
+module "argocd_notifications_controller_workloadIdentity_binding" {
+  source  = "terraform-google-modules/iam/google//modules/service_accounts_iam"
+  version = "7.4.0"
   project = data.google_project.project.project_id
 
-  secrets = ["argocd_client_id", "argocd_client_secret"]
-  mode    = "authoritative"
-
+  service_accounts = [module.argocd_notifications_controller_sa.email]
+  mode             = "additive"
   bindings = {
-    "roles/secretmanager.secretAccessor" = [
-      "serviceAccount:${module.argocd_secretmanager_sa.service_account.email}"
+    "roles/iam.workloadIdentityUser" = [
+      "serviceAccount:${data.google_project.project.project_id}.svc.id.goog[argocd/argocd-notifications]"
     ]
   }
 
-  depends_on = [
-    module.argocd_secretmanager_sa,
-    google_secret_manager_secret.argocd_client_id,
-    google_secret_manager_secret.argocd_client_secret
-  ]
+  depends_on = [module.argocd_notifications_controller_sa]
+}
+
+module "argocd_notifications_controller_secret_accessor_binding" {
+  source  = "terraform-google-modules/iam/google//modules/secret_manager_iam"
+  version = "7.6.0"
+  project = data.google_project.project.project_id
+
+  secrets = [google_secret_manager_secret.argocd_notification_webhook_url.secret_id]
+  mode    = "additive"
+  bindings = {
+    "roles/secretmanager.secretAccessor" = [
+      "serviceAccount:${module.argocd_notifications_controller_sa.email}"
+    ]
+  }
+  depends_on = [module.argocd_notifications_controller_sa, google_secret_manager_secret.argocd_notification_webhook_url]
 }
 
 module "gmp_collector_sa" {
