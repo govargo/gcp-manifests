@@ -11,6 +11,7 @@ metadata:
     argocd-image-updater.argoproj.io/little.force-update: "true"
     argocd-image-updater.argoproj.io/little.helm.image-name: image.repository
     argocd-image-updater.argoproj.io/little.helm.image-tag: image.tag
+    notifications.argoproj.io/subscribe.on-sync-succeeded.googlechat: spaceName
 spec:
   project: default
   syncPolicy:
@@ -298,14 +299,6 @@ spec:
           port: 6379
           dbNumber: 0
 
-  ignoreDifferences:
-  - group: apps
-    kind: Deployment
-    name: little-quest
-    namespace: little-quest
-    jsonPointers:
-    - /spec/replicas
-    - /spec/template/spec/containers/0/image
   destination:
     name: "gke_kentaiso-330205_asia-northeast1_prod-app-0"
     namespace: little-quest
