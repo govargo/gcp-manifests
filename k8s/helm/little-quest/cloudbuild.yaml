@@ -43,7 +43,7 @@ steps:
     args:
     - -c
     - |
-      helm push little-quest-0.1.0.tgz oci://${LOCATION}-docker.pkg.dev/${PROJECT_ID}/little-quest/charts
+      helm push little-quest-${TAG_NAME}.tgz oci://${LOCATION}-docker.pkg.dev/${PROJECT_ID}/little-quest/charts
     waitFor:
     - helm-package
 
