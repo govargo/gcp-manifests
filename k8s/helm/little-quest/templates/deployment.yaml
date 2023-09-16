@@ -49,6 +49,8 @@ spec:
           env:
           - name: APP_ENV
             value: {{ .Values.env | quote }}
+          - name: SERVICE_NAME
+            value: {{ .Values.serviceName | quote }}
           - name: PORT
             value: {{ .Values.containerPort | default "80" | quote }}
           - name: TZ
