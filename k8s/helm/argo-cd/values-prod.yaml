@@ -1,3 +1,12 @@
+## Globally shared configuration
+global:
+  # Default logging options used by all components
+  logging:
+    # -- Set the global logging format. Either: `text` or `json`
+    format: json
+    # -- Set the global logging level. One of: `debug`, `info`, `warn` or `error`
+    level: info
+
 ## Argo Configs
 configs:
   # General Argo CD configuration
