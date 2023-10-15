@@ -117,6 +117,9 @@ dex:
   # -- Enable dex
   enabled: true
 
+  extraArgs:
+  - --logformat=json
+
   serviceAccount:
     annotations:
       iam.gke.io/gcp-service-account: argocd-dex-server@kentaiso-330205.iam.gserviceaccount.com
