@@ -13,25 +13,54 @@ data "google_secret_manager_secret_version" "mysql_datastream_user_password" {
   secret = "mysql_datastream_user_password"
 }
 
-resource "google_compute_instance" "datastream_cloudsql_proxy" {
+resource "google_compute_health_check" "cloudsql_proxy_autohealing" {
+  project = data.google_project.project.project_id
+
+  name                = "cloudsql-proxy-health-check"
+  check_interval_sec  = 60
+  timeout_sec         = 30
+  healthy_threshold   = 1
+  unhealthy_threshold = 10
+
+  http_health_check {
+    request_path = "/liveness"
+    port         = "9090"
+  }
+}
+
+resource "google_compute_firewall" "allow_healthcheck_to_cloudsql_proxy" {
+  name        = "allow-healthcheck-to-cloudsql-proxy"
+  network     = data.google_compute_network.vpc_network.id
+  description = "Allow HTTP Health Check -> Cloud SQL Proxy"
+
+  direction = "INGRESS"
+
+  allow {
+    protocol = "tcp"
+    ports    = ["9090"]
+  }
+
+  source_ranges = [
+    "35.191.0.0/16",
+    "130.211.0.0/22"
+  ]
+
+  target_tags = ["allow-datastream-to-cloudsql"]
+}
+
+resource "google_compute_instance_template" "datastream_cloudsql_proxy" {
   project = data.google_project.project.project_id
 
   name         = "datastream-cloudsql-proxy"
   machine_type = "e2-micro"
-  zone         = "${var.region}-a"
+  tags         = ["allow-datastream-to-cloudsql"]
 
-  tags = ["allow-datastream-to-cloudsql"]
-
-  boot_disk {
-    initialize_params {
-      image = "debian-cloud/debian-10"
-      labels = {
-        env  = var.env
-        role = "cloudsql-proxy"
-      }
-      size = 10
-      type = "pd-standard"
-    }
+  disk {
+    source_image = "debian-cloud/debian-10"
+    auto_delete  = true
+    boot         = true
+    disk_type    = "pd-standard"
+    disk_size_gb = 10
   }
 
   scheduling {
@@ -44,7 +73,7 @@ resource "google_compute_instance" "datastream_cloudsql_proxy" {
   network_interface {
     network            = var.gcp_project_name
     subnetwork_project = data.google_project.project.project_id
-    subnetwork         = "${var.env}-app-0"
+    subnetwork         = "https://www.googleapis.com/compute/v1/projects/${data.google_project.project.project_id}/regions/${var.region}/subnetworks/${var.env}-app-0"
     stack_type         = "IPV4_ONLY"
   }
 
@@ -69,6 +98,35 @@ EOF
   }
 }
 
+resource "google_compute_instance_group_manager" "datastream_cloudsql_proxy_mig" {
+  project = data.google_project.project.project_id
+
+  name               = "datastream-cloudsql-proxy-mig"
+  base_instance_name = "datastream-cloudsql-proxy"
+  zone               = "${var.region}-a"
+
+  target_size = 1
+
+  version {
+    instance_template = google_compute_instance_template.datastream_cloudsql_proxy.id
+  }
+
+  auto_healing_policies {
+    health_check      = google_compute_health_check.cloudsql_proxy_autohealing.id
+    initial_delay_sec = 60
+  }
+}
+
+data "google_compute_instance_group" "datastream_cloudsql_proxy_mig" {
+  name = "datastream-cloudsql-proxy-mig"
+  zone = "${var.region}-a"
+}
+
+data "google_compute_instance" "datastream_cloudsql_proxy_instance" {
+  self_link = tolist(data.google_compute_instance_group.datastream_cloudsql_proxy_mig.instances)[0]
+  zone      = "${var.region}-a"
+}
+
 resource "google_dns_record_set" "datastream_cloudsql_proxy" {
   project      = data.google_project.project.project_id
   managed_zone = "${var.gcp_project_name}-demo"
@@ -77,9 +135,9 @@ resource "google_dns_record_set" "datastream_cloudsql_proxy" {
   type = "A"
   ttl  = 60
 
-  rrdatas = [google_compute_instance.datastream_cloudsql_proxy.network_interface.0.network_ip]
+  rrdatas = [data.google_compute_instance.datastream_cloudsql_proxy_instance.network_interface.0.network_ip]
 
-  depends_on = [google_compute_instance.datastream_cloudsql_proxy]
+  depends_on = [google_compute_instance_group_manager.datastream_cloudsql_proxy_mig]
 }
 
 resource "google_compute_firewall" "allow_datastream_to_cloudsql" {
@@ -157,7 +215,6 @@ resource "google_datastream_connection_profile" "destination_bigquery_profile" {
 
   bigquery_profile {}
 }
-
 
 resource "google_datastream_stream" "masterdata_stream" {
   project = data.google_project.project.project_id
