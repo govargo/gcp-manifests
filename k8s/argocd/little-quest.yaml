@@ -250,6 +250,8 @@ spec:
                 type: HTTP
                 requestPath: /healthz
                 port: 18080
+              securityPolicy:
+                name: prod-owasp10-policy
 
           frontendConfig:
             enabled: true
