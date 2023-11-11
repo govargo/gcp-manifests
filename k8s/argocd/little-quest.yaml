@@ -251,7 +251,7 @@ spec:
                 requestPath: /healthz
                 port: 18080
               securityPolicy:
-                name: prod-owasp10-policy
+                name: prod-little-quest-agent-restrict-policy
 
           frontendConfig:
             enabled: true
