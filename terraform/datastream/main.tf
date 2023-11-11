@@ -29,6 +29,8 @@ resource "google_compute_health_check" "cloudsql_proxy_autohealing" {
 }
 
 resource "google_compute_firewall" "allow_healthcheck_to_cloudsql_proxy" {
+  project = data.google_project.project.project_id
+
   name        = "allow-healthcheck-to-cloudsql-proxy"
   network     = data.google_compute_network.vpc_network.id
   description = "Allow HTTP Health Check -> Cloud SQL Proxy"
