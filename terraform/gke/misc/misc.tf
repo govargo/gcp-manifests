@@ -268,8 +268,8 @@ module "argocd_repo_server_sa" {
   version    = "4.1.1"
   project_id = data.google_project.project.project_id
 
-  names        = ["argocd-repo-server"]
-  display_name = "ArgoCD Repo server ServiceAccount"
+  names         = ["argocd-repo-server"]
+  display_name  = "ArgoCD Repo server ServiceAccount"
   project_roles = ["${data.google_project.project.project_id}=>roles/artifactregistry.reader"]
 }
 
@@ -294,8 +294,8 @@ module "argocd_notifications_controller_sa" {
   version    = "4.1.1"
   project_id = data.google_project.project.project_id
 
-  names         = ["argocd-notifications"]
-  display_name  = "ArgoCD Notifications Controller ServiceAccount"
+  names        = ["argocd-notifications"]
+  display_name = "ArgoCD Notifications Controller ServiceAccount"
 }
 
 module "argocd_notifications_controller_workloadIdentity_binding" {
@@ -405,10 +405,10 @@ module "argocd_image_updater_sa" {
   version    = "4.1.1"
   project_id = data.google_project.project.project_id
 
-  names        = ["argocd-image-updater"]
-  display_name = "ArgoCD image updater ServiceAccount"
+  names         = ["argocd-image-updater"]
+  display_name  = "ArgoCD image updater ServiceAccount"
   project_roles = ["${data.google_project.project.project_id}=>roles/artifactregistry.reader"]
-  depends_on = [google_project_iam_custom_role.gmp_rule_evaluator_role]
+  depends_on    = [google_project_iam_custom_role.gmp_rule_evaluator_role]
 }
 
 module "argocd_image_updater_workloadIdentity_binding" {
