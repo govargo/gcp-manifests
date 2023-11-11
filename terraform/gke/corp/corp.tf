@@ -140,8 +140,8 @@ module "agones_allocator_sa" {
   version    = "4.1.1"
   project_id = data.google_project.project.project_id
 
-  names        = ["agones-allocator"]
-  display_name = "Agones Allocator ServiceAccount"
+  names         = ["agones-allocator"]
+  display_name  = "Agones Allocator ServiceAccount"
   project_roles = ["${data.google_project.project.project_id}=>roles/monitoring.metricWriter"]
 }
 
@@ -165,8 +165,8 @@ module "agones_controller_sa" {
   version    = "4.1.1"
   project_id = data.google_project.project.project_id
 
-  names        = ["agones-controller"]
-  display_name = "Agones Controller ServiceAccount"
+  names         = ["agones-controller"]
+  display_name  = "Agones Controller ServiceAccount"
   project_roles = ["${data.google_project.project.project_id}=>roles/monitoring.metricWriter"]
 }
 
