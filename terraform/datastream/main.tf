@@ -53,12 +53,14 @@ resource "google_compute_firewall" "allow_healthcheck_to_cloudsql_proxy" {
 resource "google_compute_instance_template" "datastream_cloudsql_proxy" {
   project = data.google_project.project.project_id
 
-  name         = "datastream-cloudsql-proxy"
+  name_prefix  = "datastream-cloudsql-proxy-"
   machine_type = "e2-micro"
+  region       = var.region
   tags         = ["allow-datastream-to-cloudsql"]
 
   disk {
     source_image = "debian-cloud/debian-10"
+    type         = "PERSISTENT"
     auto_delete  = true
     boot         = true
     disk_type    = "pd-standard"
@@ -66,10 +68,12 @@ resource "google_compute_instance_template" "datastream_cloudsql_proxy" {
   }
 
   scheduling {
+    min_node_cpus               = 0
     preemptible                 = true
     automatic_restart           = false
     provisioning_model          = "SPOT"
     instance_termination_action = "STOP"
+    on_host_maintenance         = "TERMINATE"
   }
 
   network_interface {
@@ -86,6 +90,9 @@ resource "google_compute_instance_template" "datastream_cloudsql_proxy" {
 
   metadata_startup_script = <<EOF
 #! /bin/bash
+curl -sSO https://dl.google.com/cloudagents/add-google-cloud-ops-agent-repo.sh
+sudo bash add-google-cloud-ops-agent-repo.sh --also-install
+
 sudo apt -y install wget
 wget https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.6.0/cloud-sql-proxy.linux.amd64 -O /usr/local/bin/cloud-sql-proxy
 chmod +x /usr/local/bin/cloud-sql-proxy
@@ -96,7 +103,11 @@ EOF
 
   service_account {
     email  = data.google_compute_default_service_account.default.email
-    scopes = ["sql-admin", "logging-write"]
+    scopes = ["sql-admin", "logging-write", "monitoring-write"]
+  }
+
+  lifecycle {
+    create_before_destroy = true
   }
 }
 
@@ -119,14 +130,24 @@ resource "google_compute_instance_group_manager" "datastream_cloudsql_proxy_mig"
   }
 }
 
+resource "time_sleep" "wait_60_seconds" {
+  depends_on = [google_compute_instance_group_manager.datastream_cloudsql_proxy_mig]
+
+  create_duration = "60s"
+}
+
 data "google_compute_instance_group" "datastream_cloudsql_proxy_mig" {
   name = "datastream-cloudsql-proxy-mig"
   zone = "${var.region}-a"
+
+  depends_on = [google_compute_instance_group_manager.datastream_cloudsql_proxy_mig]
 }
 
 data "google_compute_instance" "datastream_cloudsql_proxy_instance" {
   self_link = tolist(data.google_compute_instance_group.datastream_cloudsql_proxy_mig.instances)[0]
   zone      = "${var.region}-a"
+
+  depends_on = [time_sleep.wait_60_seconds]
 }
 
 resource "google_dns_record_set" "datastream_cloudsql_proxy" {
