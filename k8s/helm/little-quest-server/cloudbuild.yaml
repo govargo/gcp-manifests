@@ -33,7 +33,7 @@ steps:
     args:
     - -c
     - |
-      helm package ./k8s/helm/little-quest
+      helm package ./k8s/helm/little-quest-server
     waitFor:
     - helm-registry-login
 
@@ -43,7 +43,7 @@ steps:
     args:
     - -c
     - |
-      helm push little-quest-${TAG_NAME}.tgz oci://${LOCATION}-docker.pkg.dev/${PROJECT_ID}/little-quest/charts
+      helm push little-quest-server-${TAG_NAME}.tgz oci://${LOCATION}-docker.pkg.dev/${PROJECT_ID}/little-quest/charts
     waitFor:
     - helm-package
 

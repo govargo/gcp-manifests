@@ -1,11 +1,11 @@
-# Default values for little-quest.
+# Default values for little-quest-server.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
 serviceName: little-quest-server
 
 image:
-  repository: asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/little-quest
+  repository: asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/little-quest-server
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
