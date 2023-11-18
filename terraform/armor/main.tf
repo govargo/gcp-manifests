@@ -1,12 +1,12 @@
 data "google_project" "project" {
 }
 
-resource "google_compute_security_policy" "little_quest_agent_restrict_policy" {
-  name    = "${var.env}-little-quest-agent-restrict-policy"
+resource "google_compute_security_policy" "little_quest_server_agent_restrict_policy" {
+  name    = "${var.env}-little-quest-server-agent-restrict-policy"
   project = data.google_project.project.project_id
 
   type        = "CLOUD_ARMOR"
-  description = "Security Policy for Little Quest with specific agent restrict"
+  description = "Security Policy for Little Quest Server with specific agent restrict"
 
   rule {
     action      = "allow"

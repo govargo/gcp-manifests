@@ -14,9 +14,9 @@ data "google_secret_manager_secret_version" "mysql_datastream_user_password" {
 }
 
 module "private-service-access" {
-  source        = "GoogleCloudPlatform/sql-db/google//modules/private_service_access"
-  version       = "15.0.0"
-  project_id    = data.google_project.project.project_id
+  source     = "GoogleCloudPlatform/sql-db/google//modules/private_service_access"
+  version    = "15.0.0"
+  project_id = data.google_project.project.project_id
 
   vpc_network   = var.gcp_project_name
   ip_version    = "IPV4"
@@ -91,10 +91,10 @@ module "cloudsql_mysql" {
   depends_on = [module.private-service-access.peering_completed]
 }
 
-resource "google_sql_user" "little_quest_user" {
+resource "google_sql_user" "little_quest_server_user" {
   project = data.google_project.project.project_id
 
-  name     = "little-quest"
+  name     = "little-quest-server"
   host     = "%"
   instance = module.cloudsql_mysql.instance_name
   type     = "BUILT_IN"

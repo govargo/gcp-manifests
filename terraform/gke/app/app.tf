@@ -111,7 +111,7 @@ module "app-0" {
     all = {}
 
     app-pool = {
-      app = "little-quest"
+      app = "little-quest-server"
     }
   }
 
@@ -125,7 +125,7 @@ module "app-0" {
     app-pool = [
       {
         key    = "app"
-        value  = "little-quest"
+        value  = "little-quest-server"
         effect = "NO_SCHEDULE"
       },
     ]
@@ -135,7 +135,7 @@ module "app-0" {
     all = []
 
     app-pool = [
-      "little-quest",
+      "little-quest-server",
     ]
   }
 }
@@ -149,7 +149,7 @@ module "gke_workload_address" {
   address_type = "EXTERNAL"
   global       = true
   names = [
-    "little-quest-ip",
+    "little-quest-server-ip",
   ]
 }
 
@@ -157,7 +157,7 @@ resource "google_dns_record_set" "little_quest" {
   project      = data.google_project.project.project_id
   managed_zone = "${var.gcp_project_name}-demo"
 
-  name = "little-quest.${var.gcp_project_name}.demo.altostrat.com."
+  name = "little-quest-server.${var.gcp_project_name}.demo.altostrat.com."
   type = "A"
   ttl  = 60
 
@@ -175,13 +175,13 @@ resource "google_project_iam_custom_role" "pubsub_custom_publisher" {
   stage       = "GA"
 }
 
-module "little_quest_sa" {
+module "little_quest_server_sa" {
   source     = "terraform-google-modules/service-accounts/google"
   version    = "4.1.1"
   project_id = data.google_project.project.project_id
 
-  names        = ["little-quest"]
-  display_name = "Little Quest ServiceAccount"
+  names        = ["little-quest-server"]
+  display_name = "Little Quest Server ServiceAccount"
   project_roles = [
     "${data.google_project.project.project_id}=>roles/secretmanager.secretAccessor",
     "${data.google_project.project.project_id}=>roles/monitoring.viewer",
@@ -199,12 +199,12 @@ module "little_quest_workloadIdentity_binding" {
   version = "7.4.0"
   project = data.google_project.project.project_id
 
-  service_accounts = [module.little_quest_sa.email]
+  service_accounts = [module.little_quest_server_sa.email]
   mode             = "additive"
   bindings = {
     "roles/iam.workloadIdentityUser" = [
-      "serviceAccount:${data.google_project.project.project_id}.svc.id.goog[little-quest/little-quest]"
+      "serviceAccount:${data.google_project.project.project_id}.svc.id.goog[little-quest-server/little-quest-server]"
     ]
   }
-  depends_on = [module.little_quest_sa]
+  depends_on = [module.little_quest_server_sa]
 }

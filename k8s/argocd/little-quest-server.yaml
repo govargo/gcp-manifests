@@ -1,11 +1,11 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: little-quest
+  name: little-quest-server
   namespace: argocd
   annotations:
     argocd-image-updater.argoproj.io/write-back-method: argocd
-    argocd-image-updater.argoproj.io/image-list: little=asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/little-quest
+    argocd-image-updater.argoproj.io/image-list: little=asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/little-quest-server
     argocd-image-updater.argoproj.io/little.update-strategy: latest
     argocd-image-updater.argoproj.io/little.ignore-tags: latest
     argocd-image-updater.argoproj.io/little.force-update: "true"
@@ -22,16 +22,16 @@ spec:
       selfHeal: true
   source:
     repoURL: asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/charts
-    chart: little-quest
-    targetRevision: 0.3.0
+    chart: little-quest-server
+    targetRevision: 0.4.0
     helm:
-      releaseName: "little-quest"
+      releaseName: "little-quest-server"
       values: |
-        # Default values for little-quest.
+        # Default values for little-quest-server.
         # This is a YAML-formatted file.
         # Declare variables to be passed into your templates.
         image:
-          repository: asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/little-quest
+          repository: asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/little-quest-server
           pullPolicy: IfNotPresent
 
         imagePullSecrets: []
@@ -45,7 +45,7 @@ spec:
           create: true
           # Annotations to add to the service account
           annotations:
-            iam.gke.io/gcp-service-account: little-quest@kentaiso-330205.iam.gserviceaccount.com
+            iam.gke.io/gcp-service-account: little-quest-server@kentaiso-330205.iam.gserviceaccount.com
           # The name of the service account to use.
           # If not set and create is true, a name is generated using the fullname template
           name: ""
@@ -176,12 +176,12 @@ spec:
               memory: 2Gi
 
         nodeSelector:
-          app: little-quest
+          app: little-quest-server
 
         tolerations:
         - key: "app"
           operator: "Equal"
-          value: "little-quest"
+          value: "little-quest-server"
           effect: "NoSchedule"
 
         affinity: {}
@@ -206,14 +206,14 @@ spec:
             driver: secrets-store.csi.k8s.io
             readOnly: true
             volumeAttributes:
-              secretProviderClass: little-quest
+              secretProviderClass: little-quest-server
 
         maxUnavailable: 1
 
         service:
           annotations:
             cloud.google.com/neg: '{"ingress": true}'
-            cloud.google.com/backend-config: '{"ports": {"80":"little-quest"}}'
+            cloud.google.com/backend-config: '{"ports": {"80":"little-quest-server"}}'
           type: ClusterIP
           port: 80
 
@@ -221,11 +221,11 @@ spec:
           enabled: true
           className: ""
           annotations:
-            kubernetes.io/ingress.global-static-ip-name: "little-quest-ip"
-            networking.gke.io/managed-certificates: "little-quest"
-            networking.gke.io/v1beta1.FrontendConfig: "little-quest"
+            kubernetes.io/ingress.global-static-ip-name: "little-quest-server-ip"
+            networking.gke.io/managed-certificates: "little-quest-server"
+            networking.gke.io/v1beta1.FrontendConfig: "little-quest-server"
           hosts:
-            - host: little-quest.kentaiso.demo.altostrat.com
+            - host: little-quest-server.kentaiso.demo.altostrat.com
               paths:
                 - path: /*
                   pathType: ImplementationSpecific
@@ -237,7 +237,7 @@ spec:
           managedCertificate:
             enabled: true
             domains:
-            - little-quest.kentaiso.demo.altostrat.com
+            - little-quest-server.kentaiso.demo.altostrat.com
 
           backendConfig:
             enabled: true
@@ -251,7 +251,7 @@ spec:
                 requestPath: /healthz
                 port: 18080
               securityPolicy:
-                name: prod-little-quest-agent-restrict-policy
+                name: prod-little-quest-server-agent-restrict-policy
 
           frontendConfig:
             enabled: true
@@ -293,7 +293,7 @@ spec:
           host: localhost
           port: 3306
           dbName: master_data
-          userName: little-quest
+          userName: little-quest-server
 
         # Redis info
         redis:
@@ -303,4 +303,4 @@ spec:
 
   destination:
     name: "gke_kentaiso-330205_asia-northeast1_prod-app-0"
-    namespace: little-quest
+    namespace: little-quest-server

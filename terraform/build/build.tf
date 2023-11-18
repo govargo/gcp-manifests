@@ -1,7 +1,7 @@
 ## Cloud Build
-resource "google_cloudbuild_trigger" "little_server_build_trigger" {
+resource "google_cloudbuild_trigger" "little_quest_server_build_trigger" {
   project  = data.google_project.project.project_id
-  name     = "little-server-build-trigger"
+  name     = "little-quest-server-build-trigger"
   location = var.region
   filename = "cloudbuild.yaml"
 
@@ -20,11 +20,11 @@ resource "google_cloudbuild_trigger" "little_server_build_trigger" {
   include_build_logs = "INCLUDE_BUILD_LOGS_WITH_STATUS"
 }
 
-resource "google_cloudbuild_trigger" "little_quest_helm_chart_build_trigger" {
+resource "google_cloudbuild_trigger" "little_quest_server_helm_chart_build_trigger" {
   project  = data.google_project.project.project_id
-  name     = "little-quest-helm-chart-build-trigger"
+  name     = "little-quest-server-helm-chart-build-trigger"
   location = var.region
-  filename = "k8s/helm/little-quest/cloudbuild.yaml"
+  filename = "k8s/helm/little-quest-server/cloudbuild.yaml"
 
   github {
     owner = "govargo"
