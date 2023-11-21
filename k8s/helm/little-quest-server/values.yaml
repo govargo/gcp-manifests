@@ -221,3 +221,7 @@ redis:
   host: redis
   port: 6379
   dbNumber: 0
+
+agones:
+  allocator:
+    host: agones-allocator.agones-system.svc.cluster.local.

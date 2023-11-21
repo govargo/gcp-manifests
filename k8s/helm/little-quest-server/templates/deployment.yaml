@@ -87,6 +87,8 @@ spec:
               secretKeyRef:
                 name: middleware-env
                 key: redis_password
+          - name: AGONES_ALLOCATOR_HOST
+            value: {{ .Values.agones.allocator.host }}
           - name: OTEL_SAMPLING_RATE
             value: {{ .Values.cloudTrace.samplingRate | default 0.1 | quote }}
           - name: POD_NAME
