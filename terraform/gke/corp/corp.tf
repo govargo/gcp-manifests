@@ -11,7 +11,7 @@ data "google_compute_network" "vpc_network" {
 
 module "corp-0" {
   source                               = "terraform-google-modules/kubernetes-engine/google"
-  version                              = "25.0.0"
+  version                              = "29.0.0"
   project_id                           = data.google_project.project.project_id
   name                                 = "${var.env}-corp-0"
   regional                             = true
@@ -24,6 +24,7 @@ module "corp-0" {
   http_load_balancing                  = var.http_load_balancing
   horizontal_pod_autoscaling           = var.horizontal_pod_autoscaling
   enable_vertical_pod_autoscaling      = var.enable_vertical_pod_autoscaling
+  config_connector                     = false
   network_policy                       = var.network_policy
   filestore_csi_driver                 = var.filestore_csi_driver
   enable_shielded_nodes                = var.enable_shielded_nodes
@@ -38,11 +39,14 @@ module "corp-0" {
   node_metadata                        = var.node_metadata
   enable_binary_authorization          = var.enable_binary_authorization
   enable_cost_allocation               = var.enable_cost_allocation
+  enable_mesh_certificates             = false
   release_channel                      = var.release_channel
   dns_cache                            = var.dns_cache
   resource_usage_export_dataset_id     = "all_billing_data"
   enable_network_egress_export         = var.enable_network_egress_export
   remove_default_node_pool             = true
+  security_posture_mode                = "BASIC"
+  security_posture_vulnerability_mode  = "VULNERABILITY_BASIC"
   notification_config_topic            = "projects/${data.google_project.project.project_id}/topics/gke-cluster-upgrade-notification"
 
   node_pools = [
@@ -129,8 +133,8 @@ module "corp-0" {
   node_pools_oauth_scopes = {
     all = []
 
-    kube-system-pool = var.oauth_scopes
-    open-match-pool  = var.oauth_scopes
+    kube-system-pool       = var.oauth_scopes
+    open-match-pool        = var.oauth_scopes
     agones-gameserver-pool = var.oauth_scopes
   }
 
@@ -185,7 +189,7 @@ module "corp-0" {
 
 module "agones_allocator_sa" {
   source     = "terraform-google-modules/service-accounts/google"
-  version    = "4.1.1"
+  version    = "4.2.2"
   project_id = data.google_project.project.project_id
 
   names         = ["agones-allocator"]
@@ -195,7 +199,7 @@ module "agones_allocator_sa" {
 
 module "agones_allocator_workloadIdentity_binding" {
   source  = "terraform-google-modules/iam/google//modules/service_accounts_iam"
-  version = "7.4.0"
+  version = "7.7.1"
   project = data.google_project.project.project_id
 
   service_accounts = [module.agones_allocator_sa.email]
@@ -210,7 +214,7 @@ module "agones_allocator_workloadIdentity_binding" {
 
 module "agones_controller_sa" {
   source     = "terraform-google-modules/service-accounts/google"
-  version    = "4.1.1"
+  version    = "4.2.2"
   project_id = data.google_project.project.project_id
 
   names         = ["agones-controller"]
@@ -220,7 +224,7 @@ module "agones_controller_sa" {
 
 module "agones_controller_workloadIdentity_binding" {
   source  = "terraform-google-modules/iam/google//modules/service_accounts_iam"
-  version = "7.4.0"
+  version = "7.7.1"
   project = data.google_project.project.project_id
 
   service_accounts = [module.agones_controller_sa.email]

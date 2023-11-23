@@ -6,7 +6,7 @@ data "google_compute_default_service_account" "default" {
 
 module "app-0" {
   source                               = "terraform-google-modules/kubernetes-engine/google//modules/private-cluster"
-  version                              = "25.0.0"
+  version                              = "29.0.0"
   project_id                           = data.google_project.project.project_id
   name                                 = "${var.env}-app-0"
   regional                             = true
@@ -23,6 +23,7 @@ module "app-0" {
   http_load_balancing                  = var.http_load_balancing
   horizontal_pod_autoscaling           = var.horizontal_pod_autoscaling
   enable_vertical_pod_autoscaling      = var.enable_vertical_pod_autoscaling
+  config_connector                     = false
   network_policy                       = var.network_policy
   filestore_csi_driver                 = var.filestore_csi_driver
   enable_shielded_nodes                = var.enable_shielded_nodes
@@ -37,11 +38,14 @@ module "app-0" {
   node_metadata                        = var.node_metadata
   enable_binary_authorization          = var.enable_binary_authorization
   enable_cost_allocation               = var.enable_cost_allocation
+  enable_mesh_certificates             = false
   release_channel                      = var.release_channel
   dns_cache                            = var.dns_cache
   resource_usage_export_dataset_id     = "all_billing_data"
   enable_network_egress_export         = var.enable_network_egress_export
   remove_default_node_pool             = true
+  security_posture_mode                = "BASIC"
+  security_posture_vulnerability_mode  = "VULNERABILITY_BASIC"
   notification_config_topic            = "projects/${data.google_project.project.project_id}/topics/gke-cluster-upgrade-notification"
 
 
@@ -141,16 +145,12 @@ module "app-0" {
 }
 
 ## Network
-module "gke_workload_address" {
-  source       = "terraform-google-modules/address/google"
-  version      = "3.1.1"
-  project_id   = data.google_project.project.project_id
-  region       = var.region
-  address_type = "EXTERNAL"
-  global       = true
-  names = [
-    "little-quest-server-ip",
-  ]
+resource "google_compute_global_address" "little_quest_server_ip" {
+  project       = data.google_project.project.project_id
+  name          = "little-quest-server-ip"
+  address_type  = "EXTERNAL"
+  ip_version    = "IPV4"
+  prefix_length = 0
 }
 
 resource "google_dns_record_set" "little_quest" {
@@ -161,9 +161,9 @@ resource "google_dns_record_set" "little_quest" {
   type = "A"
   ttl  = 60
 
-  rrdatas = [module.gke_workload_address.addresses[0]]
+  rrdatas = [google_compute_global_address.little_quest_server_ip.address]
 
-  depends_on = [module.gke_workload_address]
+  depends_on = [google_compute_global_address.little_quest_server_ip]
 }
 
 ## Service Account
@@ -177,7 +177,7 @@ resource "google_project_iam_custom_role" "pubsub_custom_publisher" {
 
 module "little_quest_server_sa" {
   source     = "terraform-google-modules/service-accounts/google"
-  version    = "4.1.1"
+  version    = "4.2.2"
   project_id = data.google_project.project.project_id
 
   names        = ["little-quest-server"]
@@ -196,7 +196,7 @@ module "little_quest_server_sa" {
 
 module "little_quest_workloadIdentity_binding" {
   source  = "terraform-google-modules/iam/google//modules/service_accounts_iam"
-  version = "7.4.0"
+  version = "7.7.1"
   project = data.google_project.project.project_id
 
   service_accounts = [module.little_quest_server_sa.email]

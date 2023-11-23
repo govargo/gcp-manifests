@@ -6,7 +6,7 @@ data "google_compute_default_service_account" "default" {
 
 module "misc-0" {
   source                               = "terraform-google-modules/kubernetes-engine/google//modules/private-cluster"
-  version                              = "25.0.0"
+  version                              = "29.0.0"
   project_id                           = data.google_project.project.project_id
   name                                 = "${var.env}-misc-0"
   regional                             = false
@@ -22,6 +22,7 @@ module "misc-0" {
   http_load_balancing                  = var.http_load_balancing
   horizontal_pod_autoscaling           = var.horizontal_pod_autoscaling
   enable_vertical_pod_autoscaling      = var.enable_vertical_pod_autoscaling
+  config_connector                     = false
   network_policy                       = var.network_policy
   filestore_csi_driver                 = var.filestore_csi_driver
   enable_shielded_nodes                = var.enable_shielded_nodes
@@ -36,11 +37,14 @@ module "misc-0" {
   node_metadata                        = var.node_metadata
   enable_binary_authorization          = var.enable_binary_authorization
   enable_cost_allocation               = var.enable_cost_allocation
+  enable_mesh_certificates             = false
   release_channel                      = var.release_channel
   dns_cache                            = var.dns_cache
   resource_usage_export_dataset_id     = "all_billing_data"
   enable_network_egress_export         = var.enable_network_egress_export
   remove_default_node_pool             = true
+  security_posture_mode                = "BASIC"
+  security_posture_vulnerability_mode  = "VULNERABILITY_BASIC"
   notification_config_topic            = "projects/${data.google_project.project.project_id}/topics/gke-cluster-upgrade-notification"
 
   node_pools = [
@@ -139,16 +143,12 @@ module "misc-0" {
 }
 
 ## Network
-module "gke_workload_address" {
-  source       = "terraform-google-modules/address/google"
-  version      = "3.1.1"
-  project_id   = data.google_project.project.project_id
-  region       = var.region
-  address_type = "EXTERNAL"
-  global       = true
-  names = [
-    "argocd-server-ip",
-  ]
+resource "google_compute_global_address" "argocd_server_ip" {
+  project       = data.google_project.project.project_id
+  name          = "argocd-server-ip"
+  address_type  = "EXTERNAL"
+  ip_version    = "IPV4"
+  prefix_length = 0
 }
 
 resource "google_dns_record_set" "argocd_server" {
@@ -159,9 +159,9 @@ resource "google_dns_record_set" "argocd_server" {
   type = "A"
   ttl  = 60
 
-  rrdatas = [module.gke_workload_address.addresses[0]]
+  rrdatas = [google_compute_global_address.argocd_server_ip.address]
 
-  depends_on = [module.gke_workload_address]
+  depends_on = [google_compute_global_address.argocd_server_ip]
 }
 
 ## Secret
@@ -178,7 +178,7 @@ resource "google_secret_manager_secret" "argocd_client_id" {
   }
 
   replication {
-    automatic = true
+    auto {}
   }
 }
 
@@ -195,7 +195,7 @@ resource "google_secret_manager_secret" "argocd_client_secret" {
   }
 
   replication {
-    automatic = true
+    auto {}
   }
 }
 
@@ -212,14 +212,14 @@ resource "google_secret_manager_secret" "argocd_notification_webhook_url" {
   }
 
   replication {
-    automatic = true
+    auto {}
   }
 }
 
 ## ServiceAccount
 module "argocd_dex_server_sa" {
   source     = "terraform-google-modules/service-accounts/google"
-  version    = "4.1.1"
+  version    = "4.2.2"
   project_id = data.google_project.project.project_id
 
   names        = ["argocd-dex-server"]
@@ -228,7 +228,7 @@ module "argocd_dex_server_sa" {
 
 module "argocd_dex_server_workloadIdentity_binding" {
   source  = "terraform-google-modules/iam/google//modules/service_accounts_iam"
-  version = "7.4.0"
+  version = "7.7.1"
   project = data.google_project.project.project_id
 
   service_accounts = [module.argocd_dex_server_sa.email]
@@ -244,7 +244,7 @@ module "argocd_dex_server_workloadIdentity_binding" {
 
 module "argocd_dex_server_secret_accessor_binding" {
   source  = "terraform-google-modules/iam/google//modules/secret_manager_iam"
-  version = "7.4.1"
+  version = "7.7.1"
   project = data.google_project.project.project_id
 
   secrets = ["argocd_client_id", "argocd_client_secret"]
@@ -265,7 +265,7 @@ module "argocd_dex_server_secret_accessor_binding" {
 
 module "argocd_repo_server_sa" {
   source     = "terraform-google-modules/service-accounts/google"
-  version    = "4.1.1"
+  version    = "4.2.2"
   project_id = data.google_project.project.project_id
 
   names         = ["argocd-repo-server"]
@@ -275,7 +275,7 @@ module "argocd_repo_server_sa" {
 
 module "argocd_repo_server_workloadIdentity_binding" {
   source  = "terraform-google-modules/iam/google//modules/service_accounts_iam"
-  version = "7.4.0"
+  version = "7.7.1"
   project = data.google_project.project.project_id
 
   service_accounts = [module.argocd_repo_server_sa.email]
@@ -291,7 +291,7 @@ module "argocd_repo_server_workloadIdentity_binding" {
 
 module "argocd_notifications_controller_sa" {
   source     = "terraform-google-modules/service-accounts/google"
-  version    = "4.1.1"
+  version    = "4.2.2"
   project_id = data.google_project.project.project_id
 
   names        = ["argocd-notifications"]
@@ -300,7 +300,7 @@ module "argocd_notifications_controller_sa" {
 
 module "argocd_notifications_controller_workloadIdentity_binding" {
   source  = "terraform-google-modules/iam/google//modules/service_accounts_iam"
-  version = "7.4.0"
+  version = "7.7.1"
   project = data.google_project.project.project_id
 
   service_accounts = [module.argocd_notifications_controller_sa.email]
@@ -316,7 +316,7 @@ module "argocd_notifications_controller_workloadIdentity_binding" {
 
 module "argocd_notifications_controller_secret_accessor_binding" {
   source  = "terraform-google-modules/iam/google//modules/secret_manager_iam"
-  version = "7.6.0"
+  version = "7.7.1"
   project = data.google_project.project.project_id
 
   secrets = [google_secret_manager_secret.argocd_notification_webhook_url.secret_id]
@@ -331,7 +331,7 @@ module "argocd_notifications_controller_secret_accessor_binding" {
 
 module "gmp_collector_sa" {
   source       = "terraform-google-modules/service-accounts/google"
-  version      = "4.1.1"
+  version      = "4.2.2"
   project_id   = data.google_project.project.project_id
   names        = ["collector"]
   display_name = "Google Managed Prometheus Collector ServiceAccount"
@@ -339,7 +339,7 @@ module "gmp_collector_sa" {
 
 module "gmp_collector_workloadIdentity_binding" {
   source  = "terraform-google-modules/iam/google//modules/service_accounts_iam"
-  version = "7.4.0"
+  version = "7.7.1"
   project = data.google_project.project.project_id
 
   service_accounts = [module.gmp_collector_sa.email]
@@ -354,6 +354,7 @@ module "gmp_collector_workloadIdentity_binding" {
 
 module "gmp_collector_monitoring_writer_binding" {
   source     = "terraform-google-modules/iam/google//modules/member_iam"
+  version    = "7.7.1"
   project_id = data.google_project.project.project_id
 
   service_account_address = "collector@${data.google_project.project.project_id}.iam.gserviceaccount.com"
@@ -373,7 +374,7 @@ resource "google_project_iam_custom_role" "gmp_rule_evaluator_role" {
 
 module "gmp_ruleevaluator_sa" {
   source     = "terraform-google-modules/service-accounts/google"
-  version    = "4.1.1"
+  version    = "4.2.2"
   project_id = data.google_project.project.project_id
 
   names        = ["rule-evaluator"]
@@ -387,7 +388,7 @@ module "gmp_ruleevaluator_sa" {
 
 module "gmp_ruleevaluator_workloadIdentity_binding" {
   source  = "terraform-google-modules/iam/google//modules/service_accounts_iam"
-  version = "7.4.0"
+  version = "7.7.1"
   project = data.google_project.project.project_id
 
   service_accounts = [module.gmp_ruleevaluator_sa.email]
@@ -402,7 +403,7 @@ module "gmp_ruleevaluator_workloadIdentity_binding" {
 
 module "argocd_image_updater_sa" {
   source     = "terraform-google-modules/service-accounts/google"
-  version    = "4.1.1"
+  version    = "4.2.2"
   project_id = data.google_project.project.project_id
 
   names         = ["argocd-image-updater"]
@@ -413,7 +414,7 @@ module "argocd_image_updater_sa" {
 
 module "argocd_image_updater_workloadIdentity_binding" {
   source  = "terraform-google-modules/iam/google//modules/service_accounts_iam"
-  version = "7.4.0"
+  version = "7.7.1"
   project = data.google_project.project.project_id
 
   service_accounts = [module.argocd_image_updater_sa.email]
