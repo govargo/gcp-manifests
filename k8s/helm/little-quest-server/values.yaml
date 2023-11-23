@@ -80,7 +80,7 @@ cloudSqlProxy:
   enabled: false
   image:
     repository: gcr.io/cloud-sql-connectors/cloud-sql-proxy
-    tag: 2.2.0
+    tag: 2.7.2
   args:
   - "--structured-logs"
   - "--private-ip"
