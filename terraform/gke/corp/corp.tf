@@ -97,6 +97,32 @@ module "corp-0" {
       service_account    = data.google_compute_default_service_account.default.email
       preemptible        = var.preemptible
       initial_node_count = var.initial_node_count
+    },
+    {
+      name               = "agones-gameserver-pool"
+      machine_type       = var.machine_type
+      node_locations     = var.node_locations
+      min_count          = null
+      max_count          = null
+      total_min_count    = var.total_min_count
+      total_max_count    = var.total_max_count
+      location_policy    = "ANY"
+      local_ssd_count    = var.local_ssd_count
+      spot               = var.spot
+      disk_size_gb       = var.disk_size_gb
+      disk_type          = var.disk_type
+      image_type         = var.image_type
+      enable_gcfs        = var.enable_gcfs
+      enable_gvnic       = var.enable_gvnic
+      auto_repair        = var.auto_repair
+      auto_upgrade       = var.auto_upgrade
+      autoscaling        = var.autoscaling
+      strategy           = var.strategy
+      max_surge          = var.max_surge
+      max_unavailable    = var.max_unavailable
+      service_account    = data.google_compute_default_service_account.default.email
+      preemptible        = var.preemptible
+      initial_node_count = var.initial_node_count
     }
   ]
 
@@ -105,6 +131,7 @@ module "corp-0" {
 
     kube-system-pool = var.oauth_scopes
     open-match-pool  = var.oauth_scopes
+    agones-gameserver-pool = var.oauth_scopes
   }
 
   node_pools_labels = {
@@ -112,6 +139,10 @@ module "corp-0" {
 
     open-match-pool = {
       app = "open-match"
+    }
+
+    agones-gameserver-pool = {
+      app = "agones-gameserver"
     }
   }
 
@@ -129,6 +160,14 @@ module "corp-0" {
         effect = "NO_SCHEDULE"
       },
     ]
+
+    agones-gameserver-pool = [
+      {
+        key    = "app"
+        value  = "agones-gameserver"
+        effect = "NO_SCHEDULE"
+      },
+    ]
   }
 
   node_pools_tags = {
@@ -136,6 +175,10 @@ module "corp-0" {
 
     open-match-pool = [
       "open-match",
+    ]
+
+    agones-gameserver-pool = [
+      "agones-gameserver",
     ]
   }
 }
@@ -229,5 +272,5 @@ resource "google_compute_firewall" "allow_agones_gameserver_ingress" {
 
   source_ranges = ["0.0.0.0/0"]
 
-  target_tags = ["gke-prod-corp-0-gameserver-pool"]
+  target_tags = ["gke-${var.env}-corp-0-agones-gameserver-pool"]
 }
