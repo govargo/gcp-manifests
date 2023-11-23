@@ -55,9 +55,11 @@ module "cloudsql_mysql" {
   }
 
   insights_config = {
+    query_insights_enabled  = true
     query_string_length     = 1024
     record_application_tags = true
     record_client_address   = true
+    query_plans_per_minute  = 5
   }
 
   ip_configuration = {
