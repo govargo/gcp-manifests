@@ -23,7 +23,7 @@ spec:
   source:
     repoURL: asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/charts
     chart: little-quest-server
-    targetRevision: 0.4.0
+    targetRevision: 0.4.1
     helm:
       releaseName: "little-quest-server"
       values: |
@@ -117,7 +117,7 @@ spec:
           enabled: true
           image:
             repository: gcr.io/cloud-sql-connectors/cloud-sql-proxy
-            tag: 2.2.0
+            tag: 2.7.2
           args:
           - "--http-address=0.0.0.0"
           - "--structured-logs"
@@ -127,6 +127,7 @@ spec:
           - "--prometheus=true"
           - "--telemetry-project=kentaiso-330205"
           - "--disable-traces=true"
+          - "--telemetry-sample-rate=0"
           - "--health-check=true"
           - "kentaiso-330205:asia-northeast1:prod-mysql-instance"
 
@@ -300,6 +301,10 @@ spec:
           host: memorystore-redis-0.kentaiso.demo.altostrat.com.
           port: 6379
           dbNumber: 0
+
+        agones:
+          allocator:
+            host: agones.allocator.kentaiso.demo.altostrat.com.:8443
 
   destination:
     name: "gke_kentaiso-330205_asia-northeast1_prod-app-0"
