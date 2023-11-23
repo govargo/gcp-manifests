@@ -18,32 +18,19 @@ spec:
         syncOptions:
         - CreateNamespace=true
         - ServerSideApply=true
-        - RespectIgnoreDifferences=true
+        - RespectIgnoreDifferences=false
       source:
         chart: agones
         repoURL: https://agones.dev/chart/stable
-        targetRevision: 1.30.0
+        targetRevision: 1.35.0
         helm:
           releaseName: "agones"
           values: |
              agones:
-               featureGates: ""
                metrics:
-                 prometheusEnabled: true
-                 prometheusServiceDiscovery: true
                  stackdriverEnabled: true
                  stackdriverProjectID: "kentaiso-330205"
                  stackdriverLabels: ""
-                 serviceMonitor:
-                   enabled: false
-                   interval: 30s
-               rbacEnabled: true
-               registerServiceAccounts: true
-               registerWebhooks: true
-               registerApiService: true
-               crds:
-                 install: true
-                 cleanupOnDelete: true
                serviceaccount:
                  allocator:
                    name: agones-allocator
@@ -53,24 +40,12 @@ spec:
                    name: agones-controller
                    annotations:
                      iam.gke.io/gcp-service-account: agones-controller@kentaiso-330205.iam.gserviceaccount.com
-                 sdk:
-                   name: agones-sdk
-                   annotations: {}
-               createPriorityClass: true
-               priorityClassName: agones-system
-               cloudProduct: "auto"
-               controller: &controllerValues
+               controller:
                  resources:
                    requests:
                      cpu: 100m
                      memory: 256Mi
-                 nodeSelector: {}
-                 annotations: {}
                  tolerations: []
-                 # - key: "agones.dev/agones-system"
-                 #   operator: "Equal"
-                 #   value: "true"
-                 #   effect: "NoExecute"
                  affinity:
                    nodeAffinity:
                      preferredDuringSchedulingIgnoredDuringExecution:
@@ -79,118 +54,26 @@ spec:
                          matchExpressions:
                            - key: agones.dev/agones-system
                              operator: Exists
-                 generateTLS: true
-                 tlsCert: ""
-                 tlsKey: ""
-                 disableSecret: false
-                 allocationApiService:
-                   annotations: {}
-                   disableCaBundle: false
-                 validatingWebhook:
-                   annotations: {}
-                   disableCaBundle: false
-                 mutatingWebhook:
-                   annotations: {}
-                   disableCaBundle: false
-                 customCertSecretPath: {}
-                 safeToEvict: false
-                 persistentLogs: true
-                 persistentLogsSizeLimitMB: 10000
-                 logLevel: info
-                 numWorkers: 100
-                 apiServerQPS: 400
-                 apiServerQPSBurst: 500
-                 http:
-                   port: 8080
-                 healthCheck:
-                   initialDelaySeconds: 3
-                   periodSeconds: 3
-                   failureThreshold: 3
-                   timeoutSeconds: 1
-                 allocationBatchWaitTime: 500ms
                  replicas: 2
                  pdb:
                      minAvailable: 1
                extensions:
-                 <<: *controllerValues
-                 pdb:
-                     minAvailable: 1
-                 replicas: 2
-                 readiness:
-                   initialDelaySeconds: 3
-                   periodSeconds: 3
-                   failureThreshold: 3
-               ping:
-                 install: false
-                 pdb:
-                   enabled: false
-                   minAvailable: 1
-                 updateStrategy: {}
-                 resources: {}
-                   # requests:
-                   #   cpu: 1
-                   #   memory: 256Mi
-                 nodeSelector: {}
-                 annotations: {}
-                 tolerations:
-                 - key: "agones.dev/agones-system"
-                   operator: "Equal"
-                   value: "true"
-                   effect: "NoExecute"
-                 affinity:
-                   nodeAffinity:
-                     preferredDuringSchedulingIgnoredDuringExecution:
-                     - weight: 1
-                       preference:
-                         matchExpressions:
-                           - key: agones.dev/agones-system
-                             operator: Exists
-                 replicas: 2
-                 http:
-                   expose: true
-                   response: ok
-                   port: 80
-                   serviceType: LoadBalancer
-                   loadBalancerIP: ""
-                   loadBalancerSourceRanges: []
-                   annotations: {}
-                 udp:
-                   expose: true
-                   rateLimit: 20
-                   port: 50000
-                   serviceType: LoadBalancer
-                   loadBalancerIP: ""
-                   loadBalancerSourceRanges: []
-                   annotations: {}
-                 healthCheck:
-                   initialDelaySeconds: 3
-                   periodSeconds: 3
-                   failureThreshold: 3
-                   timeoutSeconds: 1
-               allocator:
-                 install: true
-                 pdb:
-                   enabled: false
-                   minAvailable: 1
-                 updateStrategy: {}
-                 apiServerQPS: 400
-                 apiServerQPSBurst: 500
-                 logLevel: info
-                 annotations: {}
                  resources:
                    requests:
                      cpu: 100m
                      memory: 256Mi
-                 healthCheck:
-                   initialDelaySeconds: 3
-                   periodSeconds: 3
-                   failureThreshold: 3
-                   timeoutSeconds: 1
-                 tolerations:
-                 - key: "agones.dev/agones-system"
-                   operator: "Equal"
-                   value: "true"
-                   effect: "NoExecute"
+                 tolerations: []
+               ping:
+                 install: false
+               allocator:
+                 pdb:
+                   enabled: true
+                   minAvailable: 1
+                 resources:
+                   requests:
+                     cpu: 100m
+                     memory: 256Mi
+                 tolerations: []
                  affinity:
                    nodeAffinity:
                      preferredDuringSchedulingIgnoredDuringExecution:
@@ -202,73 +85,23 @@ spec:
                  replicas: 1
                  service:
                    name: agones-allocator
-                   serviceType: ClusterIP
-                   loadBalancerIP: ""
-                   loadBalancerSourceRanges: []
-                   annotations: {}
+                   serviceType: LoadBalancer
+                   loadBalancerIP: "10.130.0.54"
+                   annotations:
+                     networking.gke.io/load-balancer-type: "Internal"
                    http:
-                     enabled: true
-                     port: 443
-                     portName: https
-                     targetPort: 8443
-                     nodePort: 0 # nodePort will be used if the serviceType is set to NodePort
+                     port: 18080
+                     targetPort: 18080
                    grpc:
-                     enabled: true
-                     port: 443
-                     portName: grpc
+                     port: 8443
                      targetPort: 8443
-                     nodePort: 0 # nodePort will be used if the serviceType is set to NodePort
-                 serviceMetrics:
-                   name: agones-allocator-metrics-service
-                   annotations: {}
-                   http:
-                     enabled: true
-                     port: 8080
-                     portName: http
-                 disableSecretCreation: false
-                 generateTLS: true
-                 tlsCert: ""
-                 tlsKey: ""
-                 generateClientTLS: true
-                 clientCAs: {}
-                 disableMTLS: false
-                 disableTLS: false
-                 remoteAllocationTimeout: 10s
-                 totalRemoteAllocationTimeout: 30s
-                 allocationBatchWaitTime: 500ms
-               image:
-                 registry: us-docker.pkg.dev/agones-images/release
-                 tag: 1.30.0
-                 controller:
-                   name: agones-controller
-                   pullPolicy: IfNotPresent
-                 # extensions settings ignored unless `SplitControllerAndExtensions` feature gate is enabled
-                 extensions:
-                   name: agones-extensions
-                   pullPolicy: IfNotPresent
-                 sdk:
-                   name: agones-sdk
-                   cpuRequest: 30m
-                   cpuLimit: 0
-                   memoryRequest: 0
-                   memoryLimit: 0
-                   alwaysPull: false
-                 ping:
-                   name: agones-ping
-                   pullPolicy: IfNotPresent
-                 allocator:
-                   name: agones-allocator
-                   pullPolicy: IfNotPresent
-             
+                 disableMTLS: true
+                 disableTLS: true
              gameservers:
                namespaces:
                - corp-0
                minPort: 7000
                maxPort: 8000
-               podPreserveUnknownFields: false
-             
-             helm:
-               installTests: false
 
       ignoreDifferences:
       - group: ""
