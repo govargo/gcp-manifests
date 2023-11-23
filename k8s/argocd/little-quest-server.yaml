@@ -126,8 +126,8 @@ spec:
           - "--max-sigterm-delay=10s"
           - "--prometheus=true"
           - "--telemetry-project=kentaiso-330205"
+          - "--disable-metrics=true"
           - "--disable-traces=true"
-          - "--telemetry-sample-rate=0"
           - "--health-check=true"
           - "kentaiso-330205:asia-northeast1:prod-mysql-instance"
 
