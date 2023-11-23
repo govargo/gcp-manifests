@@ -94,10 +94,10 @@ curl -sSO https://dl.google.com/cloudagents/add-google-cloud-ops-agent-repo.sh
 sudo bash add-google-cloud-ops-agent-repo.sh --also-install
 
 sudo apt -y install wget
-wget https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.6.0/cloud-sql-proxy.linux.amd64 -O /usr/local/bin/cloud-sql-proxy
+wget https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.7.2/cloud-sql-proxy.linux.amd64 -O /usr/local/bin/cloud-sql-proxy
 chmod +x /usr/local/bin/cloud-sql-proxy
 cloud-sql-proxy --http-address=0.0.0.0 --address 0.0.0.0 --port 3306 --private-ip --telemetry-project=${data.google_project.project.project_id} \
-  --structured-logs --max-sigterm-delay=10s --disable-traces=true --disable-metrics=true --health-check=true \
+  --structured-logs --max-sigterm-delay=10s --disable-traces=true --disable-metrics=true --telemetry-sample-rate=0 --health-check=true \
   ${data.google_project.project.project_id}:${var.region}:prod-mysql-instance
 EOF
 
@@ -128,6 +128,9 @@ resource "google_compute_instance_group_manager" "datastream_cloudsql_proxy_mig"
     health_check      = google_compute_health_check.cloudsql_proxy_autohealing.id
     initial_delay_sec = 60
   }
+
+  wait_for_instances        = true
+  wait_for_instances_status = "STABLE"
 }
 
 resource "time_sleep" "wait_60_seconds" {
