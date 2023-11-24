@@ -14,10 +14,14 @@ locals {
     "compute.googleapis.com",
     "container.googleapis.com",
     "containersecurity.googleapis.com",
+    "cloudresourcemanager.googleapis.com",
+    "multiclusterservicediscovery.googleapis.com",
+    "gkehub.googleapis.com",
+    "trafficdirector.googleapis.com",
+    "dns.googleapis.com",
     "logging.googleapis.com",
     "monitoring.googleapis.com",
     "cloudbuild.googleapis.com",
-    "cloudresourcemanager.googleapis.com",
     "containerregistry.googleapis.com",
     "run.googleapis.com",
     "cloudfunctions.googleapis.com",
@@ -86,11 +90,11 @@ resource "google_compute_subnetwork" "subnetwork_app_0" {
   secondary_ip_range = [
     {
       range_name    = "pod"
-      ip_cidr_range = "100.64.0.0/14"
+      ip_cidr_range = "10.4.0.0/14"
     },
     {
       range_name    = "service"
-      ip_cidr_range = "100.68.0.0/20"
+      ip_cidr_range = "10.8.0.0/20"
     }
   ]
 }
@@ -106,31 +110,11 @@ resource "google_compute_subnetwork" "subnetwork_app_1" {
   secondary_ip_range = [
     {
       range_name    = "pod"
-      ip_cidr_range = "101.64.0.0/14"
+      ip_cidr_range = "10.12.0.0/14"
     },
     {
       range_name    = "service"
-      ip_cidr_range = "101.68.0.0/20"
-    }
-  ]
-}
-
-resource "google_compute_subnetwork" "subnetwork_corp_0" {
-  name    = "${var.env}-corp-0"
-  project = data.google_project.project.project_id
-
-  ip_cidr_range            = "10.130.0.0/24"
-  region                   = var.region
-  network                  = google_compute_network.vpc_network.id
-  private_ip_google_access = var.private_ip_google_access
-  secondary_ip_range = [
-    {
-      range_name    = "pod"
-      ip_cidr_range = "102.64.0.0/14"
-    },
-    {
-      range_name    = "service"
-      ip_cidr_range = "102.68.0.0/20"
+      ip_cidr_range = "10.16.0.0/20"
     }
   ]
 }
@@ -220,6 +204,26 @@ module "cloud_router_app_1" {
   ]
 }
 
+resource "google_compute_subnetwork" "subnetwork_corp_0" {
+  name    = "${var.env}-corp-0"
+  project = data.google_project.project.project_id
+
+  ip_cidr_range            = "10.130.0.0/24"
+  region                   = var.region
+  network                  = google_compute_network.vpc_network.id
+  private_ip_google_access = var.private_ip_google_access
+  secondary_ip_range = [
+    {
+      range_name    = "pod"
+      ip_cidr_range = "10.20.0.0/14"
+    },
+    {
+      range_name    = "service"
+      ip_cidr_range = "10.24.0.0/20"
+    }
+  ]
+}
+
 resource "google_compute_subnetwork" "subnetwork_misc_0" {
   name    = "${var.env}-misc-0"
   project = data.google_project.project.project_id
@@ -231,11 +235,11 @@ resource "google_compute_subnetwork" "subnetwork_misc_0" {
   secondary_ip_range = [
     {
       range_name    = "pod"
-      ip_cidr_range = "103.64.0.0/14"
+      ip_cidr_range = "10.28.0.0/14"
     },
     {
       range_name    = "service"
-      ip_cidr_range = "103.68.0.0/20"
+      ip_cidr_range = "10.32.0.0/20"
     }
   ]
 }
