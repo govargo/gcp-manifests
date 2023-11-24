@@ -282,7 +282,7 @@ repoServer:
 
   initContainers:
   - name: download-tools
-    image: alpine:3
+    image: alpine:3.18.4
     command: [ sh, -c ]
     args:
     - |
@@ -341,7 +341,7 @@ repoServer:
 ## ApplicationSet controller
 applicationSet:
   # -- The number of ApplicationSet controller pods to run
-  replicaCount: 2
+  replica: 2
 
   # -- Resource limits and requests for the ApplicationSet controller pods.
   resources:
