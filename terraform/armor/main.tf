@@ -52,7 +52,7 @@ resource "google_compute_security_policy" "argocd_restrict_policy" {
 
     match {
       expr {
-        expression = "request.headers['user-agent'].contains('Chrome')"
+        expression = "request.headers['user-agent'].contains('Chrome') || request.headers['user-agent'].contains('argocd')"
       }
     }
   }
