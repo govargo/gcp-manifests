@@ -1,3 +1,5 @@
+priorityClassName: system-node-critical
+
 tolerations:
 - effect: NoExecute
   operator: Exists
