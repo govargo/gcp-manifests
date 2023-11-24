@@ -13,7 +13,7 @@ module "misc-0" {
   zones                                = var.zones
   network                              = var.gcp_project_name
   subnetwork                           = "${var.env}-misc-0"
-  master_ipv4_cidr_block               = "11.0.0.0/28"
+  master_ipv4_cidr_block               = "10.2.0.0/28"
   ip_range_pods                        = var.cluster_secondary_range_name
   ip_range_services                    = var.services_secondary_range_name
   enable_private_endpoint              = false
@@ -46,6 +46,7 @@ module "misc-0" {
   security_posture_mode                = "BASIC"
   security_posture_vulnerability_mode  = "VULNERABILITY_BASIC"
   notification_config_topic            = "projects/${data.google_project.project.project_id}/topics/gke-cluster-upgrade-notification"
+  deletion_protection                  = false
 
   node_pools = [
     {

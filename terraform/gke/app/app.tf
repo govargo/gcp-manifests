@@ -47,7 +47,7 @@ module "app-0" {
   security_posture_mode                = "BASIC"
   security_posture_vulnerability_mode  = "VULNERABILITY_BASIC"
   notification_config_topic            = "projects/${data.google_project.project.project_id}/topics/gke-cluster-upgrade-notification"
-
+  deletion_protection                  = false
 
   node_pools = [
     {
