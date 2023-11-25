@@ -304,7 +304,7 @@ spec:
 
         agones:
           allocator:
-            host: agones.allocator.kentaiso.demo.altostrat.com.:8443
+            host: agones-allocator.agones-system.svc.clusterset.local:8443
 
   destination:
     name: "gke_kentaiso-330205_asia-northeast1_prod-app-0"
