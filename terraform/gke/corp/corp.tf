@@ -238,29 +238,6 @@ module "agones_controller_workloadIdentity_binding" {
   depends_on = [module.agones_controller_sa]
 }
 
-resource "google_compute_address" "agones_allocator_internal_address" {
-  project = data.google_project.project.project_id
-
-  name         = "agones-allocator-internal-address"
-  subnetwork   = "${var.env}-corp-0"
-  address_type = "INTERNAL"
-  address      = "10.130.0.54"
-  region       = var.region
-}
-
-resource "google_dns_record_set" "agones_allocator" {
-  project      = data.google_project.project.project_id
-  managed_zone = "${var.gcp_project_name}-demo"
-
-  name = "agones.allocator.${var.gcp_project_name}.demo.altostrat.com."
-  type = "A"
-  ttl  = 60
-
-  rrdatas = [google_compute_address.agones_allocator_internal_address.address]
-
-  depends_on = [google_compute_address.agones_allocator_internal_address]
-}
-
 resource "google_compute_firewall" "allow_agones_gameserver_ingress" {
   project = data.google_project.project.project_id
 
