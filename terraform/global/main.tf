@@ -14,6 +14,7 @@ locals {
     "compute.googleapis.com",
     "container.googleapis.com",
     "containersecurity.googleapis.com",
+    "containerscanning.googleapis.com",
     "cloudresourcemanager.googleapis.com",
     "multiclusterservicediscovery.googleapis.com",
     "gkehub.googleapis.com",
