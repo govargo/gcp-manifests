@@ -10,7 +10,7 @@ data "google_compute_network" "vpc_network" {
 }
 
 module "corp-0" {
-  source                               = "terraform-google-modules/kubernetes-engine/google"
+  source                               = "terraform-google-modules/kubernetes-engine/google//modules/beta-public-cluster"
   version                              = "29.0.0"
   project_id                           = data.google_project.project.project_id
   name                                 = "${var.env}-corp-0"
@@ -28,6 +28,9 @@ module "corp-0" {
   network_policy                       = var.network_policy
   filestore_csi_driver                 = var.filestore_csi_driver
   enable_shielded_nodes                = var.enable_shielded_nodes
+  istio                                = false
+  istio_auth                           = "AUTH_MUTUAL_TLS"
+  kalm_config                          = false
   gke_backup_agent_config              = var.gke_backup_agent_config
   create_service_account               = false
   default_max_pods_per_node            = var.default_max_pods_per_node
@@ -47,8 +50,24 @@ module "corp-0" {
   remove_default_node_pool             = true
   security_posture_mode                = "BASIC"
   security_posture_vulnerability_mode  = "VULNERABILITY_BASIC"
+  workload_config_audit_mode           = "BASIC"
+  workload_vulnerability_mode          = "BASIC"
   notification_config_topic            = "projects/${data.google_project.project.project_id}/topics/gke-cluster-upgrade-notification"
   deletion_protection                  = false
+
+  cluster_autoscaling = {
+    enabled             = false
+    autoscaling_profile = "OPTIMIZE_UTILIZATION"
+    auto_repair         = true,
+    auto_upgrade        = true,
+    disk_size           = 0,
+    disk_type           = "pd-standard",
+    gpu_resources       = [],
+    min_cpu_cores       = 0,
+    max_cpu_cores       = 0,
+    min_memory_gb       = 0,
+    max_memory_gb       = 0
+  }
 
   node_pools = [
     {
