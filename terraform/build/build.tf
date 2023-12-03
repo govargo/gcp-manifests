@@ -30,7 +30,7 @@ resource "google_cloudbuild_trigger" "little_quest_server_helm_chart_build_trigg
     owner = "govargo"
     name  = "gcp-manifests"
     push {
-      tag = "^[0-9].[0-9].[0-9]$"
+      tag = "^little-quest-server-[0-9].[0-9].[0-9]$"
     }
   }
 
