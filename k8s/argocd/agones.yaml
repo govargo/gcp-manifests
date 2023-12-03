@@ -43,7 +43,7 @@ spec:
                controller:
                  resources:
                    requests:
-                     cpu: 100m
+                     cpu: 50m
                      memory: 256Mi
                  tolerations: []
                  affinity:
@@ -60,7 +60,7 @@ spec:
                extensions:
                  resources:
                    requests:
-                     cpu: 100m
+                     cpu: 50m
                      memory: 256Mi
                  tolerations: []
                ping:
@@ -71,7 +71,7 @@ spec:
                    minAvailable: 1
                  resources:
                    requests:
-                     cpu: 100m
+                     cpu: 50m
                      memory: 256Mi
                  tolerations: []
                  affinity:
@@ -82,17 +82,16 @@ spec:
                          matchExpressions:
                            - key: agones.dev/agones-system
                              operator: Exists
-                 replicas: 1
+                 replicas: 2
                  service:
                    name: agones-allocator
-                   serviceType: LoadBalancer
-                   loadBalancerIP: "10.130.0.54"
-                   annotations:
-                     networking.gke.io/load-balancer-type: "Internal"
+                   serviceType: ClusterIP
                    http:
+                     appProtocol: http
                      port: 18080
                      targetPort: 18080
                    grpc:
+                     appProtocol: grpc
                      port: 8443
                      targetPort: 8443
                  disableMTLS: true
