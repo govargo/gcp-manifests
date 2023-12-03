@@ -213,7 +213,7 @@ module "little_quest_server_sa" {
   ]
 }
 
-module "little_quest_workloadIdentity_binding" {
+module "little_quest_server_workloadIdentity_binding" {
   source  = "terraform-google-modules/iam/google//modules/service_accounts_iam"
   version = "7.7.1"
   project = data.google_project.project.project_id
