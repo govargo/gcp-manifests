@@ -43,8 +43,10 @@ spec:
               value: {{ .Values.serviceName }}
             - name: GOOGLE_CLOUD_PROJECT
               value: {{ .Values.googleCloudProjectId }}
-            - name: PORT
+            - name: TCP_PORT
               value: "{{ .Values.port.containerPort }}"
+            - name: HTTP_PORT
+              value: "{{ .Values.port.metricsPort }}"
             - name: PASSTHROUGH
               value: "{{ .Values.port.passthrough }}"
             - name: POD_NAME

@@ -39,6 +39,8 @@ port:
   portPolicy: Dynamic
   protocol: TCP
   passthrough: "FALSE"
+  # HTTP Prometheus metrics port
+  metricsPort: 18080
 
 health:
   disabled: false
