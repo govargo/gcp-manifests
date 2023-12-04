@@ -23,7 +23,7 @@ spec:
   source:
     repoURL: asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/charts
     chart: little-quest-realtime
-    targetRevision: 0.2.1
+    targetRevision: 0.3.0
     helm:
       releaseName: "little-quest-realtime"
       values: |
