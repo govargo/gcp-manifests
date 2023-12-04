@@ -1,12 +1,12 @@
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
-  name: {{ include "little-quest.fullname" . }}
+  name: {{ include "little-quest-realtime.fullname" . }}
   labels:
-    {{- include "little-quest.labels" . | nindent 4 }}
+    {{- include "little-quest-realtime.labels" . | nindent 4 }}
   namespace: {{ .Release.Namespace | quote }}
 spec:
   maxUnavailable: {{ .Values.maxUnavailable }}
   selector:
     matchLabels:
-      {{- include "little-quest.selectorLabels" . | nindent 6 }}
+      {{- include "little-quest-realtime.selectorLabels" . | nindent 6 }}

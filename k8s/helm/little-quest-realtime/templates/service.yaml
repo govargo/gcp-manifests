@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "little-quest.fullname" . }}
+  name: {{ include "little-quest-realtime.fullname" . }}
   labels:
-    {{- include "little-quest.labels" . | nindent 4 }}
+    {{- include "little-quest-realtime.labels" . | nindent 4 }}
   {{- with .Values.service.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
@@ -17,4 +17,4 @@ spec:
       protocol: TCP
       name: http
   selector:
-    {{- include "little-quest.selectorLabels" . | nindent 4 }}
+    {{- include "little-quest-realtime.selectorLabels" . | nindent 4 }}

@@ -1,9 +1,9 @@
 apiVersion: agones.dev/v1
 kind: Fleet
 metadata:
-  name: {{ include "little-quest.fullname" . }}
+  name: {{ include "little-quest-realtime.fullname" . }}
   labels:
-    {{- include "little-quest.labels" . | nindent 4 }}
+    {{- include "little-quest-realtime.labels" . | nindent 4 }}
   namespace: {{ .Release.Namespace | quote }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
@@ -32,7 +32,7 @@ spec:
         httpPort: {{ .Values.sdkServer.httpPort }}
       template:
         spec:
-          serviceAccountName: {{ include "little-quest.serviceAccountName" . }}
+          serviceAccountName: {{ include "little-quest-realtime.serviceAccountName" . }}
           containers:
           - name: {{ .Chart.Name }}
             image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"

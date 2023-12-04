@@ -2,12 +2,12 @@
 apiVersion: autoscaling.agones.dev/v1
 kind: FleetAutoscaler
 metadata:
-  name: {{ include "little-quest.fullname" . }}
+  name: {{ include "little-quest-realtime.fullname" . }}
   labels:
-    {{- include "little-quest.labels" . | nindent 4 }}
+    {{- include "little-quest-realtime.labels" . | nindent 4 }}
   namespace: {{ .Release.Namespace | quote }}
 spec:
-  fleetName: {{ include "little-quest.fullname" . }}
+  fleetName: {{ include "little-quest-realtime.fullname" . }}
   policy:
     type: {{ .Values.autoscaling.type }}
     buffer:
