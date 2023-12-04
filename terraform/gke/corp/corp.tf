@@ -218,6 +218,7 @@ module "little_quest_realtime_sa" {
     "${data.google_project.project.project_id}=>roles/monitoring.viewer",
     "${data.google_project.project.project_id}=>roles/monitoring.metricWriter",
     "${data.google_project.project.project_id}=>roles/cloudprofiler.agent",
+    "${data.google_project.project.project_id}=>roles/cloudtrace.agent",
   ]
 }
 
