@@ -1,4 +1,4 @@
-{{- if .Values.autoscaling.enabled }}
+{{- if .Values.realtime.autoscaling.enabled }}
 apiVersion: autoscaling.agones.dev/v1
 kind: FleetAutoscaler
 metadata:
@@ -9,9 +9,9 @@ metadata:
 spec:
   fleetName: {{ include "little-quest-realtime.fullname" . }}
   policy:
-    type: {{ .Values.autoscaling.type }}
+    type: {{ .Values.realtime.autoscaling.type }}
     buffer:
-      bufferSize: {{ .Values.autoscaling.bufferSize }}
-      minReplicas: {{ .Values.autoscaling.minReplicas }}
-      maxReplicas: {{ .Values.autoscaling.maxReplicas }}
+      bufferSize: {{ .Values.realtime.autoscaling.bufferSize }}
+      minReplicas: {{ .Values.realtime.autoscaling.minReplicas }}
+      maxReplicas: {{ .Values.realtime.autoscaling.maxReplicas }}
 {{- end }}

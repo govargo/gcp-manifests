@@ -12,5 +12,5 @@ spec:
     - name: wget
       image: busybox
       command: ['wget']
-      args: ['{{ include "little-quest-realtime.fullname" . }}:{{ .Values.service.port }}']
+      args: ['{{ include "little-quest-realtime.fullname" . }}:{{ .Values.realtime.service.port }}']
   restartPolicy: Never

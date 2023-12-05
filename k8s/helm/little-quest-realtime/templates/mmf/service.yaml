@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "little-quest-mmf.fullname" . }}
+  labels:
+    {{- include "little-quest-mmf.labels" . | nindent 4 }}
+  {{- with .Values.mmf.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  type: {{ .Values.mmf.service.type }}
+  ports:
+    - port: {{ .Values.mmf.service.port }}
+      targetPort: grpc
+      protocol: TCP
+      appProtocol: grpc
+      name: grpc
+  selector:
+    {{- include "little-quest-mmf.selectorLabels" . | nindent 4 }}

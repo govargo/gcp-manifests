@@ -1,0 +1,111 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "little-quest-mmf.fullname" . }}
+  labels:
+    {{- include "little-quest-mmf.labels" . | nindent 4 }}
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  {{- if not .Values.mmf.autoscaling.enabled }}
+  replicas: {{ .Values.mmf.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "little-quest-mmf.selectorLabels" . | nindent 6 }}
+  {{- with .Values.mmf.strategy }}
+  strategy:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  template:
+    metadata:
+      {{- with .Values.mmf.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "little-quest-mmf.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.mmf.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "little-quest-mmf.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.mmf.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.mmf.securityContext | nindent 12 }}
+          image: "{{ .Values.mmf.image.repository }}:{{ .Values.mmf.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.mmf.image.pullPolicy }}
+          ports:
+          - name: grpc
+            containerPort: {{ .Values.containerPort }}
+            protocol: TCP
+          env:
+          - name: APP_ENV
+            value: {{ .Values.env | quote }}
+          - name: SERVICE_NAME
+            value: {{ .Values.mmf.serviceName | quote }}
+          - name: OPENMATCH_QUERY_SERVICE_ADDR
+            value: {{ .Values.mmf.openMatch.queryService.address | quote }}
+          - name: PLAYERS_PER_MATCH
+            value: {{ .Values.mmf.openMatch.playerPerMatch | quote }}
+          - name: GOOGLE_CLOUD_PROJECT
+            value: {{ .Values.googleCloudProjectId | quote }}
+          - name: OTEL_SAMPLING_RATE
+            value: {{ .Values.mmf.cloudTrace.samplingRate | default 0.1 | quote }}
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: NAMESPACE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: CONTAINER_NAME
+            value: {{ .Chart.Name }}
+          - name: OTEL_RESOURCE_ATTRIBUTES
+            value: k8s.pod.name=$(POD_NAME),k8s.namespace.name=$(NAMESPACE_NAME),k8s.container.name=$(CONTAINER_NAME)
+          {{- with .Values.mmf.liveness }}
+          livenessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.mmf.readiness }}
+          readinessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.mmf.startup }}
+          startupProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.mmf.resources | nindent 12 }}
+          {{- with .Values.mmf.volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 10 }}
+          {{- end }}
+      {{- with .Values.mmf.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.mmf.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.mmf.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{- toYaml . | nindent 6 }}
+        labelSelector:
+          matchLabels:
+          {{- include "little-quest-realtime.selectorLabels" $ | nindent 12 }}
+      {{- end }}
+      {{- with .Values.mmf.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 6 }}
+      {{- end }}
+      terminationGracePeriodSeconds: {{ .Values.mmf.terminationGracePeriodSeconds }}
+      {{- with .Values.mmf.volumes }}
+      volumes:
+        {{- toYaml . | nindent 6 }}
+      {{- end }}

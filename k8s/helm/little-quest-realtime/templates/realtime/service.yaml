@@ -4,15 +4,15 @@ metadata:
   name: {{ include "little-quest-realtime.fullname" . }}
   labels:
     {{- include "little-quest-realtime.labels" . | nindent 4 }}
-  {{- with .Values.service.annotations }}
+  {{- with .Values.realtime.service.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
   namespace: {{ .Release.Namespace | quote }}
 spec:
-  type: {{ .Values.service.type }}
+  type: {{ .Values.realtime.service.type }}
   ports:
-    - port: {{ .Values.service.port }}
+    - port: {{ .Values.realtime.service.port }}
       targetPort: http
       protocol: TCP
       name: http
