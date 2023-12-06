@@ -37,13 +37,13 @@ If release name contains chart name it will be used as a full name.
 */}}
 {{- define "little-quest-mmf.fullname" -}}
 {{- if .Values.mmf.fullnameOverride }}
-{{- default "little-quest-mmf" .Values.mmf.fullnameOverride | trunc 63 | trimSuffix "-" }}
+{{- .Values.mmf.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
-{{- $name := default .Chart.Name .Values.mmf.nameOverride }}
+{{- $name := default "little-quest-mmf" .Values.mmf.nameOverride }}
 {{- if contains $name .Release.Name }}
 {{- .Release.Name | trunc 63 | trimSuffix "-" }}
 {{- else }}
-{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" }}
+{{- printf "%s" $name | trunc 63 | trimSuffix "-" }}
 {{- end }}
 {{- end }}
 {{- end }}
