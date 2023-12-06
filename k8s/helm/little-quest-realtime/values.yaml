@@ -5,7 +5,7 @@ realtime:
   serviceName: little-quest-realtime
   
   image:
-    repository: asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/little-quest-realtime
+    repository: asia-northeast1-docker.pkg.dev/test-project/little-quest/little-quest-realtime
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
     tag: ""
@@ -133,7 +133,7 @@ mmf:
   serviceName: little-quest-mmf
   
   image:
-    repository: asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/little-quest-mmf
+    repository: asia-northeast1-docker.pkg.dev/test-project/little-quest/little-quest-mmf
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
     tag: ""
