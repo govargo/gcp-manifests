@@ -40,7 +40,7 @@ spec:
           imagePullPolicy: {{ .Values.mmf.image.pullPolicy }}
           ports:
           - name: grpc
-            containerPort: {{ .Values.containerPort }}
+            containerPort: {{ .Values.mmf.containerPort }}
             protocol: TCP
           env:
           - name: APP_ENV
