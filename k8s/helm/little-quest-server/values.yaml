@@ -5,7 +5,7 @@
 serviceName: little-quest-server
 
 image:
-  repository: asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/little-quest-server
+  repository: asia-northeast1-docker.pkg.dev/test-project/little-quest/little-quest-server
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
