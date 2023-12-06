@@ -152,6 +152,8 @@ mmf:
     name: ""
   
   podAnnotations: {}
+
+  replicaCount: 1
   
   strategy:
     type: RollingUpdate
@@ -231,7 +233,10 @@ mmf:
     annotations: {}
     type: ClusterIP
     port: 80
-  
+
+  autoscaling:
+    enabled: false
+
   openMatch:
     queryService:
       address: pen-match-query.open-match.svc.cluster.local.:50503
