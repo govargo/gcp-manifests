@@ -1,0 +1,12 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "little-quest-mmf.fullname" . }}
+  labels:
+    {{- include "little-quest-mmf.labels" . | nindent 4 }}
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  maxUnavailable: {{ .Values.mmf.maxUnavailable }}
+  selector:
+    matchLabels:
+      {{- include "little-quest-mmf.selectorLabels" . | nindent 6 }}
