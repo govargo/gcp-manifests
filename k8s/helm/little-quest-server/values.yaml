@@ -203,6 +203,7 @@ googleCloudProjectId: test-project
 # Cloud Trace sampling rate
 cloudTrace:
   samplingRate: 0.1
+  platform: opentelemetry
 
 # Cloud Spanner info
 spanner:

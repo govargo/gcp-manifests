@@ -91,6 +91,8 @@ spec:
             value: {{ .Values.agones.allocator.host }}
           - name: OTEL_SAMPLING_RATE
             value: {{ .Values.cloudTrace.samplingRate | default 0.1 | quote }}
+          - name: GOOGLE_API_GO_EXPERIMENTAL_TELEMETRY_PLATFORM_TRACING
+            value: {{ .Values.cloudTrace.platform }}
           - name: POD_NAME
             valueFrom:
               fieldRef:
