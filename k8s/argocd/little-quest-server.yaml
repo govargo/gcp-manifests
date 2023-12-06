@@ -23,7 +23,7 @@ spec:
   source:
     repoURL: asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/charts
     chart: little-quest-server
-    targetRevision: 0.4.1
+    targetRevision: 0.4.3
     helm:
       releaseName: "little-quest-server"
       values: |
