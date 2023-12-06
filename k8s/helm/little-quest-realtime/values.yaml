@@ -239,7 +239,7 @@ mmf:
 
   openMatch:
     queryService:
-      address: pen-match-query.open-match.svc.cluster.local.:50503
+      address: open-match-query.open-match.svc.cluster.local.:50503
     playerPerMatch: 2
 
   # Cloud Trace sampling rate
