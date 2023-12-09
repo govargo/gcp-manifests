@@ -12,9 +12,10 @@ metadata:
 spec:
   type: {{ .Values.realtime.service.type }}
   ports:
-    - port: {{ .Values.realtime.service.port }}
-      targetPort: http
-      protocol: TCP
-      name: http
+  - name: http
+    port: {{ .Values.realtime.service.port }}
+    protocol: TCP
+    appProtocol: http
+    targetPort: http
   selector:
     agones.dev/role: gameserver
