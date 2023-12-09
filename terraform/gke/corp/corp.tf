@@ -215,10 +215,7 @@ module "little_quest_realtime_sa" {
   names        = ["little-quest-realtime"]
   display_name = "Little Quest Realtime ServiceAccount"
   project_roles = [
-    "${data.google_project.project.project_id}=>roles/monitoring.viewer",
-    "${data.google_project.project.project_id}=>roles/monitoring.metricWriter",
     "${data.google_project.project.project_id}=>roles/cloudprofiler.agent",
-    "${data.google_project.project.project_id}=>roles/cloudtrace.agent",
   ]
 }
 
@@ -235,6 +232,34 @@ module "little_quest_realtime_workloadIdentity_binding" {
     ]
   }
   depends_on = [module.little_quest_realtime_sa]
+}
+
+module "little_quest_mmf_sa" {
+  source     = "terraform-google-modules/service-accounts/google"
+  version    = "4.2.2"
+  project_id = data.google_project.project.project_id
+
+  names        = ["little-quest-mmf"]
+  display_name = "Little Quest Match Function ServiceAccount"
+  project_roles = [
+    "${data.google_project.project.project_id}=>roles/cloudprofiler.agent",
+    "${data.google_project.project.project_id}=>roles/cloudtrace.agent",
+  ]
+}
+
+module "little_quest_mmf_workloadIdentity_binding" {
+  source  = "terraform-google-modules/iam/google//modules/service_accounts_iam"
+  version = "7.7.1"
+  project = data.google_project.project.project_id
+
+  service_accounts = [module.little_quest_mmf_sa.email]
+  mode             = "additive"
+  bindings = {
+    "roles/iam.workloadIdentityUser" = [
+      "serviceAccount:${data.google_project.project.project_id}.svc.id.goog[corp-0/little-quest-mmf]"
+    ]
+  }
+  depends_on = [module.little_quest_mmf_sa]
 }
 
 module "agones_allocator_sa" {
