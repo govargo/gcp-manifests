@@ -39,6 +39,11 @@ spec:
           containers:
           - name: {{ .Chart.Name }}
             image: "{{ .Values.realtime.image.repository }}:{{ .Values.realtime.image.tag | default .Chart.AppVersion }}"
+            ports:
+            - name: http
+              containerPort: {{ .Values.realtime.port.metricsPort }}
+              appProtocol: http
+              protocol: TCP
             env:
             - name: APP_ENV
               value: {{ .Values.env }}
