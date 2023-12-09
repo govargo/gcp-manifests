@@ -45,7 +45,6 @@ spec:
           ports:
           - name: http
             containerPort: {{ .Values.containerPort }}
-            appProtocol: http
             protocol: TCP
           env:
           - name: APP_ENV
