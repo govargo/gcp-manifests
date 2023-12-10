@@ -23,7 +23,7 @@ spec:
   source:
     repoURL: asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/charts
     chart: little-quest-server
-    targetRevision: 0.4.5
+    targetRevision: 0.4.6
     helm:
       releaseName: "little-quest-server"
       values: |
@@ -265,8 +265,11 @@ spec:
           enabled: true
           minReplicas: 1
           maxReplicas: 100
+          targetCPUType: Utilization
           targetCPUUtilizationPercentage: 70
           # targetMemoryUtilizationPercentage: 70
+          targetContainerCPUType: Utilization
+          targetContainerCPUUtilizationPercentage: 70
 
         secret:
           annotations: {}
