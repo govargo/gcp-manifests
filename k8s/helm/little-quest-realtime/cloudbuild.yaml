@@ -23,6 +23,18 @@ steps:
     waitFor:
     - helm-bin
 
+  # Lint Kuberntes manifests
+  - name: golang
+    id: lint-manifests
+    entrypoint: /bin/bash
+    args:
+      - -c
+      - |
+        go install github.com/yannh/kubeconform/cmd/kubeconform@latest
+        helm template little-quest-realtime ./k8s/helm/little-quest-realtime | kubeconfirm -ignore-missing-schemas -summary
+    waitFor:
+    - helm-bin
+
   # Generate helm package for Little Quest
   - name: gcr.io/cloud-builders/gcloud
     id: helm-package
@@ -43,12 +55,9 @@ steps:
       helm push ${TAG_NAME}.tgz oci://${LOCATION}-docker.pkg.dev/${PROJECT_ID}/little-quest/charts
     waitFor:
     - helm-package
+    - lint-manifests
 
 options:
   volumes:
-  - name: apt-lists
-    path: /var/lib/apt/lists
-  - name: apt-archives
-    path: /var/cache/apt/archives
   - name: bin
     path: /usr/local/bin
