@@ -14,20 +14,29 @@ spec:
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
   metrics:
-    {{- if .Values.autoscaling.targetCPUUtilizationPercentage }}
-    - type: Resource
-      resource:
-        name: cpu
-        target:
-          type: {{ .Values.autoscaling.targetCPUType }}
-          averageUtilization: {{ .Values.autoscaling.targetCPUUtilizationPercentage }}
-    {{- end }}
-    {{- if .Values.autoscaling.targetMemoryUtilizationPercentage }}
-    - type: Resource
-      resource:
-        name: memory
-        target:
-          type: {{ .Values.autoscaling.targetMemoryType }}
-          averageUtilization: {{ .Values.autoscaling.targetMemoryUtilizationPercentage }}
-    {{- end }}
+  {{- if .Values.autoscaling.targetCPUUtilizationPercentage }}
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: {{ .Values.autoscaling.targetCPUType }}
+        averageUtilization: {{ .Values.autoscaling.targetCPUUtilizationPercentage }}
+  {{- end }}
+  {{- if .Values.autoscaling.targetMemoryUtilizationPercentage }}
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: {{ .Values.autoscaling.targetMemoryType }}
+        averageUtilization: {{ .Values.autoscaling.targetMemoryUtilizationPercentage }}
+  {{- end }}
+  {{- if .Values.autoscaling.targetContainerCPUUtilizationPercentage }}
+  - type: ContainerResource
+    containerResource:
+      name: cpu
+      container: {{ .Chart.Name }}
+      target:
+        type: {{ .Values.autoscaling.targetContainerCPUType }}
+        averageUtilization: {{ .Values.autoscaling.targetContainerCPUUtilizationPercentage }}
+  {{- end }}
 {{- end }}

@@ -183,10 +183,12 @@ autoscaling:
   enabled: false
   minReplicas: 1
   maxReplicas: 100
-  targetCPUType: Utilization
-  targetCPUUtilizationPercentage: 70
+  # targetCPUType: Utilization
+  # targetCPUUtilizationPercentage: 70
   # targetMemoryType: Utilization
   # targetMemoryUtilizationPercentage: 70
+  targetContainerCPUType: Utilization
+  targetContainerCPUUtilizationPercentage: 70
 
 secret:
   annotations: {}
