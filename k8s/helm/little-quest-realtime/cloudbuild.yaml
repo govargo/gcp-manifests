@@ -31,7 +31,7 @@ steps:
       - -c
       - |
         go install github.com/yannh/kubeconform/cmd/kubeconform@latest
-        helm template little-quest-realtime ./k8s/helm/little-quest-realtime | kubeconfirm -ignore-missing-schemas -summary
+        helm template little-quest-realtime ./k8s/helm/little-quest-realtime | kubeconform -ignore-missing-schemas -summary
     waitFor:
     - helm-bin
 
