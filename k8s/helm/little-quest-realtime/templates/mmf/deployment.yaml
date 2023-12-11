@@ -33,7 +33,7 @@ spec:
       securityContext:
         {{- toYaml .Values.mmf.podSecurityContext | nindent 8 }}
       containers:
-        - name: {{ .Chart.Name }}
+        - name: {{ include "little-quest-mmf.fullname" . }}
           securityContext:
             {{- toYaml .Values.mmf.securityContext | nindent 12 }}
           image: "{{ .Values.mmf.image.repository }}:{{ .Values.mmf.image.tag | default .Chart.AppVersion }}"

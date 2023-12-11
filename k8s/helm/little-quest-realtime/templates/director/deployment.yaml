@@ -33,7 +33,7 @@ spec:
       securityContext:
         {{- toYaml .Values.director.podSecurityContext | nindent 8 }}
       containers:
-        - name: {{ .Chart.Name }}
+        - name: {{ include "little-quest-director.fullname" . }}
           securityContext:
             {{- toYaml .Values.director.securityContext | nindent 12 }}
           image: "{{ .Values.director.image.repository }}:{{ .Values.director.image.tag | default .Chart.AppVersion }}"
