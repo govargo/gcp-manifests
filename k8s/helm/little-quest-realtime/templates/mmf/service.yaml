@@ -12,10 +12,10 @@ metadata:
 spec:
   type: {{ .Values.mmf.service.type }}
   ports:
-    - port: {{ .Values.mmf.service.port }}
-      targetPort: grpc
-      protocol: TCP
-      appProtocol: grpc
-      name: grpc
+  - name: grpc
+    port: {{ .Values.mmf.service.port }}
+    protocol: TCP
+    appProtocol: grpc
+    targetPort: grpc
   selector:
     {{- include "little-quest-mmf.selectorLabels" . | nindent 4 }}

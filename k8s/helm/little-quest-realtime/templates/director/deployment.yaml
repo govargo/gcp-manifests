@@ -1,0 +1,111 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "little-quest-director.fullname" . }}
+  labels:
+    {{- include "little-quest-director.labels" . | nindent 4 }}
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  {{- if not .Values.director.autoscaling.enabled }}
+  replicas: {{ .Values.director.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "little-quest-director.selectorLabels" . | nindent 6 }}
+  {{- with .Values.director.strategy }}
+  strategy:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  template:
+    metadata:
+      {{- with .Values.director.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "little-quest-director.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.director.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "little-quest-director.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.director.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.director.securityContext | nindent 12 }}
+          image: "{{ .Values.director.image.repository }}:{{ .Values.director.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.director.image.pullPolicy }}
+          ports:
+          - name: http
+            containerPort: {{ .Values.director.port.metricsPort }}
+            protocol: TCP
+          env:
+          - name: APP_ENV
+            value: {{ .Values.env | quote }}
+          - name: SERVICE_NAME
+            value: {{ .Values.director.serviceName | quote }}
+          - name: OPENMATCH_BACKEND_SERVICE_ADDR
+            value: {{ .Values.director.openMatch.backendService.address | quote }}
+          - name: AGONES_ALLOCATOR_HOST
+            value: {{ .Values.director.agones.allocator.address | quote }}
+          - name: GOOGLE_CLOUD_PROJECT
+            value: {{ .Values.googleCloudProjectId | quote }}
+          - name: OTEL_SAMPLING_RATE
+            value: {{ .Values.director.cloudTrace.samplingRate | default 0.1 | quote }}
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: NAMESPACE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: CONTAINER_NAME
+            value: {{ .Chart.Name }}
+          - name: OTEL_RESOURCE_ATTRIBUTES
+            value: k8s.pod.name=$(POD_NAME),k8s.namespace.name=$(NAMESPACE_NAME),k8s.container.name=$(CONTAINER_NAME)
+          {{- with .Values.director.liveness }}
+          livenessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.director.readiness }}
+          readinessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.director.startup }}
+          startupProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.director.resources | nindent 12 }}
+          {{- with .Values.director.volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 10 }}
+          {{- end }}
+      {{- with .Values.director.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.director.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.director.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{- toYaml . | nindent 6 }}
+        labelSelector:
+          matchLabels:
+          {{- include "little-quest-realtime.selectorLabels" $ | nindent 12 }}
+      {{- end }}
+      {{- with .Values.director.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 6 }}
+      {{- end }}
+      terminationGracePeriodSeconds: {{ .Values.director.terminationGracePeriodSeconds }}
+      {{- with .Values.director.volumes }}
+      volumes:
+        {{- toYaml . | nindent 6 }}
+      {{- end }}

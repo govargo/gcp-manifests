@@ -13,6 +13,13 @@ Expand the name of the chart for mmf.
 {{- end }}
 
 {{/*
+Expand the name of the chart for director.
+*/}}
+{{- define "little-quest-director.name" -}}
+{{- default "little-quest-director" .Values.director.nameOverride | trunc 63 | trimSuffix "-" }}
+{{- end }}
+
+{{/*
 Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
@@ -40,6 +47,24 @@ If release name contains chart name it will be used as a full name.
 {{- .Values.mmf.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
 {{- $name := default "little-quest-mmf" .Values.mmf.nameOverride }}
+{{- if contains $name .Release.Name }}
+{{- .Release.Name | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- printf "%s" $name | trunc 63 | trimSuffix "-" }}
+{{- end }}
+{{- end }}
+{{- end }}
+
+{{/*
+Create a default fully qualified director name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+If release name contains chart name it will be used as a full name.
+*/}}
+{{- define "little-quest-director.fullname" -}}
+{{- if .Values.director.fullnameOverride }}
+{{- .Values.director.fullnameOverride | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- $name := default "little-quest-director" .Values.director.nameOverride }}
 {{- if contains $name .Release.Name }}
 {{- .Release.Name | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -80,6 +105,18 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
 {{/*
+Common labels for director
+*/}}
+{{- define "little-quest-director.labels" -}}
+helm.sh/chart: {{ include "little-quest-realtime.chart" . }}
+{{ include "little-quest-director.selectorLabels" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end }}
+
+{{/*
 Selector labels for realtime
 */}}
 {{- define "little-quest-realtime.selectorLabels" -}}
@@ -92,6 +129,14 @@ Selector labels for mmf
 */}}
 {{- define "little-quest-mmf.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "little-quest-mmf.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+
+{{/*
+Selector labels for director
+*/}}
+{{- define "little-quest-director.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "little-quest-director.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
@@ -114,5 +159,16 @@ Create the name of the service account to use for mmf
 {{- default (include "little-quest-mmf.fullname" .) .Values.mmf.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.mmf.serviceAccount.name }}
+{{- end }}
+{{- end }}
+
+{{/*
+Create the name of the service account to use for director
+*/}}
+{{- define "little-quest-director.serviceAccountName" -}}
+{{- if .Values.director.serviceAccount.create }}
+{{- default (include "little-quest-director.fullname" .) .Values.director.serviceAccount.name }}
+{{- else }}
+{{- default "default" .Values.director.serviceAccount.name }}
 {{- end }}
 {{- end }}

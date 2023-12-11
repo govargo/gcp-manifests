@@ -1,0 +1,12 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "little-quest-director.fullname" . }}
+  labels:
+    {{- include "little-quest-director.labels" . | nindent 4 }}
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  maxUnavailable: {{ .Values.director.maxUnavailable }}
+  selector:
+    matchLabels:
+      {{- include "little-quest-director.selectorLabels" . | nindent 6 }}
