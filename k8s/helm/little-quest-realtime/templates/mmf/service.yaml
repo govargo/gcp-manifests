@@ -17,5 +17,10 @@ spec:
     protocol: TCP
     appProtocol: grpc
     targetPort: grpc
+  - name: http
+    port: {{ .Values.mmf.port.metricsPort }}
+    protocol: TCP
+    appProtocol: http
+    targetPort: {{ .Values.mmf.port.metricsPort }}
   selector:
     {{- include "little-quest-mmf.selectorLabels" . | nindent 4 }}

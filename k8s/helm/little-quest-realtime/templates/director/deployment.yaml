@@ -47,6 +47,8 @@ spec:
             value: {{ .Values.env | quote }}
           - name: SERVICE_NAME
             value: {{ .Values.director.serviceName | quote }}
+          - name: HTTP_PORT
+            value: {{ .Values.director.port.metricsPort | quote }}
           - name: OPENMATCH_BACKEND_SERVICE_ADDR
             value: {{ .Values.director.openMatch.backendService.address | quote }}
           - name: AGONES_ALLOCATOR_HOST

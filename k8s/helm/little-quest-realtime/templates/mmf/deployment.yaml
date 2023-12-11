@@ -42,11 +42,16 @@ spec:
           - name: grpc
             containerPort: {{ .Values.mmf.port.containerPort }}
             protocol: TCP
+          - name: http
+            containerPort: {{ .Values.mmf.port.metricsPort }}
+            protocol: TCP
           env:
           - name: APP_ENV
             value: {{ .Values.env | quote }}
           - name: SERVICE_NAME
             value: {{ .Values.mmf.serviceName | quote }}
+          - name: HTTP_PORT
+            value: {{ .Values.mmf.port.metricsPort | quote }}
           - name: OPENMATCH_QUERY_SERVICE_ADDR
             value: {{ .Values.mmf.openMatch.queryService.address | quote }}
           - name: PLAYERS_PER_MATCH

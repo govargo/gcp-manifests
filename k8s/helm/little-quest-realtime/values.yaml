@@ -164,6 +164,8 @@ mmf:
   port:
     # Pod's containerPort
     containerPort: 50502
+    # HTTP Prometheus metrics port
+    metricsPort: 18080
 
   podSecurityContext: {}
     # fsGroup: 2000
