@@ -51,6 +51,10 @@ spec:
             value: {{ .Values.director.port.metricsPort | quote }}
           - name: OPENMATCH_BACKEND_SERVICE_ADDR
             value: {{ .Values.director.openMatch.backendService.address | quote }}
+          - name: OPENMATCH_MATCHFUNCTION_SERVICE_HOST
+            value: {{ .Values.director.openMatch.matchFunction.host | quote }}
+          - name: OPENMATCH_MATCHFUNCTION_SERVICE_PORT
+            value: {{ .Values.director.openMatch.matchFunction.port | quote }}
           - name: AGONES_ALLOCATOR_HOST
             value: {{ .Values.director.agones.allocator.address | quote }}
           - name: GOOGLE_CLOUD_PROJECT

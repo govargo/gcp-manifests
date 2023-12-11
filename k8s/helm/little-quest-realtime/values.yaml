@@ -359,6 +359,9 @@ director:
   openMatch:
     backendService:
       address: open-match-backend.open-match.svc.cluster.local.:50505
+    matchFunction:
+      host: little-quest-mmf.corp-0.svc.cluster.local.
+      port: 80
 
   agones:
     allocator:
