@@ -99,8 +99,14 @@ spec:
                    limits:
                      memory: 100Mi
                      cpu: 100m
+                 serviceAccount: open-match-service
+                 serviceAccountAnnotations:
+                   iam.gke.io/gcp-service-account: open-match-service@kentaiso-330205.iam.gserviceaccount.com
 
                gcpProjectId: "kentaiso-330205"
+
+               logging:
+                 level: info
              
                image:
                  registry: gcr.io/open-match-public-images
@@ -109,9 +115,9 @@ spec:
              
                telemetry:
                  reportingPeriod: "1m"
-                 traceSamplingFraction: 0.005
+                 traceSamplingFraction: 0.00
                  zpages:
-                   enabled: true
+                   enabled: false
                  prometheus:
                    enabled: true
                    endpoint: "/metrics"
