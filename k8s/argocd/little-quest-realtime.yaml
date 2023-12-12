@@ -5,7 +5,7 @@ metadata:
   namespace: argocd
   annotations:
     argocd-image-updater.argoproj.io/write-back-method: argocd
-    argocd-image-updater.argoproj.io/image-list: realtime=asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/little-quest-realtime,mmf=asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/little-quest-mmf
+    argocd-image-updater.argoproj.io/image-list: realtime=asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/little-quest-realtime,mmf=asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/little-quest-mmf,director=asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/little-quest-director
     argocd-image-updater.argoproj.io/realtime.update-strategy: latest
     argocd-image-updater.argoproj.io/realtime.ignore-tags: latest
     argocd-image-updater.argoproj.io/realtime.force-update: "true"
@@ -16,6 +16,11 @@ metadata:
     argocd-image-updater.argoproj.io/mmf.force-update: "true"
     argocd-image-updater.argoproj.io/mmf.helm.image-name: mmf.image.repository
     argocd-image-updater.argoproj.io/mmf.helm.image-tag: mmf.image.tag
+    argocd-image-updater.argoproj.io/director.update-strategy: latest
+    argocd-image-updater.argoproj.io/director.ignore-tags: latest
+    argocd-image-updater.argoproj.io/director.force-update: "true"
+    argocd-image-updater.argoproj.io/director.helm.image-name: director.image.repository
+    argocd-image-updater.argoproj.io/director.helm.image-tag: director.image.tag
     notifications.argoproj.io/subscribe.on-sync-succeeded.googlechat: spaceName
 spec:
   project: default
@@ -28,7 +33,7 @@ spec:
   source:
     repoURL: asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/charts
     chart: little-quest-realtime
-    targetRevision: 0.3.11
+    targetRevision: 0.3.17
     helm:
       releaseName: "little-quest-realtime"
       values: |
@@ -201,6 +206,8 @@ spec:
           port:
             # Pod's containerPort
             containerPort: 50502
+            # HTTP Prometheus metrics port
+            metricsPort: 18080
 
           podSecurityContext: {}
             # fsGroup: 2000
@@ -246,12 +253,12 @@ spec:
               memory: 128Mi
 
           nodeSelector:
-            app: open-match
+            app: agones-gameserver
 
           tolerations:
           - key: "app"
             operator: "Equal"
-            value: "open-match"
+            value: "agones-gameserver"
             effect: "NoSchedule"
 
           affinity: {}
@@ -281,7 +288,131 @@ spec:
 
           # Cloud Trace sampling rate
           cloudTrace:
-            samplingRate: 1.0
+            samplingRate: 0.1
+
+        director:
+          serviceName: little-quest-director
+
+          image:
+            repository: asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/little-quest-director
+            pullPolicy: IfNotPresent
+            # Overrides the image tag whose default is the chart appVersion.
+            tag: ""
+
+          imagePullSecrets: []
+          nameOverride: ""
+          fullnameOverride: ""
+
+          serviceAccount:
+            # Specifies whether a service account should be created
+            create: true
+            # Annotations to add to the service account
+            annotations:
+              iam.gke.io/gcp-service-account: little-quest-director@kentaiso-330205.iam.gserviceaccount.com
+            # The name of the service account to use.
+            # If not set and create is true, a name is generated using the fullname template
+            name: ""
+
+          podAnnotations: {}
+
+          replicaCount: 1
+
+          strategy:
+            type: RollingUpdate
+            rollingUpdate:
+              maxSurge: 25%
+              maxUnavailable: 25%
+
+          port:
+            # HTTP Prometheus metrics port
+            metricsPort: 18080
+
+          podSecurityContext: {}
+            # fsGroup: 2000
+
+          securityContext: {}
+            # capabilities:
+            #   drop:
+            #   - ALL
+            # readOnlyRootFilesystem: true
+            # runAsNonRoot: true
+            # runAsUser: 1000
+
+          liveness:
+            httpGet:
+              path: /healthz
+              port: 18080
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 5
+            timeoutSeconds: 10
+
+          readiness:
+            httpGet:
+              path: /readiness
+              port: 18080
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 5
+            timeoutSeconds: 10
+
+          startup: {}
+
+          resources:
+            # We usually recommend not to specify default resources and to leave this as a conscious
+            # choice for the user. This also increases chances charts run on environments with little
+            # resources, such as Minikube. If you do want to specify resources, uncomment the following
+            # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 100m
+              memory: 128Mi
+
+          nodeSelector:
+            app: agones-gameserver
+
+          tolerations:
+          - key: "app"
+            operator: "Equal"
+            value: "agones-gameserver"
+            effect: "NoSchedule"
+
+          affinity: {}
+
+          terminationGracePeriodSeconds: 30
+
+          ## Additional volumeMounts
+          volumeMounts: {}
+
+          ## Additional Volumes
+          volumes: {}
+
+          maxUnavailable: 1
+
+          service:
+            annotations: {}
+            type: ClusterIP
+            port: 80
+
+          autoscaling:
+            enabled: false
+
+          openMatch:
+            backendService:
+              address: open-match-backend.open-match.svc.cluster.local.:50505
+            matchFunction:
+              host: little-quest-mmf.corp-0.svc.cluster.local.
+              port: 80
+
+          agones:
+            allocator:
+              address: agones-allocator.agones-system.svc.cluster.local.:8443
+
+          # Cloud Trace sampling rate
+          cloudTrace:
+            samplingRate: 0.1
 
         # environment(e.g. development, staging, production)
         env: production
