@@ -234,6 +234,7 @@ mmf:
   service:
     annotations: {}
     type: ClusterIP
+    headless: false
     port: 80
 
   autoscaling:
