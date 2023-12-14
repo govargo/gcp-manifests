@@ -21,7 +21,7 @@ spec:
       source:
         chart: open-match
         repoURL: https://open-match.dev/chart/stable
-        targetRevision: v1.8.0
+        targetRevision: v1.8.1
         helm:
           releaseName: "open-match"
           values: |
@@ -109,13 +109,13 @@ spec:
                  level: info
              
                image:
-                 registry: gcr.io/open-match-public-images
-                 tag: 1.8.0
+                 registry: asia-northeast1-docker.pkg.dev/kentaiso-330205/open-match
+                 tag: 1.8.1-20b015b
                  pullPolicy: Always
              
                telemetry:
                  reportingPeriod: "1m"
-                 traceSamplingFraction: 0.00
+                 traceSamplingFraction: 0.0
                  zpages:
                    enabled: false
                  prometheus:
