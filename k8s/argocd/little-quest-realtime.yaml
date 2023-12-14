@@ -33,7 +33,7 @@ spec:
   source:
     repoURL: asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/charts
     chart: little-quest-realtime
-    targetRevision: 0.3.17
+    targetRevision: 0.3.18
     helm:
       releaseName: "little-quest-realtime"
       values: |
@@ -195,7 +195,7 @@ spec:
 
           podAnnotations: {}
 
-          replicaCount: 1
+          replicaCount: 2
 
           strategy:
             type: RollingUpdate
@@ -276,7 +276,8 @@ spec:
           service:
             annotations: {}
             type: ClusterIP
-            port: 80
+            headless: true
+            port: 50502
 
           autoscaling:
             enabled: false
@@ -288,7 +289,7 @@ spec:
 
           # Cloud Trace sampling rate
           cloudTrace:
-            samplingRate: 0.1
+            samplingRate: 0.0
 
         director:
           serviceName: little-quest-director
@@ -404,7 +405,7 @@ spec:
               address: open-match-backend.open-match.svc.cluster.local.:50505
             matchFunction:
               host: little-quest-mmf.corp-0.svc.cluster.local.
-              port: 80
+              port: 50502
 
           agones:
             allocator:
@@ -412,7 +413,7 @@ spec:
 
           # Cloud Trace sampling rate
           cloudTrace:
-            samplingRate: 0.1
+            samplingRate: 0.03
 
         # environment(e.g. development, staging, production)
         env: production
