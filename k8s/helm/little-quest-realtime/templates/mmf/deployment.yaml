@@ -103,7 +103,7 @@ spec:
         {{- toYaml . | nindent 6 }}
         labelSelector:
           matchLabels:
-          {{- include "little-quest-realtime.selectorLabels" $ | nindent 12 }}
+          {{- include "little-quest-frontend.selectorLabels" $ | nindent 12 }}
       {{- end }}
       {{- with .Values.mmf.tolerations }}
       tolerations:

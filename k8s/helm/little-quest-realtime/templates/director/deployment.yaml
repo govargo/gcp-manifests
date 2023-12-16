@@ -104,7 +104,7 @@ spec:
         {{- toYaml . | nindent 6 }}
         labelSelector:
           matchLabels:
-          {{- include "little-quest-realtime.selectorLabels" $ | nindent 12 }}
+          {{- include "little-quest-director.selectorLabels" $ | nindent 12 }}
       {{- end }}
       {{- with .Values.director.tolerations }}
       tolerations:
