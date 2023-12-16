@@ -1,0 +1,42 @@
+{{- if .Values.mmf.autoscaling.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "little-quest-mmf.fullname" . }}
+  labels:
+    {{- include "little-quest-mmf.labels" . | nindent 4 }}
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "little-quest-mmf.fullname" . }}
+  minReplicas: {{ .Values.mmf.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.mmf.autoscaling.maxReplicas }}
+  metrics:
+  {{- if .Values.mmf.autoscaling.targetCPUUtilizationPercentage }}
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: {{ .Values.mmf.autoscaling.targetCPUType }}
+        averageUtilization: {{ .Values.mmf.autoscaling.targetCPUUtilizationPercentage }}
+  {{- end }}
+  {{- if .Values.mmf.autoscaling.targetMemoryUtilizationPercentage }}
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: {{ .Values.mmf.autoscaling.targetMemoryType }}
+        averageUtilization: {{ .Values.mmf.autoscaling.targetMemoryUtilizationPercentage }}
+  {{- end }}
+  {{- if .Values.mmf.autoscaling.targetContainerCPUUtilizationPercentage }}
+  - type: ContainerResource
+    containerResource:
+      name: cpu
+      container: {{ include "little-quest-mmf.fullname" . }}
+      target:
+        type: {{ .Values.mmf.autoscaling.targetContainerCPUType }}
+        averageUtilization: {{ .Values.mmf.autoscaling.targetContainerCPUUtilizationPercentage }}
+  {{- end }}
+{{- end }}

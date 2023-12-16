@@ -6,6 +6,13 @@ Expand the name of the chart for realtime.
 {{- end }}
 
 {{/*
+Expand the name of the chart for frontend.
+*/}}
+{{- define "little-quest-frontend.name" -}}
+{{- default "little-quest-frontend" .Values.frontend.nameOverride | trunc 63 | trimSuffix "-" }}
+{{- end }}
+
+{{/*
 Expand the name of the chart for mmf.
 */}}
 {{- define "little-quest-mmf.name" -}}
@@ -20,7 +27,7 @@ Expand the name of the chart for director.
 {{- end }}
 
 {{/*
-Create a default fully qualified app name.
+Create a default fully qualified realtime name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
@@ -33,6 +40,24 @@ If release name contains chart name it will be used as a full name.
 {{- .Release.Name | trunc 63 | trimSuffix "-" }}
 {{- else }}
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" }}
+{{- end }}
+{{- end }}
+{{- end }}
+
+{{/*
+Create a default fully qualified frontend name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+If release name contains chart name it will be used as a full name.
+*/}}
+{{- define "little-quest-frontend.fullname" -}}
+{{- if .Values.frontend.fullnameOverride }}
+{{- .Values.frontend.fullnameOverride | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- $name := default "little-quest-frontend" .Values.frontend.nameOverride }}
+{{- if contains $name .Release.Name }}
+{{- .Release.Name | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- printf "%s" $name | trunc 63 | trimSuffix "-" }}
 {{- end }}
 {{- end }}
 {{- end }}
@@ -93,6 +118,18 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
 {{/*
+Common labels for frontend
+*/}}
+{{- define "little-quest-frontend.labels" -}}
+helm.sh/chart: {{ include "little-quest-realtime.chart" . }}
+{{ include "little-quest-frontend.selectorLabels" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end }}
+
+{{/*
 Common labels for mmf
 */}}
 {{- define "little-quest-mmf.labels" -}}
@@ -125,6 +162,14 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
+Selector labels for frontend
+*/}}
+{{- define "little-quest-frontend.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "little-quest-frontend.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+
+{{/*
 Selector labels for mmf
 */}}
 {{- define "little-quest-mmf.selectorLabels" -}}
@@ -148,6 +193,17 @@ Create the name of the service account to use for realtime
 {{- default (include "little-quest-realtime.fullname" .) .Values.realtime.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.realtime.serviceAccount.name }}
+{{- end }}
+{{- end }}
+
+{{/*
+Create the name of the service account to use for frontend
+*/}}
+{{- define "little-quest-frontend.serviceAccountName" -}}
+{{- if .Values.frontend.serviceAccount.create }}
+{{- default (include "little-quest-frontend.fullname" .) .Values.frontend.serviceAccount.name }}
+{{- else }}
+{{- default "default" .Values.frontend.serviceAccount.name }}
 {{- end }}
 {{- end }}
 

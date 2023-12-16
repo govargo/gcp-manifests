@@ -129,6 +129,131 @@ realtime:
     minReplicas: 0
     maxReplicas: 10
 
+frontend:
+  serviceName: little-quest-frontend
+
+  image:
+    repository: asia-northeast1-docker.pkg.dev/test-project/little-quest/little-quest-frontend
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: ""
+
+  imagePullSecrets: []
+  nameOverride: ""
+  fullnameOverride: ""
+
+  serviceAccount:
+    # Specifies whether a service account should be created
+    create: true
+    # Annotations to add to the service account
+    annotations: {}
+    # The name of the service account to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name: ""
+
+  podAnnotations: {}
+
+  replicaCount: 1
+  
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+
+  port:
+    # Pod's containerPort
+    containerPort: 18080
+
+  podSecurityContext: {}
+    # fsGroup: 2000
+  
+  securityContext: {}
+    # capabilities:
+    #   drop:
+    #   - ALL
+    # readOnlyRootFilesystem: true
+    # runAsNonRoot: true
+    # runAsUser: 1000
+  
+  liveness:
+    httpGet:
+      path: /healthz
+      port: 18080
+    periodSeconds: 10
+    successThreshold: 1
+    failureThreshold: 5
+    timeoutSeconds: 10
+
+  readiness:
+    httpGet:
+      path: /readiness
+      port: 18080    
+    periodSeconds: 10
+    successThreshold: 1
+    failureThreshold: 5
+    timeoutSeconds: 10
+
+  startup: {}
+
+  resources:
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 100m
+      memory: 128Mi
+
+  nodeSelector:
+    app: open-match
+
+  tolerations:
+  - key: "app"
+    operator: "Equal"
+    value: "open-match"
+    effect: "NoSchedule"
+
+  affinity: {}
+
+  terminationGracePeriodSeconds: 30
+
+  ## Additional volumeMounts
+  volumeMounts: {}
+
+  ## Additional Volumes
+  volumes: {}
+
+  maxUnavailable: 1
+
+  service:
+    annotations: {}
+    type: ClusterIP
+    headless: false
+    port: 80
+
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 100
+    # targetCPUType: Utilization
+    # targetCPUUtilizationPercentage: 70
+    # targetMemoryType: Utilization
+    # targetMemoryUtilizationPercentage: 70
+    targetContainerCPUType: Utilization
+    targetContainerCPUUtilizationPercentage: 70
+
+  openMatch:
+    frontendService:
+      address: open-match-frontend.open-match.svc.cluster.local.:50504
+
+  # Cloud Trace sampling rate
+  cloudTrace:
+    samplingRate: 0.1
+
 mmf:
   serviceName: little-quest-mmf
   
@@ -239,6 +364,14 @@ mmf:
 
   autoscaling:
     enabled: false
+    minReplicas: 1
+    maxReplicas: 100
+    # targetCPUType: Utilization
+    # targetCPUUtilizationPercentage: 70
+    # targetMemoryType: Utilization
+    # targetMemoryUtilizationPercentage: 70
+    targetContainerCPUType: Utilization
+    targetContainerCPUUtilizationPercentage: 70
 
   openMatch:
     queryService:
