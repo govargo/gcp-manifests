@@ -87,8 +87,10 @@ spec:
               secretKeyRef:
                 name: middleware-env
                 key: redis_password
-          - name: AGONES_ALLOCATOR_HOST
-            value: {{ .Values.agones.allocator.host }}
+          - name: OPENMATCH_GAME_FRONTEND_HOST
+            value: {{ .Values.openMatch.gameFrontend.host | quote }}
+          - name: OPENMATCH_GAME_FRONTEND_PORT
+            value: {{ .Values.openMatch.gameFrontend.port | quote }}
           - name: OTEL_SAMPLING_RATE
             value: {{ .Values.cloudTrace.samplingRate | default 0.1 | quote }}
           - name: GOOGLE_API_GO_EXPERIMENTAL_TELEMETRY_PLATFORM_TRACING
