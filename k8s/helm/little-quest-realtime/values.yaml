@@ -24,7 +24,9 @@ realtime:
     name: ""
   
   podAnnotations: {}
-  
+
+  replicaCount: 1
+
   scheduling: Packed
   
   strategy:
