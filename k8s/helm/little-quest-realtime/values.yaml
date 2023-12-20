@@ -83,30 +83,25 @@ realtime:
     #  timeoutSeconds: 10
   
   startup: {}
-  
-  resources:
+
+  resources: {}
     # We usually recommend not to specify default resources and to leave this as a conscious
     # choice for the user. This also increases chances charts run on environments with little
     # resources, such as Minikube. If you do want to specify resources, uncomment the following
     # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-    requests:
-      cpu: 100m
-      memory: 128Mi
-    limits:
-      cpu: 100m
-      memory: 128Mi
-  
-  nodeSelector:
-    app: agones-gameserver
-  
-  tolerations:
-  - key: "app"
-    operator: "Equal"
-    value: "agones-gameserver"
-    effect: "NoSchedule" 
-  
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+  nodeSelector: {}
+
+  tolerations: []
+
   affinity: {}
-  
+
   terminationGracePeriodSeconds: 600
   
   ## Additional volumeMounts
@@ -196,26 +191,21 @@ frontend:
 
   startup: {}
 
-  resources:
+  resources: {}
     # We usually recommend not to specify default resources and to leave this as a conscious
     # choice for the user. This also increases chances charts run on environments with little
     # resources, such as Minikube. If you do want to specify resources, uncomment the following
     # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-    requests:
-      cpu: 100m
-      memory: 128Mi
-    limits:
-      cpu: 100m
-      memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
 
-  nodeSelector:
-    app: open-match
+  nodeSelector: {}
 
-  tolerations:
-  - key: "app"
-    operator: "Equal"
-    value: "open-match"
-    effect: "NoSchedule"
+  tolerations: []
 
   affinity: {}
 
@@ -323,27 +313,22 @@ mmf:
   
   startup: {}
 
-  resources:
+  resources: {}
     # We usually recommend not to specify default resources and to leave this as a conscious
     # choice for the user. This also increases chances charts run on environments with little
     # resources, such as Minikube. If you do want to specify resources, uncomment the following
     # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-    requests:
-      cpu: 100m
-      memory: 128Mi
-    limits:
-      cpu: 100m
-      memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
   
-  nodeSelector:
-    app: open-match
-  
-  tolerations:
-  - key: "app"
-    operator: "Equal"
-    value: "open-match"
-    effect: "NoSchedule" 
-  
+  nodeSelector: {}
+
+  tolerations: []
+
   affinity: {}
   
   terminationGracePeriodSeconds: 30
@@ -449,26 +434,21 @@ director:
 
   startup: {}
 
-  resources:
+  resources: {}
     # We usually recommend not to specify default resources and to leave this as a conscious
     # choice for the user. This also increases chances charts run on environments with little
     # resources, such as Minikube. If you do want to specify resources, uncomment the following
     # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-    requests:
-      cpu: 100m
-      memory: 128Mi
-    limits:
-      cpu: 100m
-      memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
 
-  nodeSelector:
-    app: open-match
+  nodeSelector: {}
 
-  tolerations:
-  - key: "app"
-    operator: "Equal"
-    value: "open-match"
-    effect: "NoSchedule"
+  tolerations: []
 
   affinity: {}
 
