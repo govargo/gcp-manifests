@@ -23,7 +23,7 @@ spec:
   source:
     repoURL: asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/charts
     chart: little-quest-server
-    targetRevision: 0.4.6
+    targetRevision: 0.4.7
     helm:
       releaseName: "little-quest-server"
       values: |
@@ -305,9 +305,10 @@ spec:
           port: 6379
           dbNumber: 0
 
-        agones:
-          allocator:
-            host: agones-allocator.agones-system.svc.clusterset.local:8443
+        openMatch:
+          gameFrontend:
+            host: little-quest-frontend.corp-0.svc.clusterset.local.
+            port: 18080
 
   destination:
     name: "gke_kentaiso-330205_asia-northeast1_prod-app-0"
