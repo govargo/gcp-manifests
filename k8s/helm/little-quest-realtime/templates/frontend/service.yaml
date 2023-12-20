@@ -20,5 +20,8 @@ spec:
     protocol: TCP
     appProtocol: http
     targetPort: {{ .Values.frontend.port.containerPort }}
+    {{- if .Values.frontend.service.nodePort }}
+    nodePort: {{ .Values.frontend.service.nodePort }}
+    {{- end }}
   selector:
     {{- include "little-quest-frontend.selectorLabels" . | nindent 4 }}

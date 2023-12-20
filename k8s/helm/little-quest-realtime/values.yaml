@@ -224,6 +224,7 @@ frontend:
     type: ClusterIP
     headless: false
     port: 80
+    nodePort:
 
   autoscaling:
     enabled: false
