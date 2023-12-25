@@ -38,7 +38,7 @@ spec:
   source:
     repoURL: asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/charts
     chart: little-quest-realtime
-    targetRevision: 0.3.19
+    targetRevision: 0.3.23
     helm:
       releaseName: "little-quest-realtime"
       values: |
@@ -422,7 +422,7 @@ spec:
           openMatch:
             queryService:
               address: open-match-query.open-match.svc.cluster.local.:50503
-            playerPerMatch: 2
+            playerPerMatch: 4
 
           # Cloud Trace sampling rate
           cloudTrace:
