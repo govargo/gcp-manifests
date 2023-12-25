@@ -364,7 +364,7 @@ mmf:
   openMatch:
     queryService:
       address: open-match-query.open-match.svc.cluster.local.:50503
-    playerPerMatch: 2
+    playerPerMatch: 4
 
   # Cloud Trace sampling rate
   cloudTrace:
