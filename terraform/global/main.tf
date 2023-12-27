@@ -371,6 +371,19 @@ module "disable_policy_publicAccessPrevention" {
   exclude_projects = ["${var.organization_id}"]
 }
 
+module "allowed-policy-member-domains" {
+  source     = "terraform-google-modules/org-policy/google"
+  version    = "5.3.0"
+  project_id = data.google_project.project.project_id
+
+  constraint        = "constraints/iam.allowedPolicyMemberDomains"
+  policy_type       = "list"
+  organization_id   = var.organization_id
+  policy_for        = "project"
+  allow             = ["C02h8e9nw"]
+  allow_list_length = "1"
+}
+
 ## BigQuery dataset
 resource "google_bigquery_dataset" "billing_export" {
   project = data.google_project.project.project_id
@@ -431,6 +444,12 @@ resource "google_project_iam_member" "allow_cloudsql_client" {
   project = data.google_project.project.project_id
   role    = "roles/cloudsql.client"
   member  = "serviceAccount:${data.google_compute_default_service_account.default.email}"
+}
+
+resource "google_project_iam_member" "allow_securitycommandcenter_agent" {
+  project = data.google_project.project.project_id
+  role    = "roles/securitycenter.serviceAgent"
+  member  = "serviceAccount:service-project-${data.google_project.project.number}@security-center-api.iam.gserviceaccount.com"
 }
 
 ## Secret
