@@ -368,7 +368,7 @@ mmf:
 
   # Cloud Trace sampling rate
   cloudTrace:
-    samplingRate: 0.1
+    samplingRate: 0.0
 
 director:
   serviceName: little-quest-director
@@ -486,7 +486,7 @@ director:
 
   # Cloud Trace sampling rate
   cloudTrace:
-    samplingRate: 0.1
+    samplingRate: 0.0
 
 # environment(e.g. development, staging, production)
 env: development
