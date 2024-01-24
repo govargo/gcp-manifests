@@ -43,9 +43,3 @@ variable "ipv4_enabled" {
   type        = bool
   default     = false
 }
-
-variable "require_ssl" {
-  description = "Whether SSL connections over IP are enforced or not"
-  type        = bool
-  default     = false
-}
