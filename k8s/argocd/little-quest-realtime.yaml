@@ -38,7 +38,7 @@ spec:
   source:
     repoURL: asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/charts
     chart: little-quest-realtime
-    targetRevision: 0.3.23
+    targetRevision: 0.3.24
     helm:
       releaseName: "little-quest-realtime"
       values: |
@@ -297,7 +297,7 @@ spec:
 
           # Cloud Trace sampling rate
           cloudTrace:
-            samplingRate: 0.1
+            samplingRate: 1.0
 
         mmf:
           serviceName: little-quest-mmf
@@ -550,7 +550,7 @@ spec:
 
           # Cloud Trace sampling rate
           cloudTrace:
-            samplingRate: 0.03
+            samplingRate: 0.0
 
         # environment(e.g. development, staging, production)
         env: production
