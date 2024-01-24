@@ -133,9 +133,15 @@ resource "google_compute_instance_group_manager" "datastream_cloudsql_proxy_mig"
   wait_for_instances_status = "STABLE"
 
   update_policy {
-    type                    = "PROACTIVE"
-    replacement_method      = "SUBSTITUTE"
-    minimal_action          = "REPLACE"
+    type                  = "OPPORTUNISTIC"
+    minimal_action        = "REFRESH"
+    max_surge_fixed       = 1
+    max_unavailable_fixed = 1
+  }
+
+  stateful_internal_ip {
+    interface_name = "nic0"
+    delete_rule    = "NEVER"
   }
 }
 
