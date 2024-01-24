@@ -65,7 +65,7 @@ module "cloudsql_mysql" {
   ip_configuration = {
     ipv4_enabled                                  = var.ipv4_enabled
     enable_private_path_for_google_cloud_services = true
-    require_ssl                                   = var.require_ssl
+    require_ssl                                   = true
     private_network                               = "${data.google_project.project.id}/global/networks/${var.gcp_project_name}"
     allocated_ip_range                            = "google-managed-services-${var.gcp_project_name}"
     authorized_networks                           = []
