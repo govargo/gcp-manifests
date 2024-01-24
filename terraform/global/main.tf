@@ -50,7 +50,8 @@ locals {
     "workflowexecutions.googleapis.com",
     "cloudscheduler.googleapis.com",
     "firebase.googleapis.com",
-    "firestore.googleapis.com"
+    "firestore.googleapis.com",
+    "securitycenter.googleapis.com"
   ])
 }
 
