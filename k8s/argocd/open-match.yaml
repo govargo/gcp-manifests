@@ -18,6 +18,9 @@ spec:
         syncOptions:
         - CreateNamespace=true
         - RespectIgnoreDifferences=true
+        automated:
+          prune: true
+          selfHeal: true
       source:
         chart: open-match
         repoURL: https://open-match.dev/chart/stable
@@ -123,7 +126,7 @@ spec:
                    endpoint: "/metrics"
                    serviceDiscovery: true
                  stackdriverMetrics:
-                   enabled: true
+                   enabled: false
                    prefix: "open_match"
 
       ignoreDifferences:
