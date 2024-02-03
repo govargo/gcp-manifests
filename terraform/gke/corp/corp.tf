@@ -37,7 +37,7 @@ module "corp-0" {
   identity_namespace                   = var.identity_namespace
   logging_service                      = var.logging_service
   monitoring_service                   = var.monitoring_service
-  monitoring_enabled_components        = ["SYSTEM_COMPONENTS", "APISERVER", "CONTROLLER_MANAGER", "SCHEDULER"]
+  monitoring_enabled_components        = ["SYSTEM_COMPONENTS"]
   monitoring_enable_managed_prometheus = false
   node_metadata                        = var.node_metadata
   enable_binary_authorization          = var.enable_binary_authorization
@@ -77,7 +77,7 @@ module "corp-0" {
       min_count          = null
       max_count          = null
       total_min_count    = var.total_min_count
-      total_max_count    = var.total_max_count
+      total_max_count    = 1
       location_policy    = "ANY"
       local_ssd_count    = var.local_ssd_count
       spot               = var.spot

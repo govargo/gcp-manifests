@@ -36,7 +36,7 @@ module "app-0" {
   identity_namespace                   = var.identity_namespace
   logging_service                      = var.logging_service
   monitoring_service                   = var.monitoring_service
-  monitoring_enabled_components        = ["SYSTEM_COMPONENTS", "APISERVER", "CONTROLLER_MANAGER", "SCHEDULER"]
+  monitoring_enabled_components        = ["SYSTEM_COMPONENTS"]
   monitoring_enable_managed_prometheus = false
   node_metadata                        = var.node_metadata
   enable_binary_authorization          = var.enable_binary_authorization
