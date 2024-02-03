@@ -19,18 +19,19 @@ spec:
         - CreateNamespace=true
         - ServerSideApply=true
         - RespectIgnoreDifferences=false
+        automated:
+          prune: true
+          selfHeal: true
       source:
         chart: agones
         repoURL: https://agones.dev/chart/stable
-        targetRevision: 1.35.0
+        targetRevision: 1.38.0
         helm:
           releaseName: "agones"
           values: |
              agones:
                metrics:
-                 stackdriverEnabled: true
-                 stackdriverProjectID: "kentaiso-330205"
-                 stackdriverLabels: ""
+                 stackdriverEnabled: false
                serviceaccount:
                  allocator:
                    name: agones-allocator
@@ -86,6 +87,7 @@ spec:
                  service:
                    name: agones-allocator
                    serviceType: ClusterIP
+                   clusterIP: None
                    http:
                      appProtocol: http
                      port: 18080
@@ -102,52 +104,6 @@ spec:
                minPort: 7000
                maxPort: 8000
 
-      ignoreDifferences:
-      - group: ""
-        kind: Secret
-        name: agones-cert
-        namespace: agones-system
-        jsonPointers:
-        - /data
-      - group: ""
-        kind: Secret
-        name: allocator-client-ca
-        namespace: agones-system
-        jsonPointers:
-        - /data
-      - group: ""
-        kind: Secret
-        name: allocator-tls
-        namespace: agones-system
-        jsonPointers:
-        - /data
-      - group: ""
-        kind: Secret
-        name: allocator-tls-ca
-        namespace: agones-system
-        jsonPointers:
-        - /data
-      - group: ""
-        kind: Secret
-        name: allocator-client.default
-        namespace: corp-0
-        jsonPointers:
-        - /data
-      - group: admissionregistration.k8s.io
-        kind: MutatingWebhookConfiguration
-        name: agones-mutation-webhook
-        jsonPointers:
-        - /webhooks/0/clientConfig/caBundle
-      - group: admissionregistration.k8s.io
-        kind: ValidatingWebhookConfiguration
-        name: agones-validation-webhook
-        jsonPointers:
-        - /webhooks/0/clientConfig/caBundle
-      - group: apiregistration.k8s.io
-        kind: APIService
-        name: v1.allocation.agones.dev
-        jsonPointers:
-        - /spec/caBundle
       destination:
         name: "{{name}}"
         namespace: agones-system
