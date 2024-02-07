@@ -1,0 +1,25 @@
+[
+  {
+    "name": "delete-prerelease",
+    "action": {"type": "Delete"},
+    "condition": {
+      "tagState": "tagged",
+      "olderThan": "31d"
+    }
+  },
+  {
+    "name": "keep-tagged-release",
+    "action": {"type": "Keep"},
+    "condition": {
+      "tagState": "tagged",
+      "newerThan": "30d"
+    }
+  },
+  {
+    "name": "keep-minimum-versions",
+    "action": {"type": "Keep"},
+    "mostRecentVersions": {
+      "keepCount": 5
+    }
+  }
+]
