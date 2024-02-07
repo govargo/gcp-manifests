@@ -29,4 +29,6 @@ override.tf.json
 # example: *tfplan*
 **/.terraform.lock.hcl
 
-**/files/*.json
+**/bigquery/files/*.json
+**/dataplex/files/*.json
+**/pubsub/files/*.json
