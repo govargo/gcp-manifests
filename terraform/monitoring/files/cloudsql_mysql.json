@@ -1,4 +1,5 @@
 {
+  "etag": "6e3400f04a2f308dd82feef9abd789ab",
   "displayName": "Cloud SQL for MySQL",
   "dashboardFilters": [
     {
@@ -20,17 +21,14 @@
           "title": "CPU 使用率",
           "scorecard": {
             "gaugeView": {
-              "lowerBound": 0,
               "upperBound": 1
             },
-            "thresholds": [],
             "timeSeriesQuery": {
               "outputFullDuration": true,
               "timeSeriesFilter": {
                 "aggregation": {
                   "alignmentPeriod": "60s",
                   "crossSeriesReducer": "REDUCE_MEAN",
-                  "groupByFields": [],
                   "perSeriesAligner": "ALIGN_MEAN"
                 },
                 "filter": "metric.type=\"cloudsql.googleapis.com/database/cpu/utilization\" resource.type=\"cloudsql_database\""
@@ -47,20 +45,17 @@
           "title": "メモリ使用率",
           "scorecard": {
             "gaugeView": {
-              "lowerBound": 0,
               "upperBound": 100
             },
             "thresholds": [
               {
                 "color": "YELLOW",
                 "direction": "ABOVE",
-                "label": "",
                 "value": 50
               },
               {
                 "color": "RED",
                 "direction": "ABOVE",
-                "label": "",
                 "value": 80
               }
             ],
@@ -70,7 +65,6 @@
                 "aggregation": {
                   "alignmentPeriod": "60s",
                   "crossSeriesReducer": "REDUCE_SUM",
-                  "groupByFields": [],
                   "perSeriesAligner": "ALIGN_MEAN"
                 },
                 "filter": "metric.type=\"cloudsql.googleapis.com/database/memory/components\" resource.type=\"cloudsql_database\" metric.label.\"component\"=\"Usage\""
@@ -87,17 +81,14 @@
           "title": "ディスク使用率",
           "scorecard": {
             "gaugeView": {
-              "lowerBound": 0,
               "upperBound": 1
             },
-            "thresholds": [],
             "timeSeriesQuery": {
               "outputFullDuration": true,
               "timeSeriesFilter": {
                 "aggregation": {
                   "alignmentPeriod": "120s",
                   "crossSeriesReducer": "REDUCE_MEAN",
-                  "groupByFields": [],
                   "perSeriesAligner": "ALIGN_MAX"
                 },
                 "filter": "metric.type=\"cloudsql.googleapis.com/database/disk/utilization\" resource.type=\"cloudsql_database\" "
@@ -115,14 +106,12 @@
           "title": "ログのエラー",
           "scorecard": {
             "blankView": {},
-            "thresholds": [],
             "timeSeriesQuery": {
               "outputFullDuration": true,
               "timeSeriesFilter": {
                 "aggregation": {
                   "alignmentPeriod": "120s",
                   "crossSeriesReducer": "REDUCE_SUM",
-                  "groupByFields": [],
                   "perSeriesAligner": "ALIGN_DELTA"
                 },
                 "filter": "metric.type=\"logging.googleapis.com/log_entry_count\" resource.type=\"cloudsql_database\" metric.label.severity=\"ERROR\""
@@ -144,10 +133,7 @@
             },
             "dataSets": [
               {
-                "breakdowns": [],
-                "dimensions": [],
                 "legendTemplate": "CPU 使用率",
-                "measures": [],
                 "minAlignmentPeriod": "120s",
                 "plotType": "STACKED_AREA",
                 "targetAxis": "Y1",
@@ -162,8 +148,7 @@
                   "unitOverride": "percent"
                 }
               }
-            ],
-            "thresholds": []
+            ]
           }
         }
       },
@@ -180,10 +165,7 @@
             },
             "dataSets": [
               {
-                "breakdowns": [],
-                "dimensions": [],
                 "legendTemplate": "読み取り",
-                "measures": [],
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
@@ -201,10 +183,7 @@
                 }
               },
               {
-                "breakdowns": [],
-                "dimensions": [],
                 "legendTemplate": "書き込み",
-                "measures": [],
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
@@ -249,10 +228,7 @@
             },
             "dataSets": [
               {
-                "breakdowns": [],
-                "dimensions": [],
                 "legendTemplate": "データ転送（受信）バイト数",
-                "measures": [],
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
@@ -270,10 +246,7 @@
                 }
               },
               {
-                "breakdowns": [],
-                "dimensions": [],
                 "legendTemplate": "データ転送（送信）バイト数",
-                "measures": [],
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
@@ -290,8 +263,7 @@
                   "unitOverride": "byte/s"
                 }
               }
-            ],
-            "thresholds": []
+            ]
           }
         }
       },
@@ -307,10 +279,7 @@
             },
             "dataSets": [
               {
-                "breakdowns": [],
-                "dimensions": [],
                 "legendTemplate": "アクティブな接続",
-                "measures": [],
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
@@ -346,10 +315,7 @@
             },
             "dataSets": [
               {
-                "breakdowns": [],
-                "dimensions": [],
                 "legendTemplate": "${resource.labels.database}",
-                "measures": [],
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
@@ -365,8 +331,7 @@
                   }
                 }
               }
-            ],
-            "thresholds": []
+            ]
           }
         }
       },
@@ -382,10 +347,7 @@
             },
             "dataSets": [
               {
-                "breakdowns": [],
-                "dimensions": [],
                 "legendTemplate": "${metric.labels.user}",
-                "measures": [],
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
@@ -401,8 +363,7 @@
                   }
                 }
               }
-            ],
-            "thresholds": []
+            ]
           }
         }
       },
@@ -419,10 +380,7 @@
             },
             "dataSets": [
               {
-                "breakdowns": [],
-                "dimensions": [],
                 "legendTemplate": "${metric.labels.client_addr}",
-                "measures": [],
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
@@ -438,8 +396,7 @@
                   }
                 }
               }
-            ],
-            "thresholds": []
+            ]
           }
         }
       },
@@ -455,9 +412,6 @@
             },
             "dataSets": [
               {
-                "breakdowns": [],
-                "dimensions": [],
-                "measures": [],
                 "minAlignmentPeriod": "480s",
                 "plotType": "STACKED_AREA",
                 "targetAxis": "Y1",
@@ -495,10 +449,7 @@
             },
             "dataSets": [
               {
-                "breakdowns": [],
-                "dimensions": [],
                 "legendTemplate": "99 パーセンタイル",
-                "measures": [],
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
@@ -515,10 +466,7 @@
                 }
               },
               {
-                "breakdowns": [],
-                "dimensions": [],
                 "legendTemplate": "95 パーセンタイル",
-                "measures": [],
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
@@ -535,10 +483,7 @@
                 }
               },
               {
-                "breakdowns": [],
-                "dimensions": [],
                 "legendTemplate": "50 パーセンタイル",
-                "measures": [],
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
@@ -554,8 +499,7 @@
                   }
                 }
               }
-            ],
-            "thresholds": []
+            ]
           }
         }
       },
@@ -572,23 +516,16 @@
             },
             "dataSets": [
               {
-                "breakdowns": [],
-                "dimensions": [],
-                "measures": [],
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
                   "timeSeriesFilter": {
-                    "aggregation": {
-                      "perSeriesAligner": "ALIGN_NONE"
-                    },
                     "filter": "metric.type=\"cloudsql.googleapis.com/database/memory/components\" resource.type=\"cloudsql_database\" "
                   },
                   "unitOverride": "%"
                 }
               }
-            ],
-            "thresholds": []
+            ]
           }
         }
       },
@@ -605,55 +542,36 @@
             },
             "dataSets": [
               {
-                "breakdowns": [],
-                "dimensions": [],
                 "legendTemplate": "InnoDB のダーティページ数",
-                "measures": [],
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
                   "timeSeriesFilter": {
-                    "aggregation": {
-                      "perSeriesAligner": "ALIGN_NONE"
-                    },
                     "filter": "metric.type=\"cloudsql.googleapis.com/database/mysql/innodb_buffer_pool_pages_dirty\" resource.type=\"cloudsql_database\" "
                   }
                 }
               },
               {
-                "breakdowns": [],
-                "dimensions": [],
                 "legendTemplate": "InnoDB のフリーページ数",
-                "measures": [],
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
                   "timeSeriesFilter": {
-                    "aggregation": {
-                      "perSeriesAligner": "ALIGN_NONE"
-                    },
                     "filter": "metric.type=\"cloudsql.googleapis.com/database/mysql/innodb_buffer_pool_pages_free\" resource.type=\"cloudsql_database\" "
                   }
                 }
               },
               {
-                "breakdowns": [],
-                "dimensions": [],
                 "legendTemplate": "InnoDB の合計ページ数",
-                "measures": [],
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
                   "timeSeriesFilter": {
-                    "aggregation": {
-                      "perSeriesAligner": "ALIGN_NONE"
-                    },
                     "filter": "metric.type=\"cloudsql.googleapis.com/database/mysql/innodb_buffer_pool_pages_total\" resource.type=\"cloudsql_database\" "
                   }
                 }
               }
-            ],
-            "thresholds": []
+            ]
           }
         }
       },
@@ -669,17 +587,13 @@
             },
             "dataSets": [
               {
-                "breakdowns": [],
-                "dimensions": [],
                 "legendTemplate": "InnoDB データの fsync",
-                "measures": [],
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
                   "timeSeriesFilter": {
                     "aggregation": {
                       "crossSeriesReducer": "REDUCE_SUM",
-                      "groupByFields": [],
                       "perSeriesAligner": "ALIGN_RATE"
                     },
                     "filter": "metric.type=\"cloudsql.googleapis.com/database/mysql/innodb_data_fsyncs\" resource.type=\"cloudsql_database\" "
@@ -687,8 +601,7 @@
                   "unitOverride": "count/s"
                 }
               }
-            ],
-            "thresholds": []
+            ]
           }
         }
       },
@@ -705,17 +618,13 @@
             },
             "dataSets": [
               {
-                "breakdowns": [],
-                "dimensions": [],
                 "legendTemplate": "InnoDB ログの fsync",
-                "measures": [],
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
                   "timeSeriesFilter": {
                     "aggregation": {
                       "crossSeriesReducer": "REDUCE_SUM",
-                      "groupByFields": [],
                       "perSeriesAligner": "ALIGN_RATE"
                     },
                     "filter": "metric.type=\"cloudsql.googleapis.com/database/mysql/innodb_os_log_fsyncs\" resource.type=\"cloudsql_database\" "
@@ -723,8 +632,7 @@
                   "unitOverride": "count/s"
                 }
               }
-            ],
-            "thresholds": []
+            ]
           }
         }
       },
@@ -740,17 +648,13 @@
             },
             "dataSets": [
               {
-                "breakdowns": [],
-                "dimensions": [],
                 "legendTemplate": "読み取り",
-                "measures": [],
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
                   "timeSeriesFilter": {
                     "aggregation": {
                       "crossSeriesReducer": "REDUCE_SUM",
-                      "groupByFields": [],
                       "perSeriesAligner": "ALIGN_RATE"
                     },
                     "filter": "metric.type=\"cloudsql.googleapis.com/database/mysql/innodb_pages_read\" resource.type=\"cloudsql_database\" "
@@ -759,17 +663,13 @@
                 }
               },
               {
-                "breakdowns": [],
-                "dimensions": [],
                 "legendTemplate": "書き込み",
-                "measures": [],
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
                   "timeSeriesFilter": {
                     "aggregation": {
                       "crossSeriesReducer": "REDUCE_SUM",
-                      "groupByFields": [],
                       "perSeriesAligner": "ALIGN_RATE"
                     },
                     "filter": "metric.type=\"cloudsql.googleapis.com/database/mysql/innodb_pages_written\" resource.type=\"cloudsql_database\" "
@@ -777,8 +677,7 @@
                   "unitOverride": "count/s"
                 }
               }
-            ],
-            "thresholds": []
+            ]
           }
         }
       },
@@ -795,17 +694,13 @@
             },
             "dataSets": [
               {
-                "breakdowns": [],
-                "dimensions": [],
                 "legendTemplate": "MySQL クエリ",
-                "measures": [],
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
                   "timeSeriesFilter": {
                     "aggregation": {
                       "crossSeriesReducer": "REDUCE_SUM",
-                      "groupByFields": [],
                       "perSeriesAligner": "ALIGN_RATE"
                     },
                     "filter": "metric.type=\"cloudsql.googleapis.com/database/mysql/queries\" resource.type=\"cloudsql_database\" "
@@ -813,8 +708,7 @@
                   "unitOverride": "count/s"
                 }
               }
-            ],
-            "thresholds": []
+            ]
           }
         }
       },
@@ -830,17 +724,13 @@
             },
             "dataSets": [
               {
-                "breakdowns": [],
-                "dimensions": [],
                 "legendTemplate": "MySQL クエスチョン",
-                "measures": [],
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
                   "timeSeriesFilter": {
                     "aggregation": {
                       "crossSeriesReducer": "REDUCE_SUM",
-                      "groupByFields": [],
                       "perSeriesAligner": "ALIGN_RATE"
                     },
                     "filter": "metric.type=\"cloudsql.googleapis.com/database/mysql/questions\" resource.type=\"cloudsql_database\" "
@@ -848,8 +738,7 @@
                   "unitOverride": "count/s"
                 }
               }
-            ],
-            "thresholds": []
+            ]
           }
         }
       },
@@ -866,17 +755,13 @@
             },
             "dataSets": [
               {
-                "breakdowns": [],
-                "dimensions": [],
                 "legendTemplate": "データ転送（受信）バイト数",
-                "measures": [],
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
                   "timeSeriesFilter": {
                     "aggregation": {
                       "crossSeriesReducer": "REDUCE_SUM",
-                      "groupByFields": [],
                       "perSeriesAligner": "ALIGN_RATE"
                     },
                     "filter": "metric.type=\"cloudsql.googleapis.com/database/mysql/received_bytes_count\" resource.type=\"cloudsql_database\" "
@@ -885,17 +770,13 @@
                 }
               },
               {
-                "breakdowns": [],
-                "dimensions": [],
                 "legendTemplate": "データ転送（送信）バイト数",
-                "measures": [],
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
                   "timeSeriesFilter": {
                     "aggregation": {
                       "crossSeriesReducer": "REDUCE_SUM",
-                      "groupByFields": [],
                       "perSeriesAligner": "ALIGN_RATE"
                     },
                     "filter": "metric.type=\"cloudsql.googleapis.com/database/mysql/sent_bytes_count\" resource.type=\"cloudsql_database\" "
@@ -903,8 +784,7 @@
                   "unitOverride": "bytes/s"
                 }
               }
-            ],
-            "thresholds": []
+            ]
           }
         }
       },
@@ -920,17 +800,13 @@
             },
             "dataSets": [
               {
-                "breakdowns": [],
-                "dimensions": [],
                 "legendTemplate": "開いているテーブル",
-                "measures": [],
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
                   "timeSeriesFilter": {
                     "aggregation": {
                       "crossSeriesReducer": "REDUCE_SUM",
-                      "groupByFields": [],
                       "perSeriesAligner": "ALIGN_MAX"
                     },
                     "filter": "metric.type=\"cloudsql.googleapis.com/database/mysql/open_tables\" resource.type=\"cloudsql_database\" "
@@ -939,17 +815,13 @@
                 }
               },
               {
-                "breakdowns": [],
-                "dimensions": [],
                 "legendTemplate": "開かれているテーブル",
-                "measures": [],
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
                   "timeSeriesFilter": {
                     "aggregation": {
                       "crossSeriesReducer": "REDUCE_SUM",
-                      "groupByFields": [],
                       "perSeriesAligner": "ALIGN_RATE"
                     },
                     "filter": "metric.type=\"cloudsql.googleapis.com/database/mysql/opened_table_count\" resource.type=\"cloudsql_database\" "
@@ -957,8 +829,7 @@
                   "unitOverride": "tables"
                 }
               }
-            ],
-            "thresholds": []
+            ]
           }
         }
       },
@@ -974,17 +845,13 @@
             },
             "dataSets": [
               {
-                "breakdowns": [],
-                "dimensions": [],
                 "legendTemplate": "開いているテーブルの定義",
-                "measures": [],
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
                   "timeSeriesFilter": {
                     "aggregation": {
                       "crossSeriesReducer": "REDUCE_SUM",
-                      "groupByFields": [],
                       "perSeriesAligner": "ALIGN_MAX"
                     },
                     "filter": "metric.type=\"cloudsql.googleapis.com/database/mysql/open_table_definitions\" resource.type=\"cloudsql_database\" "
@@ -993,17 +860,13 @@
                 }
               },
               {
-                "breakdowns": [],
-                "dimensions": [],
                 "legendTemplate": "開かれているテーブルの定義",
-                "measures": [],
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
                   "timeSeriesFilter": {
                     "aggregation": {
                       "crossSeriesReducer": "REDUCE_SUM",
-                      "groupByFields": [],
                       "perSeriesAligner": "ALIGN_RATE"
                     },
                     "filter": "metric.type=\"cloudsql.googleapis.com/database/mysql/opened_table_definitions_count\" resource.type=\"cloudsql_database\" "
@@ -1011,8 +874,7 @@
                   "unitOverride": "tables"
                 }
               }
-            ],
-            "thresholds": []
+            ]
           }
         }
       },
@@ -1028,17 +890,13 @@
             },
             "dataSets": [
               {
-                "breakdowns": [],
-                "dimensions": [],
                 "legendTemplate": "メモリ使用量",
-                "measures": [],
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
                   "timeSeriesFilter": {
                     "aggregation": {
                       "crossSeriesReducer": "REDUCE_SUM",
-                      "groupByFields": [],
                       "perSeriesAligner": "ALIGN_MAX"
                     },
                     "filter": "metric.type=\"cloudsql.googleapis.com/database/mysql/innodb/dictionary_memory\" resource.type=\"cloudsql_database\" "
@@ -1046,8 +904,7 @@
                   "unitOverride": "bytes"
                 }
               }
-            ],
-            "thresholds": []
+            ]
           }
         }
       },
@@ -1063,9 +920,6 @@
             },
             "dataSets": [
               {
-                "breakdowns": [],
-                "dimensions": [],
-                "measures": [],
                 "minAlignmentPeriod": "60s",
                 "plotType": "STACKED_AREA",
                 "targetAxis": "Y1",
@@ -1088,9 +942,7 @@
                 }
               }
             ],
-            "thresholds": [],
             "yAxis": {
-              "label": "",
               "scale": "LINEAR"
             }
           }
@@ -1103,8 +955,7 @@
         "widget": {
           "title": "All - CloudSQL Logs",
           "logsPanel": {
-            "filter": "resource.type=\"cloudsql_database\"",
-            "resourceNames": []
+            "filter": "resource.type=\"cloudsql_database\""
           }
         }
       },
@@ -1130,7 +981,6 @@
                     "aggregation": {
                       "alignmentPeriod": "60s",
                       "crossSeriesReducer": "REDUCE_MAX",
-                      "groupByFields": [],
                       "perSeriesAligner": "ALIGN_MAX"
                     },
                     "filter": "metric.type=\"cloudsql.googleapis.com/database/network/connections\" resource.type=\"cloudsql_database\""
@@ -1147,7 +997,6 @@
                     "aggregation": {
                       "alignmentPeriod": "60s",
                       "crossSeriesReducer": "REDUCE_MAX",
-                      "groupByFields": [],
                       "perSeriesAligner": "ALIGN_RATE"
                     },
                     "filter": "metric.type=\"cloudsql.googleapis.com/database/mysql/aborted_connects_count\" resource.type=\"cloudsql_database\""
@@ -1164,7 +1013,6 @@
                     "aggregation": {
                       "alignmentPeriod": "60s",
                       "crossSeriesReducer": "REDUCE_MAX",
-                      "groupByFields": [],
                       "perSeriesAligner": "ALIGN_RATE"
                     },
                     "filter": "metric.type=\"cloudsql.googleapis.com/database/mysql/aborted_clients_count\" resource.type=\"cloudsql_database\""
@@ -1172,13 +1020,10 @@
                 }
               }
             ],
-            "thresholds": [],
             "y2Axis": {
-              "label": "",
               "scale": "LINEAR"
             },
             "yAxis": {
-              "label": "",
               "scale": "LINEAR"
             }
           }
@@ -1186,5 +1031,5 @@
       }
     ]
   },
-  "labels": {}
+  "name": "projects/254862677609/dashboards/6cc58920-8734-4778-b0fc-c9d8a6e33520"
 }
