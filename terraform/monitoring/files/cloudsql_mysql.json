@@ -1,5 +1,4 @@
 {
-  "etag": "6e3400f04a2f308dd82feef9abd789ab",
   "displayName": "Cloud SQL for MySQL",
   "dashboardFilters": [
     {
@@ -1030,6 +1029,5 @@
         }
       }
     ]
-  },
-  "name": "projects/254862677609/dashboards/6cc58920-8734-4778-b0fc-c9d8a6e33520"
+  }
 }

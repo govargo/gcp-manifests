@@ -1,6 +1,5 @@
 {
   "displayName": "Cloud Spanner",
-  "etag": "7bbcc63696792c592535070d746548f4",
   "mosaicLayout": {
     "columns": 48,
     "tiles": [
@@ -754,6 +753,5 @@
         }
       }
     ]
-  },
-  "name": "projects/254862677609/dashboards/db4a06b0-60f6-47db-b433-e4a1468375d3"
+  }
 }
