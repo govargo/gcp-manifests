@@ -120,6 +120,65 @@
         }
       },
       {
+        "xPos": 24,
+        "yPos": 16,
+        "width": 24,
+        "height": 16,
+        "widget": {
+          "title": "システム別の CPU 使用率",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "legendTemplate": "system - ${metric.labels.priority}",
+                "minAlignmentPeriod": "60s",
+                "plotType": "STACKED_AREA",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "crossSeriesReducer": "REDUCE_MEAN",
+                      "groupByFields": [
+                        "metric.label.\"is_system\"",
+                        "metric.label.\"priority\""
+                      ],
+                      "perSeriesAligner": "ALIGN_MEAN"
+                    },
+                    "filter": "metric.type=\"spanner.googleapis.com/instance/cpu/utilization_by_priority\" resource.type=\"spanner_instance\" metric.label.\"is_system\"=\"true\""
+                  }
+                }
+              },
+              {
+                "legendTemplate": "user - ${metric.labels.priority}",
+                "minAlignmentPeriod": "60s",
+                "plotType": "STACKED_AREA",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "crossSeriesReducer": "REDUCE_MEAN",
+                      "groupByFields": [
+                        "metric.label.\"is_system\"",
+                        "metric.label.\"priority\""
+                      ],
+                      "perSeriesAligner": "ALIGN_MEAN"
+                    },
+                    "filter": "metric.type=\"spanner.googleapis.com/instance/cpu/utilization_by_priority\" resource.type=\"spanner_instance\" metric.label.\"is_system\"=\"false\""
+                  }
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
         "yPos": 32,
         "width": 24,
         "height": 16,
@@ -235,6 +294,72 @@
         }
       },
       {
+        "yPos": 48,
+        "width": 24,
+        "height": 16,
+        "widget": {
+          "title": "読み取りトランザクション レイテンシ",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "legendTemplate": "50 % tile",
+                "minAlignmentPeriod": "60s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "crossSeriesReducer": "REDUCE_PERCENTILE_50",
+                      "perSeriesAligner": "ALIGN_DELTA"
+                    },
+                    "filter": "metric.type=\"spanner.googleapis.com/api/request_latencies_by_transaction_type\" resource.type=\"spanner_instance\" metric.label.\"transaction_type\"=\"READ_ONLY\""
+                  }
+                }
+              },
+              {
+                "legendTemplate": "95 % tile",
+                "minAlignmentPeriod": "60s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "crossSeriesReducer": "REDUCE_PERCENTILE_95",
+                      "perSeriesAligner": "ALIGN_DELTA"
+                    },
+                    "filter": "metric.type=\"spanner.googleapis.com/api/request_latencies_by_transaction_type\" resource.type=\"spanner_instance\" metric.label.\"transaction_type\"=\"READ_ONLY\""
+                  }
+                }
+              },
+              {
+                "legendTemplate": "99 % tile",
+                "minAlignmentPeriod": "60s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "crossSeriesReducer": "REDUCE_PERCENTILE_99",
+                      "perSeriesAligner": "ALIGN_DELTA"
+                    },
+                    "filter": "metric.type=\"spanner.googleapis.com/api/request_latencies_by_transaction_type\" resource.type=\"spanner_instance\" metric.label.\"transaction_type\"=\"READ_ONLY\""
+                  }
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
         "xPos": 24,
         "yPos": 48,
         "width": 24,
@@ -302,61 +427,62 @@
         }
       },
       {
-        "yPos": 48,
+        "yPos": 64,
         "width": 24,
         "height": 16,
         "widget": {
-          "title": "読み取りトランザクション レイテンシ",
+          "title": "読み取りレイテンシー",
           "xyChart": {
             "chartOptions": {
               "mode": "COLOR"
             },
             "dataSets": [
               {
-                "legendTemplate": "50 % tile",
                 "minAlignmentPeriod": "60s",
-                "plotType": "LINE",
+                "plotType": "HEATMAP",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
                   "timeSeriesFilter": {
                     "aggregation": {
                       "alignmentPeriod": "60s",
-                      "crossSeriesReducer": "REDUCE_PERCENTILE_50",
+                      "crossSeriesReducer": "REDUCE_SUM",
                       "perSeriesAligner": "ALIGN_DELTA"
                     },
-                    "filter": "metric.type=\"spanner.googleapis.com/api/request_latencies_by_transaction_type\" resource.type=\"spanner_instance\" metric.label.\"transaction_type\"=\"READ_ONLY\""
+                    "filter": "metric.type=\"spanner.googleapis.com/api/request_latencies\" resource.type=\"spanner_instance\" metric.label.\"method\"=monitoring.regex.full_match(\"ExecuteBatchDml|ExecuteSql|ExecuteStreamingSql|Read|StreamingRead\")"
                   }
                 }
-              },
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 24,
+        "yPos": 64,
+        "width": 24,
+        "height": 16,
+        "widget": {
+          "title": "書き込みレイテンシー",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
               {
-                "legendTemplate": "95 % tile",
                 "minAlignmentPeriod": "60s",
-                "plotType": "LINE",
+                "plotType": "HEATMAP",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
                   "timeSeriesFilter": {
                     "aggregation": {
                       "alignmentPeriod": "60s",
-                      "crossSeriesReducer": "REDUCE_PERCENTILE_95",
+                      "crossSeriesReducer": "REDUCE_SUM",
                       "perSeriesAligner": "ALIGN_DELTA"
                     },
-                    "filter": "metric.type=\"spanner.googleapis.com/api/request_latencies_by_transaction_type\" resource.type=\"spanner_instance\" metric.label.\"transaction_type\"=\"READ_ONLY\""
-                  }
-                }
-              },
-              {
-                "legendTemplate": "99 % tile",
-                "minAlignmentPeriod": "60s",
-                "plotType": "LINE",
-                "targetAxis": "Y1",
-                "timeSeriesQuery": {
-                  "timeSeriesFilter": {
-                    "aggregation": {
-                      "alignmentPeriod": "60s",
-                      "crossSeriesReducer": "REDUCE_PERCENTILE_99",
-                      "perSeriesAligner": "ALIGN_DELTA"
-                    },
-                    "filter": "metric.type=\"spanner.googleapis.com/api/request_latencies_by_transaction_type\" resource.type=\"spanner_instance\" metric.label.\"transaction_type\"=\"READ_ONLY\""
+                    "filter": "metric.type=\"spanner.googleapis.com/api/request_latencies\" resource.type=\"spanner_instance\" metric.label.\"method\"=\"Commit\""
                   }
                 }
               }
@@ -502,47 +628,6 @@
       },
       {
         "xPos": 24,
-        "yPos": 96,
-        "width": 24,
-        "height": 16,
-        "widget": {
-          "title": "ストレージの合計",
-          "xyChart": {
-            "chartOptions": {
-              "mode": "COLOR"
-            },
-            "dataSets": [
-              {
-                "legendTemplate": "ストレージの合計",
-                "minAlignmentPeriod": "60s",
-                "plotType": "LINE",
-                "targetAxis": "Y1",
-                "timeSeriesQuery": {
-                  "timeSeriesFilter": {
-                    "aggregation": {
-                      "alignmentPeriod": "60s",
-                      "crossSeriesReducer": "REDUCE_SUM",
-                      "perSeriesAligner": "ALIGN_MEAN"
-                    },
-                    "filter": "metric.type=\"spanner.googleapis.com/instance/storage/used_bytes\" resource.type=\"spanner_instance\""
-                  }
-                }
-              }
-            ],
-            "thresholds": [
-              {
-                "targetAxis": "Y1",
-                "value": 1099511627776
-              }
-            ],
-            "yAxis": {
-              "scale": "LINEAR"
-            }
-          }
-        }
-      },
-      {
-        "xPos": 24,
         "yPos": 80,
         "width": 24,
         "height": 16,
@@ -628,122 +713,37 @@
       },
       {
         "xPos": 24,
-        "yPos": 16,
+        "yPos": 96,
         "width": 24,
         "height": 16,
         "widget": {
-          "title": "システム別の CPU 使用率",
+          "title": "ストレージの合計",
           "xyChart": {
             "chartOptions": {
               "mode": "COLOR"
             },
             "dataSets": [
               {
-                "legendTemplate": "system - ${metric.labels.priority}",
+                "legendTemplate": "ストレージの合計",
                 "minAlignmentPeriod": "60s",
-                "plotType": "STACKED_AREA",
-                "targetAxis": "Y1",
-                "timeSeriesQuery": {
-                  "timeSeriesFilter": {
-                    "aggregation": {
-                      "alignmentPeriod": "60s",
-                      "crossSeriesReducer": "REDUCE_MEAN",
-                      "groupByFields": [
-                        "metric.label.\"is_system\"",
-                        "metric.label.\"priority\""
-                      ],
-                      "perSeriesAligner": "ALIGN_MEAN"
-                    },
-                    "filter": "metric.type=\"spanner.googleapis.com/instance/cpu/utilization_by_priority\" resource.type=\"spanner_instance\" metric.label.\"is_system\"=\"true\""
-                  }
-                }
-              },
-              {
-                "legendTemplate": "user - ${metric.labels.priority}",
-                "minAlignmentPeriod": "60s",
-                "plotType": "STACKED_AREA",
-                "targetAxis": "Y1",
-                "timeSeriesQuery": {
-                  "timeSeriesFilter": {
-                    "aggregation": {
-                      "alignmentPeriod": "60s",
-                      "crossSeriesReducer": "REDUCE_MEAN",
-                      "groupByFields": [
-                        "metric.label.\"is_system\"",
-                        "metric.label.\"priority\""
-                      ],
-                      "perSeriesAligner": "ALIGN_MEAN"
-                    },
-                    "filter": "metric.type=\"spanner.googleapis.com/instance/cpu/utilization_by_priority\" resource.type=\"spanner_instance\" metric.label.\"is_system\"=\"false\""
-                  }
-                }
-              }
-            ],
-            "yAxis": {
-              "scale": "LINEAR"
-            }
-          }
-        }
-      },
-      {
-        "yPos": 64,
-        "width": 24,
-        "height": 16,
-        "widget": {
-          "title": "読み取りレイテンシー",
-          "xyChart": {
-            "chartOptions": {
-              "mode": "COLOR"
-            },
-            "dataSets": [
-              {
-                "minAlignmentPeriod": "60s",
-                "plotType": "HEATMAP",
+                "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
                   "timeSeriesFilter": {
                     "aggregation": {
                       "alignmentPeriod": "60s",
                       "crossSeriesReducer": "REDUCE_SUM",
-                      "perSeriesAligner": "ALIGN_DELTA"
+                      "perSeriesAligner": "ALIGN_MEAN"
                     },
-                    "filter": "metric.type=\"spanner.googleapis.com/api/request_latencies\" resource.type=\"spanner_instance\" metric.label.\"method\"=monitoring.regex.full_match(\"ExecuteBatchDml|ExecuteSql|ExecuteStreamingSql|Read|StreamingRead\")"
+                    "filter": "metric.type=\"spanner.googleapis.com/instance/storage/used_bytes\" resource.type=\"spanner_instance\""
                   }
                 }
               }
             ],
-            "yAxis": {
-              "scale": "LINEAR"
-            }
-          }
-        }
-      },
-      {
-        "xPos": 24,
-        "yPos": 64,
-        "width": 24,
-        "height": 16,
-        "widget": {
-          "title": "書き込みレイテンシー",
-          "xyChart": {
-            "chartOptions": {
-              "mode": "COLOR"
-            },
-            "dataSets": [
+            "thresholds": [
               {
-                "minAlignmentPeriod": "60s",
-                "plotType": "HEATMAP",
                 "targetAxis": "Y1",
-                "timeSeriesQuery": {
-                  "timeSeriesFilter": {
-                    "aggregation": {
-                      "alignmentPeriod": "60s",
-                      "crossSeriesReducer": "REDUCE_SUM",
-                      "perSeriesAligner": "ALIGN_DELTA"
-                    },
-                    "filter": "metric.type=\"spanner.googleapis.com/api/request_latencies\" resource.type=\"spanner_instance\" metric.label.\"method\"=\"Commit\""
-                  }
-                }
+                "value": 1099511627776
               }
             ],
             "yAxis": {
