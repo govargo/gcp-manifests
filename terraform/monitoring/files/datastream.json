@@ -1,0 +1,161 @@
+{
+  "displayName": "DataStream",
+  "mosaicLayout": {
+    "columns": 48,
+    "tiles": [
+      {
+        "width": 24,
+        "height": 16,
+        "widget": {
+          "title": "スループット",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesQueryLanguage": "fetch datastream.googleapis.com/Stream| metric \"datastream.googleapis.com/stream/bytes_count\"| filter (resource.stream_id == \"little-quest-masterdata-stream\")| filter (resource.resource_container == \"kentaiso-330205\")| align rate(1m)| group_by [],    [value_bytes_count_sum:     sum(value.bytes_count)]| every 1m"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 24,
+        "width": 24,
+        "height": 16,
+        "widget": {
+          "title": "サポートされていないイベント",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesQueryLanguage": "fetch datastream.googleapis.com/Stream| metric \"datastream.googleapis.com/stream/unsupported_event_count\"| filter (resource.stream_id == \"little-quest-masterdata-stream\")| filter (resource.resource_container == \"kentaiso-330205\")| align delta(10m)| every 10m| group_by [],    [value_unsupported_event_count_sum:     sum(value.unsupported_event_count)]"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "yPos": 16,
+        "width": 24,
+        "height": 16,
+        "widget": {
+          "title": "データの鮮度",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesQueryLanguage": "fetch datastream.googleapis.com/Stream| metric \"datastream.googleapis.com/stream/freshness\"| filter (resource.stream_id == \"little-quest-masterdata-stream\")| filter (resource.resource_container == \"kentaiso-330205\")| group_by 1m, [value_freshness_min: min(value.freshness)]| every 1m| group_by [], [value_freshness_min_min: min(value_freshness_min)]"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 24,
+        "yPos": 16,
+        "width": 24,
+        "height": 16,
+        "widget": {
+          "title": "システム レイテンシ",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesQueryLanguage": "fetch datastream.googleapis.com/Stream| metric \"datastream.googleapis.com/stream/system_latencies\"| filter (resource.stream_id == \"little-quest-masterdata-stream\")| filter (resource.resource_container == \"kentaiso-330205\")| align delta(1m)| every 1m| group_by [],   [value_system_latencies_percentile: percentile(value.system_latencies,50)]"
+                }
+              },
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesQueryLanguage": "fetch datastream.googleapis.com/Stream| metric \"datastream.googleapis.com/stream/system_latencies\"| filter (resource.stream_id == \"little-quest-masterdata-stream\")| filter (resource.resource_container == \"kentaiso-330205\")| align delta(1m)| every 1m| group_by [],   [value_system_latencies_percentile: percentile(value.system_latencies,90)]"
+                }
+              },
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesQueryLanguage": "fetch datastream.googleapis.com/Stream| metric \"datastream.googleapis.com/stream/system_latencies\"| filter (resource.stream_id == \"little-quest-masterdata-stream\")| filter (resource.resource_container == \"kentaiso-330205\")| align delta(1m)| every 1m| group_by [],   [value_system_latencies_percentile: percentile(value.system_latencies,95)]"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "yPos": 32,
+        "width": 24,
+        "height": 16,
+        "widget": {
+          "title": "合計レイテンシ",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesQueryLanguage": "fetch datastream.googleapis.com/Stream| metric \"datastream.googleapis.com/stream/total_latencies\"| filter (resource.stream_id == \"little-quest-masterdata-stream\")| filter (resource.resource_container == \"kentaiso-330205\")| align delta(1m)| every 1m| group_by [],   [value_total_latencies_percentile: percentile(value.total_latencies,50)]"
+                }
+              },
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesQueryLanguage": "fetch datastream.googleapis.com/Stream| metric \"datastream.googleapis.com/stream/total_latencies\"| filter (resource.stream_id == \"little-quest-masterdata-stream\")| filter (resource.resource_container == \"kentaiso-330205\")| align delta(1m)| every 1m| group_by [],   [value_total_latencies_percentile: percentile(value.total_latencies,90)]"
+                }
+              },
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesQueryLanguage": "fetch datastream.googleapis.com/Stream| metric \"datastream.googleapis.com/stream/total_latencies\"| filter (resource.stream_id == \"little-quest-masterdata-stream\")| filter (resource.resource_container == \"kentaiso-330205\")| align delta(1m)| every 1m| group_by [],   [value_total_latencies_percentile: percentile(value.total_latencies,95)]"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      }
+    ]
+  }
+}
