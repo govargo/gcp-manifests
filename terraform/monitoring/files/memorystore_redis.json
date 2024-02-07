@@ -274,9 +274,8 @@
         }
       },
       {
-	"xPos": 24,
-        "yPos": 96,
-        "width": 24,
+        "yPos": 112,
+        "width": 48,
         "height": 16,
         "widget": {
           "title": "呼び出し数",
