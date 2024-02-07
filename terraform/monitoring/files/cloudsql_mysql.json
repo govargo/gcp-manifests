@@ -1,0 +1,1190 @@
+{
+  "displayName": "Cloud SQL for MySQL",
+  "dashboardFilters": [
+    {
+      "filterType": "RESOURCE_LABEL",
+      "labelKey": "database"
+    },
+    {
+      "filterType": "METRIC_LABEL",
+      "labelKey": "user"
+    }
+  ],
+  "mosaicLayout": {
+    "columns": 48,
+    "tiles": [
+      {
+        "width": 12,
+        "height": 8,
+        "widget": {
+          "title": "CPU 使用率",
+          "scorecard": {
+            "gaugeView": {
+              "lowerBound": 0,
+              "upperBound": 1
+            },
+            "thresholds": [],
+            "timeSeriesQuery": {
+              "outputFullDuration": true,
+              "timeSeriesFilter": {
+                "aggregation": {
+                  "alignmentPeriod": "60s",
+                  "crossSeriesReducer": "REDUCE_MEAN",
+                  "groupByFields": [],
+                  "perSeriesAligner": "ALIGN_MEAN"
+                },
+                "filter": "metric.type=\"cloudsql.googleapis.com/database/cpu/utilization\" resource.type=\"cloudsql_database\""
+              }
+            }
+          }
+        }
+      },
+      {
+        "xPos": 12,
+        "width": 12,
+        "height": 8,
+        "widget": {
+          "title": "メモリ使用率",
+          "scorecard": {
+            "gaugeView": {
+              "lowerBound": 0,
+              "upperBound": 100
+            },
+            "thresholds": [
+              {
+                "color": "YELLOW",
+                "direction": "ABOVE",
+                "label": "",
+                "value": 50
+              },
+              {
+                "color": "RED",
+                "direction": "ABOVE",
+                "label": "",
+                "value": 80
+              }
+            ],
+            "timeSeriesQuery": {
+              "outputFullDuration": true,
+              "timeSeriesFilter": {
+                "aggregation": {
+                  "alignmentPeriod": "60s",
+                  "crossSeriesReducer": "REDUCE_SUM",
+                  "groupByFields": [],
+                  "perSeriesAligner": "ALIGN_MEAN"
+                },
+                "filter": "metric.type=\"cloudsql.googleapis.com/database/memory/components\" resource.type=\"cloudsql_database\" metric.label.\"component\"=\"Usage\""
+              }
+            }
+          }
+        }
+      },
+      {
+        "xPos": 24,
+        "width": 12,
+        "height": 8,
+        "widget": {
+          "title": "ディスク使用率",
+          "scorecard": {
+            "gaugeView": {
+              "lowerBound": 0,
+              "upperBound": 1
+            },
+            "thresholds": [],
+            "timeSeriesQuery": {
+              "outputFullDuration": true,
+              "timeSeriesFilter": {
+                "aggregation": {
+                  "alignmentPeriod": "120s",
+                  "crossSeriesReducer": "REDUCE_MEAN",
+                  "groupByFields": [],
+                  "perSeriesAligner": "ALIGN_MAX"
+                },
+                "filter": "metric.type=\"cloudsql.googleapis.com/database/disk/utilization\" resource.type=\"cloudsql_database\" "
+              },
+              "unitOverride": "percent"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 36,
+        "width": 12,
+        "height": 8,
+        "widget": {
+          "title": "ログのエラー",
+          "scorecard": {
+            "blankView": {},
+            "thresholds": [],
+            "timeSeriesQuery": {
+              "outputFullDuration": true,
+              "timeSeriesFilter": {
+                "aggregation": {
+                  "alignmentPeriod": "120s",
+                  "crossSeriesReducer": "REDUCE_SUM",
+                  "groupByFields": [],
+                  "perSeriesAligner": "ALIGN_DELTA"
+                },
+                "filter": "metric.type=\"logging.googleapis.com/log_entry_count\" resource.type=\"cloudsql_database\" metric.label.severity=\"ERROR\""
+              }
+            }
+          }
+        }
+      },
+      {
+        "xPos": 24,
+        "yPos": 8,
+        "width": 24,
+        "height": 16,
+        "widget": {
+          "title": "CPU 使用率",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "legendTemplate": "CPU 使用率",
+                "measures": [],
+                "minAlignmentPeriod": "120s",
+                "plotType": "STACKED_AREA",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "120s",
+                      "perSeriesAligner": "ALIGN_MAX"
+                    },
+                    "filter": "metric.type=\"cloudsql.googleapis.com/database/cpu/utilization\" resource.type=\"cloudsql_database\" "
+                  },
+                  "unitOverride": "percent"
+                }
+              }
+            ],
+            "thresholds": []
+          }
+        }
+      },
+      {
+        "xPos": 24,
+        "yPos": 24,
+        "width": 24,
+        "height": 16,
+        "widget": {
+          "title": "ディスクの読み取り / 書き込みオペレーション",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "legendTemplate": "読み取り",
+                "measures": [],
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": [
+                        "resource.label.\"database_id\""
+                      ],
+                      "perSeriesAligner": "ALIGN_RATE"
+                    },
+                    "filter": "metric.type=\"cloudsql.googleapis.com/database/disk/read_ops_count\" resource.type=\"cloudsql_database\" "
+                  },
+                  "unitOverride": "count/s"
+                }
+              },
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "legendTemplate": "書き込み",
+                "measures": [],
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": [
+                        "resource.label.\"database_id\""
+                      ],
+                      "perSeriesAligner": "ALIGN_RATE"
+                    },
+                    "filter": "metric.type=\"cloudsql.googleapis.com/database/disk/write_ops_count\" resource.type=\"cloudsql_database\" "
+                  },
+                  "unitOverride": "count/s"
+                }
+              }
+            ],
+            "thresholds": [
+              {
+                "label": "書き込みオペレーションの上限",
+                "targetAxis": "Y1",
+                "value": 15
+              },
+              {
+                "label": "読み取りオペレーションの上限",
+                "targetAxis": "Y1",
+                "value": 7.5
+              }
+            ]
+          }
+        }
+      },
+      {
+        "yPos": 24,
+        "width": 24,
+        "height": 16,
+        "widget": {
+          "title": "データ転送（受信 / 送信）バイト数",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "legendTemplate": "データ転送（受信）バイト数",
+                "measures": [],
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": [
+                        "resource.label.\"database_id\""
+                      ],
+                      "perSeriesAligner": "ALIGN_RATE"
+                    },
+                    "filter": "metric.type=\"cloudsql.googleapis.com/database/network/received_bytes_count\" resource.type=\"cloudsql_database\" "
+                  },
+                  "unitOverride": "byte/s"
+                }
+              },
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "legendTemplate": "データ転送（送信）バイト数",
+                "measures": [],
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": [
+                        "resource.label.\"database_id\""
+                      ],
+                      "perSeriesAligner": "ALIGN_RATE"
+                    },
+                    "filter": "metric.type=\"cloudsql.googleapis.com/database/network/sent_bytes_count\" resource.type=\"cloudsql_database\" "
+                  },
+                  "unitOverride": "byte/s"
+                }
+              }
+            ],
+            "thresholds": []
+          }
+        }
+      },
+      {
+        "yPos": 56,
+        "width": 24,
+        "height": 16,
+        "widget": {
+          "title": "アクティブな接続",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "legendTemplate": "アクティブな接続",
+                "measures": [],
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "perSeriesAligner": "ALIGN_MAX"
+                    },
+                    "filter": "metric.type=\"cloudsql.googleapis.com/database/network/connections\" resource.type=\"cloudsql_database\" "
+                  }
+                }
+              }
+            ],
+            "thresholds": [
+              {
+                "label": "最大接続数",
+                "targetAxis": "Y1",
+                "value": 250
+              }
+            ]
+          }
+        }
+      },
+      {
+        "xPos": 24,
+        "yPos": 72,
+        "width": 24,
+        "height": 16,
+        "widget": {
+          "title": "データベースあたりのデータベース負荷",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "legendTemplate": "${resource.labels.database}",
+                "measures": [],
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": [
+                        "resource.label.\"database\""
+                      ],
+                      "perSeriesAligner": "ALIGN_RATE"
+                    },
+                    "filter": "metric.type=\"dbinsights.googleapis.com/aggregate/execution_time\" resource.type=\"cloudsql_instance_database\" "
+                  }
+                }
+              }
+            ],
+            "thresholds": []
+          }
+        }
+      },
+      {
+        "yPos": 72,
+        "width": 24,
+        "height": 16,
+        "widget": {
+          "title": "ユーザーあたりのデータベース負荷",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "legendTemplate": "${metric.labels.user}",
+                "measures": [],
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": [
+                        "metric.label.\"user\""
+                      ],
+                      "perSeriesAligner": "ALIGN_RATE"
+                    },
+                    "filter": "metric.type=\"dbinsights.googleapis.com/aggregate/execution_time\" resource.type=\"cloudsql_instance_database\" "
+                  }
+                }
+              }
+            ],
+            "thresholds": []
+          }
+        }
+      },
+      {
+        "xPos": 24,
+        "yPos": 88,
+        "width": 24,
+        "height": 16,
+        "widget": {
+          "title": "クライアント アドレスあたりのデータベース負荷",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "legendTemplate": "${metric.labels.client_addr}",
+                "measures": [],
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": [
+                        "metric.label.\"client_addr\""
+                      ],
+                      "perSeriesAligner": "ALIGN_RATE"
+                    },
+                    "filter": "metric.type=\"dbinsights.googleapis.com/aggregate/execution_time\" resource.type=\"cloudsql_instance_database\" "
+                  }
+                }
+              }
+            ],
+            "thresholds": []
+          }
+        }
+      },
+      {
+        "yPos": 40,
+        "width": 24,
+        "height": 16,
+        "widget": {
+          "title": "ディスク ストレージ（タイプ別）",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "measures": [],
+                "minAlignmentPeriod": "480s",
+                "plotType": "STACKED_AREA",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "480s",
+                      "perSeriesAligner": "ALIGN_MEAN"
+                    },
+                    "filter": "metric.type=\"cloudsql.googleapis.com/database/disk/bytes_used_by_data_type\" resource.type=\"cloudsql_database\" "
+                  }
+                }
+              }
+            ],
+            "thresholds": [
+              {
+                "label": "保存容量の上限",
+                "targetAxis": "Y1",
+                "value": 10737418240
+              }
+            ]
+          }
+        }
+      },
+      {
+        "xPos": 24,
+        "yPos": 104,
+        "width": 24,
+        "height": 16,
+        "widget": {
+          "title": "クエリのレイテンシ",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "legendTemplate": "99 パーセンタイル",
+                "measures": [],
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "crossSeriesReducer": "REDUCE_PERCENTILE_99",
+                      "groupByFields": [
+                        "resource.label.\"resource_id\""
+                      ],
+                      "perSeriesAligner": "ALIGN_DELTA"
+                    },
+                    "filter": "metric.type=\"dbinsights.googleapis.com/aggregate/latencies\" resource.type=\"cloudsql_instance_database\" "
+                  }
+                }
+              },
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "legendTemplate": "95 パーセンタイル",
+                "measures": [],
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "crossSeriesReducer": "REDUCE_PERCENTILE_95",
+                      "groupByFields": [
+                        "resource.label.\"resource_id\""
+                      ],
+                      "perSeriesAligner": "ALIGN_DELTA"
+                    },
+                    "filter": "metric.type=\"dbinsights.googleapis.com/aggregate/latencies\" resource.type=\"cloudsql_instance_database\" "
+                  }
+                }
+              },
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "legendTemplate": "50 パーセンタイル",
+                "measures": [],
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "crossSeriesReducer": "REDUCE_PERCENTILE_50",
+                      "groupByFields": [
+                        "resource.label.\"resource_id\""
+                      ],
+                      "perSeriesAligner": "ALIGN_DELTA"
+                    },
+                    "filter": "metric.type=\"dbinsights.googleapis.com/aggregate/latencies\" resource.type=\"cloudsql_instance_database\" "
+                  }
+                }
+              }
+            ],
+            "thresholds": []
+          }
+        }
+      },
+      {
+        "xPos": 24,
+        "yPos": 40,
+        "width": 24,
+        "height": 16,
+        "widget": {
+          "title": "メモリのコンポーネント",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "measures": [],
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "perSeriesAligner": "ALIGN_NONE"
+                    },
+                    "filter": "metric.type=\"cloudsql.googleapis.com/database/memory/components\" resource.type=\"cloudsql_database\" "
+                  },
+                  "unitOverride": "%"
+                }
+              }
+            ],
+            "thresholds": []
+          }
+        }
+      },
+      {
+        "xPos": 24,
+        "yPos": 120,
+        "width": 24,
+        "height": 16,
+        "widget": {
+          "title": "InnoDB のページ数",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "legendTemplate": "InnoDB のダーティページ数",
+                "measures": [],
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "perSeriesAligner": "ALIGN_NONE"
+                    },
+                    "filter": "metric.type=\"cloudsql.googleapis.com/database/mysql/innodb_buffer_pool_pages_dirty\" resource.type=\"cloudsql_database\" "
+                  }
+                }
+              },
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "legendTemplate": "InnoDB のフリーページ数",
+                "measures": [],
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "perSeriesAligner": "ALIGN_NONE"
+                    },
+                    "filter": "metric.type=\"cloudsql.googleapis.com/database/mysql/innodb_buffer_pool_pages_free\" resource.type=\"cloudsql_database\" "
+                  }
+                }
+              },
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "legendTemplate": "InnoDB の合計ページ数",
+                "measures": [],
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "perSeriesAligner": "ALIGN_NONE"
+                    },
+                    "filter": "metric.type=\"cloudsql.googleapis.com/database/mysql/innodb_buffer_pool_pages_total\" resource.type=\"cloudsql_database\" "
+                  }
+                }
+              }
+            ],
+            "thresholds": []
+          }
+        }
+      },
+      {
+        "yPos": 104,
+        "width": 24,
+        "height": 16,
+        "widget": {
+          "title": "InnoDB データの fsync",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "legendTemplate": "InnoDB データの fsync",
+                "measures": [],
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": [],
+                      "perSeriesAligner": "ALIGN_RATE"
+                    },
+                    "filter": "metric.type=\"cloudsql.googleapis.com/database/mysql/innodb_data_fsyncs\" resource.type=\"cloudsql_database\" "
+                  },
+                  "unitOverride": "count/s"
+                }
+              }
+            ],
+            "thresholds": []
+          }
+        }
+      },
+      {
+        "xPos": 24,
+        "yPos": 136,
+        "width": 24,
+        "height": 16,
+        "widget": {
+          "title": "InnoDB ログの fsync",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "legendTemplate": "InnoDB ログの fsync",
+                "measures": [],
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": [],
+                      "perSeriesAligner": "ALIGN_RATE"
+                    },
+                    "filter": "metric.type=\"cloudsql.googleapis.com/database/mysql/innodb_os_log_fsyncs\" resource.type=\"cloudsql_database\" "
+                  },
+                  "unitOverride": "count/s"
+                }
+              }
+            ],
+            "thresholds": []
+          }
+        }
+      },
+      {
+        "yPos": 120,
+        "width": 24,
+        "height": 16,
+        "widget": {
+          "title": "InnoDB の読み書きページ数",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "legendTemplate": "読み取り",
+                "measures": [],
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": [],
+                      "perSeriesAligner": "ALIGN_RATE"
+                    },
+                    "filter": "metric.type=\"cloudsql.googleapis.com/database/mysql/innodb_pages_read\" resource.type=\"cloudsql_database\" "
+                  },
+                  "unitOverride": "count/s"
+                }
+              },
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "legendTemplate": "書き込み",
+                "measures": [],
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": [],
+                      "perSeriesAligner": "ALIGN_RATE"
+                    },
+                    "filter": "metric.type=\"cloudsql.googleapis.com/database/mysql/innodb_pages_written\" resource.type=\"cloudsql_database\" "
+                  },
+                  "unitOverride": "count/s"
+                }
+              }
+            ],
+            "thresholds": []
+          }
+        }
+      },
+      {
+        "xPos": 24,
+        "yPos": 152,
+        "width": 24,
+        "height": 16,
+        "widget": {
+          "title": "MySQL クエリ",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "legendTemplate": "MySQL クエリ",
+                "measures": [],
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": [],
+                      "perSeriesAligner": "ALIGN_RATE"
+                    },
+                    "filter": "metric.type=\"cloudsql.googleapis.com/database/mysql/queries\" resource.type=\"cloudsql_database\" "
+                  },
+                  "unitOverride": "count/s"
+                }
+              }
+            ],
+            "thresholds": []
+          }
+        }
+      },
+      {
+        "yPos": 136,
+        "width": 24,
+        "height": 16,
+        "widget": {
+          "title": "MySQL クエスチョン",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "legendTemplate": "MySQL クエスチョン",
+                "measures": [],
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": [],
+                      "perSeriesAligner": "ALIGN_RATE"
+                    },
+                    "filter": "metric.type=\"cloudsql.googleapis.com/database/mysql/questions\" resource.type=\"cloudsql_database\" "
+                  },
+                  "unitOverride": "count/s"
+                }
+              }
+            ],
+            "thresholds": []
+          }
+        }
+      },
+      {
+        "xPos": 24,
+        "yPos": 168,
+        "width": 24,
+        "height": 16,
+        "widget": {
+          "title": "MySQL データ転送（受信 / 送信）バイト数",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "legendTemplate": "データ転送（受信）バイト数",
+                "measures": [],
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": [],
+                      "perSeriesAligner": "ALIGN_RATE"
+                    },
+                    "filter": "metric.type=\"cloudsql.googleapis.com/database/mysql/received_bytes_count\" resource.type=\"cloudsql_database\" "
+                  },
+                  "unitOverride": "bytes/s"
+                }
+              },
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "legendTemplate": "データ転送（送信）バイト数",
+                "measures": [],
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": [],
+                      "perSeriesAligner": "ALIGN_RATE"
+                    },
+                    "filter": "metric.type=\"cloudsql.googleapis.com/database/mysql/sent_bytes_count\" resource.type=\"cloudsql_database\" "
+                  },
+                  "unitOverride": "bytes/s"
+                }
+              }
+            ],
+            "thresholds": []
+          }
+        }
+      },
+      {
+        "yPos": 152,
+        "width": 24,
+        "height": 16,
+        "widget": {
+          "title": "MySQL テーブル オープン キャッシュ",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "legendTemplate": "開いているテーブル",
+                "measures": [],
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": [],
+                      "perSeriesAligner": "ALIGN_MAX"
+                    },
+                    "filter": "metric.type=\"cloudsql.googleapis.com/database/mysql/open_tables\" resource.type=\"cloudsql_database\" "
+                  },
+                  "unitOverride": "tables"
+                }
+              },
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "legendTemplate": "開かれているテーブル",
+                "measures": [],
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": [],
+                      "perSeriesAligner": "ALIGN_RATE"
+                    },
+                    "filter": "metric.type=\"cloudsql.googleapis.com/database/mysql/opened_table_count\" resource.type=\"cloudsql_database\" "
+                  },
+                  "unitOverride": "tables"
+                }
+              }
+            ],
+            "thresholds": []
+          }
+        }
+      },
+      {
+        "yPos": 184,
+        "width": 24,
+        "height": 16,
+        "widget": {
+          "title": "MySQL テーブル定義キャッシュ",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "legendTemplate": "開いているテーブルの定義",
+                "measures": [],
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": [],
+                      "perSeriesAligner": "ALIGN_MAX"
+                    },
+                    "filter": "metric.type=\"cloudsql.googleapis.com/database/mysql/open_table_definitions\" resource.type=\"cloudsql_database\" "
+                  },
+                  "unitOverride": "tables"
+                }
+              },
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "legendTemplate": "開かれているテーブルの定義",
+                "measures": [],
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": [],
+                      "perSeriesAligner": "ALIGN_RATE"
+                    },
+                    "filter": "metric.type=\"cloudsql.googleapis.com/database/mysql/opened_table_definitions_count\" resource.type=\"cloudsql_database\" "
+                  },
+                  "unitOverride": "tables"
+                }
+              }
+            ],
+            "thresholds": []
+          }
+        }
+      },
+      {
+        "yPos": 168,
+        "width": 24,
+        "height": 16,
+        "widget": {
+          "title": "InnoDB データ ディクショナリのメモリ使用量",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "legendTemplate": "メモリ使用量",
+                "measures": [],
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": [],
+                      "perSeriesAligner": "ALIGN_MAX"
+                    },
+                    "filter": "metric.type=\"cloudsql.googleapis.com/database/mysql/innodb/dictionary_memory\" resource.type=\"cloudsql_database\" "
+                  },
+                  "unitOverride": "bytes"
+                }
+              }
+            ],
+            "thresholds": []
+          }
+        }
+      },
+      {
+        "yPos": 8,
+        "width": 24,
+        "height": 16,
+        "widget": {
+          "title": "Instance States",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "measures": [],
+                "minAlignmentPeriod": "60s",
+                "plotType": "STACKED_AREA",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "perSeriesAligner": "ALIGN_COUNT_TRUE"
+                    },
+                    "filter": "metric.type=\"cloudsql.googleapis.com/database/instance_state\" resource.type=\"cloudsql_database\"",
+                    "secondaryAggregation": {
+                      "alignmentPeriod": "60s",
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": [
+                        "metric.label.\"state\""
+                      ],
+                      "perSeriesAligner": "ALIGN_MEAN"
+                    }
+                  }
+                }
+              }
+            ],
+            "thresholds": [],
+            "yAxis": {
+              "label": "",
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "yPos": 88,
+        "width": 24,
+        "height": 16,
+        "widget": {
+          "title": "All - CloudSQL Logs",
+          "logsPanel": {
+            "filter": "resource.type=\"cloudsql_database\"",
+            "resourceNames": []
+          }
+        }
+      },
+      {
+        "xPos": 24,
+        "yPos": 56,
+        "width": 24,
+        "height": 16,
+        "widget": {
+          "title": "コネクション/Abort コネクション",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "legendTemplate": "Active Connections",
+                "minAlignmentPeriod": "60s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "crossSeriesReducer": "REDUCE_MAX",
+                      "groupByFields": [],
+                      "perSeriesAligner": "ALIGN_MAX"
+                    },
+                    "filter": "metric.type=\"cloudsql.googleapis.com/database/network/connections\" resource.type=\"cloudsql_database\""
+                  }
+                }
+              },
+              {
+                "legendTemplate": "Abort connections",
+                "minAlignmentPeriod": "60s",
+                "plotType": "LINE",
+                "targetAxis": "Y2",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "crossSeriesReducer": "REDUCE_MAX",
+                      "groupByFields": [],
+                      "perSeriesAligner": "ALIGN_RATE"
+                    },
+                    "filter": "metric.type=\"cloudsql.googleapis.com/database/mysql/aborted_connects_count\" resource.type=\"cloudsql_database\""
+                  }
+                }
+              },
+              {
+                "legendTemplate": "Abort clients",
+                "minAlignmentPeriod": "60s",
+                "plotType": "LINE",
+                "targetAxis": "Y2",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "crossSeriesReducer": "REDUCE_MAX",
+                      "groupByFields": [],
+                      "perSeriesAligner": "ALIGN_RATE"
+                    },
+                    "filter": "metric.type=\"cloudsql.googleapis.com/database/mysql/aborted_clients_count\" resource.type=\"cloudsql_database\""
+                  }
+                }
+              }
+            ],
+            "thresholds": [],
+            "y2Axis": {
+              "label": "",
+              "scale": "LINEAR"
+            },
+            "yAxis": {
+              "label": "",
+              "scale": "LINEAR"
+            }
+          }
+        }
+      }
+    ]
+  },
+  "labels": {}
+}
