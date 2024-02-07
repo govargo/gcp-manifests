@@ -11,6 +11,39 @@
     "columns": 48,
     "tiles": [
       {
+        "width": 24,
+        "height": 16,
+        "widget": {
+          "title": "CPU 使用時間（秒）",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "legendTemplate": "cpu seconds",
+                "minAlignmentPeriod": "60s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "perSeriesAligner": "ALIGN_RATE"
+                    },
+                    "filter": "metric.type=\"redis.googleapis.com/stats/cpu_utilization\" resource.type=\"redis_instance\" metric.label.\"role\"=\"primary\""
+                  }
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
         "xPos": 24,
         "width": 24,
         "height": 16,
@@ -48,53 +81,6 @@
                       "perSeriesAligner": "ALIGN_MEAN"
                     },
                     "filter": "metric.type=\"redis.googleapis.com/stats/memory/maxmemory\" resource.type=\"redis_instance\" metric.label.\"role\"=\"primary\""
-                  }
-                }
-              }
-            ],
-            "timeshiftDuration": "0s",
-            "yAxis": {
-              "scale": "LINEAR"
-            }
-          }
-        }
-      },
-      {
-        "yPos": 32,
-        "width": 24,
-        "height": 16,
-        "widget": {
-          "title": "接続されたクライアント / ブロックされたクライアント",
-          "xyChart": {
-            "chartOptions": {
-              "mode": "COLOR"
-            },
-            "dataSets": [
-              {
-                "minAlignmentPeriod": "60s",
-                "plotType": "LINE",
-                "targetAxis": "Y1",
-                "timeSeriesQuery": {
-                  "timeSeriesFilter": {
-                    "aggregation": {
-                      "alignmentPeriod": "60s",
-                      "perSeriesAligner": "ALIGN_MEAN"
-                    },
-                    "filter": "metric.type=\"redis.googleapis.com/clients/connected\" resource.type=\"redis_instance\" metric.label.\"role\"=\"primary\""
-                  }
-                }
-              },
-              {
-                "minAlignmentPeriod": "60s",
-                "plotType": "LINE",
-                "targetAxis": "Y1",
-                "timeSeriesQuery": {
-                  "timeSeriesFilter": {
-                    "aggregation": {
-                      "alignmentPeriod": "60s",
-                      "perSeriesAligner": "ALIGN_MEAN"
-                    },
-                    "filter": "metric.type=\"redis.googleapis.com/clients/blocked\" resource.type=\"redis_instance\" metric.label.\"role\"=\"primary\""
                   }
                 }
               }
@@ -205,18 +191,17 @@
         }
       },
       {
-        "yPos": 48,
+        "yPos": 32,
         "width": 24,
         "height": 16,
         "widget": {
-          "title": "キャッシュ ヒット率",
+          "title": "接続されたクライアント / ブロックされたクライアント",
           "xyChart": {
             "chartOptions": {
               "mode": "COLOR"
             },
             "dataSets": [
               {
-                "legendTemplate": "cache hit ratio",
                 "minAlignmentPeriod": "60s",
                 "plotType": "LINE",
                 "targetAxis": "Y1",
@@ -226,32 +211,11 @@
                       "alignmentPeriod": "60s",
                       "perSeriesAligner": "ALIGN_MEAN"
                     },
-                    "filter": "metric.type=\"redis.googleapis.com/stats/cache_hit_ratio\" resource.type=\"redis_instance\" metric.label.\"role\"=\"primary\""
+                    "filter": "metric.type=\"redis.googleapis.com/clients/connected\" resource.type=\"redis_instance\" metric.label.\"role\"=\"primary\""
                   }
                 }
-              }
-            ],
-            "timeshiftDuration": "0s",
-            "yAxis": {
-              "scale": "LINEAR"
-            }
-          }
-        }
-      },
-      {
-        "xPos": 24,
-        "yPos": 80,
-        "width": 24,
-        "height": 16,
-        "widget": {
-          "title": "TTL 平均",
-          "xyChart": {
-            "chartOptions": {
-              "mode": "COLOR"
-            },
-            "dataSets": [
+              },
               {
-                "legendTemplate": "avg ttl",
                 "minAlignmentPeriod": "60s",
                 "plotType": "LINE",
                 "targetAxis": "Y1",
@@ -261,78 +225,12 @@
                       "alignmentPeriod": "60s",
                       "perSeriesAligner": "ALIGN_MEAN"
                     },
-                    "filter": "metric.type=\"redis.googleapis.com/keyspace/avg_ttl\" resource.type=\"redis_instance\" metric.label.\"role\"=\"primary\""
+                    "filter": "metric.type=\"redis.googleapis.com/clients/blocked\" resource.type=\"redis_instance\" metric.label.\"role\"=\"primary\""
                   }
                 }
               }
             ],
             "timeshiftDuration": "0s",
-            "yAxis": {
-              "scale": "LINEAR"
-            }
-          }
-        }
-      },
-      {
-        "yPos": 112,
-        "width": 48,
-        "height": 16,
-        "widget": {
-          "title": "呼び出し数",
-          "xyChart": {
-            "chartOptions": {
-              "mode": "COLOR"
-            },
-            "dataSets": [
-              {
-                "legendTemplate": "${metric.labels.cmd}",
-                "minAlignmentPeriod": "60s",
-                "plotType": "LINE",
-                "targetAxis": "Y1",
-                "timeSeriesQuery": {
-                  "timeSeriesFilter": {
-                    "aggregation": {
-                      "alignmentPeriod": "60s",
-                      "perSeriesAligner": "ALIGN_RATE"
-                    },
-                    "filter": "metric.type=\"redis.googleapis.com/commands/calls\" resource.type=\"redis_instance\" metric.label.\"role\"=\"primary\""
-                  }
-                }
-              }
-            ],
-            "yAxis": {
-              "scale": "LINEAR"
-            }
-          }
-        }
-      },
-      {
-        "width": 24,
-        "height": 16,
-        "widget": {
-          "title": "CPU 使用時間（秒）",
-          "xyChart": {
-            "chartOptions": {
-              "mode": "COLOR"
-            },
-            "dataSets": [
-              {
-                "legendTemplate": "cpu seconds",
-                "minAlignmentPeriod": "60s",
-                "plotType": "LINE",
-                "targetAxis": "Y1",
-                "timeSeriesQuery": {
-                  "timeSeriesFilter": {
-                    "aggregation": {
-                      "alignmentPeriod": "60s",
-                      "crossSeriesReducer": "REDUCE_SUM",
-                      "perSeriesAligner": "ALIGN_RATE"
-                    },
-                    "filter": "metric.type=\"redis.googleapis.com/stats/cpu_utilization\" resource.type=\"redis_instance\" metric.label.\"role\"=\"primary\""
-                  }
-                }
-              }
-            ],
             "yAxis": {
               "scale": "LINEAR"
             }
@@ -378,6 +276,89 @@
                       "perSeriesAligner": "ALIGN_MEAN"
                     },
                     "filter": "metric.type=\"redis.googleapis.com/stats/connections/total\" resource.type=\"redis_instance\" metric.label.\"role\"=\"primary\""
+                  }
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "yPos": 48,
+        "width": 24,
+        "height": 16,
+        "widget": {
+          "title": "キャッシュ ヒット率",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "legendTemplate": "cache hit ratio",
+                "minAlignmentPeriod": "60s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "perSeriesAligner": "ALIGN_MEAN"
+                    },
+                    "filter": "metric.type=\"redis.googleapis.com/stats/cache_hit_ratio\" resource.type=\"redis_instance\" metric.label.\"role\"=\"primary\""
+                  }
+                }
+              }
+            ],
+            "timeshiftDuration": "0s",
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 24,
+        "yPos": 48,
+        "width": 24,
+        "height": 16,
+        "widget": {
+          "title": "キャッシュ ヒット / ミス",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "legendTemplate": "hit",
+                "minAlignmentPeriod": "60s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "perSeriesAligner": "ALIGN_RATE"
+                    },
+                    "filter": "metric.type=\"redis.googleapis.com/stats/keyspace_hits\" resource.type=\"redis_instance\" metric.label.\"role\"=\"primary\""
+                  }
+                }
+              },
+              {
+                "legendTemplate": "miss",
+                "minAlignmentPeriod": "60s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "perSeriesAligner": "ALIGN_RATE"
+                    },
+                    "filter": "metric.type=\"redis.googleapis.com/stats/keyspace_misses\" resource.type=\"redis_instance\" metric.label.\"role\"=\"primary\""
                   }
                 }
               }
@@ -489,6 +470,41 @@
         }
       },
       {
+        "xPos": 24,
+        "yPos": 80,
+        "width": 24,
+        "height": 16,
+        "widget": {
+          "title": "TTL 平均",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "legendTemplate": "avg ttl",
+                "minAlignmentPeriod": "60s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "perSeriesAligner": "ALIGN_MEAN"
+                    },
+                    "filter": "metric.type=\"redis.googleapis.com/keyspace/avg_ttl\" resource.type=\"redis_instance\" metric.label.\"role\"=\"primary\""
+                  }
+                }
+              }
+            ],
+            "timeshiftDuration": "0s",
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
         "yPos": 96,
         "width": 24,
         "height": 16,
@@ -522,19 +538,18 @@
         }
       },
       {
-        "xPos": 24,
-        "yPos": 48,
-        "width": 24,
+        "yPos": 112,
+        "width": 48,
         "height": 16,
         "widget": {
-          "title": "キャッシュ ヒット / ミス",
+          "title": "呼び出し数",
           "xyChart": {
             "chartOptions": {
               "mode": "COLOR"
             },
             "dataSets": [
               {
-                "legendTemplate": "hit",
+                "legendTemplate": "${metric.labels.cmd}",
                 "minAlignmentPeriod": "60s",
                 "plotType": "LINE",
                 "targetAxis": "Y1",
@@ -544,22 +559,7 @@
                       "alignmentPeriod": "60s",
                       "perSeriesAligner": "ALIGN_RATE"
                     },
-                    "filter": "metric.type=\"redis.googleapis.com/stats/keyspace_hits\" resource.type=\"redis_instance\" metric.label.\"role\"=\"primary\""
-                  }
-                }
-              },
-              {
-                "legendTemplate": "miss",
-                "minAlignmentPeriod": "60s",
-                "plotType": "LINE",
-                "targetAxis": "Y1",
-                "timeSeriesQuery": {
-                  "timeSeriesFilter": {
-                    "aggregation": {
-                      "alignmentPeriod": "60s",
-                      "perSeriesAligner": "ALIGN_RATE"
-                    },
-                    "filter": "metric.type=\"redis.googleapis.com/stats/keyspace_misses\" resource.type=\"redis_instance\" metric.label.\"role\"=\"primary\""
+                    "filter": "metric.type=\"redis.googleapis.com/commands/calls\" resource.type=\"redis_instance\" metric.label.\"role\"=\"primary\""
                   }
                 }
               }
