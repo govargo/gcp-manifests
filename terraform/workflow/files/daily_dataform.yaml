@@ -4,17 +4,33 @@ main:
       assign:
       - repository: projects/${projectId}/locations/${region}/repositories/prod-little-quest-dataform
   - intermediate_datawarehouse:
-      call: dataform_workflow
-      args:
-        repository: $${repository}
-        tag: intermediate
-      result: intermediate_result
+      try:
+        call: dataform_workflow
+        args:
+          repository: $${repository}
+          tag: intermediate
+        result: intermediate_result
+      retry:
+        predicate: $${custom_predicate}
+        max_retries: 5
+        backoff:
+          initial_delay: 5
+          max_delay: 60
+          multiplier: 2
   - output_datamart:
-      call: dataform_workflow
-      args:
-        repository: $${repository}
-        tag: output
-      result: output_result
+      try:
+        call: dataform_workflow
+        args:
+          repository: $${repository}
+          tag: output
+        result: output_result
+      retry:
+        predicate: $${custom_predicate}
+        max_retries: 5
+        backoff:
+          initial_delay: 5
+          max_delay: 60
+          multiplier: 2
   - returnResult:
       return: $${intermediate_result + ", " + output_result}
 
@@ -29,6 +45,7 @@ dataform_workflow:
           type: OAuth2
         body:
           gitCommitish: main-workspace
+        timeout: 30
       result: compilationResult
   - createWorkflowInvocation:
       call: http.post
@@ -41,6 +58,19 @@ dataform_workflow:
           invocationConfig:
             includedTags:
             - $${tag}
+        timeout: 30
       result: workflowInvocation
   - complete:
       return: $${workflowInvocation.body.name}
+
+custom_predicate:
+  params: [e]
+  steps:
+    - what_to_repeat:
+        switch:
+          - condition: $${e.code == 500}
+            return: true
+          - condition: $${e.code == 400}
+            return: true
+    - otherwise:
+        return: false
