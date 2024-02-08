@@ -25,6 +25,18 @@ resource "google_monitoring_dashboard" "memorystore_redis_monitoring_dashboard" 
   dashboard_json = file("files/memorystore_redis.json")
 }
 
+## Cloud Run
+resource "google_monitoring_dashboard" "cloudrun_monitoring_dashboard" {
+  project   = data.google_project.project.project_id
+  dashboard_json = file("files/cloud_run.json")
+}
+
+## Cloud Functions
+resource "google_monitoring_dashboard" "cloudfunctions_monitoring_dashboard" {
+  project   = data.google_project.project.project_id
+  dashboard_json = file("files/cloud_functions.json")
+}
+
 ## Cloud NAT
 resource "google_monitoring_dashboard" "nat_monitoring_dashboard" {
   project   = data.google_project.project.project_id
