@@ -30,7 +30,6 @@ spec:
         targetRevision: 4.24.0
         helm:
           releaseName: "{{cluster}}"
-          values: |
       destination:
         name: "{{name}}"
         namespace: monitoring
