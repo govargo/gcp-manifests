@@ -1,0 +1,45 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: falco
+  namespace: argocd
+spec:
+  generators:
+  - list:
+      elements:
+      - cluster: app-0
+        name: gke_kentaiso-330205_asia-northeast1_prod-app-0
+      - cluster: corp-0
+        name: gke_kentaiso-330205_asia-northeast1_prod-corp-0
+      - cluster: misc-0
+        name: gke_kentaiso-330205_asia-northeast1-a_prod-misc-0
+  template:
+    metadata:
+      name: "{{cluster}}-falco"
+    spec:
+      project: default
+      syncPolicy:
+        syncOptions:
+        - CreateNamespace=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        chart: falco
+        repoURL: https://falcosecurity.github.io/charts
+        targetRevision: 4.1.1
+        helm:
+          releaseName: "{{cluster}}-falco"
+          values: |
+            driver:
+              kind: modern_ebpf
+            resources:
+              requests:
+                cpu: 50m
+                memory: 256Mi
+            tolerations:
+            - effect: NoSchedule
+              operator: Exists
+      destination:
+        name: "{{name}}"
+        namespace: falco
