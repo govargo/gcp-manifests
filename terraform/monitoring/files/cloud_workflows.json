@@ -1,0 +1,181 @@
+{
+  "displayName": "Cloud Scheduler + Cloud Workflows",
+  "mosaicLayout": {
+    "columns": 48,
+    "tiles": [
+      {
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "完了した実行",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "legendTemplate": "${metric.labels.status}",
+                "minAlignmentPeriod": "60s",
+                "plotType": "STACKED_BAR",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": [
+                        "metric.label.\"status\""
+                      ],
+                      "perSeriesAligner": "ALIGN_SUM"
+                    },
+                    "filter": "metric.type=\"workflows.googleapis.com/finished_execution_count\" resource.type=\"workflows.googleapis.com/Workflow\""
+                  }
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 16,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "実行時間",
+          "xyChart": {
+            "dataSets": [
+              {
+                "legendTemplate": "${resource.labels.workflow_id}",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "crossSeriesReducer": "REDUCE_MEAN",
+                      "groupByFields": [
+                        "resource.labels.workflow_id"
+                      ],
+                      "perSeriesAligner": "ALIGN_DELTA"
+                    },
+                    "filter": "resource.type=\"workflows.googleapis.com/Workflow\" resource.labels.project_id=\"kentaiso-330205\" metric.type=\"workflows.googleapis.com/execution_times\""
+                  }
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "xPos": 32,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "失敗した実行",
+          "xyChart": {
+            "dataSets": [
+              {
+                "legendTemplate": "${resource.labels.workflow_id}",
+                "plotType": "STACKED_BAR",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": [
+                        "resource.labels.workflow_id"
+                      ],
+                      "perSeriesAligner": "ALIGN_SUM"
+                    },
+                    "filter": "resource.type=\"workflows.googleapis.com/Workflow\" resource.labels.project_id=\"kentaiso-330205\" metric.labels.status=\"FAILED\" metric.type=\"workflows.googleapis.com/finished_execution_count\""
+                  }
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "yPos": 16,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "成功した実行",
+          "xyChart": {
+            "dataSets": [
+              {
+                "legendTemplate": "${resource.labels.workflow_id}",
+                "plotType": "STACKED_BAR",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": [
+                        "resource.labels.workflow_id"
+                      ],
+                      "perSeriesAligner": "ALIGN_SUM"
+                    },
+                    "filter": "resource.type=\"workflows.googleapis.com/Workflow\" resource.labels.project_id=\"kentaiso-330205\" metric.labels.status=\"SUCCEEDED\" metric.type=\"workflows.googleapis.com/finished_execution_count\""
+                  }
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "xPos": 16,
+        "yPos": 16,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "Cloud Scheduler",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "legendTemplate": "${metric.labels.severity}",
+                "minAlignmentPeriod": "60s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": [
+                        "metric.label.\"severity\""
+                      ],
+                      "perSeriesAligner": "ALIGN_RATE"
+                    },
+                    "filter": "metric.type=\"logging.googleapis.com/log_entry_count\" resource.type=\"cloud_scheduler_job\""
+                  }
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 32,
+        "yPos": 16,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "Cloud Workflows ログ",
+          "logsPanel": {
+            "filter": "(protoPayload.resourceName=\"projects/kentaiso-330205/locations/asia-northeast1/workflows/prod-little-quest-daily-dataform\" resource.type=\"audited_resource\" resource.labels.service=(\"workflowexecutions.googleapis.com\" OR \"workflows.googleapis.com\")) OR (resource.type=\"workflows.googleapis.com/Workflow\" resource.labels.workflow_id=\"prod-little-quest-daily-dataform\" resource.labels.location=\"asia-northeast1\") severity>=DEFAULT"
+          }
+        }
+      }
+    ]
+  }
+}

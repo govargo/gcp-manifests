@@ -48,3 +48,9 @@ resource "google_monitoring_dashboard" "datastream_monitoring_dashboard" {
   project   = data.google_project.project.project_id
   dashboard_json = file("files/datastream.json")
 }
+
+## Cloud Scheduler + Cloud Workflows
+resource "google_monitoring_dashboard" "scheduler_workflows_monitoring_dashboard" {
+  project   = data.google_project.project.project_id
+  dashboard_json = file("files/cloud_workflows.json")
+}
