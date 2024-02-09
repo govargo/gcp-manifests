@@ -377,12 +377,11 @@ module "allowed-policy-member-domains" {
   version    = "5.3.0"
   project_id = data.google_project.project.project_id
 
-  constraint        = "constraints/iam.allowedPolicyMemberDomains"
-  policy_type       = "list"
-  organization_id   = var.organization_id
-  policy_for        = "project"
-  allow             = ["C02h8e9nw"]
-  allow_list_length = "1"
+  constraint      = "constraints/iam.allowedPolicyMemberDomains"
+  policy_type     = "list"
+  organization_id = var.organization_id
+  policy_for      = "project"
+  enforce         = false
 }
 
 ## BigQuery dataset
