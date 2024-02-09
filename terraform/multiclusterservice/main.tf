@@ -50,16 +50,22 @@ resource "google_gke_hub_membership" "corp_0_agones_allocator_membership" {
   depends_on = [google_gke_hub_feature.multi_cluster_service]
 }
 
-resource "google_project_iam_member" "allow_network_viewer" {
-  project = data.google_project.project.project_id
-  role    = "roles/compute.networkViewer"
-  member  = "serviceAccount:${data.google_project.project.project_id}.svc.id.goog[gke-mcs/gke-mcs-importer]"
-
+resource "time_sleep" "wait_100_seconds" {
   depends_on = [
     google_gke_hub_feature.multi_cluster_service,
     google_gke_hub_membership.app_0_agones_allocator_membership,
     google_gke_hub_membership.corp_0_agones_allocator_membership
   ]
+
+  create_duration = "100s"
+}
+
+resource "google_project_iam_member" "allow_network_viewer" {
+  project = data.google_project.project.project_id
+  role    = "roles/compute.networkViewer"
+  member  = "serviceAccount:${data.google_project.project.project_id}.svc.id.goog[gke-mcs/gke-mcs-importer]"
+
+  depends_on = [time_sleep.wait_100_seconds]
 }
 
 resource "google_project_iam_member" "allow_trafficdirector_client" {
@@ -67,9 +73,5 @@ resource "google_project_iam_member" "allow_trafficdirector_client" {
   role    = "roles/trafficdirector.client"
   member  = "serviceAccount:${data.google_project.project.project_id}.svc.id.goog[gke-mcs/gke-mcs-importer]"
 
-  depends_on = [
-    google_gke_hub_feature.multi_cluster_service,
-    google_gke_hub_membership.app_0_agones_allocator_membership,
-    google_gke_hub_membership.corp_0_agones_allocator_membership
-  ]
+  depends_on = [time_sleep.wait_100_seconds]
 }
