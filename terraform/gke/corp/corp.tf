@@ -33,7 +33,7 @@ module "corp-0" {
   kalm_config                          = false
   gke_backup_agent_config              = var.gke_backup_agent_config
   create_service_account               = false
-  default_max_pods_per_node            = var.default_max_pods_per_node
+  default_max_pods_per_node            = 40
   identity_namespace                   = var.identity_namespace
   logging_service                      = var.logging_service
   monitoring_service                   = var.monitoring_service
