@@ -17,7 +17,7 @@ module "memorystore_redis" {
   tier         = var.tier
   auth_enabled = var.auth_enabled
   connect_mode = var.connect_mode
-  display_name = "${var.env}-redis"
+  display_name = "${var.env}-redis-instance"
   labels = {
     env = "production"
   }
