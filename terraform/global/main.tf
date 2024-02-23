@@ -51,7 +51,8 @@ locals {
     "cloudscheduler.googleapis.com",
     "firebase.googleapis.com",
     "firestore.googleapis.com",
-    "securitycenter.googleapis.com"
+    "securitycenter.googleapis.com",
+    "cloudaicompanion.googleapis.com"
   ])
 }
 
