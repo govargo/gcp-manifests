@@ -523,6 +523,38 @@ resource "google_secret_manager_secret" "redis_password" {
   }
 }
 
+resource "google_compute_firewall" "allow_all_egress" {
+  project     = data.google_project.project.project_id
+  name        = "allow-all-egress"
+  network     = google_compute_network.vpc_network.id
+  description = "Allow all egress"
+
+  direction = "EGRESS"
+  priority  = 65535
+
+  allow {
+    protocol = "all"
+  }
+
+  source_ranges = ["0.0.0.0/0"]
+}
+
+resource "google_compute_firewall" "deny_all_ingress" {
+  project     = data.google_project.project.project_id
+  name        = "deny-all-ingress"
+  network     = google_compute_network.vpc_network.id
+  description = "Deny all ingress"
+
+  direction = "INGRESS"
+  priority  = 65535
+
+  allow {
+    protocol = "all"
+  }
+
+  source_ranges = ["0.0.0.0/0"]
+}
+
 resource "google_compute_firewall" "allow_iap_ssh" {
   project     = data.google_project.project.project_id
   name        = "allow-iap-ssh-ingress"
