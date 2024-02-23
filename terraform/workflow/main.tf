@@ -66,10 +66,10 @@ resource "google_cloud_scheduler_job" "dataform_workflow_job" {
 
   http_target {
     http_method = "POST"
-    headers     = {
+    headers = {
       "Content-Type" = "application/json"
     }
-    uri         = "https://workflowexecutions.googleapis.com/v1/projects/${data.google_project.project.project_id}/locations/${var.region}/workflows/${google_workflows_workflow.daily_dataform_workflow.name}/executions"
+    uri = "https://workflowexecutions.googleapis.com/v1/projects/${data.google_project.project.project_id}/locations/${var.region}/workflows/${google_workflows_workflow.daily_dataform_workflow.name}/executions"
 
     oauth_token {
       scope                 = "https://www.googleapis.com/auth/cloud-platform"

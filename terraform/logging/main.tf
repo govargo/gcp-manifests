@@ -23,7 +23,7 @@ EOF
 resource "google_project_iam_member" "kpi_action_log_writer" {
   project = data.google_project.project.project_id
 
-  role = "roles/bigquery.dataEditor"
+  role   = "roles/bigquery.dataEditor"
   member = google_logging_project_sink.kpi_action_log.writer_identity
 }
 
@@ -46,6 +46,6 @@ EOF
 resource "google_project_iam_member" "bigquery_audit_log_writer" {
   project = data.google_project.project.project_id
 
-  role = "roles/bigquery.dataEditor"
+  role   = "roles/bigquery.dataEditor"
   member = google_logging_project_sink.bigquery_audit_log.writer_identity
 }
