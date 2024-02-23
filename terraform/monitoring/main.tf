@@ -49,6 +49,12 @@ resource "google_monitoring_dashboard" "nat_monitoring_dashboard" {
   dashboard_json = file("files/cloud_nat.json")
 }
 
+## Cloud DNS
+resource "google_monitoring_dashboard" "dns_monitoring_dashboard" {
+  project        = data.google_project.project.project_id
+  dashboard_json = file("files/cloud_dns.json")
+}
+
 ## DataStream
 resource "google_monitoring_dashboard" "datastream_monitoring_dashboard" {
   project        = data.google_project.project.project_id
