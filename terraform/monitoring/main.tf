@@ -31,6 +31,12 @@ resource "google_monitoring_dashboard" "memorystore_redis_monitoring_dashboard" 
   dashboard_json = file("files/memorystore_redis.json")
 }
 
+## Cloud Pub/Sub
+resource "google_monitoring_dashboard" "pubsub_monitoring_dashboard" {
+  project        = data.google_project.project.project_id
+  dashboard_json = file("files/cloud_pubsub.json")
+}
+
 ## Cloud Run
 resource "google_monitoring_dashboard" "cloudrun_monitoring_dashboard" {
   project        = data.google_project.project.project_id
