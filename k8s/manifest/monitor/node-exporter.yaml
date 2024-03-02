@@ -1,8 +1,8 @@
 apiVersion: monitoring.googleapis.com/v1
 kind: PodMonitoring
 metadata:
-  namespace: gmp-public
   name: node-exporter
+  namespace: monitoring
   labels:
     app.kubernetes.io/name: prometheus-node-exporter
     app.kubernetes.io/part-of: google-cloud-managed-prometheus
