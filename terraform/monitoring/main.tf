@@ -7,10 +7,22 @@ resource "google_monitoring_dashboard" "https_loadbalancing_monitoring_dashboard
   dashboard_json = file("files/application_loadbalancing.json")
 }
 
-## GKE Cluster
-resource "google_monitoring_dashboard" "gke_cluster_monitoring_dashboard" {
+## GKE Cluster - Cluster View
+resource "google_monitoring_dashboard" "gke_cluster_view_monitoring_dashboard" {
   project        = data.google_project.project.project_id
-  dashboard_json = file("files/gke_cluster.json")
+  dashboard_json = file("files/gke_cluster_view.json")
+}
+
+## GKE Cluster - Node View
+resource "google_monitoring_dashboard" "gke_node_view_monitoring_dashboard" {
+  project        = data.google_project.project.project_id
+  dashboard_json = file("files/gke_node_view.json")
+}
+
+## GKE Cluster - Workload View
+resource "google_monitoring_dashboard" "gke_workload_view_monitoring_dashboard" {
+  project        = data.google_project.project.project_id
+  dashboard_json = file("files/gke_workload_view.json")
 }
 
 ## Kubernetes - Node Exporter
