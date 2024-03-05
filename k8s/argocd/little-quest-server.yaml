@@ -263,7 +263,7 @@ spec:
 
         autoscaling:
           enabled: true
-          minReplicas: 1
+          minReplicas: 2
           maxReplicas: 100
           targetCPUType: Utilization
           targetCPUUtilizationPercentage: 70
