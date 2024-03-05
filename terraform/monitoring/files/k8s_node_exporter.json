@@ -4,7 +4,8 @@
     {
       "filterType": "RESOURCE_LABEL",
       "labelKey": "job",
-      "templateVariable": "job"
+      "templateVariable": "job",
+      "stringValue": "node-exporter"
     },
     {
       "filterType": "RESOURCE_LABEL",
@@ -412,7 +413,8 @@
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "100 - ((node_filesystem_avail_bytes{instance=~\"${node.value}\",job=~\"${job.value}\",device!~'rootfs'} * 100) / node_filesystem_size_bytes{instance=~\"${node.value}\",job=~\"${job.value}\",device!~'rootfs'})"
+                  "prometheusQuery": "100 - ((node_filesystem_avail_bytes{instance=~\"${node.value}\",job=~\"${job.value}\",device!~'rootfs'} * 100) / node_filesystem_size_bytes{instance=~\"${node.value}\",job=~\"${job.value}\",device!~'rootfs'})",
+		  "unitOverride": "%"
                 }
               }
             ]
@@ -643,19 +645,21 @@
             },
             "dataSets": [
               {
-                "legendTemplate": "Read",
+                "legendTemplate": "${labels.device} - Reads completed",
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "irate(node_disk_reads_completed_total{instance=~\"${node.value}\",job=~\"${job.value}\"}[${__interval}])"
+                  "prometheusQuery": "irate(node_disk_reads_completed_total{instance=~\"${node.value}\",job=~\"${job.value}\"}[${__interval}])",
+		  "unitOverride": "1"
                 }
               },
               {
-                "legendTemplate": "Write",
+                "legendTemplate": "${labels.device} - Writes completed",
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "irate(node_disk_writes_completed_total{instance=~\"${node.value}\",job=~\"${job.value}\"}[${__interval}])"
+                  "prometheusQuery": "irate(node_disk_writes_completed_total{instance=~\"${node.value}\",job=~\"${job.value}\"}[${__interval}])",
+		  "unitOverride": "1"
                 }
               }
             ],
@@ -677,7 +681,7 @@
             },
             "dataSets": [
               {
-                "legendTemplate": "Read",
+                "legendTemplate": "${labels.device} - Successfully read bytes",
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
@@ -685,7 +689,7 @@
                 }
               },
               {
-                "legendTemplate": "Write",
+                "legendTemplate": "${labels.device} - Successfully read bytes",
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
