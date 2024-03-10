@@ -1,0 +1,12 @@
+apiVersion: monitoring.googleapis.com/v1
+kind: PodMonitoring
+metadata:
+  name: agones
+  namespace: agones-system
+spec:
+  selector:
+    matchLabels:
+      app: agones
+  endpoints:
+  - port: http
+    interval: 60s

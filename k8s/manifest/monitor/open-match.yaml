@@ -1,0 +1,12 @@
+apiVersion: monitoring.googleapis.com/v1
+kind: PodMonitoring
+metadata:
+  name: open-match
+  namespace: open-match
+spec:
+  selector:
+    matchLabels:
+      release: open-match
+  endpoints:
+  - port: http
+    interval: 60s

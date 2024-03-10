@@ -1,0 +1,12 @@
+apiVersion: monitoring.googleapis.com/v1
+kind: PodMonitoring
+metadata:
+  name: little-quest-mmf
+  namespace: corp-0
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: little-quest-mmf
+  endpoints:
+  - port: http
+    interval: 60s

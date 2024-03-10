@@ -1,0 +1,12 @@
+apiVersion: monitoring.googleapis.com/v1
+kind: PodMonitoring
+metadata:
+  name: little-quest-realtime
+  namespace: corp-0
+spec:
+  selector:
+    matchLabels:
+      agones.dev/container: little-quest-realtime
+  endpoints:
+  - port: http
+    interval: 60s
