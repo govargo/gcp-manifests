@@ -14,7 +14,8 @@
     },
     {
       "labelKey": "device",
-      "filterType": "METRIC_LABEL"
+      "filterType": "METRIC_LABEL",
+      "templateVariable": "device"
     }
   ],
   "mosaicLayout": {
@@ -645,21 +646,21 @@
             },
             "dataSets": [
               {
-                "legendTemplate": "${labels.device} - Reads completed",
+                "legendTemplate": "Reads completed: ${labels.instance}",
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
                   "prometheusQuery": "irate(node_disk_reads_completed_total{instance=~\"${node.value}\",job=~\"${job.value}\"}[${__interval}])",
-		  "unitOverride": "1"
+		  "unitOverride": "1/s"
                 }
               },
               {
-                "legendTemplate": "${labels.device} - Writes completed",
+                "legendTemplate": "Writes completed: ${labels.instance}",
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
                   "prometheusQuery": "irate(node_disk_writes_completed_total{instance=~\"${node.value}\",job=~\"${job.value}\"}[${__interval}])",
-		  "unitOverride": "1"
+		  "unitOverride": "1/s"
                 }
               }
             ],
