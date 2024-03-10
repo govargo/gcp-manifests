@@ -25,6 +25,12 @@ resource "google_monitoring_dashboard" "gke_workload_view_monitoring_dashboard" 
   dashboard_json = file("files/gke_workload_view.json")
 }
 
+## Kubernetes - kube-state-metrics
+resource "google_monitoring_dashboard" "k8s_state_metrics_monitoring_dashboard" {
+  project        = data.google_project.project.project_id
+  dashboard_json = file("files/k8s_state_metrics.json")
+}
+
 ## Kubernetes - Node Exporter
 resource "google_monitoring_dashboard" "k8s_node_exporter_monitoring_dashboard" {
   project        = data.google_project.project.project_id

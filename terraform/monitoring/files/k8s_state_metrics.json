@@ -1,0 +1,1023 @@
+{
+  "displayName": "Kubernetes - kube-state-metrics",
+  "dashboardFilters": [
+    {
+      "filterType": "RESOURCE_LABEL",
+      "labelKey": "cluster",
+      "templateVariable": "cluster"
+    },
+    {
+      "filterType": "METRIC_LABEL",
+      "labelKey": "node",
+      "templateVariable": "node"
+    },
+    {
+      "filterType": "RESOURCE_LABEL",
+      "labelKey": "namespace",
+      "templateVariable": "namespace"
+    }
+  ],
+  "mosaicLayout": {
+    "columns": 48,
+    "tiles": [
+      {
+        "width": 16,
+        "height": 8,
+        "widget": {
+          "title": "Cluster Pod Requested",
+          "scorecard": {
+            "gaugeView": {
+              "upperBound": 100
+            },
+            "timeSeriesQuery": {
+              "prometheusQuery": "sum(kube_pod_info{cluster=~\"${cluster.value}\",node=~\"${node.value}\"}) / sum(kube_node_status_allocatable{cluster=~\"${cluster.value}\",resource=\"pods\",node=~\"${node.value}\"})"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 16,
+        "width": 16,
+        "height": 8,
+        "widget": {
+          "title": "Cluster CPU Requested",
+          "scorecard": {
+            "gaugeView": {
+              "upperBound": 100
+            },
+            "timeSeriesQuery": {
+              "prometheusQuery": "sum(kube_pod_container_resource_requests{cluster=~\"${cluster.value}\",resource=\"cpu\",node=~\"${node.value}\"})/ sum(kube_node_status_allocatable{node=~\"${node.value}\",cluster=~\"${cluster.value}\",resource=\"cpu\"})"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 32,
+        "width": 16,
+        "height": 8,
+        "widget": {
+          "title": "Cluster Memory  Requested",
+          "scorecard": {
+            "gaugeView": {
+              "upperBound": 100
+            },
+            "timeSeriesQuery": {
+              "prometheusQuery": "sum(kube_pod_container_resource_requests{cluster=~\"${cluster.value}\",resource=\"memory\",node=~\"${node.value}\"}) / sum(kube_node_status_allocatable{node=~\"${node.value}\",cluster=~\"${cluster.value}\",resource=\"memory\"})"
+            }
+          }
+        }
+      },
+      {
+        "yPos": 8,
+        "width": 16,
+        "height": 10,
+        "widget": {
+          "title": "Cluster Pod Capacity",
+          "xyChart": {
+            "dataSets": [
+              {
+                "legendTemplate": "allocatable",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum(kube_node_status_allocatable{cluster=~\"${cluster.value}\",resource=\"pods\",node=~\"${node.value}\"})"
+                }
+              },
+              {
+                "legendTemplate": "requested",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum(kube_pod_info{node=~\"${node.value}\",cluster=~\"${cluster.value}\"})"
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "xPos": 16,
+        "yPos": 8,
+        "width": 16,
+        "height": 10,
+        "widget": {
+          "title": "Cluster CPU Capacity",
+          "xyChart": {
+            "dataSets": [
+              {
+                "legendTemplate": "allocatable",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum(kube_node_status_capacity{node=~\"${node.value}\",cluster=~\"${cluster.value}\",resource=\"cpu\"})"
+                }
+              },
+              {
+                "legendTemplate": "capacity",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum(kube_node_status_allocatable{node=~\"${node.value}\",cluster=~\"${cluster.value}\",resource=\"cpu\"})"
+                }
+              },
+              {
+                "legendTemplate": "requested",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum(kube_pod_container_resource_requests{cluster=~\"${cluster.value}\",resource=\"cpu\",node=~\"${node.value}\"})"
+                }
+              },
+              {
+                "legendTemplate": "limited",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum(kube_pod_container_resource_limits{cluster=~\"${cluster.value}\",resource=\"cpu\",node=~\"${node.value}\"})"
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "xPos": 32,
+        "yPos": 8,
+        "width": 16,
+        "height": 10,
+        "widget": {
+          "title": "Cluster Mem Capacity",
+          "xyChart": {
+            "dataSets": [
+              {
+                "legendTemplate": "allocatable",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum(kube_node_status_allocatable{node=~\"${node.value}\",cluster=~\"${cluster.value}\",resource=\"memory\"})"
+                }
+              },
+              {
+                "legendTemplate": "capacity",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum(kube_node_status_capacity{node=~\"${node.value}\",cluster=~\"${cluster.value}\",resource=\"memory\"})"
+                }
+              },
+              {
+                "legendTemplate": "requested",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum(kube_pod_container_resource_requests{cluster=~\"${cluster.value}\",resource=\"memory\",node=~\"${node.value}\"})"
+                }
+              },
+              {
+                "legendTemplate": "limited",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum(kube_pod_container_resource_limits{cluster=~\"${cluster.value}\",resource=\"memory\",node=~\"${node.value}\"})"
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "yPos": 18,
+        "width": 12,
+        "height": 8,
+        "widget": {
+          "title": "Total Number of Nodes",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+		"legendTemplate": "nodes",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum(kube_node_info{cluster=~\"${cluster.value}\"})"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 12,
+        "yPos": 18,
+        "width": 12,
+        "height": 8,
+        "widget": {
+          "title": "Nodes Unavailable",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+		"legendTemplate": "nodes",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum(kube_node_spec_unschedulable{cluster=~\"${cluster.value}\"})"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 36,
+        "yPos": 18,
+        "width": 12,
+        "height": 8,
+        "widget": {
+          "title": "Node NotReady",
+          "xyChart": {
+            "dataSets": [
+              {
+                "legendTemplate": "${labels.node}",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+		"legendTemplate": "nodes",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "kube_node_status_condition{cluster=~\"${cluster.value}\",condition=\"Ready\",status=\"false\"}==1"
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "xPos": 24,
+        "yPos": 18,
+        "width": 12,
+        "height": 8,
+        "widget": {
+          "title": "Node Pressure",
+          "xyChart": {
+            "dataSets": [
+              {
+                "legendTemplate": "${labels.node} ${labels.condition}",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "kube_node_status_condition{condition=\"DiskPressure\",cluster=~\"${cluster.value}\",status=\"true\"}==1"
+                }
+              },
+              {
+                "legendTemplate": "${labels.node} ${labels.condition}",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "kube_node_status_condition{condition=\"MemoryPressure\",node=~\"${node.value}\",cluster=~\"${cluster.value}\",status=\"true\"}==1"
+                }
+              },
+              {
+                "legendTemplate": "${labels.node} ${labels.condition}",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "kube_node_status_condition{condition=~\"PIDPressure\",node=~\"${node.value}\",cluster=~\"${cluster.value}\",status=\"true\"}==1"
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "yPos": 26,
+        "width": 24,
+        "height": 10,
+        "widget": {
+          "title": "Node Number",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "STACKED_AREA",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum(kube_node_info{cluster=~\"${cluster.value}\"}) by (cluster)"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "yPos": 36,
+        "width": 12,
+        "height": 10,
+        "widget": {
+          "title": "Deployment Replicas",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "STACKED_AREA",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum(kube_deployment_status_replicas{namespace=~\"${namespace.value}\",cluster=~\"${cluster.value}\"}) by (cluster)"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 12,
+        "yPos": 36,
+        "width": 12,
+        "height": 10,
+        "widget": {
+          "title": "Deployment Replicas - Updated",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "STACKED_AREA",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum(kube_deployment_status_replicas_updated{namespace=~\"${namespace.value}\",cluster=~\"${cluster.value}\"}) by (cluster)"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+	"xPos": 24,
+        "yPos": 36,
+        "width": 12,
+        "height": 10,
+        "widget": {
+          "title": "Deployment Replicas - Unavailable",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "STACKED_AREA",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum(kube_deployment_status_replicas_unavailable{namespace=~\"${namespace.value}\",cluster=~\"${cluster.value}\"}) by (cluster)"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 24,
+        "yPos": 26,
+        "width": 24,
+        "height": 10,
+        "widget": {
+          "title": "Statefulset Replicas",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+		"legendTemplate": "${labels.pod}",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "kube_statefulset_status_replicas_ready{namespace=~\"${namespace.value}\",cluster=~\"${cluster.value}\"}/kube_statefulset_status_replicas{namespace=~\"${namespace.value}\",cluster=~\"${cluster.value}\"}*100",
+                  "unitOverride": "%"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "yPos": 65,
+        "width": 12,
+        "height": 12,
+        "widget": {
+          "title": "Pods Restart in 30m",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "changes(kube_pod_container_status_restarts_total{namespace=~\"${namespace.value}\",cluster=~\"${cluster.value}\"}[30m])>1"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 12,
+        "yPos": 65,
+        "width": 12,
+        "height": 12,
+        "widget": {
+          "title": "Evicted",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "kube_pod_status_reason{cluster=~\"${cluster.value}\",namespace=~\"${namespace.value}\", reason=\"Evicted\"}==1"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 36,
+        "yPos": 36,
+        "width": 12,
+        "height": 10,
+        "widget": {
+          "title": "Pods Running",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "STACKED_AREA",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum(kube_pod_status_phase{cluster=~\"${cluster.value}\",namespace=~\"${namespace.value}\", phase=\"Running\"}) by (cluster)"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 24,
+        "yPos": 65,
+        "width": 12,
+        "height": 6,
+        "widget": {
+          "title": "Pods Succeeded",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum(kube_pod_status_phase{cluster=~\"${cluster.value}\",namespace=~\"${namespace.value}\", phase=\"Succeeded\"}) by (cluster, pod)"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 36,
+        "yPos": 65,
+        "width": 12,
+        "height": 6,
+        "widget": {
+          "title": "Pods Failed",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum(kube_pod_status_phase{cluster=~\"${cluster.value}\",namespace=~\"${namespace.value}\", phase=\"Failed\"}) by (cluster, pod)"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 24,
+        "yPos": 71,
+        "width": 12,
+        "height": 6,
+        "widget": {
+          "title": "Pods Pending",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum(kube_pod_status_phase{cluster=~\"${cluster.value}\",namespace=~\"${namespace.value}\", phase=\"Pending\"}) by (cluster, pod)"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 36,
+        "yPos": 71,
+        "width": 12,
+        "height": 6,
+        "widget": {
+          "title": "Pods Unknown",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum(kube_pod_status_phase{cluster=~\"${cluster.value}\",namespace=~\"${namespace.value}\", phase=\"Unknown\"}) by (cluster, pod)"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "yPos": 46,
+        "width": 12,
+        "height": 10,
+        "widget": {
+          "title": "Containers Running",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "STACKED_AREA",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum(kube_pod_container_status_running{namespace=~\"${namespace.value}\",cluster=~\"${cluster.value}\"}) by (cluster)"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 24,
+        "yPos": 46,
+        "width": 12,
+        "height": 10,
+        "widget": {
+          "title": "Containers Waiting",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum(kube_pod_container_status_waiting{namespace=~\"${namespace.value}\",cluster=~\"${cluster.value}\"}) by (namespace)"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 36,
+        "yPos": 46,
+        "width": 12,
+        "height": 10,
+        "widget": {
+          "title": "Containers Terminated",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum(kube_pod_container_status_terminated{namespace=~\"${namespace.value}\",cluster=~\"${cluster.value}\"}) by (namespace)"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+	"xPos": 12,
+        "yPos": 46,
+        "width": 12,
+        "height": 10,
+        "widget": {
+          "title": "Containers Restarts (Last 30 Minutes)",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum(changes(kube_pod_container_status_restarts_total{namespace=~\"${namespace.value}\",cluster=~\"${cluster.value}\"}[30m])) by (namespace)"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "yPos": 56,
+        "width": 24,
+        "height": 9,
+        "widget": {
+          "title": "CPU Cores Requested by Containers",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "STACKED_AREA",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum(kube_pod_container_resource_requests{namespace=~\"${namespace.value}\",cluster=~\"${cluster.value}\",resource=\"cpu\"}) by (cluster)"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 24,
+        "yPos": 56,
+        "width": 24,
+        "height": 9,
+        "widget": {
+          "title": "Memory Requested By Containers",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "STACKED_AREA",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum(kube_pod_container_resource_requests{namespace=~\"${namespace.value}\",cluster=~\"${cluster.value}\",resource=\"memory\"}) by (cluster)"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "yPos": 77,
+        "width": 12,
+        "height": 15,
+        "widget": {
+          "title": "HPA",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+		"legendTemplate": "${labels.horizontalpodautoscaler}",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "kube_horizontalpodautoscaler_status_current_replicas{cluster=~\"${cluster.value}\",namespace=~\"${namespace.value}\"}"
+                }
+              },
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+		"legendTemplate": "${labels.horizontalpodautoscaler}",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "kube_horizontalpodautoscaler_spec_max_replicas{cluster=~\"${cluster.value}\",namespace=~\"${namespace.value}\"}"
+                }
+              },
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+		"legendTemplate": "${labels.horizontalpodautoscaler}",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "kube_horizontalpodautoscaler_spec_min_replicas{cluster=~\"${cluster.value}\",namespace=~\"${namespace.value}\"}"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 12,
+        "yPos": 77,
+        "width": 12,
+        "height": 15,
+        "widget": {
+          "title": "Total HPA Current",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+		"legendTemplate": "HPA",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum(kube_horizontalpodautoscaler_status_current_replicas{horizontalpodautoscaler=~\".*\"})"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 36,
+        "yPos": 77,
+        "width": 12,
+        "height": 15,
+        "widget": {
+          "title": "HPA Current == Max",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+		"legendTemplate": "${labels.horizontalpodautoscaler}",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "kube_horizontalpodautoscaler_status_current_replicas{horizontalpodautoscaler=~\".*\"} == kube_horizontalpodautoscaler_spec_max_replicas{horizontalpodautoscaler=~\".*\"}\n"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 24,
+        "yPos": 77,
+        "width": 12,
+        "height": 15,
+        "widget": {
+          "title": "HPA Current == Min",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+		"legendTemplate": "${labels.horizontalpodautoscaler}",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "kube_horizontalpodautoscaler_status_current_replicas{horizontalpodautoscaler=~\".*\"} == kube_horizontalpodautoscaler_spec_min_replicas{horizontalpodautoscaler=~\".*\"}"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "yPos": 92,
+        "width": 16,
+        "height": 6,
+        "widget": {
+          "title": "Jobs Succeeded",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum(kube_job_status_succeeded{namespace=~\"${namespace.value}\",cluster=~\"${cluster.value}\"}) by (job_name)"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "yPos": 98,
+        "width": 16,
+        "height": 6,
+        "widget": {
+          "title": "Jobs Active",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum(kube_job_status_active{namespace=~\"${namespace.value}\",cluster=~\"${cluster.value}\"}) by (job_name)"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "yPos": 104,
+        "width": 16,
+        "height": 6,
+        "widget": {
+          "title": "Jobs Failed",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum(kube_job_status_failed{namespace=~\"${namespace.value}\",cluster=~\"${cluster.value}\"}) by (job_name)"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 16,
+        "yPos": 92,
+        "width": 16,
+        "height": 18,
+        "widget": {
+          "title": "Job last success time from now",
+          "timeSeriesTable": {
+            "columnSettings": [
+              {
+                "column": "value"
+              }
+            ],
+            "dataSets": [
+              {
+		"minAlignmentPeriod": "0s",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "(time()-kube_job_status_completion_time{namespace=~\"${namespace.value}\",cluster=~\"${cluster.value}\"})/60/60/24>1"
+                }
+              }
+            ],
+            "metricVisualization": "NUMBER"
+          }
+        }
+      },
+      {
+        "xPos": 32,
+        "yPos": 92,
+        "width": 16,
+        "height": 18,
+        "widget": {
+          "title": "Job Failed",
+          "timeSeriesTable": {
+            "columnSettings": [
+              {
+                "column": "value"
+              }
+            ],
+            "dataSets": [
+              {
+		"minAlignmentPeriod": "0s",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "kube_job_status_failed{namespace=~\"${namespace.value}\",cluster=~\"${cluster.value}\"}>1"
+                }
+              }
+            ],
+            "metricVisualization": "NUMBER"
+          }
+        }
+      }
+    ]
+  },
+  "labels": {
+    "goog-imported-via-script": "",
+    "goog-imported-grafana-revision": "12",
+    "cloud-monitoring-dashboard-importer": "",
+    "goog-imported-grafana-file-name-13332_rev12": "",
+    "goog-imported-grafana-dashboard": "",
+    "goog-imported-grafana-id": "13332"
+  }
+}
