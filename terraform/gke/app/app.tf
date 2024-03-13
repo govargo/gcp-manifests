@@ -6,7 +6,7 @@ data "google_compute_default_service_account" "default" {
 
 module "app-0" {
   source                               = "terraform-google-modules/kubernetes-engine/google//modules/beta-private-cluster"
-  version                              = "29.0.0"
+  version                              = "30.2.0"
   project_id                           = data.google_project.project.project_id
   name                                 = "${var.env}-app-0"
   regional                             = true
