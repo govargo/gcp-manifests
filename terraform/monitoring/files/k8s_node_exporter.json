@@ -1239,8 +1239,8 @@
       },
       {
         "yPos": 152,
-        "width": 48,
-        "height": 15,
+        "width": 24,
+        "height": 14,
         "widget": {
           "title": "Memory Pages In / Out",
           "xyChart": {
@@ -1264,7 +1264,36 @@
             ]
           }
         }
+      },
+      {
+        "xPos": 24,
+        "yPos": 152,
+        "width": 24,
+        "height": 14,
+        "widget": {
+          "title": "Conntrack Usage",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+		"legendTemplate": "${labels.instance}",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum by(instance) (node_nf_conntrack_entries{instance=~\"${node.value}\",job=~\"${job.value}\"}) / sum by(instance) (node_nf_conntrack_entries_limit{instance=~\"${node.value}\",job=~\"${job.value}\"}) * 100",
+                  "unitOverride": "%"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
       }
+
     ]
   },
   "labels": {
