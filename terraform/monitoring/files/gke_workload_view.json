@@ -354,7 +354,7 @@
       {
         "yPos": 40,
         "width": 48,
-        "height": 32,
+        "height": 48,
         "widget": {
           "title": "Memory (non-evictable)",
           "collapsibleGroup": {}
@@ -557,6 +557,83 @@
       },
       {
         "yPos": 72,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "Container Memory Working Set Bytes",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum(container_memory_working_set_bytes{cluster=~\"${cluster_name.value}\",namespace=~\"${namespace_name.value}\"}) by (pod)"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 16,
+        "yPos": 72,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "Container Memory RSS",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum(container_memory_rss{cluster=~\"${cluster_name.value}\",namespace=~\"${namespace_name.value}\"}) by (pod)"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 32,
+        "yPos": 72,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "Container Memory Cache",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum(container_memory_cache{cluster=~\"${cluster_name.value}\",namespace=~\"${namespace_name.value}\"}) by (pod)"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "yPos": 88,
         "width": 48,
         "height": 16,
         "widget": {
@@ -565,7 +642,7 @@
         }
       },
       {
-        "yPos": 72,
+        "yPos": 88,
         "width": 24,
         "height": 16,
         "widget": {
@@ -602,7 +679,7 @@
       },
       {
         "xPos": 24,
-        "yPos": 72,
+        "yPos": 88,
         "width": 24,
         "height": 16,
         "widget": {
@@ -638,7 +715,7 @@
         }
       },
       {
-        "yPos": 88,
+        "yPos": 104,
         "width": 48,
         "height": 16,
         "widget": {
@@ -647,7 +724,7 @@
         }
       },
       {
-        "yPos": 88,
+        "yPos": 104,
         "width": 24,
         "height": 16,
         "widget": {
@@ -684,7 +761,7 @@
       },
       {
         "xPos": 24,
-        "yPos": 88,
+        "yPos": 104,
         "width": 24,
         "height": 16,
         "widget": {
@@ -720,7 +797,7 @@
         }
       },
       {
-        "yPos": 104,
+        "yPos": 120,
         "width": 48,
         "height": 16,
         "widget": {
@@ -729,7 +806,7 @@
         }
       },
       {
-        "yPos": 104,
+        "yPos": 120,
         "width": 16,
         "height": 16,
         "widget": {
@@ -806,7 +883,7 @@
       },
       {
         "xPos": 16,
-        "yPos": 104,
+        "yPos": 120,
         "width": 16,
         "height": 16,
         "widget": {
@@ -883,7 +960,7 @@
       },
       {
         "xPos": 32,
-        "yPos": 104,
+        "yPos": 120,
         "width": 16,
         "height": 16,
         "widget": {
