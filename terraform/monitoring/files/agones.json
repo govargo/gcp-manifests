@@ -1,0 +1,497 @@
+{
+  "displayName": "Agones",
+  "dashboardFilters": [
+    {
+      "filterType": "METRIC_LABEL",
+      "labelKey": "fleet_name",
+      "templateVariable": "fleet"
+    },
+    {
+      "filterType": "RESOURCE_LABEL",
+      "labelKey": "namespace",
+      "templateVariable": "namespace"
+    },
+    {
+      "filterType": "METRIC_LABEL",
+      "labelKey": "name",
+      "stringValue": "little-quest-realtime",
+      "templateVariable": "name"
+    }
+  ],
+  "mosaicLayout": {
+    "columns": 48,
+    "tiles": [
+      {
+        "width": 48,
+        "height": 40,
+        "widget": {
+          "title": "GameServer",
+          "collapsibleGroup": {}
+        }
+      },
+      {
+        "width": 14,
+        "height": 12,
+        "widget": {
+          "title": "GameServers Count per Type",
+          "pieChart": {
+            "chartType": "DONUT",
+            "dataSets": [
+              {
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum(agones_gameservers_count{fleet_name=~\"${fleet.value}\", namespace=~\"${namespace.value}\"}) by (type)"
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "xPos": 14,
+        "width": 34,
+        "height": 12,
+        "widget": {
+          "title": "GameServers Rate per Type",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum(rate(agones_gameservers_total{fleet_name=~\"${fleet.value}\", namespace=~\"${namespace.value}\"}[${__interval}])) by (type)"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "yPos": 12,
+        "width": 24,
+        "height": 14,
+        "widget": {
+          "title": "GameServers Count per Type",
+          "xyChart": {
+            "dataSets": [
+              {
+                "legendTemplate": "${labels.type}",
+                "plotType": "STACKED_AREA",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum(agones_gameservers_count{fleet_name=~\"${fleet.value}\", namespace=~\"${namespace.value}\"}) by (type)"
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "xPos": 24,
+        "yPos": 12,
+        "width": 24,
+        "height": 14,
+        "widget": {
+          "title": "Fleet Replicas Count",
+          "xyChart": {
+            "dataSets": [
+              {
+                "legendTemplate": "${labels.type}",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum(agones_fleets_replicas_count{name=~\"${fleet.value}\", namespace=~\"${namespace.value}\"}) by (type)"
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "yPos": 26,
+        "width": 24,
+        "height": 14,
+        "widget": {
+          "title": "GameServers per node",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "legendTemplate": "max",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(1, sum(rate(agones_gameservers_node_count_bucket[1m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "99th",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.99, sum(rate(agones_gameservers_node_count_bucket[1m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "90th",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.90, sum(rate(agones_gameservers_node_count_bucket[1m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "50th",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.50, sum(rate(agones_gameservers_node_count_bucket[1m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "min",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0, sum(rate(agones_gameservers_node_count_bucket[1m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "avg",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "avg(delta(agones_gameservers_node_count_sum[1m]) / delta(agones_gameservers_node_count_count[1m]))"
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "xPos": 24,
+        "yPos": 26,
+        "width": 24,
+        "height": 14,
+        "widget": {
+          "title": "Node Availability (stacked)",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "legendTemplate": "unused",
+                "plotType": "STACKED_AREA",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "agones_nodes_count{empty=\"true\"}"
+                }
+              },
+              {
+                "legendTemplate": "used",
+                "plotType": "STACKED_AREA",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "agones_nodes_count{empty=\"false\"}"
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "yPos": 40,
+        "width": 48,
+        "height": 32,
+        "widget": {
+          "title": "Allocation",
+          "collapsibleGroup": {}
+	}
+      },
+      {
+        "yPos": 40,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "Average latency",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "legendTemplate": "average",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum(rate(agones_gameserver_allocations_duration_seconds_sum[${__interval}])) / sum(rate(agones_gameserver_allocations_duration_seconds_count[${__interval}]))",
+                  "unitOverride": "s"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 16,
+        "yPos": 40,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "Allocation Errors rate",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum(rate(agones_gameserver_allocations_duration_seconds_count{status!=\"Allocated\"}[${__interval}]))"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 32,
+        "yPos": 40,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "GameServer Allocations Latency",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "legendTemplate": "50th",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.5,sum(rate(agones_gameserver_allocations_duration_seconds_bucket{fleet_name=~\".+\"}[${__interval}])) by (le))",
+                  "unitOverride": "s"
+                }
+              },
+              {
+                "legendTemplate": "90th",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.9,sum(rate(agones_gameserver_allocations_duration_seconds_bucket{fleet_name=~\".+\"}[${__interval}])) by (le))",
+                  "unitOverride": "s"
+                }
+              },
+              {
+                "legendTemplate": "99th",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.99,sum(rate(agones_gameserver_allocations_duration_seconds_bucket{fleet_name=~\".+\"}[${__interval}])) by (le))",
+                  "unitOverride": "s"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 24,
+        "yPos": 56,
+        "width": 24,
+        "height": 16,
+        "widget": {
+          "title": "GameServer Allocations Rate by Status",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "STACKED_AREA",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum(rate(agones_gameserver_allocations_duration_seconds_count{fleet_name=~\".+\"}[${__interval}])) by (status)"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "yPos": 56,
+        "width": 24,
+        "height": 16,
+        "widget": {
+          "title": "GameServer Allocations Rate by Fleet",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "STACKED_AREA",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum(rate(agones_gameserver_allocations_duration_seconds_count{fleet_name=~\".+\",}[${__interval}])) by (fleet_name)"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "yPos": 72,
+        "width": 11,
+        "height": 12,
+        "widget": {
+          "title": "Fleet Allocated(%)",
+          "scorecard": {
+            "gaugeView": {
+              "upperBound": 100
+            },
+            "timeSeriesQuery": {
+              "prometheusQuery": "(label_replace(agones_fleets_replicas_count{type=\"allocated\", namespace=~\"${namespace.value}\"},\"fleet_name\",\"$1\",\"name\",\"(.*)\")  * on (fleet_name) group_left()  (agones_fleet_autoscalers_able_to_scale{name=~\"${name.value}\", namespace=~\"${namespace.value}\"}))\n/ on(name)\n(label_replace(agones_fleets_replicas_count{type=\"desired\", namespace=~\"${namespace.value}\"},\"fleet_name\",\"$1\",\"name\",\"(.*)\")  * on (fleet_name) group_left()  (agones_fleet_autoscalers_able_to_scale{name=~\"${name.value}\",namespace=~\"${namespace.value}\"}))\n* 100"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 11,
+        "yPos": 72,
+        "width": 11,
+        "height": 12,
+        "widget": {
+          "title": "Fleet Ready(%)",
+          "scorecard": {
+            "gaugeView": {
+              "upperBound": 100
+            },
+            "timeSeriesQuery": {
+              "prometheusQuery": "(label_replace(agones_fleets_replicas_count{type=\"ready\", namespace=~\"${namespace.value}\"},\"fleet_name\",\"$1\",\"name\",\"(.*)\")  * on (fleet_name) group_left()  (agones_fleet_autoscalers_able_to_scale{name=~\"${name.value}\", namespace=~\"${namespace.value}\"}))\n/ on(name)\n(label_replace(agones_fleets_replicas_count{type=\"desired\", namespace=~\"${namespace.value}\"},\"fleet_name\",\"$1\",\"name\",\"(.*)\")  * on (fleet_name) group_left()  (agones_fleet_autoscalers_able_to_scale{name=~\"${name.value}\", namespace=~\"${namespace.value}\"}))\n* 100"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 1,
+        "yPos": 84,
+        "width": 10,
+        "height": 8,
+        "widget": {
+          "title": "Scaling out/in Limited",
+          "scorecard": {
+            "sparkChartView": {
+              "sparkChartType": "SPARK_LINE"
+            },
+            "timeSeriesQuery": {
+              "prometheusQuery": "agones_fleet_autoscalers_limited{name=~\"${name.value}\", namespace=~\"${namespace.value}\"}"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 11,
+        "yPos": 84,
+        "width": 11,
+        "height": 8,
+        "widget": {
+          "title": "Able to scale",
+          "scorecard": {
+            "sparkChartView": {
+              "sparkChartType": "SPARK_LINE"
+            },
+            "timeSeriesQuery": {
+              "prometheusQuery": "agones_fleet_autoscalers_able_to_scale{name=~\"${name.value}\", namespace=~\"${namespace.value}\"}"
+            }
+          }
+        }
+      },
+      {
+        "yPos": 72,
+        "width": 48,
+        "height": 20,
+        "widget": {
+          "title": "Fleet Autoscaler",
+          "collapsibleGroup": {}
+        }
+      },
+      {
+        "xPos": 22,
+        "yPos": 72,
+        "width": 26,
+        "height": 12,
+        "widget": {
+          "title": "Fleet Buffer Size",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "legendTemplate": "min",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "agones_fleet_autoscalers_buffer_limits{namespace=~\"${namespace.value}\",type=\"min\"}"
+                }
+              },
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "legendTemplate": "max",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "agones_fleet_autoscalers_buffer_limits{namespace=~\"${namespace.value}\",type=\"max\"}"
+                }
+              },
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "legendTemplate": "current",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "agones_fleet_autoscalers_current_replicas_count{namespace=~\"${namespace.value}\", fleet_name=~\"${fleet.value}\"}"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      }
+    ]
+  },
+  "labels": {
+    "goog-imported-via-script": "",
+    "goog-imported-grafana-revision": "1",
+    "cloud-monitoring-dashboard-importer": "",
+    "goog-imported-grafana-dashboard": "",
+    "goog-imported-grafana-file-name-agones-gameserver": ""
+  }
+}

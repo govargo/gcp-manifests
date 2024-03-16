@@ -37,6 +37,12 @@ resource "google_monitoring_dashboard" "k8s_node_exporter_monitoring_dashboard" 
   dashboard_json = file("files/k8s_node_exporter.json")
 }
 
+## Kubernetes - Agones
+resource "google_monitoring_dashboard" "agones_monitoring_dashboard" {
+  project        = data.google_project.project.project_id
+  dashboard_json = file("files/agones.json")
+}
+
 ## Cloud Spanner Instance
 resource "google_monitoring_dashboard" "spanner_instance_monitoring_dashboard" {
   project        = data.google_project.project.project_id
