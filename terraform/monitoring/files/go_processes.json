@@ -1,0 +1,325 @@
+{
+  "displayName": "Go Processes",
+  "dashboardFilters": [
+    {
+      "filterType": "RESOURCE_LABEL",
+      "labelKey": "namespace",
+      "templateVariable": "namespace"
+    },
+    {
+      "filterType": "METRIC_LABEL",
+      "labelKey": "pod",
+      "templateVariable": "pod"
+    },
+    {
+      "filterType": "METRIC_LABEL",
+      "labelKey": "container",
+      "templateVariable": "container"
+    }
+  ],
+  "mosaicLayout": {
+    "columns": 48,
+    "tiles": [
+      {
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "CPU Usage Limit Percentage",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesQueryLanguage": "fetch k8s_container\n| metric 'kubernetes.io/container/cpu/limit_utilization'\n| ${namespace}\n| group_by 1m, [value_limit_utilization_mean: mean(value.limit_utilization)]\n| every 1m\n| scale '%'"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 16,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "Go Routines",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+		"legendTemplate": "${labels.pod}",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "go_goroutines{namespace=~\"${namespace.value}\",pod=~\"${pod.value}\"}"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 32,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "Process Memory",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+		"legendTemplate": "resident: ${labels.pod}",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "process_resident_memory_bytes{namespace=~\"${namespace.value}\",pod=~\"${pod.value}\"}"
+                }
+              },
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+		"legendTemplate": "virtual: ${labels.pod}",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "process_virtual_memory_bytes{namespace=~\"${namespace.value}\",pod=~\"${pod.value}\"}"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "yPos": 16,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "Process Memory Derivative",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+		"legendTemplate": "resident: ${labels.pod}",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "deriv(process_resident_memory_bytes{namespace=~\"${namespace.value}\",pod=~\"${pod.value}\"}[${__interval}])"
+                }
+              },
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+		"legendTemplate": "virtual: ${labels.pod}",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "deriv(process_virtual_memory_bytes{namespace=~\"${namespace.value}\",pod=~\"${pod.value}\"}[${__interval}])"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 16,
+        "yPos": 16,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "Go Memstats",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+		"legendTemplate": "alloc: ${labels.pod}",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "go_memstats_alloc_bytes{namespace=~\"${namespace.value}\",pod=~\"${pod.value}\"}"
+                }
+              },
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+		"legendTemplate": "total: ${labels.pod}",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "rate(go_memstats_alloc_bytes_total{namespace=~\"${namespace.value}\",pod=~\"${pod.value}\"}[${__interval}])"
+                }
+              },
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+		"legendTemplate": "stack: ${labels.pod}",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "go_memstats_stack_inuse_bytes{namespace=~\"${namespace.value}\",pod=~\"${pod.value}\"}"
+                }
+              },
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+		"legendTemplate": "heap: ${labels.pod}",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "go_memstats_heap_inuse_bytes{namespace=~\"${namespace.value}\",pod=~\"${pod.value}\"}"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 32,
+        "yPos": 16,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "Go Memstats Derivative",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+		"legendTemplate": "alloc: ${labels.pod}",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "deriv(go_memstats_alloc_bytes{namespace=~\"${namespace.value}\",pod=~\"${pod.value}\"}[${__interval}])"
+                }
+              },
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+		"legendTemplate": "stack: ${labels.pod}",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "deriv(go_memstats_stack_inuse_bytes{namespace=~\"${namespace.value}\",pod=~\"${pod.value}\"}[${__interval}])"
+                }
+              },
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+		"legendTemplate": "heap: ${labels.pod}",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "deriv(go_memstats_heap_inuse_bytes{namespace=~\"${namespace.value}\",pod=~\"${pod.value}\"}[${__interval}])"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "yPos": 32,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "Open File Descriptors",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+		"legendTemplate": "${labels.pod}",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "process_open_fds{namespace=~\"${namespace.value}\",pod=~\"${pod.value}\"}"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 16,
+        "yPos": 32,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "Open File Descriptors Derivative",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+		"legendTemplate": "${labels.pod}",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "deriv(process_open_fds{namespace=~\"${namespace.value}\",pod=~\"${pod.value}\"}[${__interval}])"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 32,
+        "yPos": 32,
+        "width": 16,
+        "height": 18,
+        "widget": {
+          "title": "GC Duration Quantiles",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+		"legendTemplate": "${labels.pod}",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "go_gc_duration_seconds{namespace=~\"${namespace.value}\",pod=~\"${pod.value}\"}"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      }
+    ]
+  },
+  "labels": {
+    "goog-imported-via-script": "",
+    "goog-imported-grafana-revision": "1",
+    "cloud-monitoring-dashboard-importer": "",
+    "goog-imported-grafana-file-name-openmatch-go": "",
+    "goog-imported-grafana-dashboard": "",
+    "goog-imported-grafana-id": "6671"
+  }
+}
