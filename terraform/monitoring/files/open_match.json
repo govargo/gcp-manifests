@@ -1,0 +1,942 @@
+{
+  "displayName": "Open Match",
+  "mosaicLayout": {
+    "columns": 48,
+    "tiles": [
+      {
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "Total Backfill Tickets",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "legendTemplate": "Total: ${labels.pod}",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "open_match_dev_query_total_backfill_tickets"
+                }
+              }
+            ],
+            "thresholds": []
+          }
+        }
+      },
+      {
+        "xPos": 16,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "Total Active Tickets",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "legendTemplate": "Total: ${labels.pod}",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "open_match_dev_query_total_active_tickets"
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "xPos": 32,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "Total Pending Tickets",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "legendTemplate": "Total: ${labels.pod}",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "open_match_dev_query_total_pending_tickets"
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "xPos": 16,
+        "yPos": 16,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "Total Bytes per Ticket",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "legendTemplate": "99.9%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.999, sum(rate(open_match_dev_frontend_total_bytes_per_ticket_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "99%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.99, sum(rate(open_match_dev_frontend_total_bytes_per_ticket_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "95%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.95, sum(rate(open_match_dev_frontend_total_bytes_per_ticket_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "90%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.90, sum(rate(open_match_dev_frontend_total_bytes_per_ticket_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "50%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.50, sum(rate(open_match_dev_frontend_total_bytes_per_ticket_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "10%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.10, sum(rate(open_match_dev_frontend_total_bytes_per_ticket_bucket[5m])) by (le))"
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "yPos": 16,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "SearchFields per Ticket",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "legendTemplate": "99.9%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.999, sum(rate(open_match_dev_frontend_searchfields_per_ticket_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "99%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.99, sum(rate(open_match_dev_frontend_searchfields_per_ticket_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "95%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.95, sum(rate(open_match_dev_frontend_searchfields_per_ticket_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "90%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.90, sum(rate(open_match_dev_frontend_searchfields_per_ticket_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "50%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.50, sum(rate(open_match_dev_frontend_searchfields_per_ticket_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "10%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.10, sum(rate(open_match_dev_frontend_searchfields_per_ticket_bucket[5m])) by (le))"
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "xPos": 32,
+        "yPos": 16,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "Tickets per Match",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "legendTemplate": "99.9%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.999, sum(rate(open_match_dev_backend_tickets_per_match_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "99%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.99, sum(rate(open_match_dev_backend_tickets_per_match_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "95%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.95, sum(rate(open_match_dev_backend_tickets_per_match_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "90%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.90, sum(rate(open_match_dev_backend_tickets_per_match_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "50%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.50, sum(rate(open_match_dev_backend_tickets_per_match_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "10%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.10, sum(rate(open_match_dev_backend_tickets_per_match_bucket[5m])) by (le))"
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "yPos": 32,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "Total Bytes per Match",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "legendTemplate": "99.9%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.999, sum(rate(open_match_dev_backend_total_bytes_per_match_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "99%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.99, sum(rate(open_match_dev_backend_total_bytes_per_match_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "95%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.95, sum(rate(open_match_dev_backend_total_bytes_per_match_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "90%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.90, sum(rate(open_match_dev_backend_total_bytes_per_match_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "50%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.50, sum(rate(open_match_dev_backend_total_bytes_per_match_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "10%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.10, sum(rate(open_match_dev_backend_total_bytes_per_match_bucket[5m])) by (le))"
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "xPos": 32,
+        "yPos": 32,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "Query Cache Items",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "legendTemplate": "Total: ${labels.pod}",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "open_match_dev_query_total_cached_items"
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "xPos": 16,
+        "yPos": 32,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "Query Cache Fetch Rate",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "legendTemplate": "Total: ${labels.pod}",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "rate(open_match_dev_query_total_fetched_items[5m])"
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "yPos": 48,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "Tickets per Query",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "legendTemplate": "99.9%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.999, sum(rate(open_match_dev_query_tickets_per_query_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "99%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.99, sum(rate(open_match_dev_query_tickets_per_query_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "95%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.95, sum(rate(open_match_dev_query_tickets_per_query_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "90%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.90, sum(rate(open_match_dev_query_tickets_per_query_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "50%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.50, sum(rate(open_match_dev_query_tickets_per_query_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "10%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.10, sum(rate(open_match_dev_query_tickets_per_query_bucket[5m])) by (le))"
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "xPos": 16,
+        "yPos": 48,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "Query Cache Waiting Requests",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "legendTemplate": "99.9%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.999, sum(rate(open_match_dev_query_waiting_requests_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "99%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.99, sum(rate(open_match_dev_query_waiting_requests_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "95%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.95, sum(rate(open_match_dev_query_waiting_requests_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "90%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.90, sum(rate(open_match_dev_query_waiting_requests_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "50%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.50, sum(rate(open_match_dev_query_waiting_requests_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "10%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.10, sum(rate(open_match_dev_query_waiting_requests_bucket[5m])) by (le))"
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "xPos": 32,
+        "yPos": 48,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "Query Cache Update Latency",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "legendTemplate": "99.9%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.999, sum(rate(open_match_dev_query_update_latency_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "99%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.99, sum(rate(open_match_dev_query_update_latency_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "95%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.95, sum(rate(open_match_dev_query_update_latency_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "90%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.90, sum(rate(open_match_dev_query_update_latency_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "50%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.50, sum(rate(open_match_dev_query_update_latency_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "10%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.10, sum(rate(open_match_dev_query_update_latency_bucket[5m])) by (le))"
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "yPos": 64,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "Query Cache Update Rate",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "legendTemplate": "${labels.pod}",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "rate(open_match_dev_query_cache_updates[5m])"
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "xPos": 32,
+        "yPos": 64,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "Matches per Evaluate Request",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "legendTemplate": "99.9%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.999, sum(rate(open_match_dev_evaluator_matches_per_request_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "99%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.99, sum(rate(open_match_dev_evaluator_matches_per_request_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "95%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.95, sum(rate(open_match_dev_evaluator_matches_per_request_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "90%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.90, sum(rate(open_match_dev_evaluator_matches_per_request_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "50%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.50, sum(rate(open_match_dev_evaluator_matches_per_request_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "10%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.10, sum(rate(open_match_dev_evaluator_matches_per_request_bucket[5m])) by (le))"
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "xPos": 16,
+        "yPos": 64,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "Matches per Evaluate Response",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "legendTemplate": "99.9%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.999, sum(rate(open_match_dev_evaluator_matches_per_response_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "99%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.99, sum(rate(open_match_dev_evaluator_matches_per_response_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "95%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.95, sum(rate(open_match_dev_evaluator_matches_per_response_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "90%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.90, sum(rate(open_match_dev_evaluator_matches_per_response_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "50%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.50, sum(rate(open_match_dev_evaluator_matches_per_response_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "10%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.10, sum(rate(open_match_dev_evaluator_matches_per_response_bucket[5m])) by (le))"
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "yPos": 96,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "Collided Matches per Evaluate",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "legendTemplate": "99.9%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "avg(rate(open_match_dev_defaulteval_collided_matches_per_call[5m]))"
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "xPos": 16,
+        "yPos": 80,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "Synchronizer Registration MMF Done Time",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "legendTemplate": "99.9%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.999, sum(rate(open_match_dev_synchronizer_registration_mmf_done_time_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "99%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.99, sum(rate(open_match_dev_synchronizer_registration_mmf_done_time_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "95%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.95, sum(rate(open_match_dev_synchronizer_registration_mmf_done_time_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "90%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.90, sum(rate(open_match_dev_synchronizer_registration_mmf_done_time_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "50%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.50, sum(rate(open_match_dev_synchronizer_registration_mmf_done_time_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "10%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.10, sum(rate(open_match_dev_synchronizer_registration_mmf_done_time_bucket[5m])) by (le))"
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "yPos": 80,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "Synchronizer Registration Wait Time",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "legendTemplate": "99.9%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.999, sum(rate(open_match_dev_synchronizer_registration_wait_time_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "99%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.99, sum(rate(open_match_dev_synchronizer_registration_wait_time_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "95%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.95, sum(rate(open_match_dev_synchronizer_registration_wait_time_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "90%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.90, sum(rate(open_match_dev_synchronizer_registration_wait_time_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "50%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.50, sum(rate(open_match_dev_synchronizer_registration_wait_time_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "10%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.10, sum(rate(open_match_dev_synchronizer_registration_wait_time_bucket[5m])) by (le))"
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "xPos": 32,
+        "yPos": 80,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "Synchronizer Iteration Latency",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "legendTemplate": "99.9%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.999, sum(rate(open_match_dev_synchronizer_iteration_latency_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "99%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.99, sum(rate(open_match_dev_synchronizer_iteration_latency_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "95%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.95, sum(rate(open_match_dev_synchronizer_iteration_latency_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "90%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.90, sum(rate(open_match_dev_synchronizer_iteration_latency_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "50%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.50, sum(rate(open_match_dev_synchronizer_iteration_latency_bucket[5m])) by (le))"
+                }
+              },
+              {
+                "legendTemplate": "10%-ile",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.10, sum(rate(open_match_dev_synchronizer_iteration_latency_bucket[5m])) by (le))"
+                }
+              }
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "labels": {
+    "goog-imported-via-script": "",
+    "goog-imported-grafana-revision": "3",
+    "cloud-monitoring-dashboard-importer": "",
+    "goog-imported-grafana-file-name-openmatch-matchmaking": "",
+    "goog-imported-grafana-dashboard": ""
+  }
+}

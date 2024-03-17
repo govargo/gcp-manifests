@@ -43,6 +43,12 @@ resource "google_monitoring_dashboard" "agones_monitoring_dashboard" {
   dashboard_json = file("files/agones.json")
 }
 
+## Kubernetes - Open Match
+resource "google_monitoring_dashboard" "open_match_monitoring_dashboard" {
+  project        = data.google_project.project.project_id
+  dashboard_json = file("files/open_match.json")
+}
+
 ## Kubernetes - Go Processes
 resource "google_monitoring_dashboard" "go_process_monitoring_dashboard" {
   project        = data.google_project.project.project_id
