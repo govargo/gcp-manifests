@@ -43,6 +43,12 @@ resource "google_monitoring_dashboard" "agones_monitoring_dashboard" {
   dashboard_json = file("files/agones.json")
 }
 
+## Kubernetes - Go Processes
+resource "google_monitoring_dashboard" "go_process_monitoring_dashboard" {
+  project        = data.google_project.project.project_id
+  dashboard_json = file("files/go_processes.json")
+}
+
 ## Cloud Spanner Instance
 resource "google_monitoring_dashboard" "spanner_instance_monitoring_dashboard" {
   project        = data.google_project.project.project_id
