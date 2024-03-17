@@ -1,5 +1,5 @@
 {
-  "displayName": "Open Match",
+  "displayName": "Kubernetes - Open Match",
   "mosaicLayout": {
     "columns": 48,
     "tiles": [
@@ -21,8 +21,7 @@
                   "prometheusQuery": "open_match_dev_query_total_backfill_tickets"
                 }
               }
-            ],
-            "thresholds": []
+            ]
           }
         }
       },
@@ -264,6 +263,7 @@
         }
       },
       {
+	"xPos": 16,
         "yPos": 32,
         "width": 16,
         "height": 16,
@@ -352,7 +352,7 @@
       },
       {
         "xPos": 16,
-        "yPos": 32,
+        "yPos": 48,
         "width": 16,
         "height": 16,
         "widget": {
@@ -375,7 +375,7 @@
         }
       },
       {
-        "yPos": 48,
+        "yPos": 32,
         "width": 16,
         "height": 16,
         "widget": {
@@ -438,8 +438,7 @@
         }
       },
       {
-        "xPos": 16,
-        "yPos": 48,
+        "yPos": 64,
         "width": 16,
         "height": 16,
         "widget": {
@@ -566,7 +565,7 @@
         }
       },
       {
-        "yPos": 64,
+        "yPos": 48,
         "width": 16,
         "height": 16,
         "widget": {

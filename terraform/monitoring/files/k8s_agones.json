@@ -1,5 +1,5 @@
 {
-  "displayName": "Agones",
+  "displayName": "Kubernetes - Agones",
   "dashboardFilters": [
     {
       "filterType": "METRIC_LABEL",
@@ -400,9 +400,8 @@
         }
       },
       {
-        "xPos": 1,
         "yPos": 84,
-        "width": 10,
+        "width": 11,
         "height": 8,
         "widget": {
           "title": "Scaling out/in Limited",

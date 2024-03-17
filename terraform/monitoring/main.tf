@@ -38,21 +38,21 @@ resource "google_monitoring_dashboard" "k8s_node_exporter_monitoring_dashboard" 
 }
 
 ## Kubernetes - Agones
-resource "google_monitoring_dashboard" "agones_monitoring_dashboard" {
+resource "google_monitoring_dashboard" "k8s_agones_monitoring_dashboard" {
   project        = data.google_project.project.project_id
-  dashboard_json = file("files/agones.json")
+  dashboard_json = file("files/k8s_agones.json")
 }
 
 ## Kubernetes - Open Match
-resource "google_monitoring_dashboard" "open_match_monitoring_dashboard" {
+resource "google_monitoring_dashboard" "k8s_open_match_monitoring_dashboard" {
   project        = data.google_project.project.project_id
-  dashboard_json = file("files/open_match.json")
+  dashboard_json = file("files/k8s_open_match.json")
 }
 
 ## Kubernetes - Go Processes
-resource "google_monitoring_dashboard" "go_process_monitoring_dashboard" {
+resource "google_monitoring_dashboard" "k8s_go_process_monitoring_dashboard" {
   project        = data.google_project.project.project_id
-  dashboard_json = file("files/go_processes.json")
+  dashboard_json = file("files/k8s_go_processes.json")
 }
 
 ## Cloud Spanner Instance

@@ -1,5 +1,5 @@
 {
-  "displayName": "Go Processes",
+  "displayName": "Kubernetes - Go Processes",
   "dashboardFilters": [
     {
       "filterType": "RESOURCE_LABEL",
