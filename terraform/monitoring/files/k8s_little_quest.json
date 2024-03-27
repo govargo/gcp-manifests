@@ -1,0 +1,177 @@
+{
+  "displayName": "Kubernetes - Little Quest",
+  "mosaicLayout": {
+    "columns": 48,
+    "tiles": [
+      {
+        "width": 48,
+        "height": 16,
+        "widget": {
+          "title": "Little Quest Server",
+          "collapsibleGroup": {}
+        }
+      },
+      {
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "HTTP Request per Second",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+		"legendTemplate": "rps",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum by (job) (rate(http_requests_total[${__interval}]))",
+                  "unitOverride": "1"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 16,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "HTTP Request Latency",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+		"legendTemplate": "999th",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.999, sum(rate(http_request_duration_seconds_bucket[1m])) by (le))",
+                  "unitOverride": "s"
+                }
+              },
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+		"legendTemplate": "99th",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.99, sum(rate(http_request_duration_seconds_bucket[1m])) by (le))",
+                  "unitOverride": "s"
+                }
+              },
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+		"legendTemplate": "95th",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[1m])) by (le))",
+                  "unitOverride": "s"
+                }
+              },
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+		"legendTemplate": "90th",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.90, sum(rate(http_request_duration_seconds_bucket[1m])) by (le))",
+                  "unitOverride": "s"
+                }
+              },
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+		"legendTemplate": "50th",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.50, sum(rate(http_request_duration_seconds_bucket[1m])) by (le))",
+                  "unitOverride": "s"
+                }
+              },
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+		"legendTemplate": "10th",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.10, sum(rate(http_request_duration_seconds_bucket[1m])) by (le))",
+                  "unitOverride": "s"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "yPos": 16,
+        "width": 48,
+        "height": 16,
+        "widget": {
+          "title": "Little Quest Realtime",
+          "collapsibleGroup": {}
+        }
+      },
+      {
+        "yPos": 16,
+        "width": 24,
+        "height": 16,
+        "widget": {
+          "title": "Concurrent Player Connections",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+		"legendTemplate": "connections",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum(concurrent_player_connections{job=\"little-quest-realtime\"})"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 24,
+        "yPos": 16,
+        "width": 24,
+        "height": 16,
+        "widget": {
+          "title": "Raid Battle Count",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+		"legendTemplate": "counts",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum(battle_counts_total)",
+                  "unitOverride": "1"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      }
+    ]
+  }
+}

@@ -55,6 +55,12 @@ resource "google_monitoring_dashboard" "k8s_go_process_monitoring_dashboard" {
   dashboard_json = file("files/k8s_go_processes.json")
 }
 
+## Kubernetes - Little Quest
+resource "google_monitoring_dashboard" "k8s_little_quest_monitoring_dashboard" {
+  project        = data.google_project.project.project_id
+  dashboard_json = file("files/k8s_little_quest.json")
+}
+
 ## Cloud Spanner Instance
 resource "google_monitoring_dashboard" "spanner_instance_monitoring_dashboard" {
   project        = data.google_project.project.project_id
