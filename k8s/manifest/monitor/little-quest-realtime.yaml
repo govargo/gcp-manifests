@@ -6,7 +6,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-      agones.dev/container: little-quest-realtime
+      agones.dev/role: gameserver
   endpoints:
   - port: http
     interval: 60s
