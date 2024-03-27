@@ -504,7 +504,7 @@
       },
       {
         "yPos": 56,
-        "width": 24,
+        "width": 16,
         "height": 16,
         "widget": {
           "title": "Memory Request Utilization by Container",
@@ -529,9 +529,9 @@
         }
       },
       {
-        "xPos": 24,
+        "xPos": 16,
         "yPos": 56,
-        "width": 24,
+        "width": 16,
         "height": 16,
         "widget": {
           "title": "Memory Limit Utilization by Container",
@@ -549,6 +549,32 @@
               }
             ],
             "timeshiftDuration": "0s",
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 32,
+        "yPos": 56,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "Container OOM Killed",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum(container_oom_events_total{cluster=~\"${cluster_name.value}\",namespace=~\"${namespace_name.value}\"}) by (pod)"
+                }
+              }
+            ],
             "yAxis": {
               "scale": "LINEAR"
             }
