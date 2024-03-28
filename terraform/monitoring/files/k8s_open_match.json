@@ -882,7 +882,8 @@
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "histogram_quantile(0.999, sum(rate(open_match_dev_synchronizer_iteration_latency_bucket[5m])) by (le))"
+                  "prometheusQuery": "histogram_quantile(0.999, sum(rate(open_match_dev_synchronizer_iteration_latency_bucket[5m])) by (le))",
+                  "unitOverride": "ms"
                 }
               },
               {
@@ -890,7 +891,8 @@
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "histogram_quantile(0.99, sum(rate(open_match_dev_synchronizer_iteration_latency_bucket[5m])) by (le))"
+                  "prometheusQuery": "histogram_quantile(0.99, sum(rate(open_match_dev_synchronizer_iteration_latency_bucket[5m])) by (le))",
+                  "unitOverride": "ms"
                 }
               },
               {
@@ -898,7 +900,8 @@
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "histogram_quantile(0.95, sum(rate(open_match_dev_synchronizer_iteration_latency_bucket[5m])) by (le))"
+                  "prometheusQuery": "histogram_quantile(0.95, sum(rate(open_match_dev_synchronizer_iteration_latency_bucket[5m])) by (le))",
+                  "unitOverride": "ms"
                 }
               },
               {
@@ -906,7 +909,8 @@
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "histogram_quantile(0.90, sum(rate(open_match_dev_synchronizer_iteration_latency_bucket[5m])) by (le))"
+                  "prometheusQuery": "histogram_quantile(0.90, sum(rate(open_match_dev_synchronizer_iteration_latency_bucket[5m])) by (le))",
+                  "unitOverride": "ms"
                 }
               },
               {
@@ -914,7 +918,8 @@
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "histogram_quantile(0.50, sum(rate(open_match_dev_synchronizer_iteration_latency_bucket[5m])) by (le))"
+                  "prometheusQuery": "histogram_quantile(0.50, sum(rate(open_match_dev_synchronizer_iteration_latency_bucket[5m])) by (le))",
+                  "unitOverride": "ms"
                 }
               },
               {
@@ -922,7 +927,8 @@
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "histogram_quantile(0.10, sum(rate(open_match_dev_synchronizer_iteration_latency_bucket[5m])) by (le))"
+                  "prometheusQuery": "histogram_quantile(0.10, sum(rate(open_match_dev_synchronizer_iteration_latency_bucket[5m])) by (le))",
+                  "unitOverride": "ms"
                 }
               }
             ]
