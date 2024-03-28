@@ -30,6 +30,19 @@ spec:
         targetRevision: 4.24.0
         helm:
           releaseName: "{{cluster}}"
+          values: |
+            extraArgs:
+            - --collector.disable-defaults
+            - --collector.cpu
+            - --collector.conntrack
+            - --collector.diskstats
+            - --collector.filesystem
+            - --collector.loadavg
+            - --collector.meminfo
+            - --collector.netdev
+            - --collector.netstat
+            - --collector.stat
+            - --collector.vmstat
       destination:
         name: "{{name}}"
         namespace: monitoring
