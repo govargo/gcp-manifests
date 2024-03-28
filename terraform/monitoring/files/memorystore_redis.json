@@ -298,18 +298,12 @@
             },
             "dataSets": [
               {
-                "legendTemplate": "cache hit ratio",
-                "minAlignmentPeriod": "60s",
                 "plotType": "LINE",
                 "targetAxis": "Y1",
+                "legendTemplate": "cache hit ratio",
                 "timeSeriesQuery": {
-                  "timeSeriesFilter": {
-                    "aggregation": {
-                      "alignmentPeriod": "60s",
-                      "perSeriesAligner": "ALIGN_MEAN"
-                    },
-                    "filter": "metric.type=\"redis.googleapis.com/stats/cache_hit_ratio\" resource.type=\"redis_instance\" metric.label.\"role\"=\"primary\""
-                  }
+                  "prometheusQuery": "avg_over_time(redis_googleapis_com:stats_cache_hit_ratio{monitored_resource=\"redis_instance\",role=\"primary\"}[${__interval}]) * 100",
+                  "unitOverride": "%"
                 }
               }
             ],
