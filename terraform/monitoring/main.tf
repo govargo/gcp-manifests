@@ -1,6 +1,12 @@
 data "google_project" "project" {
 }
 
+## All - Overview
+resource "google_monitoring_dashboard" "all_overview_monitoring_dashboard" {
+  project        = data.google_project.project.project_id
+  dashboard_json = file("files/all_overview.json")
+}
+
 ## HTTPS Load Balancing
 resource "google_monitoring_dashboard" "https_loadbalancing_monitoring_dashboard" {
   project        = data.google_project.project.project_id

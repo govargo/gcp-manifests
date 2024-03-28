@@ -1,0 +1,934 @@
+{
+  "displayName": "All - Overview",
+  "dashboardFilters": [
+    {
+      "filterType": "RESOURCE_LABEL",
+      "labelKey": "project_id",
+      "templateVariable": "project_id"
+    },
+    {
+      "filterType": "RESOURCE_LABEL",
+      "labelKey": "location",
+      "templateVariable": "location"
+    },
+    {
+      "filterType": "RESOURCE_LABEL",
+      "labelKey": "cluster_name",
+      "templateVariable": "cluster_name"
+    },
+    {
+      "filterType": "RESOURCE_LABEL",
+      "labelKey": "namespace_name",
+      "templateVariable": "namespace_name"
+    },
+    {
+      "filterType": "SYSTEM_METADATA_LABEL",
+      "labelKey": "top_level_controller_name",
+      "templateVariable": "top_level_controller_name"
+    },
+    {
+      "filterType": "METRIC_LABEL",
+      "labelKey": "fleet_name",
+      "templateVariable": "fleet"
+    }
+  ],
+  "mosaicLayout": {
+    "columns": 48,
+    "tiles": [
+      {
+        "width": 8,
+        "height": 8,
+        "widget": {
+          "title": "Total Nodes",
+          "scorecard": {
+            "timeSeriesQuery": {
+              "timeSeriesQueryLanguage": "fetch k8s_node\n| metric 'kubernetes.io/node/cpu/total_cores'\n| ${project_id}\n| ${location}\n| ${cluster_name}\n| group_by 1m, [value_total_cores_mean: mean(value.total_cores)]\n| every 1m\n| group_by [], [row_count: row_count()]"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 8,
+        "width": 8,
+        "height": 8,
+        "widget": {
+          "title": "Total Pods",
+          "scorecard": {
+            "timeSeriesQuery": {
+              "timeSeriesQueryLanguage": "fetch k8s_container\n| metric 'kubernetes.io/container/cpu/core_usage_time'\n| ${project_id}\n| ${location}\n| ${cluster_name}\n| ${namespace_name}\n| ${top_level_controller_name}\n| align delta(1m)\n| every 1m\n| group_by [pod_name], [row_count: row_count()]\n| group_by [], [row_count: row_count()]"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 16,
+        "width": 8,
+        "height": 8,
+        "widget": {
+          "title": "Total Containers",
+          "scorecard": {
+            "timeSeriesQuery": {
+              "timeSeriesQueryLanguage": "fetch k8s_container\n| metric 'kubernetes.io/container/cpu/core_usage_time'\n| ${project_id}\n| ${location}\n| ${cluster_name}\n| ${namespace_name}\n| ${top_level_controller_name}\n| align delta(1m)\n| every 1m\n| group_by [], [row_count: row_count()]"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 24,
+        "width": 8,
+        "height": 8,
+        "widget": {
+          "title": "GameServers Count per Type",
+          "pieChart": {
+            "chartType": "DONUT",
+            "dataSets": [
+              {
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum(agones_gameservers_count{fleet_name=~\"${fleet.value}\", namespace=~\"${namespace_name.value}\"}) by (type)"
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "xPos": 32,
+        "width": 8,
+        "height": 8,
+        "widget": {
+          "title": "Total Match",
+          "scorecard": {
+            "timeSeriesQuery": {
+              "prometheusQuery": "open_match_dev_backend_total_matches"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 40,
+        "width": 8,
+        "height": 8,
+        "widget": {
+          "title": "Concurrent Player Connections",
+          "scorecard": {
+            "timeSeriesQuery": {
+              "prometheusQuery": "sum(concurrent_player_connections{job=\"little-quest-realtime\"})"
+            }
+          }
+        }
+      },
+      {
+        "yPos": 8,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "RPS of Load Balancer",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "legendTemplate": "${resource.labels.url_map_name}",
+                "minAlignmentPeriod": "60s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": [
+                        "resource.label.\"url_map_name\""
+                      ],
+                      "perSeriesAligner": "ALIGN_RATE"
+                    },
+                    "filter": "metric.type=\"loadbalancing.googleapis.com/https/request_count\" resource.type=\"https_lb_rule\" resource.label.\"url_map_name\"=monitoring.regex.full_match(\"k8s2-.*-little-quest-serve-little-quest-serve-.*\")"
+                  }
+                }
+              }
+            ],
+            "timeshiftDuration": "0s",
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 16,
+        "yPos": 8,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "Total Latency of Load Balancer",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "minAlignmentPeriod": "60s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": [
+                        "resource.label.\"url_map_name\""
+                      ],
+                      "perSeriesAligner": "ALIGN_PERCENTILE_99"
+                    },
+                    "filter": "metric.type=\"loadbalancing.googleapis.com/https/total_latencies\" resource.type=\"https_lb_rule\" resource.label.\"url_map_name\"=monitoring.regex.full_match(\"k8s2-.*-little-quest-serve-little-quest-serve-.*\")"
+                  }
+                }
+              }
+            ],
+            "timeshiftDuration": "0s",
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 32,
+        "yPos": 8,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "Backend Latency",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "legendTemplate": "95th",
+                "minAlignmentPeriod": "60s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "crossSeriesReducer": "REDUCE_PERCENTILE_95",
+                      "groupByFields": [
+                        "resource.label.\"url_map_name\""
+                      ],
+                      "perSeriesAligner": "ALIGN_DELTA"
+                    },
+                    "filter": "metric.type=\"loadbalancing.googleapis.com/https/backend_latencies\" resource.type=\"https_lb_rule\" resource.label.\"url_map_name\"=monitoring.regex.full_match(\"k8s2-.*-little-quest-serve-little-quest-serve-.*\")"
+                  }
+                }
+              },
+              {
+                "legendTemplate": "5th",
+                "minAlignmentPeriod": "60s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "crossSeriesReducer": "REDUCE_PERCENTILE_05",
+                      "groupByFields": [
+                        "resource.label.\"url_map_name\""
+                      ],
+                      "perSeriesAligner": "ALIGN_DELTA"
+                    },
+                    "filter": "metric.type=\"loadbalancing.googleapis.com/https/backend_latencies\" resource.type=\"https_lb_rule\" resource.label.\"url_map_name\"=monitoring.regex.full_match(\"k8s2-.*-little-quest-serve-little-quest-serve-.*\")"
+                  }
+                }
+              },
+              {
+                "legendTemplate": "50th",
+                "minAlignmentPeriod": "60s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "crossSeriesReducer": "REDUCE_PERCENTILE_50",
+                      "groupByFields": [
+                        "resource.label.\"url_map_name\""
+                      ],
+                      "perSeriesAligner": "ALIGN_DELTA"
+                    },
+                    "filter": "metric.type=\"loadbalancing.googleapis.com/https/backend_latencies\" resource.type=\"https_lb_rule\" resource.label.\"url_map_name\"=monitoring.regex.full_match(\"k8s2-.*-little-quest-serve-little-quest-serve-.*\")"
+                  }
+                }
+              }
+            ],
+            "timeshiftDuration": "0s",
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "yPos": 24,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "HTTP Response Code",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "legendTemplate": "${metric.labels.response_code}",
+                "minAlignmentPeriod": "60s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": [
+                        "resource.label.\"url_map_name\"",
+                        "metric.label.\"response_code\""
+                      ],
+                      "perSeriesAligner": "ALIGN_RATE"
+                    },
+                    "filter": "metric.type=\"loadbalancing.googleapis.com/https/backend_request_count\" resource.type=\"https_lb_rule\" resource.label.\"url_map_name\"=monitoring.regex.full_match(\"k8s2-.*-little-quest-serve-little-quest-serve-.*\")"
+                  }
+                }
+              }
+            ],
+            "timeshiftDuration": "0s",
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 16,
+        "yPos": 24,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "HTTP Request per Second",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "legendTemplate": "rps",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum by (job) (rate(http_requests_total[${__interval}]))",
+                  "unitOverride": "1/s"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 32,
+        "yPos": 24,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "HTTP Request Latency",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "legendTemplate": "999th",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.999, sum(rate(http_request_duration_seconds_bucket[1m])) by (le))",
+                  "unitOverride": "s"
+                }
+              },
+              {
+                "legendTemplate": "95th",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[1m])) by (le))",
+                  "unitOverride": "s"
+                }
+              },
+              {
+                "legendTemplate": "50th",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.50, sum(rate(http_request_duration_seconds_bucket[1m])) by (le))",
+                  "unitOverride": "s"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "yPos": 40,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "Spanner Request Latency",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "legendTemplate": "Write - 50th",
+                "minAlignmentPeriod": "60s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "crossSeriesReducer": "REDUCE_PERCENTILE_50",
+                      "perSeriesAligner": "ALIGN_DELTA"
+                    },
+                    "filter": "metric.type=\"spanner.googleapis.com/api/request_latencies\" resource.type=\"spanner_instance\" metric.label.\"method\"=\"Commit\""
+                  }
+                }
+              },
+              {
+                "legendTemplate": "Read - 50th",
+                "minAlignmentPeriod": "60s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "crossSeriesReducer": "REDUCE_PERCENTILE_50",
+                      "perSeriesAligner": "ALIGN_DELTA"
+                    },
+                    "filter": "metric.type=\"spanner.googleapis.com/api/request_latencies\" resource.type=\"spanner_instance\" metric.label.\"method\"=monitoring.regex.full_match(\"ExecuteBatchDml|ExecuteSql|ExecuteStreamingSql|Read|StreamingRead\")"
+                  }
+                }
+              },
+              {
+                "legendTemplate": "Write - 95th",
+                "minAlignmentPeriod": "60s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "crossSeriesReducer": "REDUCE_PERCENTILE_95",
+                      "perSeriesAligner": "ALIGN_DELTA"
+                    },
+                    "filter": "metric.type=\"spanner.googleapis.com/api/request_latencies\" resource.type=\"spanner_instance\" metric.label.\"method\"=\"Commit\""
+                  }
+                }
+              },
+              {
+                "legendTemplate": "Read - 95th",
+                "minAlignmentPeriod": "60s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "crossSeriesReducer": "REDUCE_PERCENTILE_95",
+                      "perSeriesAligner": "ALIGN_DELTA"
+                    },
+                    "filter": "metric.type=\"spanner.googleapis.com/api/request_latencies\" resource.type=\"spanner_instance\" metric.label.\"method\"=monitoring.regex.full_match(\"ExecuteBatchDml|ExecuteSql|ExecuteStreamingSql|Read|StreamingRead\")"
+                  }
+                }
+              },
+              {
+                "legendTemplate": "Write - 99th",
+                "minAlignmentPeriod": "60s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "crossSeriesReducer": "REDUCE_PERCENTILE_99",
+                      "perSeriesAligner": "ALIGN_DELTA"
+                    },
+                    "filter": "metric.type=\"spanner.googleapis.com/api/request_latencies\" resource.type=\"spanner_instance\" metric.label.\"method\"=\"Commit\""
+                  }
+                }
+              },
+              {
+                "legendTemplate": "Read - 99th",
+                "minAlignmentPeriod": "60s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "crossSeriesReducer": "REDUCE_PERCENTILE_99",
+                      "perSeriesAligner": "ALIGN_DELTA"
+                    },
+                    "filter": "metric.type=\"spanner.googleapis.com/api/request_latencies\" resource.type=\"spanner_instance\" metric.label.\"method\"=monitoring.regex.full_match(\"ExecuteBatchDml|ExecuteSql|ExecuteStreamingSql|Read|StreamingRead\")"
+                  }
+                }
+              }
+            ],
+            "timeshiftDuration": "0s",
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 16,
+        "yPos": 40,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "Spanner Lock time wait",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "legendTemplate": "total lock time",
+                "minAlignmentPeriod": "60s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "perSeriesAligner": "ALIGN_MEAN"
+                    },
+                    "filter": "metric.type=\"spanner.googleapis.com/lock_stat/total/lock_wait_time\" resource.type=\"spanner_instance\""
+                  }
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 32,
+        "yPos": 40,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "MySQL Query Latency",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "legendTemplate": "99th",
+                "minAlignmentPeriod": "60s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "crossSeriesReducer": "REDUCE_PERCENTILE_99",
+                      "groupByFields": [
+                        "resource.label.\"resource_id\""
+                      ],
+                      "perSeriesAligner": "ALIGN_DELTA"
+                    },
+                    "filter": "metric.type=\"dbinsights.googleapis.com/aggregate/latencies\" resource.type=\"cloudsql_instance_database\""
+                  }
+                }
+              },
+              {
+                "legendTemplate": "95th",
+                "minAlignmentPeriod": "60s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "crossSeriesReducer": "REDUCE_PERCENTILE_95",
+                      "groupByFields": [
+                        "resource.label.\"resource_id\""
+                      ],
+                      "perSeriesAligner": "ALIGN_DELTA"
+                    },
+                    "filter": "metric.type=\"dbinsights.googleapis.com/aggregate/latencies\" resource.type=\"cloudsql_instance_database\""
+                  }
+                }
+              },
+              {
+                "legendTemplate": "50th",
+                "minAlignmentPeriod": "60s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "crossSeriesReducer": "REDUCE_PERCENTILE_50",
+                      "groupByFields": [
+                        "resource.label.\"resource_id\""
+                      ],
+                      "perSeriesAligner": "ALIGN_DELTA"
+                    },
+                    "filter": "metric.type=\"dbinsights.googleapis.com/aggregate/latencies\" resource.type=\"cloudsql_instance_database\""
+                  }
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "yPos": 56,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "Redis Cache Hit",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "legendTemplate": "cache hit ratio",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "avg_over_time(redis_googleapis_com:stats_cache_hit_ratio{monitored_resource=\"redis_instance\",role=\"primary\"}[${__interval}]) * 100",
+                  "unitOverride": "%"
+                }
+              }
+            ],
+            "timeshiftDuration": "0s",
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 16,
+        "yPos": 56,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "NAT Dropped Sent Packets",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "legendTemplate": "${resource.labels.gateway_name}: ${metric.labels.reason}",
+                "minAlignmentPeriod": "60s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": [
+                        "metric.label.\"reason\"",
+                        "resource.label.\"gateway_name\""
+                      ],
+                      "perSeriesAligner": "ALIGN_RATE"
+                    },
+                    "filter": "metric.type=\"router.googleapis.com/nat/dropped_sent_packets_count\" resource.type=\"nat_gateway\""
+                  }
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "yPos": 72,
+        "width": 48,
+        "height": 32,
+        "widget": {
+          "title": "Detailed",
+          "collapsibleGroup": {}
+        }
+      },
+      {
+        "yPos": 72,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "CPU Usage by Container",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "legendTemplate": "${resource.labels.pod_name} \n${resource.labels.container_name} ",
+                "minAlignmentPeriod": "60s",
+                "plotType": "STACKED_AREA",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "perSeriesAligner": "ALIGN_RATE"
+                    },
+                    "filter": "metric.type=\"kubernetes.io/container/cpu/core_usage_time\" resource.type=\"k8s_container\" ${cluster_name} ${top_level_controller_name} ${project_id} ${location} ${namespace_name}",
+                    "secondaryAggregation": {
+                      "alignmentPeriod": "60s",
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": [
+                        "resource.label.\"namespace_name\"",
+                        "resource.label.\"pod_name\"",
+                        "resource.label.\"container_name\"",
+                        "metadata.system_labels.\"top_level_controller_name\""
+                      ],
+                      "perSeriesAligner": "ALIGN_MEAN"
+                    }
+                  }
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 16,
+        "yPos": 72,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "Memory Usage by Container",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "minAlignmentPeriod": "60s",
+                "plotType": "STACKED_AREA",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": [
+                        "resource.label.\"namespace_name\"",
+                        "resource.label.\"pod_name\"",
+                        "resource.label.\"container_name\"",
+                        "metadata.system_labels.\"top_level_controller_name\""
+                      ],
+                      "perSeriesAligner": "ALIGN_MEAN"
+                    },
+                    "filter": "metric.type=\"kubernetes.io/container/memory/used_bytes\" resource.type=\"k8s_container\" metric.label.\"memory_type\"=\"non-evictable\" ${cluster_name} ${top_level_controller_name} ${project_id} ${location} ${namespace_name}"
+                  }
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "yPos": 88,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "Receive Bandwidth by Pod",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "minAlignmentPeriod": "60s",
+                "plotType": "STACKED_AREA",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "perSeriesAligner": "ALIGN_RATE"
+                    },
+                    "filter": "metric.type=\"kubernetes.io/pod/network/received_bytes_count\" resource.type=\"k8s_pod\" ${project_id} ${location} ${cluster_name} ${namespace_name} ${top_level_controller_name}",
+                    "secondaryAggregation": {
+                      "alignmentPeriod": "60s",
+                      "perSeriesAligner": "ALIGN_MEAN"
+                    }
+                  }
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 16,
+        "yPos": 88,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "Transmit Bandwidth by Pod",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "minAlignmentPeriod": "60s",
+                "plotType": "STACKED_AREA",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "perSeriesAligner": "ALIGN_RATE"
+                    },
+                    "filter": "metric.type=\"kubernetes.io/pod/network/sent_bytes_count\" resource.type=\"k8s_pod\" ${project_id} ${location} ${cluster_name} ${namespace_name} ${top_level_controller_name}",
+                    "secondaryAggregation": {
+                      "alignmentPeriod": "60s",
+                      "perSeriesAligner": "ALIGN_MEAN"
+                    }
+                  }
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 32,
+        "yPos": 72,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "Total inodes",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "legendTemplate": "total: ${resource.labels.cluster_name}",
+                "minAlignmentPeriod": "60s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": [
+                        "resource.label.\"cluster_name\"",
+                        "resource.label.\"node_name\""
+                      ],
+                      "perSeriesAligner": "ALIGN_MEAN"
+                    },
+                    "filter": "metric.type=\"kubernetes.io/node/ephemeral_storage/inodes_total\" resource.type=\"k8s_node\""
+                  }
+                }
+              },
+              {
+                "legendTemplate": "free: ${resource.labels.cluster_name}",
+                "minAlignmentPeriod": "60s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": [
+                        "resource.label.\"cluster_name\"",
+                        "resource.label.\"node_name\""
+                      ],
+                      "perSeriesAligner": "ALIGN_MEAN"
+                    },
+                    "filter": "metric.type=\"kubernetes.io/node/ephemeral_storage/inodes_free\" resource.type=\"k8s_node\""
+                  }
+                }
+              }
+            ],
+            "timeshiftDuration": "0s",
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 32,
+        "yPos": 88,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "Conntrack Usage",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum by(instance) (node_nf_conntrack_entries{job=~\"node-exporter\"}) / sum by(instance) (node_nf_conntrack_entries_limit{job=~\"node-exporter\"}) * 100",
+                  "unitOverride": "%"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      }
+    ]
+  }
+}
