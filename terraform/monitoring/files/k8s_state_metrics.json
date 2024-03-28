@@ -389,7 +389,7 @@
                 "plotType": "STACKED_AREA",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "sum(kube_deployment_status_replicas_unavailable{namespace=~\"${namespace.value}\",cluster=~\"${cluster.value}\"}) by (cluster)"
+                  "prometheusQuery": "sum(kube_deployment_status_replicas_unavailable{namespace=~\"${namespace.value}\",cluster=~\"${cluster.value}\"}) by (cluster,deployment)"
                 }
               }
             ],
@@ -649,7 +649,7 @@
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "sum(kube_pod_container_status_waiting{namespace=~\"${namespace.value}\",cluster=~\"${cluster.value}\"}) by (namespace)"
+                  "prometheusQuery": "sum(kube_pod_container_status_waiting{namespace=~\"${namespace.value}\",cluster=~\"${cluster.value}\"}) by (namespace,pod)"
                 }
               }
             ],
@@ -675,7 +675,7 @@
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "sum(kube_pod_container_status_terminated{namespace=~\"${namespace.value}\",cluster=~\"${cluster.value}\"}) by (namespace)"
+                  "prometheusQuery": "sum(kube_pod_container_status_terminated{namespace=~\"${namespace.value}\",cluster=~\"${cluster.value}\"}) by (namespace,pod)"
                 }
               }
             ],
@@ -701,7 +701,7 @@
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "sum(changes(kube_pod_container_status_restarts_total{namespace=~\"${namespace.value}\",cluster=~\"${cluster.value}\"}[30m])) by (namespace)"
+                  "prometheusQuery": "sum(changes(kube_pod_container_status_restarts_total{namespace=~\"${namespace.value}\",cluster=~\"${cluster.value}\"}[30m])) by (namespace,pod)"
                 }
               }
             ],
