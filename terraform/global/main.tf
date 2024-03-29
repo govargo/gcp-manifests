@@ -569,7 +569,7 @@ resource "google_compute_firewall" "allow_iap_ssh" {
   }
 
   source_ranges = ["35.235.240.0/20"]
-  target_tags   = ["allow-datastream-to-cloudsql"]
+  target_tags   = ["allow-datastream-to-cloudsql","gke-prod-misc-0"]
 }
 
 ## Cloud Pub/Sub
