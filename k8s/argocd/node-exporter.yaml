@@ -40,7 +40,6 @@ spec:
             - --collector.loadavg
             - --collector.meminfo
             - --collector.netdev
-            - --collector.netstat
             - --collector.stat
             - --collector.vmstat
       destination:
