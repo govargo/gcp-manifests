@@ -429,7 +429,6 @@ module "argocd_image_updater_sa" {
   names         = ["argocd-image-updater"]
   display_name  = "ArgoCD image updater ServiceAccount"
   project_roles = ["${data.google_project.project.project_id}=>roles/artifactregistry.reader"]
-  depends_on    = [google_project_iam_custom_role.gmp_rule_evaluator_role]
 }
 
 module "argocd_image_updater_workloadIdentity_binding" {
