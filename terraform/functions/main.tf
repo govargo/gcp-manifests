@@ -216,10 +216,10 @@ resource "google_cloudfunctions2_function" "alertmanager_to_google_chat" {
 
   service_config {
     min_instance_count               = 0
-    max_instance_count               = 1
+    max_instance_count               = 2
     available_cpu                    = 1
     available_memory                 = "256Mi"
-    timeout_seconds                  = 60
+    timeout_seconds                  = 120
     ingress_settings                 = "ALLOW_INTERNAL_ONLY"
     max_instance_request_concurrency = 10
     secret_environment_variables {
