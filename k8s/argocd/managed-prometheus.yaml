@@ -26,6 +26,9 @@ spec:
         repoURL: https://github.com/GoogleCloudPlatform/prometheus-engine.git
         targetRevision: v0.8.2
         path: manifests
+        directory:
+          include: '*.yaml'
+          exclude: '{rule-evaluator.yaml}'
       ignoreDifferences:
       - group: apps
         kind: Deployment
@@ -45,13 +48,6 @@ spec:
       - group: ""
         kind: ConfigMap
         name: rule-evaluator
-        namespace: gmp-system
-        jsonPointers:
-        - /data
-        - /metadata
-      - group: ""
-        kind: ConfigMap
-        name: rules
         namespace: gmp-system
         jsonPointers:
         - /data
