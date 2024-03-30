@@ -349,12 +349,25 @@ module "argocd_notifications_controller_secret_accessor_binding" {
   depends_on = [module.argocd_notifications_controller_sa, google_secret_manager_secret.argocd_notification_webhook_url]
 }
 
+resource "google_project_iam_custom_role" "gmp_rule_evaluator_role" {
+  role_id     = "ruleevaluator"
+  title       = "GMP Rule Evaluator"
+  description = "GMP Rule Evaluator Monitoring role"
+  permissions = ["monitoring.timeSeries.create", "monitoring.timeSeries.list"]
+  stage       = "GA"
+}
+
 module "gmp_collector_sa" {
   source       = "terraform-google-modules/service-accounts/google"
   version      = "4.2.2"
   project_id   = data.google_project.project.project_id
   names        = ["collector"]
   display_name = "Google Managed Prometheus Collector ServiceAccount"
+  project_roles = [
+    "${data.google_project.project.project_id}=>roles/monitoring.metricWriter",
+    "${data.google_project.project.project_id}=>projects/${data.google_project.project.project_id}/roles/${google_project_iam_custom_role.gmp_rule_evaluator_role.role_id}",
+  ]
+  depends_on = [google_project_iam_custom_role.gmp_rule_evaluator_role]
 }
 
 module "gmp_collector_workloadIdentity_binding" {
@@ -370,55 +383,6 @@ module "gmp_collector_workloadIdentity_binding" {
     ]
   }
   depends_on = [module.gmp_collector_sa]
-}
-
-module "gmp_collector_monitoring_writer_binding" {
-  source     = "terraform-google-modules/iam/google//modules/member_iam"
-  version    = "7.7.1"
-  project_id = data.google_project.project.project_id
-
-  service_account_address = "collector@${data.google_project.project.project_id}.iam.gserviceaccount.com"
-  prefix                  = "serviceAccount"
-  project_roles           = ["roles/monitoring.metricWriter"]
-
-  depends_on = [module.gmp_collector_sa]
-}
-
-resource "google_project_iam_custom_role" "gmp_rule_evaluator_role" {
-  role_id     = "ruleevaluator"
-  title       = "GMP Rule Evaluator"
-  description = "GMP Rule Evaluator Monitoring role"
-  permissions = ["monitoring.timeSeries.create", "monitoring.timeSeries.list"]
-  stage       = "GA"
-}
-
-module "gmp_ruleevaluator_sa" {
-  source     = "terraform-google-modules/service-accounts/google"
-  version    = "4.2.2"
-  project_id = data.google_project.project.project_id
-
-  names        = ["rule-evaluator"]
-  display_name = "Google Managed Prometheus Rule-Evaluator ServiceAccount"
-  project_roles = [
-    "${data.google_project.project.project_id}=>roles/monitoring.viewer",
-    "${data.google_project.project.project_id}=>projects/${data.google_project.project.project_id}/roles/${google_project_iam_custom_role.gmp_rule_evaluator_role.role_id}",
-  ]
-  depends_on = [google_project_iam_custom_role.gmp_rule_evaluator_role]
-}
-
-module "gmp_ruleevaluator_workloadIdentity_binding" {
-  source  = "terraform-google-modules/iam/google//modules/service_accounts_iam"
-  version = "7.7.1"
-  project = data.google_project.project.project_id
-
-  service_accounts = [module.gmp_ruleevaluator_sa.email]
-  mode             = "additive"
-  bindings = {
-    "roles/iam.workloadIdentityUser" = [
-      "serviceAccount:${data.google_project.project.project_id}.svc.id.goog[gmp-system/rule-evaluator]"
-    ]
-  }
-  depends_on = [module.gmp_ruleevaluator_sa]
 }
 
 module "argocd_image_updater_sa" {
