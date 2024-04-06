@@ -62,6 +62,13 @@ resource "google_project_service" "service" {
   service  = each.value
 }
 
+## OAuth Consent
+resource "google_iap_brand" "project_brand" {
+  project           = data.google_project.project.number
+  support_email     = "admin@kentaiso.altostrat.com"
+  application_title = "OAuth Consent"
+}
+
 ## Storage
 resource "google_storage_bucket" "project_storage" {
   project       = data.google_project.project.project_id
