@@ -251,8 +251,10 @@ server:
         type: HTTP
         requestPath: /healthz
         port: 8080
-      securityPolicy:
-        name: prod-argocd-agent-restrict-policy
+      iap:
+        enabled: true
+        oauthclientCredentials:
+          secretName: argocd-dex-secrets-store
 
   ## Create a Google Managed Certificate for use with the GKE Ingress Controller
   ## https://cloud.google.com/kubernetes-engine/docs/how-to/managed-certs
