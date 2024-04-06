@@ -193,12 +193,12 @@ resource "google_secret_manager_secret" "argocd_client_id" {
     role = "argocd_client_id"
   }
 
-  lifecycle {
-    prevent_destroy = true
-  }
-
   replication {
     auto {}
+  }
+
+  lifecycle {
+    prevent_destroy = true
   }
 }
 
@@ -210,12 +210,12 @@ resource "google_secret_manager_secret" "argocd_client_secret" {
     role = "argocd_client_secret"
   }
 
-  lifecycle {
-    prevent_destroy = true
-  }
-
   replication {
     auto {}
+  }
+
+  lifecycle {
+    prevent_destroy = true
   }
 }
 
@@ -227,12 +227,12 @@ resource "google_secret_manager_secret" "argocd_notification_webhook_url" {
     role = "argocd_notification_webhook_url"
   }
 
-  lifecycle {
-    prevent_destroy = true
-  }
-
   replication {
     auto {}
+  }
+
+  lifecycle {
+    prevent_destroy = true
   }
 }
 
