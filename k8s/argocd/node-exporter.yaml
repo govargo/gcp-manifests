@@ -36,6 +36,7 @@ spec:
             - --collector.cpu
             - --collector.conntrack
             - --collector.diskstats
+            - --collector.filefd
             - --collector.filesystem
             - --collector.loadavg
             - --collector.meminfo
