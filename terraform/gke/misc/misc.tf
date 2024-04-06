@@ -184,6 +184,12 @@ resource "google_dns_record_set" "argocd_server" {
   depends_on = [google_compute_global_address.argocd_server_ip]
 }
 
+## OAuth Client
+resource "google_iap_client" "argocd_iap_oatuh_client" {
+  display_name = "ArgoCD"
+  brand        = "projects/${data.google_project.project.number}/brands/${data.google_project.project.number}"
+}
+
 ## Secret
 resource "google_secret_manager_secret" "argocd_client_id" {
   project   = data.google_project.project.project_id
@@ -202,6 +208,12 @@ resource "google_secret_manager_secret" "argocd_client_id" {
   }
 }
 
+resource "google_secret_manager_secret_version" "argocd_client_id" {
+  secret = google_secret_manager_secret.argocd_client_id.id
+
+  secret_data = google_iap_client.argocd_iap_oatuh_client.client_id
+}
+
 resource "google_secret_manager_secret" "argocd_client_secret" {
   project   = data.google_project.project.project_id
   secret_id = "argocd_client_secret"
@@ -217,6 +229,12 @@ resource "google_secret_manager_secret" "argocd_client_secret" {
   lifecycle {
     prevent_destroy = true
   }
+}
+
+resource "google_secret_manager_secret_version" "argocd_client_secret" {
+  secret = google_secret_manager_secret.argocd_client_secret.id
+
+  secret_data = google_iap_client.argocd_iap_oatuh_client.secret
 }
 
 resource "google_secret_manager_secret" "argocd_notification_webhook_url" {
