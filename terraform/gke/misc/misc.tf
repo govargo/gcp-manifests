@@ -184,6 +184,20 @@ resource "google_dns_record_set" "argocd_server" {
   depends_on = [google_compute_global_address.argocd_server_ip]
 }
 
+## IAP Setting
+data "google_compute_backend_service" "argocd_backend_service" {
+  name = "k8s1-f8f020c8-argocd-argocd-server-80-2a46cd0c"
+}
+
+resource "google_iap_web_backend_service_iam_binding" "argocd_iap_iam_binding" {
+  project             = data.google_project.project.project_id
+  web_backend_service = data.google_compute_backend_service.argocd_backend_service.name
+  role                = "roles/iap.httpsResourceAccessor"
+  members = [
+    "user:admin@kentaiso.altostrat.com",
+  ]
+}
+
 ## OAuth Client
 resource "google_iap_client" "argocd_iap_oatuh_client" {
   display_name = "ArgoCD"
