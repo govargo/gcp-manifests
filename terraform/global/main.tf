@@ -64,8 +64,8 @@ resource "google_project_service" "service" {
 
 ## Storage
 resource "google_storage_bucket" "project_storage" {
-  name          = data.google_project.project.project_id
   project       = data.google_project.project.project_id
+  name          = data.google_project.project.project_id
   location      = var.region
   force_destroy = true
 
@@ -124,7 +124,7 @@ resource "google_compute_subnetwork" "subnetwork_app_1" {
 
 module "nat_address_asia_northeast1" {
   source     = "terraform-google-modules/address/google"
-  version    = "3.1.2"
+  version    = "3.2.0"
   project_id = data.google_project.project.project_id
   region     = var.region
 
@@ -137,7 +137,7 @@ module "nat_address_asia_northeast1" {
 
 module "nat_address_us_central1" {
   source     = "terraform-google-modules/address/google"
-  version    = "3.1.2"
+  version    = "3.2.0"
   project_id = data.google_project.project.project_id
 
   region       = "us-central1"
@@ -149,7 +149,7 @@ module "nat_address_us_central1" {
 
 module "cloud_router_app_0" {
   source  = "terraform-google-modules/cloud-router/google"
-  version = "~> 5.0.0"
+  version = "~> 6.0.2"
   project = data.google_project.project.project_id
 
   name    = "${var.env}-app-0-router"
@@ -179,7 +179,7 @@ module "cloud_router_app_0" {
 
 module "cloud_router_app_1" {
   source  = "terraform-google-modules/cloud-router/google"
-  version = "~> 5.0.0"
+  version = "~> 6.0.2"
   project = data.google_project.project.project_id
 
   name    = "${var.env}-app-1-router"
@@ -249,7 +249,7 @@ resource "google_compute_subnetwork" "subnetwork_misc_0" {
 
 module "cloud_router_misc_0" {
   source  = "terraform-google-modules/cloud-router/google"
-  version = "~> 5.0.0"
+  version = "~> 6.0.2"
   project = data.google_project.project.project_id
 
   name    = "${var.env}-misc-0-router"
@@ -279,7 +279,7 @@ module "cloud_router_misc_0" {
 
 module "demo_dns_zone" {
   source     = "terraform-google-modules/cloud-dns/google"
-  version    = "5.0.0"
+  version    = "5.2.0"
   project_id = data.google_project.project.project_id
 
   type           = "public"
@@ -297,7 +297,7 @@ module "demo_dns_zone" {
 ## Org Policy
 module "disable_policy_requireOsLogin" {
   source     = "terraform-google-modules/org-policy/google"
-  version    = "~> 5.2.2"
+  version    = "~> 5.3.0"
   project_id = data.google_project.project.project_id
 
   constraint       = "constraints/compute.requireOsLogin"
@@ -310,7 +310,7 @@ module "disable_policy_requireOsLogin" {
 
 module "disable_policy_vmExternalIpAccess" {
   source     = "terraform-google-modules/org-policy/google"
-  version    = "~> 5.2.2"
+  version    = "~> 5.3.0"
   project_id = data.google_project.project.project_id
 
   constraint       = "constraints/compute.vmExternalIpAccess"
@@ -323,7 +323,7 @@ module "disable_policy_vmExternalIpAccess" {
 
 module "disable_policy_requireShieldedVm" {
   source     = "terraform-google-modules/org-policy/google"
-  version    = "~> 5.2.2"
+  version    = "~> 5.3.0"
   project_id = data.google_project.project.project_id
 
   constraint       = "constraints/compute.requireShieldedVm"
@@ -336,7 +336,7 @@ module "disable_policy_requireShieldedVm" {
 
 module "disable_policy_restrictVpcPeering" {
   source     = "terraform-google-modules/org-policy/google"
-  version    = "~> 5.2.2"
+  version    = "~> 5.3.0"
   project_id = data.google_project.project.project_id
 
   constraint       = "constraints/compute.restrictVpcPeering"
@@ -349,7 +349,7 @@ module "disable_policy_restrictVpcPeering" {
 
 module "disable_policy_uniformBucketLevelAccess" {
   source     = "terraform-google-modules/org-policy/google"
-  version    = "~> 5.2.2"
+  version    = "~> 5.3.0"
   project_id = data.google_project.project.project_id
 
   constraint       = "constraints/storage.uniformBucketLevelAccess"
@@ -362,7 +362,7 @@ module "disable_policy_uniformBucketLevelAccess" {
 
 module "disable_policy_publicAccessPrevention" {
   source     = "terraform-google-modules/org-policy/google"
-  version    = "~> 5.2.2"
+  version    = "~> 5.3.0"
   project_id = data.google_project.project.project_id
 
   constraint       = "constraints/storage.publicAccessPrevention"
@@ -462,12 +462,12 @@ resource "google_secret_manager_secret" "mysql_little_quest_user_password" {
     role = "mysql_little_quest_user_password"
   }
 
-  lifecycle {
-    prevent_destroy = true
+  replication {
+    auto {}
   }
 
-  replication {
-    automatic = true
+  lifecycle {
+    prevent_destroy = true
   }
 }
 
@@ -479,12 +479,12 @@ resource "google_secret_manager_secret" "mysql_datastream_user_password" {
     role = "mysql_datastream_user_password"
   }
 
-  lifecycle {
-    prevent_destroy = true
+  replication {
+    auto {}
   }
 
-  replication {
-    automatic = true
+  lifecycle {
+    prevent_destroy = true
   }
 }
 
@@ -496,15 +496,14 @@ resource "google_secret_manager_secret" "mysql_root_password" {
     role = "mysql_root_password"
   }
 
+  replication {
+    auto {}
+  }
+
   lifecycle {
     prevent_destroy = true
   }
-
-  replication {
-    automatic = true
-  }
 }
-
 
 resource "google_secret_manager_secret" "redis_password" {
   project   = data.google_project.project.project_id
@@ -514,12 +513,12 @@ resource "google_secret_manager_secret" "redis_password" {
     role = "redis_password"
   }
 
-  lifecycle {
-    prevent_destroy = true
+  replication {
+    auto {}
   }
 
-  replication {
-    automatic = true
+  lifecycle {
+    prevent_destroy = true
   }
 }
 
@@ -569,13 +568,13 @@ resource "google_compute_firewall" "allow_iap_ssh" {
   }
 
   source_ranges = ["35.235.240.0/20"]
-  target_tags   = ["allow-datastream-to-cloudsql","gke-prod-misc-0"]
+  target_tags   = ["allow-datastream-to-cloudsql", "gke-prod-misc-0"]
 }
 
 ## Cloud Pub/Sub
 module "gke_cluster_upgrade_notification" {
   source     = "terraform-google-modules/pubsub/google"
-  version    = "5.0.0"
+  version    = "6.0.0"
   project_id = data.google_project.project.project_id
 
   topic                            = "gke-cluster-upgrade-notification"
