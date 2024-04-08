@@ -16,10 +16,10 @@ podAnnotations: {}
 resources:
   requests:
     cpu: 50m
-    memory: 100Mi
+    memory: 50Mi
   limits:
     cpu: 50m
-    memory: 100Mi
+    memory: 50Mi
 
 priorityClassName: ""
 

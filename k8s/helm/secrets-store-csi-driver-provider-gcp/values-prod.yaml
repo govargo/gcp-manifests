@@ -1,5 +1,13 @@
 priorityClassName: system-node-critical
 
+resources:
+  requests:
+    cpu: 100m
+    memory: 50Mi
+  limits:
+    cpu: 100m
+    memory: 50Mi
+
 tolerations:
 - effect: NoExecute
   operator: Exists

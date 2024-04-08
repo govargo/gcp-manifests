@@ -7,6 +7,15 @@ linux:
   - effect: NoSchedule
     operator: Exists
 
+  registrar:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 20Mi
+      limits:
+        cpu: 500m
+        memory: 100Mi
+
 ## Install RBAC roles and bindings required for K8S Secrets syncing if true
 syncSecret:
   enabled: true
