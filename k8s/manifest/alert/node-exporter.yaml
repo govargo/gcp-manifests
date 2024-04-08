@@ -24,7 +24,7 @@ metadata:
 spec:
   groups:
   - name: node-exporter
-    interval: 30s
+    interval: 90s
     rules:
     - alert: NodeFilesystemSpaceFillingUp
       annotations:
@@ -324,7 +324,7 @@ spec:
         severity: warning
 
   - name: node-exporter.rules
-    interval: 30s
+    interval: 90s
     rules:
     - expr: |
         count without (cpu, mode) (
