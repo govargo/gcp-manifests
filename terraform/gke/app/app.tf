@@ -71,7 +71,7 @@ module "app-0" {
   node_pools = [
     {
       name               = "kube-system-pool"
-      machine_type       = var.machine_type
+      machine_type       = "e2-custom-2-3072"
       node_locations     = var.node_locations
       min_count          = null
       max_count          = null
@@ -97,7 +97,7 @@ module "app-0" {
     },
     {
       name               = "app-pool"
-      machine_type       = var.machine_type
+      machine_type       = "e2-custom-2-3072"
       node_locations     = var.node_locations
       min_count          = null
       max_count          = null
