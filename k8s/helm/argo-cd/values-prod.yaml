@@ -96,10 +96,10 @@ controller:
   # -- Resource limits and requests for the application controller pods
   resources:
     requests:
-      cpu: 10m
-      memory: 100Mi
+      cpu: 100m
+      memory: 300Mi
     limits:
-      cpu: 500m
+      cpu: 1000m
       memory: 512Mi
 
   # -- [Node selector]
@@ -143,7 +143,7 @@ dex:
   resources:
     requests:
       cpu: 100m
-      memory: 10Mi
+      memory: 30Mi
     limits:
       cpu: 500m
       memory: 512Mi
@@ -192,11 +192,11 @@ server:
   # -- Resource limits and requests for the Argo CD server
   resources:
     requests:
-      cpu: 100m
-      memory: 64Mi
+      cpu: 200m
+      memory: 128Mi
     limits:
       cpu: 500m
-      memory: 128Mi
+      memory: 256Mi
 
   # -- [Node selector]
   nodeSelector:
@@ -324,11 +324,11 @@ repoServer:
   # -- Resource limits and requests for the repo server pods
   resources:
     requests:
-      cpu: 100m
-      memory: 128Mi
+      cpu: 200m
+      memory: 256Mi
     limits:
       cpu: 500m
-      memory: 512Mi
+      memory: 1024Mi
 
   # -- [Node selector]
   nodeSelector:
