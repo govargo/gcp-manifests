@@ -457,7 +457,7 @@ spec:
       labels:
         severity: critical
 
-  - name: kuerbetes.rules
+  - name: kubernetes.rules
     interval: 90s
     rules:
     - expr: |
