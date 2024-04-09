@@ -30,21 +30,6 @@ spec:
           include: '*.yaml'
           exclude: '{rule-evaluator.yaml}'
       ignoreDifferences:
-      - group: apps
-        kind: Deployment
-        name: rule-evaluator
-        namespace: gmp-system
-        jsonPointers:
-        - /spec/template/spec/containers/0/args
-        - /spec/template/spec/containers/0/livenessProbe
-        - /spec/template/spec/containers/0/readinessProbe
-        - /spec/template/spec/containers/0/ports
-        - /spec/template/spec/containers/0/volumeMounts
-        - /spec/template/spec/containers/1/args
-        - /spec/template/spec/containers/1/ports
-        - /spec/template/spec/containers/1/resources/limits/memory
-        - /spec/template/spec/containers/1/volumeMounts
-        - /spec/template/spec/volumes
       - group: ""
         kind: ConfigMap
         name: rule-evaluator
@@ -52,6 +37,14 @@ spec:
         jsonPointers:
         - /data
         - /metadata
+      - group: "monitoring.googleapis.com"
+        kind: OperatorConfig
+        name: config
+        namespace: gmp-public
+        jsonPointers:
+        - /collection
+        - /features
+        - /managedAlertmanager
       - group: ""
         kind: Secret
         name: alertmanager
@@ -59,11 +52,6 @@ spec:
         jsonPointers:
         - /data
         - /metadata/labels
-      - group: rbac.authorization.k8s.io
-        kind: ClusterRoleBinding
-        name: rule-evaluator
-        jsonPointers:
-        - /subjects/0/namespace
       destination:
         name: "{{name}}"
         namespace: gmp-system
