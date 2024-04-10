@@ -327,7 +327,7 @@ repoServer:
       cpu: 200m
       memory: 256Mi
     limits:
-      cpu: 500m
+      cpu: 700m
       memory: 1024Mi
 
   # -- [Node selector]
