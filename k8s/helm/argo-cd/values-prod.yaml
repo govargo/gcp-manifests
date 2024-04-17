@@ -97,7 +97,7 @@ controller:
   resources:
     requests:
       cpu: 100m
-      memory: 300Mi
+      memory: 256Mi
     limits:
       cpu: 1000m
       memory: 512Mi
@@ -142,7 +142,7 @@ dex:
   # -- Resource limits and requests for dex
   resources:
     requests:
-      cpu: 100m
+      cpu: 10m
       memory: 30Mi
     limits:
       cpu: 500m
@@ -163,7 +163,7 @@ redis:
   resources:
     requests:
       cpu: 100m
-      memory: 64Mi
+      memory: 10Mi
     limits:
       cpu: 1000m
       memory: 256Mi
@@ -192,7 +192,7 @@ server:
   # -- Resource limits and requests for the Argo CD server
   resources:
     requests:
-      cpu: 200m
+      cpu: 50m
       memory: 128Mi
     limits:
       cpu: 500m
@@ -324,8 +324,8 @@ repoServer:
   # -- Resource limits and requests for the repo server pods
   resources:
     requests:
-      cpu: 200m
-      memory: 256Mi
+      cpu: 100m
+      memory: 512Mi
     limits:
       cpu: 700m
       memory: 1024Mi
@@ -348,8 +348,8 @@ applicationSet:
   # -- Resource limits and requests for the ApplicationSet controller pods.
   resources:
     requests:
-      cpu: 100m
-      memory: 128Mi
+      cpu: 10m
+      memory: 100Mi
     limits:
       cpu: 200m
       memory: 256Mi
@@ -397,7 +397,7 @@ notifications:
   resources:
     requests:
       cpu: 10m
-      memory: 128Mi
+      memory: 24Mi
     limits:
       cpu: 100m
       memory: 128Mi
