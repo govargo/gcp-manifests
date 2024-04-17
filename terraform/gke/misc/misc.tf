@@ -96,7 +96,7 @@ module "misc-0" {
     },
     {
       name               = "argocd-pool"
-      machine_type       = "e2-custom-2-3072"
+      machine_type       = "e2-custom-2-4096"
       node_locations     = var.node_locations
       min_count          = null
       max_count          = null
