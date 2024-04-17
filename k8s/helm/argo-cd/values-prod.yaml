@@ -320,6 +320,10 @@ repoServer:
     minReplicas: 1
     # -- Maximum number of replicas for the repo server [HPA]
     maxReplicas: 2
+    # -- Average CPU utilization percentage for the repo server [HPA]
+    targetCPUUtilizationPercentage: 50
+    # -- Average memory utilization percentage for the repo server [HPA]
+    targetMemoryUtilizationPercentage: 80
 
   # -- Resource limits and requests for the repo server pods
   resources:
