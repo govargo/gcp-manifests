@@ -8,7 +8,7 @@ metadata:
 spec:
   groups:
   - name: kube-state-metrics
-    interval: 90s
+    interval: 120s
     rules:
     - alert: KubeStateMetricsListErrors
       annotations:
