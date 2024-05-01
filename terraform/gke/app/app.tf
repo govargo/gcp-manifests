@@ -227,3 +227,28 @@ module "little_quest_server_workloadIdentity_binding" {
   }
   depends_on = [module.little_quest_server_sa]
 }
+
+module "opentelemetry_collector_sa" {
+  source     = "terraform-google-modules/service-accounts/google"
+  version    = "4.2.2"
+  project_id = data.google_project.project.project_id
+
+  names         = ["opentelemetry-collector"]
+  display_name  = "OpenTelemetry Collector ServiceAccount"
+  project_roles = ["${data.google_project.project.project_id}=>roles/cloudtrace.agent"]
+}
+
+module "opentelemetry_collector_workloadIdentity_binding" {
+  source  = "terraform-google-modules/iam/google//modules/service_accounts_iam"
+  version = "7.7.1"
+  project = data.google_project.project.project_id
+
+  service_accounts = [module.opentelemetry_collector_sa.email]
+  mode             = "additive"
+  bindings = {
+    "roles/iam.workloadIdentityUser" = [
+      "serviceAccount:${data.google_project.project.project_id}.svc.id.goog[tracing/opentelemetry-collector]"
+    ]
+  }
+  depends_on = [module.opentelemetry_collector_sa]
+}
