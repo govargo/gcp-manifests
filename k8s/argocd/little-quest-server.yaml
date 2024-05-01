@@ -23,7 +23,7 @@ spec:
   source:
     repoURL: asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/charts
     chart: little-quest-server
-    targetRevision: 0.4.7
+    targetRevision: 0.4.8
     helm:
       releaseName: "little-quest-server"
       values: |
@@ -98,7 +98,7 @@ spec:
           initialDelaySeconds: 5
           successThreshold: 1
           failureThreshold: 10
-          timeoutSeconds: 10
+          timeoutSeconds: 30
 
         resources:
           # We usually recommend not to specify default resources and to leave this as a conscious
@@ -283,9 +283,12 @@ spec:
         # Google Cloud ProjectId
         googleCloudProjectId: kentaiso-330205
 
-        # Cloud Trace sampling rate
-        cloudTrace:
+        # Trace info
+        trace:
+          exporter: opentelemetry_collector
+          endpoint: opentelemetry-collector.tracing.svc.cluster.local.:4317
           samplingRate: 1.0
+          platform: opentelemetry
 
         # Cloud Spanner info
         spanner:
