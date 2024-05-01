@@ -202,8 +202,10 @@ timeZone: Asia/Tokyo
 # Google Cloud ProjectId
 googleCloudProjectId: test-project
 
-# Cloud Trace sampling rate
-cloudTrace:
+# Trace info
+trace:
+  exporter: cloudtrace
+  endpoint: 0.0.0.0:4317
   samplingRate: 0.1
   platform: opentelemetry
 

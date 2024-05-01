@@ -91,10 +91,14 @@ spec:
             value: {{ .Values.openMatch.gameFrontend.host | quote }}
           - name: OPENMATCH_GAME_FRONTEND_PORT
             value: {{ .Values.openMatch.gameFrontend.port | quote }}
+          - name: OTEL_EXPORTER
+            value: {{ .Values.trace.exporter | quote }}
+          - name: OTEL_EXPORTER_ENDPOINT
+            value: {{ .Values.trace.endpoint | quote }}
           - name: OTEL_SAMPLING_RATE
-            value: {{ .Values.cloudTrace.samplingRate | default 0.1 | quote }}
+            value: {{ .Values.trace.samplingRate | default 0.1 | quote }}
           - name: GOOGLE_API_GO_EXPERIMENTAL_TELEMETRY_PLATFORM_TRACING
-            value: {{ .Values.cloudTrace.platform }}
+            value: {{ .Values.trace.platform }}
           - name: POD_NAME
             valueFrom:
               fieldRef:
