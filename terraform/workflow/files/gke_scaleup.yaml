@@ -1,0 +1,181 @@
+main:
+  steps:
+  - prallel_scale_up:
+      parallel:
+        branches:
+        - app_0:
+            steps:
+            - app_0_scale_up:
+                call: prod_app_0_scaleup
+                result: app_0_scale_up
+        - corp_0:
+            steps:
+            - corp_0_scale_up:
+                call: prod_corp_0_scaleup
+                result: corp_0_scale_up
+        - misc_0:
+            steps:
+            - misc_0_scale_up:
+                call: prod_misc_0_scaleup
+                result: misc_0_scale_up
+
+prod_app_0_scaleup:
+  params:
+    - project_id: kentaiso-330205
+    - region: "asia-northeast1"
+    - cluster_id: "prod-app-0"
+    - scale_up_size: 0
+  steps:
+  - enable_autoscaling_loop:
+      for:
+        value: node_pool_value
+        in: ["app-pool", "kube-system-pool"]
+        steps:
+        - enable_autoscaling:
+            call: googleapis.container.v1.projects.locations.clusters.nodePools.setAutoscaling
+            args:
+              name: $${"projects/"+project_id+"/locations/"+region+"/clusters/"+cluster_id+"/nodePools/"+node_pool_value}
+              body:
+                autoscaling:
+                  enabled: true
+                  autoprovisioned: false
+                  minNodeCount: 0
+                  maxNodeCount: 100
+            result: enable_autoscaling
+  - wait:
+      call: sys.sleep
+      args:
+        seconds: 30
+  - scale_up_workload:
+      call: gke.request
+      args:
+        project: $${project_id}
+        location: $${region}
+        cluster_id: $${cluster_id}
+        method: "PATCH"
+        path: "/apis/apps/v1/namespaces/little-quest-server/deployments/little-quest-server/scale"
+        headers: 
+          Content-Type: application/strategic-merge-patch+json
+        body:
+          spec:
+            replicas: 2
+      result: scale_up_workload
+  - scale_up_node_pool_loop:
+      for:
+        value: node_pool_value
+        in: ["app-pool", "kube-system-pool"]
+        steps:
+        - scale_up_node_pool:
+            call: googleapis.container.v1.projects.locations.clusters.nodePools.setSize
+            args:
+              name: $${"projects/"+project_id+"/locations/"+region+"/clusters/"+cluster_id+"/nodePools/"+node_pool_value}
+              body:
+                nodeCount: $${scale_up_size}
+            result: scale_up_node_pool
+
+prod_corp_0_scaleup:
+  params:
+    - project_id: kentaiso-330205
+    - region: "asia-northeast1"
+    - cluster_id: "prod-corp-0"
+    - scale_up_size: 0
+  steps:
+  - enable_autoscaling_loop:
+      for:
+        value: node_pool_value
+        in: ["open-match-pool", "kube-system-pool"]
+        steps:
+        - enable_autoscaling:
+            call: googleapis.container.v1.projects.locations.clusters.nodePools.setAutoscaling
+            args:
+              name: $${"projects/"+project_id+"/locations/"+region+"/clusters/"+cluster_id+"/nodePools/"+node_pool_value}
+              body:
+                autoscaling:
+                  enabled: true
+                  autoprovisioned: false
+                  minNodeCount: 0
+                  maxNodeCount: 100
+            result: enable_autoscaling
+  - wait:
+      call: sys.sleep
+      args:
+        seconds: 30
+  - scale_up_workload_loop:
+      for:
+        value: workload_value
+        in: ["agones-allocator", "agones-controller", "agones-extensions"]
+        steps:
+        - scale_up_workload:
+            call: gke.request
+            args:
+              project: $${project_id}
+              location: $${region}
+              cluster_id: $${cluster_id}
+              method: "PATCH"
+              path: $${"/apis/apps/v1/namespaces/agones-system/deployments/"+workload_value+"/scale"}
+              headers: 
+                Content-Type: application/strategic-merge-patch+json
+              body:
+                spec:
+                  replicas: 2
+            result: scale_up_workload
+  - scale_up_node_pool_loop:
+      for:
+        value: node_pool_value
+        in: ["open-match-pool", "kube-system-pool"]
+        steps:
+        - scale_up_node_pool:
+            call: googleapis.container.v1.projects.locations.clusters.nodePools.setSize
+            args:
+              name: $${"projects/"+project_id+"/locations/"+region+"/clusters/"+cluster_id+"/nodePools/"+node_pool_value}
+              body:
+                nodeCount: $${scale_up_size}
+            result: scale_up_node_pool
+
+prod_misc_0_scaleup:
+  params:
+    - project_id: kentaiso-330205
+    - zone: "asia-northeast1-a"
+    - cluster_id: "prod-misc-0"
+    - scale_up_size: 0
+  steps:
+  - enable_autoscaling_loop:
+      for:
+        value: node_pool_value
+        in: ["argocd-pool", "kube-system-pool"]
+        steps:
+        - enable_autoscaling:
+            call: googleapis.container.v1.projects.zones.clusters.nodePools.autoscaling
+            args:
+              projectId: $${project_id}
+              zone: $${zone}
+              clusterId: $${cluster_id}
+              nodePoolId: $${node_pool_value}
+              body:
+                name: projects/$${project_id}/locations/$${zone}/clusters/$${cluster_id}/nodePools/$${node_pool_value}
+                autoscaling:
+                  enabled: true
+                  autoprovisioned: false
+                  minNodeCount: 0
+                  maxNodeCount: 100
+            result: enable_autoscaling
+  - wait:
+      call: sys.sleep
+      args:
+        seconds: 30
+  - scale_up_node_pool_loop:
+      for:
+        value: node_pool_value
+        in: ["argocd-pool", "kube-system-pool"]
+        steps:
+        - scale_up_node_pool:
+            call: googleapis.container.v1.projects.zones.clusters.nodePools.setSize
+            args:
+              projectId: $${project_id}
+              zone: $${zone}
+              clusterId: $${cluster_id}
+              nodePoolId: $${node_pool_value}
+              body:
+                name: projects/$${project_id}/locations/$${zone}/clusters/$${cluster_id}/nodePools/$${node_pool_value}
+                nodeCount: $${scale_up_size}
+            result: scale_up_node_pool

@@ -59,6 +59,46 @@ resource "google_workflows_workflow" "daily_dataform_workflow" {
   depends_on = [module.dataform_workflow_sa]
 }
 
+resource "google_workflows_workflow" "scale_down_gke_workloads_workflow" {
+  project = data.google_project.project.project_id
+  name    = "${var.env}-little-quest-scaledown-gke-workloads"
+  region  = var.region
+
+  description = "little-quest GKE workloads scale down workflow"
+  labels = {
+    "role"      = "gke_scaledown_workflow",
+    "frequency" = "daily"
+  }
+
+  service_account = module.gke_node_scaler_workflow_sa.email
+  source_contents = templatefile("${path.module}/files/gke_scaledown.yaml", {
+    projectId = data.google_project.project.project_id
+    region    = var.region
+  })
+
+  depends_on = [module.gke_node_scaler_workflow_sa]
+}
+
+resource "google_workflows_workflow" "scale_up_gke_workloads_workflow" {
+  project = data.google_project.project.project_id
+  name    = "${var.env}-little-quest-scaleup-gke-workloads"
+  region  = var.region
+
+  description = "little-quest GKE workloads scale up workflow"
+  labels = {
+    "role"      = "gke_scaleup_workflow",
+    "frequency" = "daily"
+  }
+
+  service_account = module.gke_node_scaler_workflow_sa.email
+  source_contents = templatefile("${path.module}/files/gke_scaleup.yaml", {
+    projectId = data.google_project.project.project_id
+    region    = var.region
+  })
+
+  depends_on = [module.gke_node_scaler_workflow_sa]
+}
+
 resource "google_cloud_scheduler_job" "dataform_workflow_job" {
   project = data.google_project.project.project_id
   name    = "${var.env}-little-quest-dataform-workflow-scheduler"
@@ -90,5 +130,73 @@ resource "google_cloud_scheduler_job" "dataform_workflow_job" {
     }
   }
 
-  depends_on = [module.workflow_scheduler_sa]
+  depends_on = [module.workflow_scheduler_sa, google_workflows_workflow.daily_dataform_workflow]
+}
+
+resource "google_cloud_scheduler_job" "gke_scaledown_workflow_job" {
+  project = data.google_project.project.project_id
+  name    = "${var.env}-little-quest-scaledown-gke-workloads-workflow-scheduler"
+  region  = var.region
+
+  description      = "Trigger Little Quest GKE Workflows Scale Down Workflow Scheduler"
+  schedule         = "0 19 * * *"
+  time_zone        = "Asia/Tokyo"
+  attempt_deadline = "360s"
+
+  retry_config {
+    retry_count          = 1
+    max_backoff_duration = "3600s"
+    max_doublings        = 5
+    max_retry_duration   = "0s"
+    min_backoff_duration = "5s"
+  }
+
+  http_target {
+    http_method = "POST"
+    headers = {
+      "Content-Type" = "application/json"
+    }
+    uri = "https://workflowexecutions.googleapis.com/v1/projects/${data.google_project.project.project_id}/locations/${var.region}/workflows/${google_workflows_workflow.scale_down_gke_workloads_workflow.name}/executions"
+
+    oauth_token {
+      scope                 = "https://www.googleapis.com/auth/cloud-platform"
+      service_account_email = module.workflow_scheduler_sa.email
+    }
+  }
+
+  depends_on = [module.workflow_scheduler_sa, google_workflows_workflow.scale_down_gke_workloads_workflow]
+}
+
+resource "google_cloud_scheduler_job" "gke_scaleup_workflow_job" {
+  project = data.google_project.project.project_id
+  name    = "${var.env}-little-quest-scaleup-gke-workloads-workflow-scheduler"
+  region  = var.region
+
+  description      = "Trigger Little Quest GKE Workflows Scale Up Workflow Scheduler"
+  schedule         = "0 9 * * MON-FRI"
+  time_zone        = "Asia/Tokyo"
+  attempt_deadline = "360s"
+
+  retry_config {
+    retry_count          = 1
+    max_backoff_duration = "3600s"
+    max_doublings        = 5
+    max_retry_duration   = "0s"
+    min_backoff_duration = "5s"
+  }
+
+  http_target {
+    http_method = "POST"
+    headers = {
+      "Content-Type" = "application/json"
+    }
+    uri = "https://workflowexecutions.googleapis.com/v1/projects/${data.google_project.project.project_id}/locations/${var.region}/workflows/${google_workflows_workflow.scale_up_gke_workloads_workflow.name}/executions"
+
+    oauth_token {
+      scope                 = "https://www.googleapis.com/auth/cloud-platform"
+      service_account_email = module.workflow_scheduler_sa.email
+    }
+  }
+
+  depends_on = [module.workflow_scheduler_sa, google_workflows_workflow.scale_up_gke_workloads_workflow]
 }
