@@ -3,7 +3,7 @@ data "google_project" "project" {
 
 module "dataform_workflow_sa" {
   source     = "terraform-google-modules/service-accounts/google"
-  version    = "4.1.1"
+  version    = "4.2.3"
   project_id = data.google_project.project.project_id
 
   names        = ["workflow-dataform"]
@@ -13,9 +13,22 @@ module "dataform_workflow_sa" {
   ]
 }
 
+module "gke_node_scaler_workflow_sa" {
+  source     = "terraform-google-modules/service-accounts/google"
+  version    = "4.2.3"
+  project_id = data.google_project.project.project_id
+
+  names        = ["workflow-gke-node-scaler"]
+  display_name = "Cloud Workflows for GKE NodePool Scaler ServiceAccount"
+  project_roles = [
+    "${data.google_project.project.project_id}=>roles/container.clusterAdmin",
+    "${data.google_project.project.project_id}=>roles/container.developer",
+  ]
+}
+
 module "workflow_scheduler_sa" {
   source     = "terraform-google-modules/service-accounts/google"
-  version    = "4.1.1"
+  version    = "4.2.3"
   project_id = data.google_project.project.project_id
 
   names        = ["workflow-scheduler"]
