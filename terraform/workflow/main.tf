@@ -139,7 +139,7 @@ resource "google_cloud_scheduler_job" "gke_scaledown_workflow_job" {
   region  = var.region
 
   description      = "Trigger Little Quest GKE Workflows Scale Down Workflow Scheduler"
-  schedule         = "0 19 * * *"
+  schedule         = "0 19 * * MON-FRI"
   time_zone        = "Asia/Tokyo"
   attempt_deadline = "360s"
 
