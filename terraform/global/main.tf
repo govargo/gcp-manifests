@@ -52,7 +52,8 @@ locals {
     "firebase.googleapis.com",
     "firestore.googleapis.com",
     "securitycenter.googleapis.com",
-    "cloudaicompanion.googleapis.com"
+    "cloudaicompanion.googleapis.com",
+    "servicehealth.googleapis.com"
   ])
 }
 
@@ -129,31 +130,6 @@ resource "google_compute_subnetwork" "subnetwork_app_1" {
   ]
 }
 
-module "nat_address_asia_northeast1" {
-  source     = "terraform-google-modules/address/google"
-  version    = "3.2.0"
-  project_id = data.google_project.project.project_id
-  region     = var.region
-
-  address_type = "EXTERNAL"
-  names = [
-    "${var.env}-app-0-nat-gateway",
-    "${var.env}-misc-0-nat-gateway"
-  ]
-}
-
-module "nat_address_us_central1" {
-  source     = "terraform-google-modules/address/google"
-  version    = "3.2.0"
-  project_id = data.google_project.project.project_id
-
-  region       = "us-central1"
-  address_type = "EXTERNAL"
-  names = [
-    "${var.env}-app-1-nat-gateway",
-  ]
-}
-
 module "cloud_router_app_0" {
   source  = "terraform-google-modules/cloud-router/google"
   version = "~> 6.0.2"
@@ -164,10 +140,13 @@ module "cloud_router_app_0" {
   region  = var.region
 
   nats = [{
-    name                               = "${var.env}-app-0-nat-gateway",
-    nat_ip_allocate_option             = "MANUAL_ONLY",
-    nat_ips                            = ["${var.env}-app-0-nat-gateway"]
-    source_subnetwork_ip_ranges_to_nat = "LIST_OF_SUBNETWORKS"
+    name                                = "${var.env}-app-0-nat-gateway",
+    nat_ip_allocate_option              = "AUTO_ONLY",
+    source_subnetwork_ip_ranges_to_nat  = "LIST_OF_SUBNETWORKS"
+    min_ports_per_vm                    = 64
+    max_ports_per_vm                    = 1024
+    enable_endpoint_independent_mapping = false
+    enable_dynamic_port_allocation      = true
     log_config = {
       enable : true,
       filter : "ERRORS_ONLY"
@@ -179,7 +158,6 @@ module "cloud_router_app_0" {
   }]
 
   depends_on = [
-    module.nat_address_asia_northeast1,
     google_compute_subnetwork.subnetwork_app_0,
   ]
 }
@@ -194,10 +172,13 @@ module "cloud_router_app_1" {
   region  = "us-central1"
 
   nats = [{
-    name                               = "${var.env}-app-1-nat-gateway",
-    nat_ip_allocate_option             = "MANUAL_ONLY",
-    nat_ips                            = ["${var.env}-app-1-nat-gateway"]
-    source_subnetwork_ip_ranges_to_nat = "LIST_OF_SUBNETWORKS"
+    name                                = "${var.env}-app-1-nat-gateway",
+    nat_ip_allocate_option              = "AUTO_ONLY",
+    source_subnetwork_ip_ranges_to_nat  = "LIST_OF_SUBNETWORKS"
+    min_ports_per_vm                    = 64
+    max_ports_per_vm                    = 1024
+    enable_endpoint_independent_mapping = false
+    enable_dynamic_port_allocation      = true
     log_config = {
       enable : true,
       filter : "ERRORS_ONLY"
@@ -209,7 +190,6 @@ module "cloud_router_app_1" {
   }]
 
   depends_on = [
-    module.nat_address_us_central1,
     google_compute_subnetwork.subnetwork_app_1,
   ]
 }
@@ -264,10 +244,13 @@ module "cloud_router_misc_0" {
   region  = var.region
 
   nats = [{
-    name                               = "${var.env}-misc-0-nat-gateway",
-    nat_ip_allocate_option             = "MANUAL_ONLY",
-    nat_ips                            = ["${var.env}-misc-0-nat-gateway"]
-    source_subnetwork_ip_ranges_to_nat = "LIST_OF_SUBNETWORKS"
+    name                                = "${var.env}-misc-0-nat-gateway",
+    nat_ip_allocate_option              = "AUTO_ONLY",
+    source_subnetwork_ip_ranges_to_nat  = "LIST_OF_SUBNETWORKS"
+    min_ports_per_vm                    = 64
+    max_ports_per_vm                    = 1024
+    enable_endpoint_independent_mapping = false
+    enable_dynamic_port_allocation      = true
     log_config = {
       enable : true,
       filter : "ERRORS_ONLY"
@@ -279,7 +262,6 @@ module "cloud_router_misc_0" {
   }]
 
   depends_on = [
-    module.nat_address_asia_northeast1,
     google_compute_subnetwork.subnetwork_misc_0
   ]
 }
