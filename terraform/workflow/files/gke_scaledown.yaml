@@ -153,7 +153,7 @@ prod_misc_0_scaledown:
   - wait:
       call: sys.sleep
       args:
-        seconds: 30
+        seconds: 60
   - scale_down_node_pool_loop:
       for:
         value: node_pool_value
