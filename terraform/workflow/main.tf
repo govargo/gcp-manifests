@@ -173,7 +173,7 @@ resource "google_cloud_scheduler_job" "gke_scaleup_workflow_job" {
   region  = var.region
 
   description      = "Trigger Little Quest GKE Workflows Scale Up Workflow Scheduler"
-  schedule         = "0 9 * * MON-FRI"
+  schedule         = "30 8 * * MON-FRI"
   time_zone        = "Asia/Tokyo"
   attempt_deadline = "360s"
 
