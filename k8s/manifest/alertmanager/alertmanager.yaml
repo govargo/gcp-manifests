@@ -1,0 +1,29 @@
+global:
+  resolve_timeout: 5m
+
+route:
+  receiver: 'default'
+  group_wait: 10s
+  group_interval: 1h
+  repeat_interval: 12h
+  group_by: ['alertname']
+  routes:
+  - receiver: 'google-chat-notifications'
+    active_time_intervals:
+    - business-hours
+
+receivers:
+- name: 'default'
+- name: 'google-chat-notifications'
+  webhook_configs:
+  - url: 'https://asia-northeast1-kentaiso-330205.cloudfunctions.net/alertmanager-to-google-chat'
+    send_resolved: true
+
+time_intervals:
+- name: business-hours
+  time_intervals:
+  - times:
+    - start_time: 09:00
+      end_time: 19:00
+    weekdays: ['monday:friday']
+    location: "Asia/Tokyo"
