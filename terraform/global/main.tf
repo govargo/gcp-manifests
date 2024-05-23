@@ -53,7 +53,8 @@ locals {
     "firestore.googleapis.com",
     "securitycenter.googleapis.com",
     "cloudaicompanion.googleapis.com",
-    "servicehealth.googleapis.com"
+    "servicehealth.googleapis.com",
+    "recommender.googleapis.com"
   ])
 }
 
