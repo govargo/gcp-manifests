@@ -1,109 +1,120 @@
 apiVersion: argoproj.io/v1alpha1
-kind: Application
+kind: ApplicationSet
 metadata:
   name: opentelemetry-collector
   namespace: argocd
 spec:
-  project: default
-  syncPolicy:
-    syncOptions:
-    - CreateNamespace=true
-    automated:
-      prune: true
-      selfHeal: true
-  source:
-    repoURL: https://open-telemetry.github.io/opentelemetry-helm-charts
-    chart: opentelemetry-collector
-    targetRevision: 0.92.0
-    helm:
-      releaseName: "opentelemetry-collector"
-      values: |
-        mode: deployment
-        image:
-          repository: otel/opentelemetry-collector-contrib
-          tag: 0.101.0
-        command:
-          name: otelcol-contrib
+  generators:
+  - list:
+      elements:
+      - cluster: app-0
+        name: gke_kentaiso-330205_asia-northeast1_prod-app-0
+      - cluster: corp-0
+        name: gke_kentaiso-330205_asia-northeast1_prod-corp-0
+  template:
+    metadata:
+      name: "{{cluster}}-opentelemetry-collector"
+    spec:
+      project: default
+      syncPolicy:
+        syncOptions:
+        - CreateNamespace=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        repoURL: https://open-telemetry.github.io/opentelemetry-helm-charts
+        chart: opentelemetry-collector
+        targetRevision: 0.92.0
+        helm:
+          releaseName: "opentelemetry-collector"
+          values: |
+            mode: deployment
+            image:
+              repository: otel/opentelemetry-collector-contrib
+              tag: 0.101.0
+            command:
+              name: otelcol-contrib
         
-        serviceAccount:
-          annotations:
-            iam.gke.io/gcp-service-account: opentelemetry-collector@kentaiso-330205.iam.gserviceaccount.com
+            serviceAccount:
+              annotations:
+                iam.gke.io/gcp-service-account: opentelemetry-collector@kentaiso-330205.iam.gserviceaccount.com
         
-        resources:
-          requests:
-            cpu: 10m
-            memory: 10Mi
-          limits:
-            cpu: 250m
-            memory: 512Mi
+            resources:
+              requests:
+                cpu: 10m
+                memory: 10Mi
+              limits:
+                cpu: 250m
+                memory: 512Mi
         
-        autoscaling:
-          enabled: true
-          minReplicas: 1
-          maxReplicas: 10
-          behavior: {}
-          targetCPUUtilizationPercentage: 80
-        config:
-          extensions:
-            # The health_check extension is mandatory for this chart.
-            # Without the health_check extension the collector will fail the readiness and liveliness probes.
-            # The health_check extension can be modified, but should never be removed.
-            health_check:
-              endpoint: ${env:MY_POD_IP}:13133
-          receivers:
-            otlp:
-              protocols:
-                grpc:
-                  endpoint: 0.0.0.0:4317
-            jaeger: null
-            prometheus: null
-            zipkin: null
-          processors:
-            memory_limiter: null
-            tail_sampling:
-              decision_wait: 10s
-              num_traces: 10
-              policies:
-                [
-                  {
-                    name: longer-than-600s,
-                    type: latency,
-                    latency: { threshold_ms: 600 },
-                  },
-                  {
-                    name: error-status,
-                    type: status_code,
-                    status_code: {status_codes: [ERROR]}
-                  }
-                ]
-            resourcedetection:
-              detectors: [gcp]
-              timeout: 10s
-              override: false
-            batch: null
-          exporters:
-            googlecloud:
-              log:
-                default_log_name: opentelemetry.io/collector-exported-log
-              sending_queue:
-                enabled: true
-                num_consumers: 10
-                queue_size: 1000
-            debug: null
-          service:
-            telemetry:
-              logs:
-                level: "info"
-              metrics: null
-            extensions: [health_check, memory_ballast]
-            pipelines:
-              traces:
-                receivers: [otlp]
-                processors: [tail_sampling, resourcedetection]
-                exporters: [googlecloud]
-              metrics: null
-              logs: null
+            autoscaling:
+              enabled: true
+              minReplicas: 1
+              maxReplicas: 10
+              behavior: {}
+              targetCPUUtilizationPercentage: 80
+            config:
+              extensions:
+                # The health_check extension is mandatory for this chart.
+                # Without the health_check extension the collector will fail the readiness and liveliness probes.
+                # The health_check extension can be modified, but should never be removed.
+                health_check:
+                  endpoint: ${env:MY_POD_IP}:13133
+              receivers:
+                otlp:
+                  protocols:
+                    grpc:
+                      endpoint: 0.0.0.0:4317
+                jaeger: null
+                prometheus: null
+                zipkin: null
+              processors:
+                memory_limiter: null
+                tail_sampling:
+                  decision_wait: 10s
+                  num_traces: 10
+                  policies:
+                    [
+                      {
+                        name: longer-than-600ms,
+                        type: latency,
+                        latency: { threshold_ms: 600 },
+                      },
+                      {
+                        name: error-status,
+                        type: status_code,
+                        status_code: {status_codes: [ERROR]}
+                      }
+                    ]
+                resourcedetection:
+                  detectors: [gcp]
+                  timeout: 10s
+                  override: false
+                batch: null
+              exporters:
+                googlecloud:
+                  log:
+                    default_log_name: opentelemetry.io/collector-exported-log
+                  sending_queue:
+                    enabled: true
+                    num_consumers: 10
+                    queue_size: 1000
+                debug: null
+              service:
+                telemetry:
+                  logs:
+                    level: "info"
+                  metrics: null
+                extensions: [health_check, memory_ballast]
+                pipelines:
+                  traces:
+                    receivers: [otlp]
+                    processors: [tail_sampling, resourcedetection]
+                    exporters: [googlecloud]
+                  metrics: null
+                  logs: null
 
-  destination:
-    name: "gke_kentaiso-330205_asia-northeast1_prod-app-0"
-    namespace: tracing
+      destination:
+        name: "{{name}}"
+        namespace: tracing
