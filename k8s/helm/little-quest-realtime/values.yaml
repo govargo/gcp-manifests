@@ -243,8 +243,10 @@ frontend:
     frontendService:
       address: open-match-frontend.open-match.svc.cluster.local.:50504
 
-  # Cloud Trace sampling rate
-  cloudTrace:
+  # Frontend Trace sampling rate
+  trace:
+    exporter: cloudtrace
+    endpoint: 0.0.0.0:4317
     samplingRate: 0.1
 
 mmf:
@@ -366,8 +368,10 @@ mmf:
       address: open-match-query.open-match.svc.cluster.local.:50503
     playerPerMatch: 4
 
-  # Cloud Trace sampling rate
-  cloudTrace:
+  # MMF Trace sampling rate
+  trace:
+    exporter: cloudtrace
+    endpoint: 0.0.0.0:4317
     samplingRate: 0.0
 
 director:
@@ -484,8 +488,10 @@ director:
     allocator:
       address: agones-allocator.agones-system.svc.cluster.local.:8443
 
-  # Cloud Trace sampling rate
-  cloudTrace:
+  # Director Trace sampling rate
+  trace:
+    exporter: cloudtrace
+    endpoint: 0.0.0.0:4317
     samplingRate: 0.0
 
 # environment(e.g. development, staging, production)

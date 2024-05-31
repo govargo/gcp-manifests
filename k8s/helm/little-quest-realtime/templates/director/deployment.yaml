@@ -59,8 +59,12 @@ spec:
             value: {{ .Values.director.agones.allocator.address | quote }}
           - name: GOOGLE_CLOUD_PROJECT
             value: {{ .Values.googleCloudProjectId | quote }}
+          - name: OTEL_EXPORTER
+            value: {{ .Values.director.trace.exporter | quote }}
+          - name: OTEL_EXPORTER_ENDPOINT
+            value: {{ .Values.director.trace.endpoint | quote }}
           - name: OTEL_SAMPLING_RATE
-            value: {{ .Values.director.cloudTrace.samplingRate | quote }}
+            value: {{ .Values.director.trace.samplingRate | quote }}
           - name: POD_NAME
             valueFrom:
               fieldRef:
