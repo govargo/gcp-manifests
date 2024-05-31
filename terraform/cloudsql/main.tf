@@ -42,7 +42,12 @@ module "cloudsql_mysql" {
   maintenance_window_hour         = 12
   maintenance_window_update_track = "stable"
 
-  database_flags = [{ name = "cloudsql_iam_authentication", value = "on" }]
+  ## Set Slow Query to 3s
+  database_flags = [
+    { name = "log_output", value = "FILE" },
+    { name = "slow_query_log", value = "on" },
+    { name = "long_query_time", value = "3" }
+  ]
 
   disk_autoresize       = true
   disk_autoresize_limit = 100
