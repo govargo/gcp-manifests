@@ -38,7 +38,7 @@ spec:
   source:
     repoURL: asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/charts
     chart: little-quest-realtime
-    targetRevision: 0.3.24
+    targetRevision: 0.4.0
     helm:
       releaseName: "little-quest-realtime"
       values: |
@@ -295,8 +295,10 @@ spec:
             frontendService:
               address: open-match-frontend.open-match.svc.cluster.local.:50504
 
-          # Frontend Cloud Trace sampling rate
-          cloudTrace:
+          # Frontend Trace sampling rate
+          trace:
+            exporter: opentelemetry_collector
+            endpoint: 0.0.0.0:4317
             samplingRate: 1.0
 
         mmf:
@@ -424,9 +426,11 @@ spec:
               address: open-match-query.open-match.svc.cluster.local.:50503
             playerPerMatch: 4
 
-          # MMF Cloud Trace sampling rate
-          cloudTrace:
-            samplingRate: 0.0
+          # MMF Trace sampling rate
+          trace:
+            exporter: opentelemetry_collector
+            endpoint: 0.0.0.0:4317
+            samplingRate: 1.0
 
         director:
           serviceName: little-quest-director
@@ -548,9 +552,11 @@ spec:
             allocator:
               address: agones-allocator.agones-system.svc.cluster.local.:8443
 
-          # Director Cloud Trace sampling rate
-          cloudTrace:
-            samplingRate: 0.0
+          # Director Trace sampling rate
+          trace:
+            exporter: opentelemetry_collector
+            endpoint: 0.0.0.0:4317
+            samplingRate: 1.0
 
         # environment(e.g. development, staging, production)
         env: production
