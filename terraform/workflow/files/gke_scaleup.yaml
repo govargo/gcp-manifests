@@ -54,7 +54,7 @@ prod_app_0_scaleup:
         cluster_id: $${cluster_id}
         method: "PATCH"
         path: "/apis/apps/v1/namespaces/little-quest-server/deployments/little-quest-server/scale"
-        headers: 
+        headers:
           Content-Type: application/strategic-merge-patch+json
         body:
           spec:
@@ -100,12 +100,12 @@ prod_corp_0_scaleup:
       call: sys.sleep
       args:
         seconds: 30
-  - scale_up_workload_loop:
+  - scale_up_agones_workload_loop:
       for:
         value: workload_value
         in: ["agones-allocator", "agones-controller", "agones-extensions"]
         steps:
-        - scale_up_workload:
+        - scale_up_agones_workload:
             call: gke.request
             args:
               project: $${project_id}
@@ -113,12 +113,31 @@ prod_corp_0_scaleup:
               cluster_id: $${cluster_id}
               method: "PATCH"
               path: $${"/apis/apps/v1/namespaces/agones-system/deployments/"+workload_value+"/scale"}
-              headers: 
+              headers:
                 Content-Type: application/strategic-merge-patch+json
               body:
                 spec:
                   replicas: 2
-            result: scale_up_workload
+            result: scale_up_agones_workload
+  - scale_up_little_quest_workload_loop:
+      for:
+        value: workload_value
+        in: ["little-quest-director", "little-quest-frontend", "little-quest-mmf"]
+        steps:
+        - scale_up_little_quest_workload:
+            call: gke.request
+            args:
+              project: $${project_id}
+              location: $${region}
+              cluster_id: $${cluster_id}
+              method: "PATCH"
+              path: $${"/apis/apps/v1/namespaces/corp-0/deployments/"+workload_value+"/scale"}
+              headers:
+                Content-Type: application/strategic-merge-patch+json
+              body:
+                spec:
+                  replicas: 1
+            result: scale_up_little_quest_workload
   - scale_up_node_pool_loop:
       for:
         value: node_pool_value

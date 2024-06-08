@@ -42,7 +42,7 @@ prod_app_0_scaledown:
   - wait:
       call: sys.sleep
       args:
-        seconds: 300
+        seconds: 180
   - scale_down_workload:
       call: gke.request
       args:
@@ -93,13 +93,32 @@ prod_corp_0_scaledown:
   - wait:
       call: sys.sleep
       args:
-        seconds: 60
-  - scale_down_workload_loop:
+        seconds: 180
+  - scale_down_little_quest_workload_loop:
+      for:
+        value: workload_value
+        in: ["little-quest-director", "little-quest-frontend", "little-quest-mmf"]
+        steps:
+        - scale_down_little_quest_workload:
+            call: gke.request
+            args:
+              project: $${project_id}
+              location: $${region}
+              cluster_id: $${cluster_id}
+              method: "PATCH"
+              path: $${"/apis/apps/v1/namespaces/corp-0/deployments/"+workload_value+"/scale"}
+              headers:
+                Content-Type: application/strategic-merge-patch+json
+              body:
+                spec:
+                  replicas: $${scale_down_size}
+            result: scale_down_little_quest_workload
+  - scale_down_agones_workload_loop:
       for:
         value: workload_value
         in: ["agones-allocator", "agones-controller", "agones-extensions"]
         steps:
-        - scale_down_workload:
+        - scale_down_agones_workload:
             call: gke.request
             args:
               project: $${project_id}
@@ -112,7 +131,7 @@ prod_corp_0_scaledown:
               body:
                 spec:
                   replicas: $${scale_down_size}
-            result: scale_down_workload
+            result: scale_down_agones_workload
   - scale_down_node_pool_loop:
       for:
         value: node_pool_value
