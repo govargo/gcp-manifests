@@ -72,7 +72,7 @@ spec:
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubedeploymentrolloutstuck
         summary: Deployment rollout is not progressing.
       expr: |
-        kube_deployment_status_condition{condition="Progressing", status="false",job="kube-state-metrics"}
+        kube_deployment_status_condition{condition="Progressing", status="false", job="kube-state-metrics"}
         != 0
       for: 15m
       labels:
