@@ -384,6 +384,196 @@ resource "google_monitoring_alert_policy" "cloud_spanner_instance_high_cpu" {
   notification_channels = [google_monitoring_notification_channel.email_notification.name]
 }
 
+resource "google_monitoring_alert_policy" "cloud_spanner_instance_high_rolling_average_cpu" {
+  display_name = "Cloud Spanner - High Rolling Average CPU Utilization"
+  documentation {
+    content   = "This alert fires when the high rolling average CPU utilization on Cloud Spanner instance ($${metric.labels.instance_id}) rises above 90% for 10 minutes or more."
+    mime_type = "text/markdown"
+  }
+  enabled  = true
+  severity = "ERROR"
+  combiner = "OR"
+  conditions {
+    display_name = "Cloud Spanner - High Rolling Average CPU Utilization"
+    condition_threshold {
+      filter     = "resource.type = \"spanner_instance\" AND metric.type = \"spanner.googleapis.com/instance/cpu/smoothed_utilization\""
+      duration   = "0s"
+      comparison = "COMPARISON_GT"
+      aggregations {
+        alignment_period     = "600s"
+        cross_series_reducer = "REDUCE_SUM"
+        per_series_aligner   = "ALIGN_MEAN"
+      }
+      trigger {
+        count = 1
+      }
+      threshold_value = 0.9
+    }
+  }
+
+  user_labels = {
+    product = "cloud_spanner"
+  }
+
+  alert_strategy {
+    auto_close = "604800s"
+  }
+
+  notification_channels = [google_monitoring_notification_channel.email_notification.name]
+}
+
+resource "google_monitoring_alert_policy" "cloud_spanner_instance_high_disk_utilization" {
+  display_name = "Cloud Spanner - High Disk Utilization"
+  documentation {
+    content   = "This alert fires when the high disk utilization on Cloud Spanner instance ($${metric.labels.instance_id}) rises above 90% for 10 minutes or more."
+    mime_type = "text/markdown"
+  }
+  enabled  = true
+  severity = "ERROR"
+  combiner = "OR"
+  conditions {
+    display_name = "Cloud Spanner - High Disk Utilization"
+    condition_threshold {
+      filter     = "resource.type = \"spanner_instance\" AND metric.type = \"spanner.googleapis.com/instance/storage/utilization\""
+      duration   = "0s"
+      comparison = "COMPARISON_GT"
+      aggregations {
+        alignment_period     = "600s"
+        cross_series_reducer = "REDUCE_SUM"
+        per_series_aligner   = "ALIGN_MEAN"
+      }
+      trigger {
+        count = 1
+      }
+      threshold_value = 0.9
+    }
+  }
+
+  user_labels = {
+    product = "cloud_spanner"
+  }
+
+  alert_strategy {
+    auto_close = "604800s"
+  }
+
+  notification_channels = [google_monitoring_notification_channel.email_notification.name]
+}
+
+resource "google_monitoring_alert_policy" "cloud_spanner_instance_high_read_transaction_latency" {
+  display_name = "Cloud Spanner - High Read Transaction Latency"
+  documentation {
+    content   = "This alert fires when the high read transaction latency on Cloud Spanner instance ($${metric.labels.instance_id})"
+    mime_type = "text/markdown"
+  }
+  enabled  = true
+  severity = "ERROR"
+  combiner = "OR"
+  conditions {
+    display_name = "Cloud Spanner - High Read Transaction Latency"
+    condition_threshold {
+      filter     = "resource.type = \"spanner_instance\" AND metric.type = \"spanner.googleapis.com/api/request_latencies\" AND metric.labels.method = monitoring.regex.full_match(\"ExecuteBatchDml|ExecuteSql|ExecuteStreamingSql|Read|StreamingRead\")"
+      duration   = "0s"
+      comparison = "COMPARISON_GT"
+      aggregations {
+        alignment_period     = "300s"
+        per_series_aligner   = "ALIGN_SUM"
+        cross_series_reducer = "REDUCE_PERCENTILE_99"
+      }
+      trigger {
+        count = 1
+      }
+      threshold_value = 3
+    }
+  }
+
+  user_labels = {
+    product = "cloud_spanner"
+  }
+
+  alert_strategy {
+    auto_close = "604800s"
+  }
+
+  notification_channels = [google_monitoring_notification_channel.email_notification.name]
+}
+
+resource "google_monitoring_alert_policy" "cloud_spanner_instance_high_write_transaction_latency" {
+  display_name = "Cloud Spanner - High Write Transaction Latency"
+  documentation {
+    content   = "This alert fires when the high write transaction latency on Cloud Spanner instance ($${metric.labels.instance_id})"
+    mime_type = "text/markdown"
+  }
+  enabled  = true
+  severity = "ERROR"
+  combiner = "OR"
+  conditions {
+    display_name = "Cloud Spanner - High Write Transaction Latency"
+    condition_threshold {
+      filter     = "resource.type = \"spanner_instance\" AND metric.type = \"spanner.googleapis.com/api/request_latencies\" AND metric.labels.method = \"Commit\""
+      duration   = "0s"
+      comparison = "COMPARISON_GT"
+      aggregations {
+        alignment_period     = "300s"
+        per_series_aligner   = "ALIGN_SUM"
+        cross_series_reducer = "REDUCE_PERCENTILE_99"
+      }
+      trigger {
+        count = 1
+      }
+      threshold_value = 3
+    }
+  }
+
+  user_labels = {
+    product = "cloud_spanner"
+  }
+
+  alert_strategy {
+    auto_close = "604800s"
+  }
+
+  notification_channels = [google_monitoring_notification_channel.email_notification.name]
+}
+
+resource "google_monitoring_alert_policy" "cloud_spanner_instance_high_lock_wait_time" {
+  display_name = "Cloud Spanner - High Lock Wait Time"
+  documentation {
+    content   = "This alert fires when the high lock wait time on Cloud Spanner instance ($${metric.labels.instance_id})"
+    mime_type = "text/markdown"
+  }
+  enabled  = true
+  severity = "ERROR"
+  combiner = "OR"
+  conditions {
+    display_name = "Cloud Spanner - High Lock Wait Time"
+    condition_threshold {
+      filter     = "resource.type = \"spanner_instance\" AND metric.type = \"spanner.googleapis.com/lock_stat/total/lock_wait_time\""
+      duration   = "0s"
+      comparison = "COMPARISON_GT"
+      aggregations {
+        alignment_period     = "300s"
+        cross_series_reducer = "REDUCE_SUM"
+        per_series_aligner   = "ALIGN_RATE"
+      }
+      trigger {
+        count = 1
+      }
+      threshold_value = 3
+    }
+  }
+
+  user_labels = {
+    product = "cloud_spanner"
+  }
+
+  alert_strategy {
+    auto_close = "604800s"
+  }
+
+  notification_channels = [google_monitoring_notification_channel.email_notification.name]
+}
+
 ## Cloud SQL
 resource "google_monitoring_alert_policy" "cloudsql_instance_failed_state" {
   display_name = "Cloud SQL - Instance in Failed State"
