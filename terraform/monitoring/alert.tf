@@ -1467,6 +1467,45 @@ resource "google_monitoring_alert_policy" "cloud_workflows_execution_failed" {
   notification_channels = [google_monitoring_notification_channel.email_notification.name]
 }
 
+## Datastream
+resource "google_monitoring_alert_policy" "datastream_old_stream_freshness" {
+  display_name = "Datastream - Old Stream Freshness"
+  documentation {
+    content   = "This alert fires when the stream freshness of a datastream becomes old for 5 minutes or more."
+    mime_type = "text/markdown"
+  }
+  enabled  = true
+  severity = "WARNING"
+  combiner = "OR"
+  conditions {
+    display_name = "Datastream - Old Stream Freshness"
+    condition_threshold {
+      filter     = "resource.type = \"datastream.googleapis.com/Stream\" AND metric.type = \"datastream.googleapis.com/stream/freshness\""
+      duration   = "300s"
+      comparison = "COMPARISON_GT"
+      aggregations {
+        alignment_period     = "300s"
+        per_series_aligner   = "ALIGN_SUM"
+        cross_series_reducer = "REDUCE_SUM"
+      }
+      trigger {
+        count = 1
+      }
+      threshold_value = 60 # 60s
+    }
+  }
+
+  user_labels = {
+    product = "datastream"
+  }
+
+  alert_strategy {
+    auto_close = "604800s"
+  }
+
+  notification_channels = [google_monitoring_notification_channel.email_notification.name]
+}
+
 ## Quota
 resource "google_monitoring_alert_policy" "quota_exceeded" {
   display_name = "Quota Exceeded"
