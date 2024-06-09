@@ -540,17 +540,17 @@ resource "google_monitoring_alert_policy" "cloudsql_instance_high_disk" {
   notification_channels = [google_monitoring_notification_channel.email_notification.name]
 }
 
-resource "google_monitoring_alert_policy" "cloudsql_database_connection_errors" {
-  display_name = "Cloud SQL - Database Connection Errors"
+resource "google_monitoring_alert_policy" "cloudsql_database_many_abort_connection" {
+  display_name = "Cloud SQL - Database Many Aborted Connection"
   documentation {
-    content   = "This alert fires when the number of connection errors on a Cloud SQL instance exceeds a threshold. This could indicate network issues or problems with your database configuration."
+    content   = "This alert fires when the number of aborted connection on a Cloud SQL instance exceeds a threshold. This could indicate network issues or problems with your database configuration."
     mime_type = "text/markdown"
   }
   enabled  = true
   severity = "WARNING"
   combiner = "OR"
   conditions {
-    display_name = "Cloud SQL - Database Connection Errors"
+    display_name = "Cloud SQL - Database Many Aborted Connection"
     condition_threshold {
       filter     = "resource.type = \"cloudsql_database\" AND metric.type = \"cloudsql.googleapis.com/database/mysql/aborted_connects_count\""
       duration   = "0s"
@@ -564,6 +564,44 @@ resource "google_monitoring_alert_policy" "cloudsql_database_connection_errors" 
         count = 1
       }
       threshold_value = 10
+    }
+  }
+
+  user_labels = {
+    product = "cloud_sql"
+  }
+
+  alert_strategy {
+    auto_close = "604800s"
+  }
+
+  notification_channels = [google_monitoring_notification_channel.email_notification.name]
+}
+
+resource "google_monitoring_alert_policy" "cloudsql_database_exceeded_max_connection" {
+  display_name = "Cloud SQL - Database Exceeded Max Connection"
+  documentation {
+    content   = "This alert fires when the number of max connection on a Cloud SQL instance exceeds a threshold."
+    mime_type = "text/markdown"
+  }
+  enabled  = true
+  severity = "ERROR"
+  combiner = "OR"
+  conditions {
+    display_name = "Cloud SQL - Database Exceeded Max Connection"
+    condition_threshold {
+      filter     = "resource.type = \"cloudsql_database\" AND metric.type = \"cloudsql.googleapis.com/database/network/connections\""
+      duration   = "0s"
+      comparison = "COMPARISON_GT"
+      aggregations {
+        alignment_period     = "300s"
+        cross_series_reducer = "REDUCE_SUM"
+        per_series_aligner   = "ALIGN_MEAN"
+      }
+      trigger {
+        count = 1
+      }
+      threshold_value = 250
     }
   }
 
