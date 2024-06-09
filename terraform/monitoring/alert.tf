@@ -1109,6 +1109,87 @@ resource "google_monitoring_alert_policy" "cloud_nat_high_dropped_sent_packet" {
   notification_channels = [google_monitoring_notification_channel.email_notification.name]
 }
 
+## Cloud DNS
+resource "google_monitoring_alert_policy" "cloud_dns_high_query_latency" {
+  display_name = "Cloud DNS - High Query Latency"
+  documentation {
+    content   = "This alert fires when the query latency of Cloud DNS exceeds 300 milliseconds for 5 minutes or more."
+    mime_type = "text/markdown"
+  }
+  enabled  = true
+  severity = "WARNING"
+  combiner = "OR"
+  conditions {
+    display_name = "Cloud DNS - High Query Latency"
+    condition_threshold {
+      filter     = "resource.type = \"dns_query\" AND metric.type = \"dns.googleapis.com/query/latencies\""
+      duration   = "300s"
+      comparison = "COMPARISON_GT"
+      aggregations {
+        alignment_period     = "300s"
+        per_series_aligner   = "ALIGN_SUM"
+        cross_series_reducer = "REDUCE_PERCENTILE_99"
+      }
+      trigger {
+        count = 1
+      }
+      threshold_value = 300
+    }
+  }
+
+  user_labels = {
+    product = "cloud_dns"
+  }
+
+  alert_strategy {
+    auto_close = "604800s"
+  }
+
+  notification_channels = [google_monitoring_notification_channel.email_notification.name]
+}
+
+resource "google_monitoring_alert_policy" "cloud_dns_high_error_rate" {
+  display_name = "Cloud DNS - High Error Rate"
+  documentation {
+    content   = "This alert indicates that there are failures for name resolusion by Cloud DNS."
+    mime_type = "text/markdown"
+  }
+  enabled  = true
+  severity = "ERROR"
+  combiner = "OR"
+  conditions {
+    display_name = "Cloud DNS - High Error Rate"
+    condition_threshold {
+      filter     = "resource.type = \"dns_query\" AND metric.type = \"dns.googleapis.com/query/response_count\" AND metric.labels.response_code != monitoring.regex.full_match(\"NOERROR|NXDOMAIN\")"
+      duration   = "0s"
+      comparison = "COMPARISON_GT"
+      aggregations {
+        alignment_period     = "300s"
+        cross_series_reducer = "REDUCE_SUM"
+        group_by_fields = [
+          "resource.label.target_name",
+          "resource.label.target_type"
+        ]
+        per_series_aligner = "ALIGN_RATE"
+      }
+      trigger {
+        count = 1
+      }
+      threshold_value = 1
+    }
+  }
+
+  user_labels = {
+    product = "cloud_dns"
+  }
+
+  alert_strategy {
+    auto_close = "604800s"
+  }
+
+  notification_channels = [google_monitoring_notification_channel.email_notification.name]
+}
+
 ## Cloud Run
 resource "google_monitoring_alert_policy" "cloud_run_high_execution_time" {
   display_name = "Cloud Run - High Execution Time"
