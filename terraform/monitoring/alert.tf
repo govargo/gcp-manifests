@@ -1025,6 +1025,244 @@ resource "google_monitoring_alert_policy" "network_high_packet_loss" {
   notification_channels = [google_monitoring_notification_channel.email_notification.name]
 }
 
+## Cloud NAT
+resource "google_monitoring_alert_policy" "cloud_nat_allocation_failed" {
+  display_name = "Cloud NAT - Allocation Failed"
+  documentation {
+    content   = "This alert indicates that there is a failure in allocating NAT IPs to any VM in the NAT gateway."
+    mime_type = "text/markdown"
+  }
+  enabled  = true
+  severity = "ERROR"
+  combiner = "OR"
+  conditions {
+    display_name = "Cloud NAT - Allocation Failed"
+    condition_threshold {
+      filter     = "resource.type = \"nat_gateway\" AND metric.type = \"router.googleapis.com/nat/nat_allocation_failed\""
+      duration   = "0s"
+      comparison = "COMPARISON_GT"
+      aggregations {
+        alignment_period     = "300s"
+        cross_series_reducer = "REDUCE_COUNT_TRUE"
+        group_by_fields = [
+          "resource.label.gateway_name"
+        ]
+        per_series_aligner = "ALIGN_NEXT_OLDER"
+      }
+      trigger {
+        count = 1
+      }
+      threshold_value = 1
+    }
+  }
+
+  user_labels = {
+    product = "cloud_nat"
+  }
+
+  alert_strategy {
+    auto_close = "604800s"
+  }
+
+  notification_channels = [google_monitoring_notification_channel.email_notification.name]
+}
+
+resource "google_monitoring_alert_policy" "cloud_nat_high_dropped_sent_packet" {
+  display_name = "Cloud NAT - High Dropped Sent Packet"
+  documentation {
+    content   = "This alert indicates that there are failures for sent packets dropped by the NAT gateway."
+    mime_type = "text/markdown"
+  }
+  enabled  = true
+  severity = "ERROR"
+  combiner = "OR"
+  conditions {
+    display_name = "Cloud NAT - High Dropped Sent Packet"
+    condition_threshold {
+      filter     = "resource.type = \"nat_gateway\" AND metric.type = \"router.googleapis.com/nat/dropped_sent_packets_count\""
+      duration   = "0s"
+      comparison = "COMPARISON_GT"
+      aggregations {
+        alignment_period     = "300s"
+        cross_series_reducer = "REDUCE_SUM"
+        group_by_fields = [
+          "resource.label.gateway_name",
+          "metric.label.reason"
+        ]
+        per_series_aligner = "ALIGN_RATE"
+      }
+      trigger {
+        count = 1
+      }
+      threshold_value = 1
+    }
+  }
+
+  user_labels = {
+    product = "cloud_nat"
+  }
+
+  alert_strategy {
+    auto_close = "604800s"
+  }
+
+  notification_channels = [google_monitoring_notification_channel.email_notification.name]
+}
+
+## Cloud Run
+resource "google_monitoring_alert_policy" "cloud_run_high_execution_time" {
+  display_name = "Cloud Run - High Execution Time"
+  documentation {
+    content   = "This alert fires when the execution time of Cloud Run ($${metric.labels.service_name}) exceeds 300 milliseconds for 5 minutes or more."
+    mime_type = "text/markdown"
+  }
+  enabled  = true
+  severity = "WARNING"
+  combiner = "OR"
+  conditions {
+    display_name = "Cloud Run - High Execution Time"
+    condition_threshold {
+      filter     = "resource.type = \"cloud_run_revision\" AND metric.type = \"run.googleapis.com/request_latencies\""
+      duration   = "300s"
+      comparison = "COMPARISON_GT"
+      aggregations {
+        alignment_period     = "300s"
+        per_series_aligner   = "ALIGN_SUM"
+        cross_series_reducer = "REDUCE_PERCENTILE_99"
+      }
+      trigger {
+        count = 1
+      }
+      threshold_value = 300
+    }
+  }
+
+  user_labels = {
+    product = "cloud_run"
+  }
+
+  alert_strategy {
+    auto_close = "604800s"
+  }
+
+  notification_channels = [google_monitoring_notification_channel.email_notification.name]
+}
+
+resource "google_monitoring_alert_policy" "cloud_run_high_error_rate" {
+  display_name = "Cloud Run - High Error Rate"
+  documentation {
+    content   = "This alert fires when the execution error for ($${metric.labels.service_name}) exceeds for 5 minutes or more."
+    mime_type = "text/markdown"
+  }
+  enabled  = true
+  severity = "WARNING"
+  combiner = "OR"
+  conditions {
+    display_name = "Cloud Run - High Error Rate"
+    condition_threshold {
+      filter     = "resource.type = \"cloud_run_revision\" AND metric.type = \"run.googleapis.com/request_count\" AND metric.labels.response_code_class != \"2xx\""
+      duration   = "300s"
+      comparison = "COMPARISON_GT"
+      aggregations {
+        alignment_period     = "300s"
+        cross_series_reducer = "REDUCE_SUM"
+        per_series_aligner   = "ALIGN_RATE"
+      }
+      trigger {
+        count = 1
+      }
+      threshold_value = 1
+    }
+  }
+
+  user_labels = {
+    product = "cloud_run"
+  }
+
+  alert_strategy {
+    auto_close = "604800s"
+  }
+
+  notification_channels = [google_monitoring_notification_channel.email_notification.name]
+}
+
+## Cloud Functions
+resource "google_monitoring_alert_policy" "cloud_function_high_execution_time" {
+  display_name = "Cloud Function - High Execution Time"
+  documentation {
+    content   = "This alert fires when the execution time of Cloud Function ($${metric.labels.function_name}) exceeds 300 milliseconds for 5 minutes or more."
+    mime_type = "text/markdown"
+  }
+  enabled  = true
+  severity = "WARNING"
+  combiner = "OR"
+  conditions {
+    display_name = "Cloud Function - High Execution Time"
+    condition_threshold {
+      filter     = "resource.type = \"cloud_function\" AND metric.type = \"cloudfunctions.googleapis.com/function/execution_times\""
+      duration   = "300s"
+      comparison = "COMPARISON_GT"
+      aggregations {
+        alignment_period     = "300s"
+        per_series_aligner   = "ALIGN_SUM"
+        cross_series_reducer = "REDUCE_PERCENTILE_99"
+      }
+      trigger {
+        count = 1
+      }
+      threshold_value = 300000000 # 300ms
+    }
+  }
+
+  user_labels = {
+    product = "cloud_function"
+  }
+
+  alert_strategy {
+    auto_close = "604800s"
+  }
+
+  notification_channels = [google_monitoring_notification_channel.email_notification.name]
+}
+
+resource "google_monitoring_alert_policy" "cloud_function_high_error_rate" {
+  display_name = "Cloud Function - High Error Rate"
+  documentation {
+    content   = "This alert fires when the execution error for ($${metric.labels.function_name}) exceeds for 5 minutes or more."
+    mime_type = "text/markdown"
+  }
+  enabled  = true
+  severity = "WARNING"
+  combiner = "OR"
+  conditions {
+    display_name = "Cloud Function - High Error Rate"
+    condition_threshold {
+      filter     = "resource.type = \"cloud_function\" AND metric.type = \"cloudfunctions.googleapis.com/function/execution_count\" AND metric.labels.status != \"ok\""
+      duration   = "300s"
+      comparison = "COMPARISON_GT"
+      aggregations {
+        alignment_period     = "300s"
+        cross_series_reducer = "REDUCE_SUM"
+        per_series_aligner   = "ALIGN_RATE"
+      }
+      trigger {
+        count = 1
+      }
+      threshold_value = 1
+    }
+  }
+
+  user_labels = {
+    product = "cloud_function"
+  }
+
+  alert_strategy {
+    auto_close = "604800s"
+  }
+
+  notification_channels = [google_monitoring_notification_channel.email_notification.name]
+}
+
 ## BigQuery
 resource "google_monitoring_alert_policy" "bigquery_query_execution_time" {
   display_name = "BigQuery - High query execution time"
