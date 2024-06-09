@@ -1344,6 +1344,45 @@ resource "google_monitoring_alert_policy" "cloud_function_high_error_rate" {
   notification_channels = [google_monitoring_notification_channel.email_notification.name]
 }
 
+## Cloud Pub/Sub
+resource "google_monitoring_alert_policy" "cloud_pubsub_oldest_unacked_message" {
+  display_name = "Cloud Pub/Sub - Oldest Unacked Message"
+  documentation {
+    content   = "This alert fires when the oldest unacked message remains for 1 minutes or more."
+    mime_type = "text/markdown"
+  }
+  enabled  = true
+  severity = "WARNING"
+  combiner = "OR"
+  conditions {
+    display_name = "Cloud Pub/Sub - Oldest Unacked Message"
+    condition_threshold {
+      filter     = "resource.type = \"pubsub_subscription\" AND metric.type = \"pubsub.googleapis.com/subscription/oldest_unacked_message_age\""
+      duration   = "300s"
+      comparison = "COMPARISON_GT"
+      aggregations {
+        alignment_period     = "300s"
+        cross_series_reducer = "REDUCE_MAX"
+        per_series_aligner   = "ALIGN_MAX"
+      }
+      trigger {
+        count = 1
+      }
+      threshold_value = 60 # 60s
+    }
+  }
+
+  user_labels = {
+    product = "cloud_pubsub"
+  }
+
+  alert_strategy {
+    auto_close = "604800s"
+  }
+
+  notification_channels = [google_monitoring_notification_channel.email_notification.name]
+}
+
 ## BigQuery
 resource "google_monitoring_alert_policy" "bigquery_query_execution_time" {
   display_name = "BigQuery - High query execution time"
@@ -1377,6 +1416,48 @@ resource "google_monitoring_alert_policy" "bigquery_query_execution_time" {
 
   user_labels = {
     product = "bigquery"
+  }
+
+  alert_strategy {
+    auto_close = "604800s"
+  }
+
+  notification_channels = [google_monitoring_notification_channel.email_notification.name]
+}
+
+## Cloud Workflows
+resource "google_monitoring_alert_policy" "cloud_workflows_execution_failed" {
+  display_name = "Cloud Workflows - Execution Failed"
+  documentation {
+    content   = "This alert fires when the cloud workflows execution failed for 5 minutes or more."
+    mime_type = "text/markdown"
+  }
+  enabled  = true
+  severity = "WARNING"
+  combiner = "OR"
+  conditions {
+    display_name = "Cloud Workflows - Execution Failed"
+    condition_threshold {
+      filter     = "resource.type = \"workflows.googleapis.com/Workflow\" AND metric.type = \"workflows.googleapis.com/finished_execution_count\" AND metric.labels.status = \"FAILED\""
+      duration   = "300s"
+      comparison = "COMPARISON_GT"
+      aggregations {
+        alignment_period     = "300s"
+        per_series_aligner   = "ALIGN_SUM"
+        cross_series_reducer = "REDUCE_SUM"
+        group_by_fields = [
+          "resource.label.workflow_id"
+        ]
+      }
+      trigger {
+        count = 1
+      }
+      threshold_value = 1
+    }
+  }
+
+  user_labels = {
+    product = "cloud_workflows"
   }
 
   alert_strategy {
