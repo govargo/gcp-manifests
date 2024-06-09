@@ -60,7 +60,7 @@
                       ],
                       "perSeriesAligner": "ALIGN_DELTA"
                     },
-                    "filter": "resource.type=\"workflows.googleapis.com/Workflow\" resource.labels.project_id=\"kentaiso-330205\" metric.type=\"workflows.googleapis.com/execution_times\""
+                    "filter": "resource.type=\"workflows.googleapis.com/Workflow\" metric.type=\"workflows.googleapis.com/execution_times\""
                   }
                 }
               }
@@ -89,7 +89,7 @@
                       ],
                       "perSeriesAligner": "ALIGN_SUM"
                     },
-                    "filter": "resource.type=\"workflows.googleapis.com/Workflow\" resource.labels.project_id=\"kentaiso-330205\" metric.labels.status=\"FAILED\" metric.type=\"workflows.googleapis.com/finished_execution_count\""
+                    "filter": "resource.type=\"workflows.googleapis.com/Workflow\" metric.labels.status=\"FAILED\" metric.type=\"workflows.googleapis.com/finished_execution_count\""
                   }
                 }
               }
@@ -118,7 +118,7 @@
                       ],
                       "perSeriesAligner": "ALIGN_SUM"
                     },
-                    "filter": "resource.type=\"workflows.googleapis.com/Workflow\" resource.labels.project_id=\"kentaiso-330205\" metric.labels.status=\"SUCCEEDED\" metric.type=\"workflows.googleapis.com/finished_execution_count\""
+                    "filter": "resource.type=\"workflows.googleapis.com/Workflow\" metric.labels.status=\"SUCCEEDED\" metric.type=\"workflows.googleapis.com/finished_execution_count\""
                   }
                 }
               }
@@ -172,7 +172,7 @@
         "widget": {
           "title": "Cloud Workflows ログ",
           "logsPanel": {
-            "filter": "(protoPayload.resourceName=\"projects/kentaiso-330205/locations/asia-northeast1/workflows/prod-little-quest-daily-dataform\" resource.type=\"audited_resource\" resource.labels.service=(\"workflowexecutions.googleapis.com\" OR \"workflows.googleapis.com\")) OR (resource.type=\"workflows.googleapis.com/Workflow\" resource.labels.workflow_id=\"prod-little-quest-daily-dataform\" resource.labels.location=\"asia-northeast1\") severity>=DEFAULT"
+            "filter": "(resource.type=\"audited_resource\" resource.labels.service=(\"workflowexecutions.googleapis.com\" OR \"workflows.googleapis.com\")) OR (resource.type=\"workflows.googleapis.com/Workflow\" resource.labels.workflow_id=\"prod-little-quest-daily-dataform\" resource.labels.location=\"asia-northeast1\") severity>=DEFAULT"
           }
         }
       }
