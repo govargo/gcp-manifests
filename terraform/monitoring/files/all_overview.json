@@ -1,5 +1,5 @@
 {
-  "displayName": "All - Overview",
+  "displayName": "All - Little Quest Overview",
   "dashboardFilters": [
     {
       "filterType": "RESOURCE_LABEL",
@@ -169,17 +169,14 @@
             "dataSets": [
               {
                 "minAlignmentPeriod": "60s",
-                "plotType": "LINE",
+                "plotType": "HEATMAP",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
                   "timeSeriesFilter": {
                     "aggregation": {
                       "alignmentPeriod": "60s",
                       "crossSeriesReducer": "REDUCE_SUM",
-                      "groupByFields": [
-                        "resource.label.\"url_map_name\""
-                      ],
-                      "perSeriesAligner": "ALIGN_PERCENTILE_99"
+                      "perSeriesAligner": "ALIGN_DELTA"
                     },
                     "filter": "metric.type=\"loadbalancing.googleapis.com/https/total_latencies\" resource.type=\"https_lb_rule\" resource.label.\"url_map_name\"=monitoring.regex.full_match(\"k8s2-.*-little-quest-serve-little-quest-serve-.*\")"
                   }

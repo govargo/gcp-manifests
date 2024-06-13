@@ -61,15 +61,56 @@
                 "minAlignmentPeriod": "60s",
                 "plotType": "LINE",
                 "targetAxis": "Y1",
+                "legendTemplate": "50th - ${resource.labels.url_map_name}",
                 "timeSeriesQuery": {
                   "timeSeriesFilter": {
                     "aggregation": {
                       "alignmentPeriod": "60s",
-                      "crossSeriesReducer": "REDUCE_SUM",
+                      "crossSeriesReducer": "REDUCE_PERCENTILE_50",
                       "groupByFields": [
                         "resource.label.\"url_map_name\""
                       ],
-                      "perSeriesAligner": "ALIGN_PERCENTILE_99"
+                      "perSeriesAligner": "ALIGN_DELTA"
+                    },
+                    "filter": "metric.type=\"loadbalancing.googleapis.com/https/total_latencies\" resource.type=\"https_lb_rule\""
+                  },
+                  "unitOverride": "ms"
+                }
+              },
+              {
+                "minAlignmentPeriod": "60s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "legendTemplate": "95th - ${resource.labels.url_map_name}",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "crossSeriesReducer": "REDUCE_PERCENTILE_95",
+                      "groupByFields": [
+                        "resource.label.\"url_map_name\""
+                      ],
+                      "perSeriesAligner": "ALIGN_DELTA"
+                    },
+                    "filter": "metric.type=\"loadbalancing.googleapis.com/https/total_latencies\" resource.type=\"https_lb_rule\""
+                  },
+                  "unitOverride": "ms"
+                }
+              },
+              {
+                "minAlignmentPeriod": "60s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "legendTemplate": "99th - ${resource.labels.url_map_name}",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "crossSeriesReducer": "REDUCE_PERCENTILE_99",
+                      "groupByFields": [
+                        "resource.label.\"url_map_name\""
+                      ],
+                      "perSeriesAligner": "ALIGN_DELTA"
                     },
                     "filter": "metric.type=\"loadbalancing.googleapis.com/https/total_latencies\" resource.type=\"https_lb_rule\""
                   },
@@ -176,6 +217,27 @@
                 "minAlignmentPeriod": "60s",
                 "plotType": "LINE",
                 "targetAxis": "Y1",
+                "legendTemplate": "50th - ${resource.labels.url_map_name}",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "crossSeriesReducer": "REDUCE_PERCENTILE_50",
+                      "groupByFields": [
+                        "resource.label.\"url_map_name\""
+                      ],
+                      "perSeriesAligner": "ALIGN_DELTA"
+                    },
+                    "filter": "metric.type=\"loadbalancing.googleapis.com/https/frontend_tcp_rtt\" resource.type=\"https_lb_rule\""
+                  },
+                  "unitOverride": "ms"
+                }
+              },
+              {
+                "minAlignmentPeriod": "60s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "legendTemplate": "95th - ${resource.labels.url_map_name}",
                 "timeSeriesQuery": {
                   "timeSeriesFilter": {
                     "aggregation": {
@@ -195,30 +257,12 @@
                 "minAlignmentPeriod": "60s",
                 "plotType": "LINE",
                 "targetAxis": "Y1",
+                "legendTemplate": "99th - ${resource.labels.url_map_name}",
                 "timeSeriesQuery": {
                   "timeSeriesFilter": {
                     "aggregation": {
                       "alignmentPeriod": "60s",
-                      "crossSeriesReducer": "REDUCE_PERCENTILE_05",
-                      "groupByFields": [
-                        "resource.label.\"url_map_name\""
-                      ],
-                      "perSeriesAligner": "ALIGN_PERCENTILE_99"
-                    },
-                    "filter": "metric.type=\"loadbalancing.googleapis.com/https/frontend_tcp_rtt\" resource.type=\"https_lb_rule\""
-                  },
-                  "unitOverride": "ms"
-                }
-              },
-              {
-                "minAlignmentPeriod": "60s",
-                "plotType": "LINE",
-                "targetAxis": "Y1",
-                "timeSeriesQuery": {
-                  "timeSeriesFilter": {
-                    "aggregation": {
-                      "alignmentPeriod": "60s",
-                      "crossSeriesReducer": "REDUCE_PERCENTILE_50",
+                      "crossSeriesReducer": "REDUCE_PERCENTILE_99",
                       "groupByFields": [
                         "resource.label.\"url_map_name\""
                       ],
@@ -250,7 +294,27 @@
             },
             "dataSets": [
               {
-                "legendTemplate": "95th",
+                "legendTemplate": "50th - ${resource.labels.url_map_name}",
+                "minAlignmentPeriod": "60s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "crossSeriesReducer": "REDUCE_PERCENTILE_50",
+                      "groupByFields": [
+                        "resource.label.\"url_map_name\""
+                      ],
+                      "perSeriesAligner": "ALIGN_DELTA"
+                    },
+                    "filter": "metric.type=\"loadbalancing.googleapis.com/https/backend_latencies\" resource.type=\"https_lb_rule\""
+                  },
+                  "unitOverride": "ms"
+                }
+              },
+              {
+                "legendTemplate": "95th - ${resource.labels.url_map_name}",
                 "minAlignmentPeriod": "60s",
                 "plotType": "LINE",
                 "targetAxis": "Y1",
@@ -270,7 +334,7 @@
                 }
               },
               {
-                "legendTemplate": "5th",
+                "legendTemplate": "99th - ${resource.labels.url_map_name}",
                 "minAlignmentPeriod": "60s",
                 "plotType": "LINE",
                 "targetAxis": "Y1",
@@ -278,27 +342,7 @@
                   "timeSeriesFilter": {
                     "aggregation": {
                       "alignmentPeriod": "60s",
-                      "crossSeriesReducer": "REDUCE_PERCENTILE_05",
-                      "groupByFields": [
-                        "resource.label.\"url_map_name\""
-                      ],
-                      "perSeriesAligner": "ALIGN_DELTA"
-                    },
-                    "filter": "metric.type=\"loadbalancing.googleapis.com/https/backend_latencies\" resource.type=\"https_lb_rule\""
-                  },
-                  "unitOverride": "ms"
-                }
-              },
-              {
-                "legendTemplate": "50th",
-                "minAlignmentPeriod": "60s",
-                "plotType": "LINE",
-                "targetAxis": "Y1",
-                "timeSeriesQuery": {
-                  "timeSeriesFilter": {
-                    "aggregation": {
-                      "alignmentPeriod": "60s",
-                      "crossSeriesReducer": "REDUCE_PERCENTILE_50",
+                      "crossSeriesReducer": "REDUCE_PERCENTILE_99",
                       "groupByFields": [
                         "resource.label.\"url_map_name\""
                       ],

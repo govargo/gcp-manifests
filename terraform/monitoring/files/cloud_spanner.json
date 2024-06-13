@@ -4,7 +4,7 @@
     "columns": 48,
     "tiles": [
       {
-        "width": 24,
+        "width": 16,
         "height": 16,
         "widget": {
           "title": "CPU 使用率（優先度別）",
@@ -46,8 +46,8 @@
         }
       },
       {
-        "xPos": 24,
-        "width": 24,
+        "xPos": 16,
+        "width": 16,
         "height": 16,
         "widget": {
           "title": "合計 CPU 使用率",
@@ -83,8 +83,8 @@
         }
       },
       {
-        "yPos": 16,
-        "width": 24,
+        "xPos": 32,
+        "width": 16,
         "height": 16,
         "widget": {
           "title": "オペレーションのタイプ別の CPU 使用率",
@@ -120,9 +120,8 @@
         }
       },
       {
-        "xPos": 24,
         "yPos": 16,
-        "width": 24,
+        "width": 16,
         "height": 16,
         "widget": {
           "title": "システム別の CPU 使用率",
@@ -179,8 +178,9 @@
         }
       },
       {
-        "yPos": 32,
-        "width": 24,
+        "xPos": 16,
+        "yPos": 16,
+        "width": 16,
         "height": 16,
         "widget": {
           "title": "リクエスト レイテンシ",
@@ -294,8 +294,9 @@
         }
       },
       {
-        "yPos": 48,
-        "width": 24,
+        "xPos": 32,
+        "yPos": 16,
+        "width": 16,
         "height": 16,
         "widget": {
           "title": "読み取りトランザクション レイテンシ",
@@ -360,9 +361,8 @@
         }
       },
       {
-        "xPos": 24,
-        "yPos": 48,
-        "width": 24,
+        "yPos": 32,
+        "width": 16,
         "height": 16,
         "widget": {
           "title": "読み書きトランザクション レイテンシ",
@@ -427,8 +427,9 @@
         }
       },
       {
-        "yPos": 64,
-        "width": 24,
+        "xPos": 16,
+        "yPos": 32,
+        "width": 16,
         "height": 16,
         "widget": {
           "title": "読み取りレイテンシー",
@@ -460,9 +461,9 @@
         }
       },
       {
-        "xPos": 24,
-        "yPos": 64,
-        "width": 24,
+        "xPos": 32,
+        "yPos": 32,
+        "width": 16,
         "height": 16,
         "widget": {
           "title": "書き込みレイテンシー",
@@ -494,9 +495,8 @@
         }
       },
       {
-        "xPos": 24,
-        "yPos": 32,
-        "width": 24,
+        "yPos": 48,
+        "width": 16,
         "height": 16,
         "widget": {
           "title": "1 秒あたりのオペレーションの回数",
@@ -577,8 +577,9 @@
         }
       },
       {
-        "yPos": 80,
-        "width": 24,
+        "xPos": 16,
+        "yPos": 48,
+        "width": 16,
         "height": 16,
         "widget": {
           "title": "スループット",
@@ -627,9 +628,9 @@
         }
       },
       {
-        "xPos": 24,
-        "yPos": 80,
-        "width": 24,
+        "xPos": 32,
+        "yPos": 48,
+        "width": 16,
         "height": 16,
         "widget": {
           "title": "ロック待機時間",
@@ -662,8 +663,57 @@
         }
       },
       {
-        "yPos": 96,
-        "width": 24,
+        "yPos": 64,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "Transaction commit/abort attempts",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "minAlignmentPeriod": "60s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "perSeriesAligner": "ALIGN_RATE"
+                    },
+                    "filter": "metric.type=\"spanner.googleapis.com/transaction_stat/total/commit_attempt_count\" resource.type=\"spanner_instance\""
+                  }
+                }
+              },
+              {
+                "minAlignmentPeriod": "60s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "perSeriesAligner": "ALIGN_RATE"
+                    },
+                    "filter": "metric.type=\"spanner.googleapis.com/transaction_stat/total/commit_retry_count\" resource.type=\"spanner_instance\""
+                  }
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 16,
+        "yPos": 64,
+        "width": 16,
         "height": 16,
         "widget": {
           "title": "コンピューティング容量",
@@ -712,9 +762,9 @@
         }
       },
       {
-        "xPos": 24,
-        "yPos": 96,
-        "width": 24,
+        "xPos": 32,
+        "yPos": 64,
+        "width": 16,
         "height": 16,
         "widget": {
           "title": "ストレージの合計",

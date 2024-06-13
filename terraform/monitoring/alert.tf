@@ -753,7 +753,7 @@ resource "google_monitoring_alert_policy" "cloudsql_database_many_abort_connecti
       trigger {
         count = 1
       }
-      threshold_value = 10
+      threshold_value = 100
     }
   }
 
