@@ -20,18 +20,18 @@ spec:
       source:
         chart: argocd-image-updater
         repoURL: https://argoproj.github.io/argo-helm
-        targetRevision: 0.9.1
+        targetRevision: 0.10.1
         helm:
           releaseName: "argocd-image-updater"
           values: |
             config:
               registries:
-                - name: Google Artifact Registry
-                  api_url: https://asia-northeast1-docker.pkg.dev
-                  prefix: asia-northeast1-docker.pkg.dev
-                  ping: no
-                  credentials: ext:/scripts/auth.sh
-                  credsexpire: 30m
+              - name: Google Artifact Registry
+                api_url: https://asia-northeast1-docker.pkg.dev
+                prefix: asia-northeast1-docker.pkg.dev
+                ping: no
+                credentials: ext:/scripts/auth.sh
+                credsexpire: 30m
             authScripts:
               enabled: true
               scripts:
@@ -39,9 +39,18 @@ spec:
                   #!/bin/sh
                   ACCESS_TOKEN=$(wget --header 'Metadata-Flavor: Google' http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token -q -O - | grep -Eo '"access_token":.*?[^\\]",' | cut -d '"' -f 4)
                   echo "oauth2accesstoken:$ACCESS_TOKEN"
+
             serviceAccount:
               annotations:
                 iam.gke.io/gcp-service-account: argocd-image-updater@kentaiso-330205.iam.gserviceaccount.com
+
+            resources:
+              requests:
+                cpu: 10m
+                memory: 20Mi
+              limits:
+                cpu: 100m
+                memory: 100Mi
       destination:
         name: "{{name}}"
         namespace: argocd
