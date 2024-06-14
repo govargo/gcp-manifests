@@ -16,6 +16,10 @@ fullnameOverride: ""
 
 migrate: false
 
+lifecycle:
+  preStop:
+    enabled: true
+
 serviceAccount:
   # Specifies whether a service account should be created
   create: true
@@ -86,6 +90,10 @@ cloudSqlProxy:
   - "--private-ip"
   - "--port=3306"
   - "<INSTANCE_CONNECTION_NAME>"
+
+  lifecycle:
+    preStop:
+      enabled: true
 
   containerPort: 9090
 

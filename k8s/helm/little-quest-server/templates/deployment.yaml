@@ -42,6 +42,13 @@ spec:
           command: ["/little"]
           args: ["migrate"]
           {{- end }}
+          {{- if .Values.lifecycle.preStop.enabled }}
+          lifecycle:
+            # this is to prevent the pod from being killed while it is still serving requests
+            preStop:
+              exec:
+                command: [ "/usr/local/bin/sleep", "6" ]
+          {{- end }}
           ports:
           - name: http
             containerPort: {{ .Values.containerPort }}
@@ -135,6 +142,13 @@ spec:
           {{- with .Values.cloudSqlProxy.args }}
           args:
             {{- toYaml . | nindent 10 }}
+          {{- end }}
+          {{- with .Values.cloudSqlProxy.lifecycle.preStop.enabled }}
+          lifecycle:
+            # this is to prevent the pod from being killed while it is still serving requests
+            preStop:
+              exec:
+                command: [ "sleep", "8" ]
           {{- end }}
           ports:
           - name: healthcheck
