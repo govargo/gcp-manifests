@@ -59,7 +59,7 @@ resource "google_compute_instance_template" "datastream_cloudsql_proxy" {
   tags         = ["allow-datastream-to-cloudsql"]
 
   disk {
-    source_image = "debian-cloud/debian-10"
+    source_image = "debian-cloud/debian-12"
     type         = "PERSISTENT"
     auto_delete  = true
     boot         = true
@@ -94,11 +94,11 @@ curl -sSO https://dl.google.com/cloudagents/add-google-cloud-ops-agent-repo.sh
 sudo bash add-google-cloud-ops-agent-repo.sh --also-install
 
 sudo apt -y install wget
-wget https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.7.2/cloud-sql-proxy.linux.amd64 -O /usr/local/bin/cloud-sql-proxy
+wget https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.11.4/cloud-sql-proxy.linux.amd64 -O /usr/local/bin/cloud-sql-proxy
 chmod +x /usr/local/bin/cloud-sql-proxy
 cloud-sql-proxy --http-address=0.0.0.0 --address 0.0.0.0 --port 3306 --private-ip \
   --structured-logs --max-sigterm-delay=10s --health-check=true \
-  ${data.google_project.project.project_id}:${var.region}:prod-mysql-instance
+  ${data.google_project.project.project_id}:${var.region}:prod-mysql-instance-read-replica-0
 EOF
 
   service_account {
@@ -133,10 +133,12 @@ resource "google_compute_instance_group_manager" "datastream_cloudsql_proxy_mig"
   wait_for_instances_status = "STABLE"
 
   update_policy {
-    type                  = "OPPORTUNISTIC"
-    minimal_action        = "REFRESH"
-    max_surge_fixed       = 1
-    max_unavailable_fixed = 1
+    type                           = "PROACTIVE"
+    minimal_action                 = "REPLACE"
+    most_disruptive_allowed_action = "REPLACE"
+    replacement_method             = "RECREATE"
+    max_surge_fixed                = 0
+    max_unavailable_fixed          = 1
   }
 
   stateful_internal_ip {
