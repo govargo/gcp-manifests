@@ -6,7 +6,7 @@ metadata:
   annotations:
     argocd-image-updater.argoproj.io/write-back-method: argocd
     argocd-image-updater.argoproj.io/image-list: little=asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/little-quest-server
-    argocd-image-updater.argoproj.io/little.update-strategy: latest
+    argocd-image-updater.argoproj.io/little.update-strategy: newest-build
     argocd-image-updater.argoproj.io/little.ignore-tags: latest
     argocd-image-updater.argoproj.io/little.force-update: "true"
     argocd-image-updater.argoproj.io/little.helm.image-name: image.repository
@@ -170,11 +170,11 @@ spec:
 
           resources:
             requests:
-              cpu: 100m
-              memory: 100Mi
+              cpu: 10m
+              memory: 10Mi
             limits:
-              cpu: 1
-              memory: 2Gi
+              cpu: 500m
+              memory: 512Mi
 
         nodeSelector:
           app: little-quest-server
