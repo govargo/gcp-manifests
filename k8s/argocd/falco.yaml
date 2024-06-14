@@ -35,8 +35,11 @@ spec:
               kind: modern_ebpf
             resources:
               requests:
-                cpu: 50m
-                memory: 256Mi
+                cpu: 10m
+                memory: 50Mi
+              limits:
+                cpu: 500m
+                memory: 512Mi
             tolerations:
             - effect: NoSchedule
               operator: Exists
