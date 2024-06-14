@@ -6,22 +6,22 @@ metadata:
   annotations:
     argocd-image-updater.argoproj.io/write-back-method: argocd
     argocd-image-updater.argoproj.io/image-list: realtime=asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/little-quest-realtime,frontend=asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/little-quest-frontend,mmf=asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/little-quest-mmf,director=asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/little-quest-director
-    argocd-image-updater.argoproj.io/realtime.update-strategy: latest
+    argocd-image-updater.argoproj.io/realtime.update-strategy: newest-build
     argocd-image-updater.argoproj.io/realtime.ignore-tags: latest
     argocd-image-updater.argoproj.io/realtime.force-update: "true"
     argocd-image-updater.argoproj.io/realtime.helm.image-name: realtime.image.repository
     argocd-image-updater.argoproj.io/realtime.helm.image-tag: realtime.image.tag
-    argocd-image-updater.argoproj.io/frontend.update-strategy: latest
+    argocd-image-updater.argoproj.io/frontend.update-strategy: newest-build
     argocd-image-updater.argoproj.io/frontend.ignore-tags: latest
     argocd-image-updater.argoproj.io/frontend.force-update: "true"
     argocd-image-updater.argoproj.io/frontend.helm.image-name: frontend.image.repository
     argocd-image-updater.argoproj.io/frontend.helm.image-tag: frontend.image.tag
-    argocd-image-updater.argoproj.io/mmf.update-strategy: latest
+    argocd-image-updater.argoproj.io/mmf.update-strategy: newest-build
     argocd-image-updater.argoproj.io/mmf.ignore-tags: latest
     argocd-image-updater.argoproj.io/mmf.force-update: "true"
     argocd-image-updater.argoproj.io/mmf.helm.image-name: mmf.image.repository
     argocd-image-updater.argoproj.io/mmf.helm.image-tag: mmf.image.tag
-    argocd-image-updater.argoproj.io/director.update-strategy: latest
+    argocd-image-updater.argoproj.io/director.update-strategy: newest-build
     argocd-image-updater.argoproj.io/director.ignore-tags: latest
     argocd-image-updater.argoproj.io/director.force-update: "true"
     argocd-image-updater.argoproj.io/director.helm.image-name: director.image.repository
