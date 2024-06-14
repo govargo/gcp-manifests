@@ -15,7 +15,7 @@ data "google_secret_manager_secret_version" "mysql_datastream_user_password" {
 
 module "private-service-access" {
   source     = "GoogleCloudPlatform/sql-db/google//modules/private_service_access"
-  version    = "15.0.0"
+  version    = "20.1.0"
   project_id = data.google_project.project.project_id
 
   vpc_network   = var.gcp_project_name
@@ -26,14 +26,15 @@ module "private-service-access" {
 
 module "cloudsql_mysql" {
   source               = "GoogleCloudPlatform/sql-db/google//modules/mysql"
-  version              = "15.0.0"
+  version              = "20.1.0"
   name                 = "${var.env}-mysql-instance"
   random_instance_name = false
   project_id           = data.google_project.project.project_id
 
-  deletion_protection = false
+  deletion_protection = true
 
   database_version                = var.database_version
+  edition                         = "ENTERPRISE"
   region                          = var.region
   zone                            = var.zone
   tier                            = var.tier
@@ -70,7 +71,7 @@ module "cloudsql_mysql" {
   ip_configuration = {
     ipv4_enabled                                  = var.ipv4_enabled
     enable_private_path_for_google_cloud_services = true
-    require_ssl                                   = true
+    ssl_mode                                      = "ENCRYPTED_ONLY"
     private_network                               = "${data.google_project.project.id}/global/networks/${var.gcp_project_name}"
     allocated_ip_range                            = "google-managed-services-${var.gcp_project_name}"
     authorized_networks                           = []
@@ -86,6 +87,44 @@ module "cloudsql_mysql" {
     retained_backups               = 1
     retention_unit                 = "COUNT"
   }
+
+  ## Read replica configurations
+  replica_database_version = var.database_version
+  read_replicas = [
+    {
+      name              = "-0"
+      name_override     = "${var.env}-mysql-instance-read-replica-0"
+      edition           = "ENTERPRISE"
+      zone              = var.zone
+      availability_type = "ZONAL"
+      tier              = var.tier
+      ip_configuration = {
+        ipv4_enabled                                  = var.ipv4_enabled
+        enable_private_path_for_google_cloud_services = true
+        require_ssl                                   = true # `require_ssl` will be fully deprecated in a future major release, however, new ssl_mode doesn't exist in read_replicas
+        private_network                               = "projects/${data.google_project.project.project_id}/global/networks/${var.gcp_project_name}"
+        allocated_ip_range                            = "google-managed-services-${var.gcp_project_name}"
+        authorized_networks                           = []
+      }
+      backup_configuration = {
+        enabled                        = true
+        binary_log_enabled             = true
+        point_in_time_recovery_enabled = true
+        start_time                     = "23:00"
+        location                       = null
+        transaction_log_retention_days = 1
+        retained_backups               = 1
+        retention_unit                 = "COUNT"
+      }
+      database_flags        = []
+      disk_autoresize       = true
+      disk_autoresize_limit = 100
+      disk_size             = 10
+      disk_type             = "PD_HDD"
+      user_labels           = { env = "production", role = "read-replica" }
+      encryption_key_name   = null
+    }
+  ]
 
   db_name      = "master_data"
   db_charset   = "utf8mb4"
@@ -120,17 +159,4 @@ resource "google_sql_user" "datastream_user" {
   password = data.google_secret_manager_secret_version.mysql_datastream_user_password.secret_data
 
   depends_on = [module.cloudsql_mysql]
-}
-
-resource "google_dns_record_set" "mysql_primary_endpoint" {
-  project      = data.google_project.project.project_id
-  managed_zone = "${var.gcp_project_name}-demo"
-
-  name = "cloudsql-mysql-primary.${var.gcp_project_name}.demo.altostrat.com."
-  type = "A"
-  ttl  = 60
-
-  rrdatas = [module.cloudsql_mysql.private_ip_address]
-
-  depends_on = [module.cloudsql_mysql.private_ip_address]
 }
