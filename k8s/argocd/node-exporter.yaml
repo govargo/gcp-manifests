@@ -43,6 +43,13 @@ spec:
             - --collector.netdev
             - --collector.stat
             - --collector.vmstat
+            resources:
+              requests:
+                cpu: 10m
+                memory: 10Mi
+              limits:
+                cpu: 100m
+                memory: 50Mi
       destination:
         name: "{{name}}"
         namespace: monitoring
