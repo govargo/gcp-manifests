@@ -105,7 +105,7 @@ spec:
           - name: OTEL_SAMPLING_RATE
             value: {{ .Values.trace.samplingRate | default 0.1 | quote }}
           - name: OTEL_GO_X_EXEMPLAR
-            value: {{ .Values.trace.exemplar }}
+            value: {{ .Values.trace.exemplar | quote }}
           - name: OTEL_METRICS_EXEMPLAR_FILTER
             value: {{ .Values.trace.exemplarFilter | quote }}
           - name: GOOGLE_API_GO_EXPERIMENTAL_TELEMETRY_PLATFORM_TRACING
