@@ -105,6 +105,7 @@ spec:
                 telemetry:
                   logs:
                     level: "info"
+                    encoding: json
                   metrics: null
                 extensions: [health_check, memory_ballast]
                 pipelines:
