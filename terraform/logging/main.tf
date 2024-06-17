@@ -1,6 +1,23 @@
 data "google_project" "project" {
 }
 
+import {
+  id = "projects/kentaiso-330205/locations/global/buckets/_Default"
+  to = google_logging_project_bucket_config._default_bucket_log_analytics_enabled
+}
+
+## Enable LogAnalytics
+resource "google_logging_project_bucket_config" "_default_bucket_log_analytics_enabled" {
+  project  = data.google_project.project.id
+  location = "global"
+
+  bucket_id        = "_Default"
+  description      = "Default bucket"
+  enable_analytics = true
+  locked           = false
+  retention_days   = 30
+}
+
 ## Cloud Logging Sink for Little Quest
 resource "google_logging_project_sink" "kpi_action_log" {
   project = data.google_project.project.project_id
