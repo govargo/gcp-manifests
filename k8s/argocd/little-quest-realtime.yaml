@@ -298,7 +298,7 @@ spec:
           # Frontend Trace sampling rate
           trace:
             exporter: opentelemetry_collector
-            endpoint: 0.0.0.0:4317
+            endpoint: opentelemetry-collector.tracing.svc.cluster.local.:4317
             samplingRate: 1.0
 
         mmf:
@@ -429,7 +429,7 @@ spec:
           # MMF Trace sampling rate
           trace:
             exporter: opentelemetry_collector
-            endpoint: 0.0.0.0:4317
+            endpoint: opentelemetry-collector.tracing.svc.cluster.local.:4317
             samplingRate: 1.0
 
         director:
@@ -555,7 +555,7 @@ spec:
           # Director Trace sampling rate
           trace:
             exporter: opentelemetry_collector
-            endpoint: 0.0.0.0:4317
+            endpoint: opentelemetry-collector.tracing.svc.cluster.local.:4317
             samplingRate: 1.0
 
         # environment(e.g. development, staging, production)
