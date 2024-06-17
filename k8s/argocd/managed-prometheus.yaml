@@ -24,7 +24,7 @@ spec:
         - RespectIgnoreDifferences=true
       source:
         repoURL: https://github.com/GoogleCloudPlatform/prometheus-engine.git
-        targetRevision: v0.8.2
+        targetRevision: v0.10.0
         path: manifests
         directory:
           include: '*.yaml'
