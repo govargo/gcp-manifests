@@ -43,6 +43,8 @@ spec:
             tolerations:
             - effect: NoSchedule
               operator: Exists
+            falco:
+              json_output: true
       destination:
         name: "{{name}}"
         namespace: falco
