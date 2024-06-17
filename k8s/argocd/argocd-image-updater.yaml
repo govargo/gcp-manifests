@@ -17,6 +17,9 @@ spec:
       syncPolicy:
         syncOptions:
         - CreateNamespace=true
+        automated:
+          prune: true
+          selfHeal: true
       source:
         chart: argocd-image-updater
         repoURL: https://argoproj.github.io/argo-helm
