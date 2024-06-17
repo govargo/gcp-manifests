@@ -23,7 +23,7 @@ spec:
   source:
     repoURL: asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/charts
     chart: little-quest-server
-    targetRevision: 0.4.8
+    targetRevision: 0.5.0
     helm:
       releaseName: "little-quest-server"
       values: |
@@ -40,6 +40,10 @@ spec:
 
         migrate: false
 
+        lifecycle:
+          preStop:
+            enabled: true
+
         serviceAccount:
           # Specifies whether a service account should be created
           create: true
@@ -55,8 +59,8 @@ spec:
         strategy:
           type: RollingUpdate
           rollingUpdate:
-            maxSurge: 25%
-            maxUnavailable: 25%
+            maxSurge: 50%
+            maxUnavailable: 10%
 
         # Pod's containerPort
         containerPort: 18080
@@ -130,6 +134,10 @@ spec:
           - "--disable-traces=true"
           - "--health-check=true"
           - "kentaiso-330205:asia-northeast1:prod-mysql-instance"
+
+          lifecycle:
+            preStop:
+              enabled: true
 
           containerPort: 9090
 
