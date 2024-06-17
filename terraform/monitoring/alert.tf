@@ -1214,7 +1214,7 @@ resource "google_monitoring_alert_policy" "cloud_run_high_execution_time" {
       trigger {
         count = 1
       }
-      threshold_value = 300
+      threshold_value = 3000 # 3s
     }
   }
 
