@@ -113,7 +113,7 @@ spec:
              
                image:
                  registry: asia-northeast1-docker.pkg.dev/kentaiso-330205/open-match
-                 tag: 1.8.1-d969242
+                 tag: 1.8.1-a279dd7
                  pullPolicy: Always
              
                telemetry:
