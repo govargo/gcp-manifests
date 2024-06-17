@@ -215,6 +215,8 @@ trace:
   exporter: cloudtrace
   endpoint: 0.0.0.0:4317
   samplingRate: 0.1
+  exemplar: false
+  exemplarFilter: trace_based
   platform: opentelemetry
 
 # Cloud Spanner info
