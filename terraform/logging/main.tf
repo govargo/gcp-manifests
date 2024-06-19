@@ -99,6 +99,18 @@ textPayload=~".*GET /healthz HTTP/1.1.*" OR textPayload=~".*GET /readiness HTTP/
 EOF
 }
 
+resource "google_logging_project_exclusion" "k8s_container_exclude_little_quest_server_stdout" {
+  name = "k8s-container-exclude-little-quest-server-stdout"
+
+  description = "Exclude little quest server stdout log(stdout log includes access log)"
+
+  filter = <<EOF
+resource.type="k8s_container"
+resource.labels.namespace_name="little-quest-server"
+logName="${data.google_project.project.id}/logs/stdout"
+EOF
+}
+
 resource "google_logging_project_exclusion" "k8s_container_exclude_little_quest_realtime_healthcheck" {
   name = "k8s-container-exclude-little-quest-realtime-healthcheck"
 
