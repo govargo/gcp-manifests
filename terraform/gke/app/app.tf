@@ -235,7 +235,7 @@ module "opentelemetry_collector_sa" {
 
   names         = ["opentelemetry-collector"]
   display_name  = "OpenTelemetry Collector ServiceAccount"
-  project_roles = ["${data.google_project.project.project_id}=>roles/cloudtrace.agent"]
+  project_roles = ["${data.google_project.project.project_id}=>roles/cloudtrace.agent", "${data.google_project.project.project_id}=>roles/monitoring.metricWriter"]
 }
 
 module "opentelemetry_collector_workloadIdentity_binding" {
