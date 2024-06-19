@@ -347,30 +347,18 @@
             },
             "dataSets": [
               {
-                "legendTemplate": "999th",
-                "plotType": "LINE",
+                "minAlignmentPeriod": "60s",
+                "plotType": "HEATMAP",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "histogram_quantile(0.999, sum(rate(http_request_duration_seconds_bucket[1m])) by (le))",
-                  "unitOverride": "s"
-                }
-              },
-              {
-                "legendTemplate": "95th",
-                "plotType": "LINE",
-                "targetAxis": "Y1",
-                "timeSeriesQuery": {
-                  "prometheusQuery": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[1m])) by (le))",
-                  "unitOverride": "s"
-                }
-              },
-              {
-                "legendTemplate": "50th",
-                "plotType": "LINE",
-                "targetAxis": "Y1",
-                "timeSeriesQuery": {
-                  "prometheusQuery": "histogram_quantile(0.50, sum(rate(http_request_duration_seconds_bucket[1m])) by (le))",
-                  "unitOverride": "s"
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "perSeriesAligner": "ALIGN_DELTA"
+                    },
+                    "filter": "metric.type=\"prometheus.googleapis.com/http_request_duration_seconds/histogram\" resource.type=\"prometheus_target\""
+                  }
                 }
               }
             ],
