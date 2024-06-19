@@ -25,7 +25,9 @@ spec:
         containerPort: {{ .Values.realtime.port.containerPort }}
         protocol: {{ .Values.realtime.port.protocol }}
       health:
+        {{- if .Values.realtime.health.disabled }}
         disabled: {{ .Values.realtime.health.disabled }}
+        {{- end }} 
         initialDelaySeconds: {{ .Values.realtime.health.initialDelaySeconds }}
         periodSeconds: {{ .Values.realtime.health.periodSeconds }}
         failureThreshold: {{ .Values.realtime.health.failureThreshold }}
