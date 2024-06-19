@@ -205,7 +205,6 @@ module "little_quest_server_sa" {
     "${data.google_project.project.project_id}=>roles/secretmanager.secretAccessor",
     "${data.google_project.project.project_id}=>roles/monitoring.viewer",
     "${data.google_project.project.project_id}=>roles/monitoring.metricWriter",
-    "${data.google_project.project.project_id}=>roles/cloudtrace.agent",
     "${data.google_project.project.project_id}=>roles/cloudprofiler.agent",
     "${data.google_project.project.project_id}=>roles/cloudsql.client",
     "${data.google_project.project.project_id}=>roles/spanner.databaseUser",
@@ -235,7 +234,7 @@ module "opentelemetry_collector_sa" {
 
   names         = ["opentelemetry-collector"]
   display_name  = "OpenTelemetry Collector ServiceAccount"
-  project_roles = ["${data.google_project.project.project_id}=>roles/cloudtrace.agent", "${data.google_project.project.project_id}=>roles/monitoring.metricWriter"]
+  project_roles = ["${data.google_project.project.project_id}=>roles/cloudtrace.agent"]
 }
 
 module "opentelemetry_collector_workloadIdentity_binding" {
