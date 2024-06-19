@@ -38,7 +38,7 @@ spec:
   source:
     repoURL: asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/charts
     chart: little-quest-realtime
-    targetRevision: 0.4.0
+    targetRevision: 0.4.1
     helm:
       releaseName: "little-quest-realtime"
       values: |
@@ -139,7 +139,7 @@ spec:
               cpu: 100m
               memory: 128Mi
             limits:
-              cpu: 1000m
+              cpu: '1'
               memory: 128Mi
 
           nodeSelector:
@@ -250,7 +250,7 @@ spec:
               cpu: 100m
               memory: 128Mi
             limits:
-              cpu: 1000m
+              cpu: '1'
               memory: 128Mi
 
           nodeSelector:
@@ -380,7 +380,7 @@ spec:
               cpu: 100m
               memory: 128Mi
             limits:
-              cpu: 1000m
+              cpu: '1'
               memory: 128Mi
 
           nodeSelector:
@@ -509,7 +509,7 @@ spec:
               cpu: 100m
               memory: 128Mi
             limits:
-              cpu: 1000m
+              cpu: '1'
               memory: 128Mi
 
           nodeSelector:
@@ -563,6 +563,14 @@ spec:
 
         # Google Cloud ProjectId
         googleCloudProjectId: kentaiso-330205
+
+  ignoreDifferences:
+  - group: agones.dev
+    kind: Fleet
+    name: little-quest-realtime
+    namespace: corp-0
+    jsonPointers:
+    - /spec/replicas
 
   destination:
     name: "gke_kentaiso-330205_asia-northeast1_prod-corp-0"
