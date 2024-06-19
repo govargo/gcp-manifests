@@ -274,10 +274,10 @@ spec:
           minReplicas: 2
           maxReplicas: 100
           targetCPUType: Utilization
-          targetCPUUtilizationPercentage: 70
+          targetCPUUtilizationPercentage: 90
           # targetMemoryUtilizationPercentage: 70
           targetContainerCPUType: Utilization
-          targetContainerCPUUtilizationPercentage: 70
+          targetContainerCPUUtilizationPercentage: 90
 
         secret:
           annotations: {}
@@ -296,7 +296,7 @@ spec:
           exporter: opentelemetry_collector
           endpoint: opentelemetry-collector.tracing.svc.cluster.local.:4317
           samplingRate: 1.0
-          exemplar: true
+          exemplar: false
           exemplarFilter: trace_based
           platform: opentelemetry
 
