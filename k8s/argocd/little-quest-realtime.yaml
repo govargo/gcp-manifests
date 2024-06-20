@@ -172,8 +172,8 @@ spec:
             enabled: true
             type: Buffer
             bufferSize: 2
-            minReplicas: 0
-            maxReplicas: 10
+            minReplicas: 2
+            maxReplicas: 100
 
         frontend:
           serviceName: little-quest-frontend
