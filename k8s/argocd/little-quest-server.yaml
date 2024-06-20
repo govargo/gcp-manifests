@@ -251,6 +251,7 @@ spec:
           backendConfig:
             enabled: true
             spec:
+              timeoutSec: 180
               healthCheck:
                 checkIntervalSec: 30
                 timeoutSec: 5
