@@ -52,6 +52,7 @@ locals {
     "firebase.googleapis.com",
     "firestore.googleapis.com",
     "securitycenter.googleapis.com",
+    "websecurityscanner.googleapis.com",
     "cloudaicompanion.googleapis.com",
     "servicehealth.googleapis.com",
     "recommender.googleapis.com"
