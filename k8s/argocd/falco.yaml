@@ -51,8 +51,13 @@ spec:
                   condition: >
                     proc.name = sdk-server
                     or proc.name = controller
+                    or proc.name = allocator
                     or proc.name = argocd-image-up
                     or proc.name = argocd-applicat
+                    or proc.name = argocd-dex
+                    or proc.name = argocd-notifica
+                    or proc.name = kube-state-metr
+                    or proc.name = gke-mcs-importe
 
       destination:
         name: "{{name}}"
