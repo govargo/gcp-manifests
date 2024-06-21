@@ -53,7 +53,7 @@
                 "targetAxis": "Y1",
 		"legendTemplate": "999th",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "histogram_quantile(0.999, sum(rate(http_request_duration_seconds_bucket[1m])) by (le))",
+                  "prometheusQuery": "histogram_quantile(0.999, sum(rate(http_request_duration_seconds_bucket{handler!~\"raid_battle|health_check|readiness\"}[1m])) by (le))",
                   "unitOverride": "s"
                 }
               },
@@ -62,7 +62,7 @@
                 "targetAxis": "Y1",
 		"legendTemplate": "99th",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "histogram_quantile(0.99, sum(rate(http_request_duration_seconds_bucket[1m])) by (le))",
+                  "prometheusQuery": "histogram_quantile(0.99, sum(rate(http_request_duration_seconds_bucket{handler!~\"raid_battle|health_check|readiness\"}[1m])) by (le))",
                   "unitOverride": "s"
                 }
               },
@@ -71,7 +71,7 @@
                 "targetAxis": "Y1",
 		"legendTemplate": "95th",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[1m])) by (le))",
+                  "prometheusQuery": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{handler!~\"raid_battle|health_check|readiness\"}[1m])) by (le))",
                   "unitOverride": "s"
                 }
               },
@@ -80,7 +80,7 @@
                 "targetAxis": "Y1",
 		"legendTemplate": "90th",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "histogram_quantile(0.90, sum(rate(http_request_duration_seconds_bucket[1m])) by (le))",
+                  "prometheusQuery": "histogram_quantile(0.90, sum(rate(http_request_duration_seconds_bucket{handler!~\"raid_battle|health_check|readiness\"}[1m])) by (le))",
                   "unitOverride": "s"
                 }
               },
@@ -89,7 +89,7 @@
                 "targetAxis": "Y1",
 		"legendTemplate": "50th",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "histogram_quantile(0.50, sum(rate(http_request_duration_seconds_bucket[1m])) by (le))",
+                  "prometheusQuery": "histogram_quantile(0.50, sum(rate(http_request_duration_seconds_bucket{handler!~\"raid_battle|health_check|readiness\"}[1m])) by (le))",
                   "unitOverride": "s"
                 }
               },
@@ -98,7 +98,7 @@
                 "targetAxis": "Y1",
 		"legendTemplate": "10th",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "histogram_quantile(0.10, sum(rate(http_request_duration_seconds_bucket[1m])) by (le))",
+                  "prometheusQuery": "histogram_quantile(0.10, sum(rate(http_request_duration_seconds_bucket{handler!~\"raid_battle|health_check|readiness\"}[1m])) by (le))",
                   "unitOverride": "s"
                 }
               }

@@ -357,7 +357,7 @@
                       "crossSeriesReducer": "REDUCE_SUM",
                       "perSeriesAligner": "ALIGN_DELTA"
                     },
-                    "filter": "metric.type=\"prometheus.googleapis.com/http_request_duration_seconds/histogram\" resource.type=\"prometheus_target\""
+                    "filter": "metric.type=\"prometheus.googleapis.com/http_request_duration_seconds/histogram\" resource.type=\"prometheus_target\" metric.label.\"handler\"!=monitoring.regex.full_match(\"raid_battle|health_check|readiness\")"
                   }
                 }
               }
