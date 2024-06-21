@@ -19,6 +19,7 @@ migrate: false
 lifecycle:
   preStop:
     enabled: true
+    sleepTime: 3
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -94,6 +95,7 @@ cloudSqlProxy:
   lifecycle:
     preStop:
       enabled: true
+      sleepTime: 5
 
   containerPort: 9090
 

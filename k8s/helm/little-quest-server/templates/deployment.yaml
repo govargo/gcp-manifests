@@ -47,7 +47,7 @@ spec:
             # this is to prevent the pod from being killed while it is still serving requests
             preStop:
               exec:
-                command: [ "/usr/local/bin/sleep", "6" ]
+                command: [ "/usr/local/bin/sleep", "{{ .Values.lifecycle.preStop.sleepTime }}" ]
           {{- end }}
           ports:
           - name: http
@@ -152,7 +152,7 @@ spec:
             # this is to prevent the pod from being killed while it is still serving requests
             preStop:
               exec:
-                command: [ "sleep", "8" ]
+                command: [ "sleep", "{{ .Values.cloudSqlProxy.lifecycle.preStop.sleepTime }}" ]
           {{- end }}
           ports:
           - name: healthcheck
