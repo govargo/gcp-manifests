@@ -1,30 +1,40 @@
 import random
 import socket
 import time
-import asyncio
 
 from locust import TaskSet, between, task, HttpUser
 
 headers = {"Content-Type": "application/json", "User-Agent": "UnityPlayer"}
+
+# Quest Data
+QUEST_DATA = {
+  1: {
+    "start_url": "/users/{user_id}/quests/1/start",
+    "end_url": "/users/{user_id}/quests/1/end",
+    "ranking_url": "/quests/1/ranking"
+  },
+  2: {
+    "start_url": "/users/{user_id}/quests/2/start",
+    "end_url": "/users/{user_id}/quests/2/end",
+    "ranking_url": "/quests/2/ranking"
+  }
+}
+
+# Shop Item Data
+SHOP_ITEMS = {
+  "item_120": "/shops/item_120",
+  "item_240": "/shops/item_240",
+  "item_360": "/shops/item_360"
+}
 
 
 class TestScenarioCase(TaskSet):
   user_id = ""
 
   def on_start(self):
-    # registration
-    registration_response = self.client.post("/registration", headers=headers,
-                                             json={"name": "test-" + str(
-                                               random.randint(0, 10000))})
-    self.user_id = (registration_response.json()["user_profile"]["user_id"])
-    print("registered user id: " + self.user_id)
+    self.register_and_login()
 
-    # login
-    login_url = "/users/" + self.user_id + "/login"
-    self.client.post(login_url, headers=headers,
-                     json={"client_master_version": "2022061301"})
-
-    # tutorial
+    # Tutorial
     tutorial_url = "/users/" + self.user_id + "/quests/0/tutorial"
     tutorial_response = self.client.post(tutorial_url,
                                          headers=headers,
@@ -35,16 +45,27 @@ class TestScenarioCase(TaskSet):
       print("CHECK: tutorial progress is ",
             tutorial_response.json()["user_profile"]["tutorial_progress"])
 
-  @task(7)
-  def quest1(self):
-    # Quest 1 Start
-    quest1_start_url = "/users/" + self.user_id + "/quests/1/start"
-    self.client.post(quest1_start_url, headers=headers,
+  def register_and_login(self):
+    # Registration
+    registration_response = self.client.post("/registration", headers=headers,
+                                             json={"name": "test-" + str(
+                                               random.randint(0, 10000))})
+    self.user_id = (registration_response.json()["user_profile"]["user_id"])
+    print("registered user id: " + self.user_id)
+
+    # Login
+    login_url = "/users/" + self.user_id + "/login"
+    self.client.post(login_url, headers=headers,
                      json={"client_master_version": "2022061301"})
 
-    # Quest 1 End
-    quest1_end_url = "/users/" + self.user_id + "/quests/1/end"
-    self.client.post(quest1_end_url,
+  def start_quest(self, quest_id):
+    start_url = QUEST_DATA[quest_id]["start_url"].format(user_id=self.user_id)
+    self.client.post(start_url, headers=headers,
+                     json={"client_master_version": "2022061301"})
+
+  def end_quest(self, quest_id):
+    end_url = QUEST_DATA[quest_id]["end_url"].format(user_id=self.user_id)
+    self.client.post(end_url,
                      headers=headers,
                      json={
                        "client_master_version": "2022061301",
@@ -52,27 +73,31 @@ class TestScenarioCase(TaskSet):
                        "clear_time": 20
                      })
 
-    # Get Ranking for Quest 1
-    ranking1_url = "/quests/1/ranking"
-    self.client.get(ranking1_url, headers=headers)
+  def get_quest_ranking(self, quest_id):
+    ranking_url = QUEST_DATA[quest_id]["ranking_url"]
+    self.client.get(ranking_url, headers=headers)
+
+  @task(7)
+  def quest1(self):
+    self.start_quest(1)
+    self.end_quest(1)
+    self.get_quest_ranking(1)
 
   @task(1)
   def raidbattle(self):
-    # Raidbattle Start
+    self.start_quest(2)
+    self.raid_battle()
+    self.end_quest(2)
+    self.get_quest_ranking(2)
+
+  def raid_battle(self):
     raidbattle_url = "/users/" + self.user_id + "/quests/raidbattle"
     raidbattle_response = self.client.post(raidbattle_url, headers=headers)
 
-    delimiter = ":::"
-    semi_delimiter = ":"
     connection = raidbattle_response.json()["connection"]
     endpoint = connection.split(":")
     ipaddress = endpoint[0]
     port = endpoint[1]
-
-    # Quest 2 Start
-    quest2_start_url = "/users/" + self.user_id + "/quests/2/start"
-    self.client.post(quest2_start_url, headers=headers,
-                     json={"client_master_version": "2022061301"})
 
     buffer_size = 4096
 
@@ -103,21 +128,21 @@ class TestScenarioCase(TaskSet):
       if str(data).__contains__("join"):
         continue
 
-      print(
-        "[{}:{},{}] player attack".format(ipaddress, str(port), player_name))
       damage = boss_max_hp - random.randint(1, 100)
+      print(
+        "[{}:{},{}] player attack. damage: {}".format(ipaddress, str(port), player_name, damage))
       tcp_client.send(bytes(
-        player_name + delimiter + str(damage) + "\n", encoding='utf8'))
+        player_name + ":::" + str(damage) + "\n", encoding='utf8'))
 
-      boss_hp = str(data).split(delimiter)
+      boss_hp = str(data).split(":::")
       if len(boss_hp) > 2:
         # When the response such like
         # player2:83:::boss:217\nplayer1:0:::boss:217\n, ignore
         continue
 
-      if str(boss_hp[1]).__contains__(semi_delimiter):
+      if str(boss_hp[1]).__contains__(":"):
         # split the response such like player1:98:::boss:202\n
-        hp = boss_hp[1].split(semi_delimiter)
+        hp = boss_hp[1].split(":")
         boss_max_hp = int(hp[1][:-3])
       else:
         # split the response such like boss:::300\n
@@ -128,46 +153,26 @@ class TestScenarioCase(TaskSet):
                                         str(boss_max_hp)))
       time.sleep(3)
 
-    # Raidbattle End
-    quest2_end_url = "/users/" + self.user_id + "/quests/2/end"
-    self.client.post(quest2_end_url,
-                     headers=headers,
+  @task(10)
+  def shop_item(self, item_id='item_120'):
+    shop_url = SHOP_ITEMS[item_id]
+    self.client.post(shop_url, headers=headers,
                      json={
                        "client_master_version": "2022061301",
-                       "score": 100,
-                       "clear_time": 20
+                       "user_id": self.user_id
                      })
-
-    # Get Ranking for Quest 2
-    ranking2_url = "/quests/2/ranking"
-    self.client.get(ranking2_url, headers=headers)
 
   @task(10)
   def shop_item_120(self):
-    self.client.post("/shops/item_120", headers=headers,
-                     json={
-                       "client_master_version": "2022061301",
-                       "user_id": self.user_id
-                     }
-                     )
+    self.shop_item("item_120")
 
   @task(10)
   def shop_item_240(self):
-    self.client.post("/shops/item_240", headers=headers,
-                     json={
-                       "client_master_version": "2022061301",
-                       "user_id": self.user_id
-                     }
-                     )
+    self.shop_item("item_240")
 
   @task(10)
   def shop_item_360(self):
-    self.client.post("/shops/item_360", headers=headers,
-                     json={
-                       "client_master_version": "2022061301",
-                       "user_id": self.user_id
-                     }
-                     )
+    self.shop_item("item_360")
 
   @task(7)
   def character(self):
@@ -189,8 +194,7 @@ class TestScenarioCase(TaskSet):
                                      json={
                                        "client_master_version": "2022061301",
                                        "user_id": self.user_id
-                                     }
-                                     )
+                                     })
 
     crystal = shop_response.json()["user_profile"]["crystal"]
     friend_coin = shop_response.json()["user_profile"]["friend_coin"]
@@ -200,16 +204,14 @@ class TestScenarioCase(TaskSet):
                        json={
                          "client_master_version": "2022061301",
                          "user_id": self.user_id
-                       }
-                       )
+                       })
 
     if friend_coin > 5:
       self.client.post("/gachas/2", headers=headers,
                        json={
                          "client_master_version": "2022061301",
                          "user_id": self.user_id
-                       }
-                       )
+                       })
 
   @task(5)
   def present(self):
@@ -222,7 +224,7 @@ class TestScenarioCase(TaskSet):
       present_get_url = "/users/" + self.user_id + "/presents/" + \
                         present_response.json()["user_present"][0][
                           "present_id"] + "?client_master_version=2022061301"
-    self.client.get(present_get_url, headers=headers)
+      self.client.get(present_get_url, headers=headers)
 
 
 class Run(HttpUser):
