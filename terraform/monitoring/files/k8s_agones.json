@@ -221,18 +221,36 @@
         "width": 16,
         "height": 16,
         "widget": {
-          "title": "Average latency",
+          "title": "Allocation latency",
           "xyChart": {
             "chartOptions": {
               "mode": "COLOR"
             },
             "dataSets": [
               {
-                "legendTemplate": "average",
+                "legendTemplate": "999th",
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "sum(rate(agones_gameserver_allocations_duration_seconds_sum[${__interval}])) / sum(rate(agones_gameserver_allocations_duration_seconds_count[${__interval}]))",
+                  "prometheusQuery": "histogram_quantile(0.999, sum(rate(agones_gameserver_allocations_duration_seconds_bucket[1m])) by (le))",
+                  "unitOverride": "s"
+                }
+              },
+	      {
+                "legendTemplate": "90th",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+		  "prometheusQuery": "histogram_quantile(0.9, sum(rate(agones_gameserver_allocations_duration_seconds_bucket[1m])) by (le))",
+                  "unitOverride": "s"
+                }
+              },
+	      {
+                "legendTemplate": "50th",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.5, sum(rate(agones_gameserver_allocations_duration_seconds_bucket[1m])) by (le))",
                   "unitOverride": "s"
                 }
               }
