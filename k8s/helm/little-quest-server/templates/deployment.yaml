@@ -47,7 +47,9 @@ spec:
             # this is to prevent the pod from being killed while it is still serving requests
             preStop:
               exec:
-                command: [ "/usr/local/bin/sleep", "{{ .Values.lifecycle.preStop.sleepTime }}" ]
+                command:
+                - /usr/local/bin/sleep
+                - {{ .Values.lifecycle.preStop.sleepTime }}
           {{- end }}
           ports:
           - name: http
@@ -147,12 +149,14 @@ spec:
           args:
             {{- toYaml . | nindent 10 }}
           {{- end }}
-          {{- with .Values.cloudSqlProxy.lifecycle.preStop.enabled }}
+          {{- if .Values.cloudSqlProxy.lifecycle.preStop.enabled }}
           lifecycle:
             # this is to prevent the pod from being killed while it is still serving requests
             preStop:
               exec:
-                command: [ "sleep", "{{ .Values.cloudSqlProxy.lifecycle.preStop.sleepTime }}" ]
+                command:
+                - sleep
+                - {{ .Values.cloudSqlProxy.lifecycle.preStop.sleepTime }}
           {{- end }}
           ports:
           - name: healthcheck
