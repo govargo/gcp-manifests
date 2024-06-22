@@ -144,7 +144,9 @@ cloudSqlProxy:
     successThreshold: 1
     failureThreshold: 5
     timeoutSeconds: 10 
- 
+
+  volumeMounts: []
+
   resources:
     requests:
       cpu: 100m
