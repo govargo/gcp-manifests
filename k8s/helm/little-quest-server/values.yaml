@@ -30,7 +30,7 @@ migrate: false
 
 lifecycle: {}
   # this is to prevent the pod from being killed while it is still serving requests
-  # preStop:
+  #preStop:
   #  exec:
   #    command:
   #    - /usr/local/bin/sleep

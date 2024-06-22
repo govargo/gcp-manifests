@@ -48,7 +48,8 @@ spec:
           {{- end }}
           {{- with .Values.lifecycle.preStop }}
           lifecycle:
-            {{- toYaml . | nindent 12 }}
+            preStop:
+            {{- toYaml . | nindent 14 }}
           {{- end }}
           ports:
           - name: http
@@ -150,7 +151,8 @@ spec:
           {{- end }}
           {{- with .Values.cloudSqlProxy.lifecycle.preStop }}
           lifecycle:
-            {{- toYaml . | nindent 12 }}
+            preStop:
+            {{- toYaml . | nindent 14 }}
           {{- end }}
           ports:
           - name: healthcheck
