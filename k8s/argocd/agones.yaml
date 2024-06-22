@@ -98,6 +98,7 @@ spec:
                      targetPort: 8443
                  disableMTLS: true
                  disableTLS: true
+                 allocationBatchWaitTime: 100ms
              gameservers:
                namespaces:
                - corp-0
