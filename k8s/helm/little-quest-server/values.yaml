@@ -14,12 +14,27 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
+initContainers: []
+  #- name: cp-sleep
+  #  image: busybox:1.28
+  #  command:
+  #  - cp
+  #  args:
+  #  - /bin/sleep
+  #  - /test/sleep
+  #  volumeMounts:
+  #  - name: test
+  #    mountPath: /test
+
 migrate: false
 
-lifecycle:
-  preStop:
-    enabled: true
-    sleepTime: 3
+lifecycle: {}
+  # this is to prevent the pod from being killed while it is still serving requests
+  # preStop:
+  #  exec:
+  #    command:
+  #    - /usr/local/bin/sleep
+  #    - "3"
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -93,9 +108,7 @@ cloudSqlProxy:
   - "<INSTANCE_CONNECTION_NAME>"
 
   lifecycle:
-    preStop:
-      enabled: true
-      sleepTime: 5
+    preStop: {}
 
   containerPort: 9090
 

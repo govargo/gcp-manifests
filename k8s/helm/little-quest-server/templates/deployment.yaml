@@ -32,6 +32,10 @@ spec:
       serviceAccountName: {{ include "little-quest.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- with .Values.initContainers }}
+      initContainers:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -42,14 +46,9 @@ spec:
           command: ["/little"]
           args: ["migrate"]
           {{- end }}
-          {{- if .Values.lifecycle.preStop.enabled }}
+          {{- with .Values.lifecycle.preStop }}
           lifecycle:
-            # this is to prevent the pod from being killed while it is still serving requests
-            preStop:
-              exec:
-                command:
-                - /usr/local/bin/sleep
-                - {{ .Values.lifecycle.preStop.sleepTime | quote }}
+            {{- toYaml . | nindent 12 }}
           {{- end }}
           ports:
           - name: http
@@ -149,14 +148,9 @@ spec:
           args:
             {{- toYaml . | nindent 10 }}
           {{- end }}
-          {{- if .Values.cloudSqlProxy.lifecycle.preStop.enabled }}
+          {{- with .Values.cloudSqlProxy.lifecycle.preStop }}
           lifecycle:
-            # this is to prevent the pod from being killed while it is still serving requests
-            preStop:
-              exec:
-                command:
-                - sleep
-                - {{ .Values.cloudSqlProxy.lifecycle.preStop.sleepTime | quote }}
+            {{- toYaml . | nindent 12 }}
           {{- end }}
           ports:
           - name: healthcheck
