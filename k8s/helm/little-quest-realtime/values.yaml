@@ -139,6 +139,9 @@ frontend:
   nameOverride: ""
   fullnameOverride: ""
 
+  lifecycle:
+    preStop: {}
+
   serviceAccount:
     # Specifies whether a service account should be created
     create: true
@@ -261,6 +264,9 @@ mmf:
   imagePullSecrets: []
   nameOverride: ""
   fullnameOverride: ""
+
+  lifecycle:
+    preStop: {}
   
   serviceAccount:
     # Specifies whether a service account should be created
@@ -386,6 +392,9 @@ director:
   imagePullSecrets: []
   nameOverride: ""
   fullnameOverride: ""
+
+  lifecycle:
+    preStop: {}
 
   serviceAccount:
     # Specifies whether a service account should be created

@@ -38,6 +38,11 @@ spec:
             {{- toYaml .Values.mmf.securityContext | nindent 12 }}
           image: "{{ .Values.mmf.image.repository }}:{{ .Values.mmf.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.mmf.image.pullPolicy }}
+          {{- with .Values.mmf.lifecycle.preStop }}
+          lifecycle:
+            preStop:
+            {{- toYaml . | nindent 14 }}
+          {{- end }}
           ports:
           - name: grpc
             containerPort: {{ .Values.mmf.port.containerPort }}

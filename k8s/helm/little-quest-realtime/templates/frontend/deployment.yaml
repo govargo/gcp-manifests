@@ -38,6 +38,11 @@ spec:
             {{- toYaml .Values.frontend.securityContext | nindent 12 }}
           image: "{{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.frontend.image.pullPolicy }}
+          {{- with .Values.frontend.lifecycle.preStop }}
+          lifecycle:
+            preStop:
+            {{- toYaml . | nindent 14 }}
+          {{- end }}
           ports:
           - name: http
             containerPort: {{ .Values.frontend.port.containerPort }}
