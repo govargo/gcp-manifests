@@ -22,9 +22,9 @@ spec:
           prune: true
           selfHeal: true
       source:
+        repoURL: asia-northeast1-docker.pkg.dev/kentaiso-330205/open-match/charts
         chart: open-match
-        repoURL: https://open-match.dev/chart/stable
-        targetRevision: v1.8.1
+        targetRevision: 1.8.1
         helm:
           releaseName: "open-match"
           values: |
@@ -32,17 +32,19 @@ spec:
                hostName:
                grpcPort: 50502
                httpPort: 51502
-               replicas: 3
 
              redis:
+               configmap: |
+                 maxclients 100000
+                 maxmemory 500000000
                master:
                  resources:
                    requests:
-                     memory: 300Mi
-                     cpu: 100m
+                     memory: 1Gi
+                     cpu: '1'
                    limits:
-                     memory: 6Gi
-                     cpu: 6
+                     memory: 3Gi
+                     cpu: '1'
                  nodeSelector:
                    app: open-match
                  tolerations:
@@ -50,7 +52,29 @@ spec:
                    operator: "Equal"
                    value: "open-match"
                    effect: "NoSchedule" 
-             
+
+             open-match-core:
+               swaggerui:
+                 enabled: false
+
+               # Length of time between first fetch matches call, and when no further fetch
+               # matches calls will join the current evaluation/synchronization cycle,
+               # instead waiting for the next cycle.
+               registrationInterval: 250ms
+               # Length of time after match function as started before it will be canceled,
+               # and evaluator call input is EOF.
+               proposalCollectionInterval: 20s
+               # Time after a ticket has been returned from fetch matches (marked as pending)
+               # before it automatically becomes active again and will be returned by query
+               # calls.
+               pendingReleaseTimeout: 1m
+               # Time after a ticket has been assigned before it is automatically delted.
+               assignedDeleteTimeout: 10m
+               # Maximum number of tickets to return on a single QueryTicketsResponse.
+               queryPageSize: 10000
+               # Duration for redis locks to expire.
+               backfillLockTimeout: 1m
+
              open-match-customize:
                enabled: true
                evaluator:
@@ -76,32 +100,28 @@ spec:
                    effect: "NoSchedule" 
                  horizontalPodAutoScaler:
                    frontend:
-                     minReplicas: 1
+                     minReplicas: 2
                      maxReplicas: 10
-                     targetCPUUtilizationPercentage: 60
+                     targetCPUUtilizationPercentage: 50
                    backend:
-                     minReplicas: 1
+                     minReplicas: 2
                      maxReplicas: 10
-                     targetCPUUtilizationPercentage: 60
+                     targetCPUUtilizationPercentage: 50
                    query:
-                     minReplicas: 1
+                     minReplicas: 2
                      maxReplicas: 10
-                     targetCPUUtilizationPercentage: 60
+                     targetCPUUtilizationPercentage: 50
                    evaluator:
                      minReplicas: 1
                      maxReplicas: 10
-                     targetCPUUtilizationPercentage: 60
-                   matchfunction:
-                     minReplicas: 1
-                     maxReplicas: 10
-                     targetCPUUtilizationPercentage: 60
+                     targetCPUUtilizationPercentage: 50
                  resources:
                    requests:
                      memory: 100Mi
                      cpu: 100m
                    limits:
-                     memory: 300Mi
-                     cpu: 100m
+                     memory: 500Mi
+                     cpu: '1'
                  serviceAccount: open-match-service
                  serviceAccountAnnotations:
                    iam.gke.io/gcp-service-account: open-match-service@kentaiso-330205.iam.gserviceaccount.com
@@ -110,10 +130,10 @@ spec:
 
                logging:
                  level: info
-             
+
                image:
                  registry: asia-northeast1-docker.pkg.dev/kentaiso-330205/open-match
-                 tag: 1.8.1-a279dd7
+                 tag: 1.8.1-e9d49e0
                  pullPolicy: Always
              
                telemetry:
