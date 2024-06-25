@@ -226,9 +226,8 @@
               {
                 "plotType": "LINE",
                 "targetAxis": "Y1",
-		"legendTemplate": "nodes",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "sum(kube_node_spec_unschedulable{cluster=~\"${cluster.value}\"})"
+                  "prometheusQuery": "sum(kube_node_spec_unschedulable{cluster=~\"${cluster.value}\"}) by (node)"
                 }
               }
             ],
@@ -251,7 +250,6 @@
                 "legendTemplate": "${labels.node}",
                 "plotType": "LINE",
                 "targetAxis": "Y1",
-		"legendTemplate": "nodes",
                 "timeSeriesQuery": {
                   "prometheusQuery": "kube_node_status_condition{cluster=~\"${cluster.value}\",condition=\"Ready\",status=\"false\"}==1"
                 }
@@ -441,6 +439,7 @@
               {
                 "plotType": "LINE",
                 "targetAxis": "Y1",
+		"legendTemplate": "${labels.exported_container}",
                 "timeSeriesQuery": {
                   "prometheusQuery": "changes(kube_pod_container_status_restarts_total{namespace=~\"${namespace.value}\",cluster=~\"${cluster.value}\"}[30m])>1"
                 }
@@ -520,7 +519,7 @@
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "sum(kube_pod_status_phase{cluster=~\"${cluster.value}\",namespace=~\"${namespace.value}\", phase=\"Succeeded\"}) by (cluster, pod)"
+                  "prometheusQuery": "sum(kube_pod_status_phase{cluster=~\"${cluster.value}\",namespace=~\"${namespace.value}\", phase=\"Succeeded\"}) by (exported_pod)"
                 }
               }
             ],
@@ -546,7 +545,7 @@
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "sum(kube_pod_status_phase{cluster=~\"${cluster.value}\",namespace=~\"${namespace.value}\", phase=\"Failed\"}) by (cluster, pod)"
+                  "prometheusQuery": "sum(kube_pod_status_phase{cluster=~\"${cluster.value}\",namespace=~\"${namespace.value}\", phase=\"Failed\"}) by (exported_pod)"
                 }
               }
             ],
@@ -572,7 +571,7 @@
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "sum(kube_pod_status_phase{cluster=~\"${cluster.value}\",namespace=~\"${namespace.value}\", phase=\"Pending\"}) by (cluster, pod)"
+                  "prometheusQuery": "sum(kube_pod_status_phase{cluster=~\"${cluster.value}\",namespace=~\"${namespace.value}\", phase=\"Pending\"}) by (exported_pod)"
                 }
               }
             ],
@@ -598,7 +597,7 @@
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "sum(kube_pod_status_phase{cluster=~\"${cluster.value}\",namespace=~\"${namespace.value}\", phase=\"Unknown\"}) by (cluster, pod)"
+                  "prometheusQuery": "sum(kube_pod_status_phase{cluster=~\"${cluster.value}\",namespace=~\"${namespace.value}\", phase=\"Unknown\"}) by (exported_pod)"
                 }
               }
             ],
@@ -649,7 +648,7 @@
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "sum(kube_pod_container_status_waiting{namespace=~\"${namespace.value}\",cluster=~\"${cluster.value}\"}) by (namespace,pod)"
+                  "prometheusQuery": "sum(kube_pod_container_status_waiting{namespace=~\"${namespace.value}\",cluster=~\"${cluster.value}\"}) by (exported_container)"
                 }
               }
             ],
@@ -675,7 +674,7 @@
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "sum(kube_pod_container_status_terminated{namespace=~\"${namespace.value}\",cluster=~\"${cluster.value}\"}) by (namespace,pod)"
+                  "prometheusQuery": "sum(kube_pod_container_status_terminated{namespace=~\"${namespace.value}\",cluster=~\"${cluster.value}\"}) by (exported_container)"
                 }
               }
             ],
@@ -701,7 +700,7 @@
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "sum(changes(kube_pod_container_status_restarts_total{namespace=~\"${namespace.value}\",cluster=~\"${cluster.value}\"}[30m])) by (namespace,pod)"
+                  "prometheusQuery": "sum(changes(kube_pod_container_status_restarts_total{namespace=~\"${namespace.value}\",cluster=~\"${cluster.value}\"}[30m])) by (exported_container)"
                 }
               }
             ],
