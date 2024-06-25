@@ -47,13 +47,37 @@ spec:
               limits:
                 cpu: 250m
                 memory: 512Mi
-        
+
+            rollout:
+              rollingUpdate:
+                maxSurge: 25%
+                maxUnavailable: 0
+
+            livenessProbe:
+              initialDelaySeconds: 10
+              periodSeconds: 5
+              timeoutSeconds: 10
+              failureThreshold: 1
+              httpGet:
+                port: 13133
+                path: /
+
+            readinessProbe:
+              initialDelaySeconds: 10
+              periodSeconds: 5
+              timeoutSeconds: 10
+              failureThreshold: 1
+              httpGet:
+                port: 13133
+                path: /
+
             autoscaling:
               enabled: true
               minReplicas: 1
               maxReplicas: 10
               behavior: {}
               targetCPUUtilizationPercentage: 80
+
             config:
               extensions:
                 # The health_check extension is mandatory for this chart.
@@ -78,8 +102,27 @@ spec:
                     [
                       {
                         name: longer-than-600ms,
-                        type: latency,
-                        latency: { threshold_ms: 600 },
+                        type: and,
+                        and: {
+                          and_sub_policy:
+                          [
+                            {
+                               name: exclude-director-run,
+                               type: ottl_condition,
+                               ottl_condition: {
+                                 error_mode: ignore,
+                                 span: [
+                                   "attributes[\"service.name\"] != \"little-quest-director\"",
+                                 ]
+                               },
+                            },
+                            {
+                               name: longer-than-600ms,
+                               type: latency,
+                               latency: {threshold_ms: 600}
+                            },
+                          ]
+                        }
                       },
                       {
                         name: error-status,
@@ -87,10 +130,6 @@ spec:
                         status_code: {status_codes: [ERROR]}
                       }
                     ]
-                resourcedetection:
-                  detectors: [gcp]
-                  timeout: 10s
-                  override: false
                 batch: null
               exporters:
                 googlecloud:
@@ -111,7 +150,7 @@ spec:
                 pipelines:
                   traces:
                     receivers: [otlp]
-                    processors: [tail_sampling, resourcedetection]
+                    processors: [tail_sampling]
                     exporters: [googlecloud]
                   metrics: null
                   logs: null
