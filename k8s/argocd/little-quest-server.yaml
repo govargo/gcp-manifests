@@ -23,7 +23,7 @@ spec:
   source:
     repoURL: asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/charts
     chart: little-quest-server
-    targetRevision: 0.5.2
+    targetRevision: 0.5.6
     helm:
       releaseName: "little-quest-server"
       values: |
@@ -40,9 +40,24 @@ spec:
 
         migrate: false
 
+        initContainers:
+        - name: cp-sleep
+          image: busybox:1.28
+          command:
+          - cp
+          args:
+          - /bin/sleep
+          - /test/sleep
+          volumeMounts:
+          - name: test
+            mountPath: /test
+
         lifecycle:
           preStop:
-            enabled: true
+            exec:
+              command:
+              - /usr/local/bin/sleep
+              - "5"
 
         serviceAccount:
           # Specifies whether a service account should be created
@@ -137,7 +152,10 @@ spec:
 
           lifecycle:
             preStop:
-              enabled: true
+              exec:
+                command:
+                - /test/sleep
+                - "7"
 
           containerPort: 9090
 
@@ -175,6 +193,10 @@ spec:
             successThreshold: 1
             failureThreshold: 5
             timeoutSeconds: 10
+
+          volumeMounts:
+          - name: test
+            mountPath: /test
 
           resources:
             requests:
@@ -216,6 +238,8 @@ spec:
             readOnly: true
             volumeAttributes:
               secretProviderClass: little-quest-server
+        - name: test
+          emptyDir: {}
 
         maxUnavailable: 1
 
@@ -251,7 +275,7 @@ spec:
           backendConfig:
             enabled: true
             spec:
-              timeoutSec: 180
+              timeoutSec: 720
               healthCheck:
                 checkIntervalSec: 30
                 timeoutSec: 5
@@ -275,10 +299,10 @@ spec:
           minReplicas: 2
           maxReplicas: 100
           targetCPUType: Utilization
-          targetCPUUtilizationPercentage: 90
+          targetCPUUtilizationPercentage: 80
           # targetMemoryUtilizationPercentage: 70
           targetContainerCPUType: Utilization
-          targetContainerCPUUtilizationPercentage: 90
+          targetContainerCPUUtilizationPercentage: 80
 
         secret:
           annotations: {}
