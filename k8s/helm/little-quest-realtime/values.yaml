@@ -492,6 +492,8 @@ director:
     matchFunction:
       host: little-quest-mmf.corp-0.svc.cluster.local.
       port: 80
+    director:
+      runInterval: 3s
 
   agones:
     allocator:

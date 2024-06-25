@@ -60,6 +60,8 @@ spec:
             value: {{ .Values.director.openMatch.matchFunction.host | quote }}
           - name: OPENMATCH_MATCHFUNCTION_SERVICE_PORT
             value: {{ .Values.director.openMatch.matchFunction.port | quote }}
+          - name: OPENMATCH_DIRECTOR_RUN_INTERVAL
+            value: {{ .Values.director.openMatch.director.runInterval | quote }}
           - name: AGONES_ALLOCATOR_HOST
             value: {{ .Values.director.agones.allocator.address | quote }}
           - name: GOOGLE_CLOUD_PROJECT
