@@ -155,6 +155,36 @@ resource "google_monitoring_alert_policy" "gce_host_error" {
   notification_channels = [google_monitoring_notification_channel.email_notification.name]
 }
 
+resource "google_monitoring_alert_policy" "gce_host_preemption" {
+  display_name = "VM Instance - Instance Preemption Log Detected"
+  documentation {
+    content   = "This alert fires when any instance preemption is detected on the VM instance ($${metric.labels.instance_name}) based on system_event logs, limited to notifying once per hour."
+    mime_type = "text/markdown"
+  }
+  enabled  = true
+  severity = "WARNING"
+  combiner = "OR"
+  conditions {
+    display_name = "VM Instance - Instance Preemption Log Detected"
+    condition_matched_log {
+      filter = "log_id(\"cloudaudit.googleapis.com/system_event\") AND operation.producer=\"compute.instances.preempted\""
+    }
+  }
+
+  user_labels = {
+    product = "gce"
+  }
+
+  alert_strategy {
+    notification_rate_limit {
+      period = "3600s"
+    }
+    auto_close = "604800s"
+  }
+
+  notification_channels = [google_monitoring_notification_channel.email_notification.name]
+}
+
 ## GKE and Container
 resource "google_monitoring_alert_policy" "gke_container_high_cpu_limit_utilization" {
   display_name = "GKE Container - High CPU Limit Utilization (all containers)"
