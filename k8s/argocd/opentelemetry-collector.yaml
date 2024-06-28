@@ -116,7 +116,7 @@ spec:
                 otlp:
                   protocols:
                     grpc:
-                      endpoint: localhost:4317
+                      endpoint: 0.0.0.0:4317
                 jaeger: null
                 prometheus: null
                 zipkin: null
