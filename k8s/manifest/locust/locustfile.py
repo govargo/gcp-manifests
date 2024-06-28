@@ -1,3 +1,4 @@
+import json
 import random
 import socket
 import time
@@ -41,7 +42,15 @@ class TestScenarioCase(TaskSet):
                                          json={
                                            "client_master_version": "2022061301"
                                          })
-    if tutorial_response.json()["user_profile"]["tutorial_progress"] != 10:
+    try:
+      tutorial_progress = tutorial_response.json()["user_profile"][
+        "tutorial_progress"]
+    except (json.JSONDecodeError, TypeError) as e:
+      print(e)
+      print("[DEBUG] Tutorial response: {}".format(tutorial_response))
+      return
+
+    if tutorial_progress != 10:
       print("CHECK: tutorial progress is ",
             tutorial_response.json()["user_profile"]["tutorial_progress"])
 
@@ -94,7 +103,13 @@ class TestScenarioCase(TaskSet):
     raidbattle_url = "/users/" + self.user_id + "/quests/raidbattle"
     raidbattle_response = self.client.post(raidbattle_url, headers=headers)
 
-    connection = raidbattle_response.json()["connection"]
+    try:
+      connection = raidbattle_response.json()["connection"]
+    except (json.JSONDecodeError, TypeError) as e:
+      print(e)
+      print("[DEBUG] RaidBattle response: {}".format(raidbattle_response))
+      return
+
     endpoint = connection.split(":")
     ipaddress = endpoint[0]
     port = endpoint[1]
@@ -103,34 +118,40 @@ class TestScenarioCase(TaskSet):
 
     # Join to gameserver and start raid battle
     tcp_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    # Set timeout to 120s
+    tcp_client.settimeout(120)
     tcp_client.connect((ipaddress, int(port)))
     join_response = tcp_client.recv(buffer_size)
-    print("[" + ipaddress + ":" + str(
-      port) + "] " + "Received a response: {}".format(join_response))
+    # print("[" + ipaddress + ":" + str(
+    #   port) + "] " + "Received a response: {}".format(join_response))
     player = str(join_response).split(":::")
     player_name = player[0][2:]
-    print("[{}:{},{}] Joined".format(ipaddress, str(port), player_name))
+    # print("[{}:{},{}] Joined".format(ipaddress, str(port), player_name))
     tcp_client.send(b"battle:::start\n")
 
     boss_max_hp = 300
     while data := tcp_client.recv(buffer_size):
       if str(data).__contains__("start"):
-        print("[{}:{},{}] started raidbattle".format(ipaddress, str(port),
-                                                     player_name))
+        # print("[{}:{},{}] started raidbattle".format(ipaddress, str(port),
+        #                                              player_name))
         data = b"boss:::300\n"
 
       if str(data).__contains__("end"):
-        print("[{}:{},{}] end raidbattle".format(ipaddress, str(port),
-                                                 player_name))
+        # print("[{}:{},{}] end raidbattle".format(ipaddress, str(port),
+        #                                          player_name))
         tcp_client.close()
         break
 
       if str(data).__contains__("join"):
         continue
 
+      if str(data).__contains__("leave"):
+        continue
+
       damage = boss_max_hp - random.randint(1, 100)
-      print(
-        "[{}:{},{}] player attack. damage: {}".format(ipaddress, str(port), player_name, damage))
+      # print(
+      #   "[{}:{},{}] player attack. damage: {}".format(ipaddress, str(port),
+      #                                                 player_name, damage))
       tcp_client.send(bytes(
         player_name + ":::" + str(damage) + "\n", encoding='utf8'))
 
@@ -148,9 +169,9 @@ class TestScenarioCase(TaskSet):
         # split the response such like boss:::300\n
         boss_max_hp = int(boss_hp[1][:-3])
 
-      print(
-        "[{}:{},{}] boss hp: {}".format(ipaddress, str(port), player_name,
-                                        str(boss_max_hp)))
+      # print(
+      #   "[{}:{},{}] boss hp: {}".format(ipaddress, str(port), player_name,
+      #                                   str(boss_max_hp)))
       time.sleep(3)
 
   @task(10)
@@ -180,7 +201,14 @@ class TestScenarioCase(TaskSet):
     character_list_url = "/users/" + self.user_id + "/characters?client_master_version=2022061301"
     character_response = self.client.get(character_list_url, headers=headers)
 
-    if character_response.json()["user_character"] is not None:
+    try:
+      user_character = character_response.json()["user_character"]
+    except (json.JSONDecodeError, TypeError) as e:
+      print(e)
+      print("[DEBUG] Character response: {}".format(character_response))
+      return
+
+    if user_character is not None:
       # Sell Character, if the user has
       character_sell_url = "/users/" + self.user_id + "/characters/" + \
                            character_response.json()["user_character"][0][
@@ -196,8 +224,19 @@ class TestScenarioCase(TaskSet):
                                        "user_id": self.user_id
                                      })
 
-    crystal = shop_response.json()["user_profile"]["crystal"]
-    friend_coin = shop_response.json()["user_profile"]["friend_coin"]
+    try:
+      crystal = shop_response.json()["user_profile"]["crystal"]
+    except (json.JSONDecodeError, TypeError) as e:
+      print(e)
+      print("[DEBUG] Shop response: {}".format(shop_response))
+      return
+
+    try:
+      friend_coin = shop_response.json()["user_profile"]["friend_coin"]
+    except (json.JSONDecodeError, TypeError) as e:
+      print(e)
+      print("[DEBUG]: Shop response {}".format(shop_response))
+      return
 
     if crystal > 5:
       self.client.post("/gachas/1", headers=headers,
@@ -219,7 +258,14 @@ class TestScenarioCase(TaskSet):
     present_list_url = "/users/" + self.user_id + "/presents?client_master_version=2022061301"
     present_response = self.client.get(present_list_url, headers=headers)
 
-    if present_response.json()["user_present"] is not None:
+    try:
+      present = present_response.json()["user_present"]
+    except (json.JSONDecodeError, TypeError) as e:
+      print(e)
+      print("[DEBUG] Present response: {}".format(present_response))
+      return
+
+    if present is not None:
       # Get present, if the user has the present
       present_get_url = "/users/" + self.user_id + "/presents/" + \
                         present_response.json()["user_present"][0][
