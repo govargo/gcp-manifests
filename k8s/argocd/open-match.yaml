@@ -101,23 +101,27 @@ spec:
                  horizontalPodAutoScaler:
                    frontend:
                      minReplicas: 2
-                     maxReplicas: 10
+                     maxReplicas: 20
                      targetCPUUtilizationPercentage: 50
+                     targetMemoryUtilizationPercentage: 50
                    backend:
                      minReplicas: 2
-                     maxReplicas: 10
+                     maxReplicas: 20
                      targetCPUUtilizationPercentage: 50
+                     targetMemoryUtilizationPercentage: 50
                    query:
                      minReplicas: 2
-                     maxReplicas: 10
+                     maxReplicas: 20
                      targetCPUUtilizationPercentage: 50
+                     targetMemoryUtilizationPercentage: 50
                    evaluator:
                      minReplicas: 1
                      maxReplicas: 10
                      targetCPUUtilizationPercentage: 50
+                     targetMemoryUtilizationPercentage: 50
                  resources:
                    requests:
-                     memory: 100Mi
+                     memory: 1Gi
                      cpu: 100m
                    limits:
                      memory: 500Mi
@@ -133,7 +137,7 @@ spec:
 
                image:
                  registry: asia-northeast1-docker.pkg.dev/kentaiso-330205/open-match
-                 tag: 1.8.1-e9d49e0
+                 tag: 1.8.1-b315760
                  pullPolicy: Always
              
                telemetry:
