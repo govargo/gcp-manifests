@@ -77,3 +77,59 @@ resource "google_scc_mute_config" "gke_privileged_containers_misc_0" {
   filter         = "(contains(kubernetes.objects, name=\"misc-0-falco\") AND contains(kubernetes.objects, name=\"secrets-store-csi-driver\")) AND category=\"GKE_PRIVILEGED_CONTAINERS\""
   description    = "falco and secret csi driver require privileged, so mute this GKE privileged container alert"
 }
+
+resource "google_scc_mute_config" "gke_host_path_volumes_app_0_node_exporter" {
+  mute_config_id = "mute-gke-host-path-volumes-app-0-node-exporter"
+  parent         = "projects/${data.google_project.project.project_id}"
+  filter         = "contains(kubernetes.objects, name=\"app-0-prometheus-node-exporter\") AND category=\"GKE_HOST_PATH_VOLUMES\""
+  description    = "Node exporter require host path volumes, so mute this GKE host path volumes alert"
+}
+
+resource "google_scc_mute_config" "gke_host_path_volumes_corp_0_node_exporter" {
+  mute_config_id = "mute-gke-host-path-volumes-corp-0-node-exporter"
+  parent         = "projects/${data.google_project.project.project_id}"
+  filter         = "contains(kubernetes.objects, name=\"corp-0-prometheus-node-exporter\") AND category=\"GKE_HOST_PATH_VOLUMES\""
+  description    = "Node exporter require host path volumes, so mute this GKE host path volumes alert"
+}
+
+resource "google_scc_mute_config" "gke_host_path_volumes_misc_0_node_exporter" {
+  mute_config_id = "mute-gke-host-path-volumes-misc-0-node-exporter"
+  parent         = "projects/${data.google_project.project.project_id}"
+  filter         = "contains(kubernetes.objects, name=\"misc-0-prometheus-node-exporter\") AND category=\"GKE_HOST_PATH_VOLUMES\""
+  description    = "Node exporter require host path volumes, so mute this GKE host path volumes alert"
+}
+
+resource "google_scc_mute_config" "gke_host_path_volumes_app_0_falco" {
+  mute_config_id = "mute-gke-host-path-volumes-app-0-falco"
+  parent         = "projects/${data.google_project.project.project_id}"
+  filter         = "contains(kubernetes.objects, name=\"app-0-falco\") AND category=\"GKE_HOST_PATH_VOLUMES\""
+  description    = "Falco require host path volumes, so mute this GKE host path volumes alert"
+}
+
+resource "google_scc_mute_config" "gke_host_path_volumes_corp_0_falco" {
+  mute_config_id = "mute-gke-host-path-volumes-corp-0-falco"
+  parent         = "projects/${data.google_project.project.project_id}"
+  filter         = "contains(kubernetes.objects, name=\"corp-0-falco\") AND category=\"GKE_HOST_PATH_VOLUMES\""
+  description    = "Falco require host path volumes, so mute this GKE host path volumes alert"
+}
+
+resource "google_scc_mute_config" "gke_host_path_volumes_misc_0_falco" {
+  mute_config_id = "mute-gke-host-path-volumes-misc-0-falco"
+  parent         = "projects/${data.google_project.project.project_id}"
+  filter         = "contains(kubernetes.objects, name=\"misc-0-falco\") AND category=\"GKE_HOST_PATH_VOLUMES\""
+  description    = "Falco require host path volumes, so mute this GKE host path volumes alert"
+}
+
+resource "google_scc_mute_config" "gke_host_path_volumes_secrets_store_csi_driver" {
+  mute_config_id = "mute-gke-host-path-volumes-secrets-store-csi-driver"
+  parent         = "projects/${data.google_project.project.project_id}"
+  filter         = "contains(kubernetes.objects, name=\"secrets-store-csi-driver\") AND category=\"GKE_HOST_PATH_VOLUMES\""
+  description    = "Secret Store CSI Driver require host path volumes, so mute this GKE host path volumes alert"
+}
+
+resource "google_scc_mute_config" "gke_host_path_volumes_csi_secrets_store_provider_gcp" {
+  mute_config_id = "mute-gke-host-path-volumes-csi-secrets-store-provider-gcp"
+  parent         = "projects/${data.google_project.project.project_id}"
+  filter         = "contains(kubernetes.objects, name=\"csi-secrets-store-provider-gcp\") AND category=\"GKE_HOST_PATH_VOLUMES\""
+  description    = "CSI Secret Store Provider Plugin require host path volumes, so mute this GKE host path volumes alert"
+}
