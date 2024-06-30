@@ -55,7 +55,8 @@ locals {
     "websecurityscanner.googleapis.com",
     "cloudaicompanion.googleapis.com",
     "servicehealth.googleapis.com",
-    "recommender.googleapis.com"
+    "recommender.googleapis.com",
+    "identitytoolkit.googleapis.com"
   ])
 }
 
