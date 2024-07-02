@@ -121,10 +121,10 @@ spec:
                      targetMemoryUtilizationPercentage: 50
                  resources:
                    requests:
-                     memory: 1Gi
+                     memory: 500Mi
                      cpu: 100m
                    limits:
-                     memory: 500Mi
+                     memory: 1Gi
                      cpu: '1'
                  serviceAccount: open-match-service
                  serviceAccountAnnotations:
