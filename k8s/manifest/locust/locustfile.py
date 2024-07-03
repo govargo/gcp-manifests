@@ -2,6 +2,8 @@ import json
 import random
 import socket
 import time
+import os
+import requests
 
 from locust import TaskSet, between, task, HttpUser
 
@@ -28,11 +30,33 @@ SHOP_ITEMS = {
   "item_360": "/shops/item_360"
 }
 
+ipaddress = None
+port = None
+
 
 class TestScenarioCase(TaskSet):
   user_id = ""
 
   def on_start(self):
+    api_key = os.getenv('API_KEY')
+
+    # Check if api_key is found
+    if api_key is None:
+      print("Error: api_key not found in environment variables.")
+      exit(1)
+
+    auth_response = self.sign_in_anonymously(api_key)
+    try:
+      idToken = auth_response["idToken"]
+    except (json.JSONDecodeError, TypeError, KeyError) as e:
+      print(e)
+      print("[DEBUG] Auth response: {}".format(auth_response))
+      exit(1)
+
+    global headers
+    headers["Authorization"] = "Bearer " + idToken
+
+    # Registration and Login
     self.register_and_login()
 
     # Tutorial
@@ -54,11 +78,39 @@ class TestScenarioCase(TaskSet):
       print("CHECK: tutorial progress is ",
             tutorial_response.json()["user_profile"]["tutorial_progress"])
 
+  def on_stop(self):
+    if ipaddress is not None and port is not None:
+      print("start cleanup...")
+      tcp_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+      tcp_client.settimeout(120)
+      tcp_client.connect((ipaddress, int(port)))
+      tcp_client.send(b"battle:::end\n")
+      tcp_client.close()
+
+  def sign_in_anonymously(self, api_key):
+    # if api_key is None:
+    #   api_key = os.getenv('API_KEY')
+
+    # https://firebase.google.com/docs/reference/rest/auth#section-sign-in-anonymously
+    uri = f"https://identitytoolkit.googleapis.com/v1/accounts:signUp?key={api_key}"
+    data = json.dumps({"returnSecureToken": True})
+    result = requests.post(url=uri,
+                           headers={"Content-Type": "application/json"},
+                           data=data)
+    return result.json()
+
   def register_and_login(self):
-    # Registration
-    registration_response = self.client.post("/registration", headers=headers,
-                                             json={"name": "test-" + str(
-                                               random.randint(0, 10000))})
+    try:
+      # Registration
+      registration_response = self.client.post("/registration", headers=headers,
+                                               json={"name": "test-" + str(
+                                                 random.randint(0, 10000))})
+    except (json.JSONDecodeError, TypeError) as e:
+      print(e)
+      print("[DEBUG] Registration response: {}".format(registration_response))
+      return
+
+    # Get user_id
     self.user_id = (registration_response.json()["user_profile"]["user_id"])
     print("registered user id: " + self.user_id)
 
@@ -110,6 +162,7 @@ class TestScenarioCase(TaskSet):
       print("[DEBUG] RaidBattle response: {}".format(raidbattle_response))
       return
 
+    global ipaddress, port
     endpoint = connection.split(":")
     ipaddress = endpoint[0]
     port = endpoint[1]
@@ -140,7 +193,9 @@ class TestScenarioCase(TaskSet):
         # print("[{}:{},{}] end raidbattle".format(ipaddress, str(port),
         #                                          player_name))
         tcp_client.close()
-        break
+        ipaddress = None
+        port = None
+        return
 
       if str(data).__contains__("join"):
         continue
