@@ -9,4 +9,10 @@ resource "google_identity_platform_config" "default" {
       enabled = true
     }
   }
+
+  monitoring {
+    request_logging {
+      enabled = false
+    }
+  }
 }
