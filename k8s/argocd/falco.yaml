@@ -52,6 +52,7 @@ spec:
                     proc.name = sdk-server
                     or proc.name = controller
                     or proc.name = allocator
+                    or proc.name = extensions
                     or proc.name = argocd-server
                     or proc.name = argocd-image-up
                     or proc.name = argocd-applicat
@@ -61,6 +62,9 @@ spec:
                     or proc.name = gke-mcs-importe
                     or proc.name = prometheus
                     or proc.name = operator
+
+            falcosidekick:
+              enabled: false
 
       destination:
         name: "{{name}}"
