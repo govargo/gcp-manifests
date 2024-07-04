@@ -68,11 +68,12 @@ EOF
 resource "google_logging_project_exclusion" "k8s_container_exclude_falco" {
   name = "k8s-container-exclude-falco"
 
-  description = "Exclude falco all log for all clusters"
+  description = "Exclude falco all log except rule detection for all clusters"
 
   filter = <<EOF
 resource.type="k8s_container"
 resource.labels.namespace_name="falco"
+NOT jsonPayload.rule:* OR jsonPayload.rule="Falco internal: syscall event drop"
 EOF
 }
 

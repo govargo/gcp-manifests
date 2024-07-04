@@ -375,6 +375,36 @@ resource "google_monitoring_alert_policy" "gke_ingress_server_error" {
   }
 }
 
+resource "google_monitoring_alert_policy" "gke_falco_security_violation_detected" {
+  display_name = "GKE - Falco security rule violation detected"
+  documentation {
+    content   = "This alert fires when any falco detecting security rule violation is detected on the Cloud Logging, limited to notifying once per hour."
+    mime_type = "text/markdown"
+  }
+  enabled  = true
+  severity = "WARNING"
+  combiner = "OR"
+  conditions {
+    display_name = "GKE - Falco security rule violation detected"
+    condition_matched_log {
+      filter = "resource.type=\"k8s_container\" AND resource.labels.namespace_name=\"falco\" AND jsonPayload.rule:*"
+    }
+  }
+
+  user_labels = {
+    product = "gke"
+  }
+
+  alert_strategy {
+    notification_rate_limit {
+      period = "3600s"
+    }
+    auto_close = "604800s"
+  }
+
+  notification_channels = [google_monitoring_notification_channel.email_notification.name]
+}
+
 ## Cloud Spanner
 resource "google_monitoring_alert_policy" "cloud_spanner_instance_high_cpu" {
   display_name = "Cloud Spanner - High-priority CPU Utilization"
