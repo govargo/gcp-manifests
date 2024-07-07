@@ -4,7 +4,7 @@ metadata:
   name: multi-cluster-gateway
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "400"
+    argocd.argoproj.io/sync-wave: "2"
 spec:
   generators:
   - list:
@@ -33,9 +33,7 @@ spec:
             fullnameOverride: "little-quest-server"
 
             commonAnnotations:
-              # The current delay between each sync wave is 2 seconds
-              # So this means 800s
-              argocd.argoproj.io/sync-wave: "400"
+              argocd.argoproj.io/sync-wave: "2"
 
             multiClusterGateway:
               enabled: true

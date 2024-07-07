@@ -93,6 +93,10 @@ controller:
   podAnnotations:
     cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
 
+  env:
+  - name: ARGOCD_SYNC_WAVE_DELAY
+    value: "600"
+
   # -- Resource limits and requests for the application controller pods
   resources:
     requests:
