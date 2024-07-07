@@ -1,0 +1,48 @@
+nameOverride: ""
+fullnameOverride: "little-quest-server"
+
+multiClusterGateway:
+  enabled: false
+  protocol: https
+  tls:
+    enabled: false
+    mode: Terminate
+    secretName: example-certificate
+    options: {}
+      #  networking.gke.io/pre-shared-certs: store-example-com
+  namedAddress: example-ipaddress
+  httpRoute:
+    hosts:
+    - example.com
+    path:
+    - path:
+        type: PathPrefix
+        value: /*
+    backendRef:
+    - group: net.gke.io
+      kind: ServiceImport
+      name: example-service-import-1
+      port: 8080
+    - group: net.gke.io
+      kind: ServiceImport
+      name: example-service-import-2
+      port: 8080
+  healthCheckPolicy:
+    enabled: true
+    checkIntervalSec: 30
+    timeoutSec: 5
+    healthyThreshold: 1
+    unhealthyThreshold: 10
+    logConfig: false
+    requestPath: /healthz
+    targetServiceImport: example-service-import
+  gcpBackendPolicy:
+    enabled: true
+    spec:
+      timeoutSec: 30
+      connectionDraining:
+        drainingTimeoutSec: 60
+      securityPolicy: example-security-policy
+    targetServiceImport: example-service-import
+
+containerPort: 8080

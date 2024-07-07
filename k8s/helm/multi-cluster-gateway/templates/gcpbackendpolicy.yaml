@@ -1,0 +1,20 @@
+{{- if .Values.multiClusterGateway.gcpBackendPolicy.enabled }}
+apiVersion: networking.gke.io/v1
+kind: GCPBackendPolicy
+metadata:
+  name: {{ include "little-quest.fullname" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "little-quest.labels" . | nindent 4 }}
+  {{- if .Values.commonAnnotations }}
+  annotations:
+    {{- include "little-quest.annotations" . | nindent 4 }}
+  {{- end }}
+spec:
+  default:
+    {{- toYaml .Values.multiClusterGateway.gcpBackendPolicy.spec | nindent 4 }}
+  targetRef:
+    group: net.gke.io
+    kind: ServiceImport
+    name: {{ .Values.multiClusterGateway.gcpBackendPolicy.targetServiceImport }}
+{{- end }}

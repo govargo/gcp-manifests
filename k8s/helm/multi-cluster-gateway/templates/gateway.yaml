@@ -1,0 +1,44 @@
+{{- if .Values.multiClusterGateway.enabled }}
+kind: Gateway
+apiVersion: gateway.networking.k8s.io/v1beta1
+metadata:
+  name: {{ include "little-quest.fullname" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "little-quest.labels" . | nindent 4 }}
+  {{- if .Values.commonAnnotations }}
+  annotations:
+    {{- include "little-quest.annotations" . | nindent 4 }}
+  {{- end }}
+spec:
+  gatewayClassName: gke-l7-global-external-managed-mc
+  listeners:
+  {{- if eq .Values.multiClusterGateway.protocol "http" }}
+  - name: http
+    protocol: HTTP
+    port: 80
+    allowedRoutes:
+      kinds:
+      - kind: HTTPRoute
+  {{- else if eq .Values.multiClusterGateway.protocol "https" }}
+  - name: https
+    protocol: HTTPS
+    port: 443
+    allowedRoutes:
+      kinds:
+      - kind: HTTPRoute
+    {{- if .Values.multiClusterGateway.tls.enabled }}
+    tls:
+      mode: {{ .Values.multiClusterGateway.tls.mode }}
+      certificateRefs:
+      - name: {{ .Values.multiClusterGateway.tls.secretName }}
+      options:
+        {{- toYaml .Values.multiClusterGateway.tls.options | nindent 8 }}
+    {{- end }}
+  {{- end }}
+  {{- if .Values.multiClusterGateway.namedAddress }}
+  addresses:
+  - type: NamedAddress
+    value: {{ .Values.multiClusterGateway.namedAddress }}
+  {{- end }}
+{{- end }}
