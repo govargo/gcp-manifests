@@ -12,6 +12,7 @@ metadata:
     argocd-image-updater.argoproj.io/little.helm.image-name: image.repository
     argocd-image-updater.argoproj.io/little.helm.image-tag: image.tag
     notifications.argoproj.io/subscribe.on-sync-succeeded.googlechat: spaceName
+spec:
   generators:
   - list:
       elements:
@@ -33,7 +34,7 @@ metadata:
       source:
         repoURL: asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/charts
         chart: little-quest-server
-        targetRevision: 0.5.6
+        targetRevision: 0.6.2
         helm:
           releaseName: "little-quest-server"
           values: |
@@ -43,10 +44,14 @@ metadata:
             image:
               repository: asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/little-quest-server
               pullPolicy: IfNotPresent
+              tag: bc43b20
 
             imagePullSecrets: []
             nameOverride: ""
             fullnameOverride: ""
+
+            commonAnnotations:
+              argocd.argoproj.io/sync-wave: "1"
 
             migrate: false
 
@@ -255,13 +260,12 @@ metadata:
 
             service:
               annotations:
-                cloud.google.com/neg: '{"ingress": true}'
-                cloud.google.com/backend-config: '{"ports": {"80":"little-quest-server"}}'
+                argocd.argoproj.io/sync-wave: "1"
               type: ClusterIP
               port: 80
 
             ingress:
-              enabled: true
+              enabled: false
               className: ""
               annotations:
                 kubernetes.io/ingress.global-static-ip-name: "little-quest-server-ip"
@@ -278,12 +282,12 @@ metadata:
               #      - chart-example.local
 
               managedCertificate:
-                enabled: true
+                enabled: false
               domains:
               - little-quest-server.kentaiso.demo.altostrat.com
 
               backendConfig:
-                enabled: true
+                enabled: false
                 spec:
                   timeoutSec: 720
                   healthCheck:
@@ -298,7 +302,7 @@ metadata:
                     name: prod-little-quest-server-agent-restrict-policy
 
               frontendConfig:
-                enabled: true
+                enabled: false
                 spec:
                   redirectToHttps:
                     enabled: true
@@ -315,7 +319,8 @@ metadata:
               targetContainerCPUUtilizationPercentage: 70
 
             secret:
-              annotations: {}
+              annotations:
+                argocd.argoproj.io/sync-wave: "1"
 
             # environment(e.g. development, staging, production)
             env: production
@@ -357,6 +362,9 @@ metadata:
               gameFrontend:
                 host: little-quest-frontend.corp-0.svc.clusterset.local.
                 port: 18080
+
+            serviceExport:
+              namePrefix: "{{cluster}}"
 
       destination:
         name: "{{name}}"
