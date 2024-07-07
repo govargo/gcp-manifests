@@ -208,7 +208,7 @@ variable "disk_type" {
 variable "image_type" {
   description = "The image type to use for this node"
   type        = string
-  default     = "ubuntu_containerd"
+  default     = "UBUNTU_CONTAINERD"
 }
 
 variable "enable_gcfs" {
