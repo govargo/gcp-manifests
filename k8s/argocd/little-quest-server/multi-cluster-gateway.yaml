@@ -31,7 +31,9 @@ spec:
             fullnameOverride: "little-quest-server"
 
             commonAnnotations:
-              argocd.argoproj.io/sync-wave: "2"
+              # The current delay between each sync wave is 2 seconds
+              # So this means 800s
+              argocd.argoproj.io/sync-wave: "400"
 
             multiClusterGateway:
               enabled: true
