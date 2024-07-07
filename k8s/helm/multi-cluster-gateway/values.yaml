@@ -1,6 +1,9 @@
 nameOverride: ""
 fullnameOverride: "little-quest-server"
 
+commonAnnotations: {}
+  # argocd.argoproj.io/sync-wave: "2"
+
 multiClusterGateway:
   enabled: false
   protocol: https

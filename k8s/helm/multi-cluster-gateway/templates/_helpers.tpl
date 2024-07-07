@@ -49,3 +49,10 @@ Selector labels
 app.kubernetes.io/name: {{ include "little-quest.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
+
+{{/*
+Common annotationss
+*/}}
+{{- define "little-quest.annotations" -}}
+{{- toYaml .Values.commonAnnotations }}
+{{- end }}
