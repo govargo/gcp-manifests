@@ -1,0 +1,33 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: mcgw-little-quest-server
+  namespace: argocd
+spec:
+  generators:
+  - list:
+      elements:
+      - cluster: misc-0
+        name: gke_kentaiso-330205_asia-northeast1-a_prod-misc-0
+  template:
+    metadata:
+      name: "mcgw-little-quest-server"
+    spec:
+      project: default
+      syncPolicy:
+        syncOptions:
+        - CreateNamespace=true
+        #automated:
+        #  prune: true
+        #  selfHeal: true
+      source:
+        repoURL: https://github.com/govargo/gcp-manifests.git
+        targetRevision: HEAD
+        path: k8s/argocd/little-quest-server
+        directory:
+          include: '*.yaml'
+          exclude: '{mcgw-little-quest-server.yaml}'
+
+      destination:
+        name: "{{name}}"
+        namespace: argocd

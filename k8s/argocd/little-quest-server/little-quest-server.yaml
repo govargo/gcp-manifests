@@ -4,6 +4,7 @@ metadata:
   name: little-quest-server
   namespace: argocd
   annotations:
+    argocd.argoproj.io/sync-wave: "1"
     argocd-image-updater.argoproj.io/write-back-method: argocd
     argocd-image-updater.argoproj.io/image-list: little=asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/little-quest-server
     argocd-image-updater.argoproj.io/little.update-strategy: newest-build
