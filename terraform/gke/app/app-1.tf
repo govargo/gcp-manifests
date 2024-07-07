@@ -1,20 +1,14 @@
-data "google_project" "project" {
-}
-
-data "google_compute_default_service_account" "default" {
-}
-
-module "app-0" {
+module "app-1" {
   source                               = "terraform-google-modules/kubernetes-engine/google//modules/beta-private-cluster"
   version                              = "30.2.0"
   project_id                           = data.google_project.project.project_id
-  name                                 = "${var.env}-app-0"
+  name                                 = "${var.env}-app-1"
   regional                             = true
-  region                               = var.region
-  zones                                = var.zones
+  region                               = "us-central1"
+  zones                                = ["us-central1-a", "us-central1-b", "us-central1-c"]
   network                              = var.gcp_project_name
-  subnetwork                           = "${var.env}-app-0"
-  master_ipv4_cidr_block               = "10.0.0.0/28"
+  subnetwork                           = "${var.env}-app-1"
+  master_ipv4_cidr_block               = "10.1.0.0/28"
   ip_range_pods                        = var.cluster_secondary_range_name
   ip_range_services                    = var.services_secondary_range_name
   enable_private_endpoint              = false
@@ -72,7 +66,7 @@ module "app-0" {
     {
       name               = "kube-system-pool"
       machine_type       = "e2-custom-2-3072"
-      node_locations     = var.node_locations
+      node_locations     = "us-central1-a,us-central1-b,us-central1-c"
       min_count          = null
       max_count          = null
       total_min_count    = var.total_min_count
@@ -98,7 +92,7 @@ module "app-0" {
     {
       name               = "app-pool"
       machine_type       = "e2-custom-2-3072"
-      node_locations     = var.node_locations
+      node_locations     = "us-central1-a,us-central1-b,us-central1-c"
       min_count          = null
       max_count          = null
       total_min_count    = var.total_min_count
