@@ -158,7 +158,7 @@ resource "google_monitoring_alert_policy" "gce_host_error" {
 resource "google_monitoring_alert_policy" "gce_host_preemption" {
   display_name = "VM Instance - Instance Preemption Log Detected"
   documentation {
-    content   = "This alert fires when any instance preemption is detected on the VM instance ($${metric.labels.instance_name}) based on system_event logs, limited to notifying once per hour."
+    content   = "This alert fires when any instance preemption is detected on the VM instance ($${log.extracted_label.instance_name}) based on system_event logs, limited to notifying once per five minutes."
     mime_type = "text/markdown"
   }
   enabled  = true
@@ -168,6 +168,9 @@ resource "google_monitoring_alert_policy" "gce_host_preemption" {
     display_name = "VM Instance - Instance Preemption Log Detected"
     condition_matched_log {
       filter = "log_id(\"cloudaudit.googleapis.com/system_event\") AND operation.producer=\"compute.instances.preempted\""
+      label_extractors = {
+        instance_name = "EXTRACT(protoPayload.request.resourceName)"
+      }
     }
   }
 
@@ -177,7 +180,7 @@ resource "google_monitoring_alert_policy" "gce_host_preemption" {
 
   alert_strategy {
     notification_rate_limit {
-      period = "3600s"
+      period = "300s"
     }
     auto_close = "604800s"
   }
