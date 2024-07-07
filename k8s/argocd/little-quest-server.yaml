@@ -1,5 +1,5 @@
 apiVersion: argoproj.io/v1alpha1
-kind: Application
+kind: ApplicationSet
 metadata:
   name: little-quest-server
   namespace: argocd
@@ -12,342 +12,352 @@ metadata:
     argocd-image-updater.argoproj.io/little.helm.image-name: image.repository
     argocd-image-updater.argoproj.io/little.helm.image-tag: image.tag
     notifications.argoproj.io/subscribe.on-sync-succeeded.googlechat: spaceName
-spec:
-  project: default
-  syncPolicy:
-    syncOptions:
-    - CreateNamespace=true
-    automated:
-      prune: true
-      selfHeal: true
-  source:
-    repoURL: asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/charts
-    chart: little-quest-server
-    targetRevision: 0.5.6
-    helm:
-      releaseName: "little-quest-server"
-      values: |
-        # Default values for little-quest-server.
-        # This is a YAML-formatted file.
-        # Declare variables to be passed into your templates.
-        image:
-          repository: asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/little-quest-server
-          pullPolicy: IfNotPresent
+  generators:
+  - list:
+      elements:
+      - cluster: app-0
+        name: gke_kentaiso-330205_asia-northeast1_prod-app-0
+      - cluster: app-1
+        name: gke_kentaiso-330205_us-central1_prod-app-1
+  template:
+    metadata:
+      name: "{{cluster}}-little-quest-server"
+    spec:
+      project: default
+      syncPolicy:
+        syncOptions:
+        - CreateNamespace=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        repoURL: asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/charts
+        chart: little-quest-server
+        targetRevision: 0.5.6
+        helm:
+          releaseName: "little-quest-server"
+          values: |
+            # Default values for little-quest-server.
+            # This is a YAML-formatted file.
+            # Declare variables to be passed into your templates.
+            image:
+              repository: asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/little-quest-server
+              pullPolicy: IfNotPresent
 
-        imagePullSecrets: []
-        nameOverride: ""
-        fullnameOverride: ""
+            imagePullSecrets: []
+            nameOverride: ""
+            fullnameOverride: ""
 
-        migrate: false
+            migrate: false
 
-        initContainers:
-        - name: cp-sleep
-          image: busybox:1.28
-          command:
-          - cp
-          args:
-          - /bin/sleep
-          - /test/sleep
-          volumeMounts:
-          - name: test
-            mountPath: /test
-
-        lifecycle:
-          preStop:
-            exec:
+            initContainers:
+            - name: cp-sleep
+              image: busybox:1.28
               command:
-              - /usr/local/bin/sleep
-              - "5"
+              - cp
+              args:
+              - /bin/sleep
+              - /test/sleep
+              volumeMounts:
+              - name: test
+                mountPath: /test
 
-        serviceAccount:
-          # Specifies whether a service account should be created
-          create: true
-          # Annotations to add to the service account
-          annotations:
-            iam.gke.io/gcp-service-account: little-quest-server@kentaiso-330205.iam.gserviceaccount.com
-          # The name of the service account to use.
-          # If not set and create is true, a name is generated using the fullname template
-          name: ""
+            lifecycle:
+              preStop:
+                exec:
+                  command:
+                  - /usr/local/bin/sleep
+                  - "5"
 
-        podAnnotations: {} 
+            serviceAccount:
+              # Specifies whether a service account should be created
+              create: true
+              # Annotations to add to the service account
+              annotations:
+                iam.gke.io/gcp-service-account: little-quest-server@kentaiso-330205.iam.gserviceaccount.com
+              # The name of the service account to use.
+              # If not set and create is true, a name is generated using the fullname template
+              name: ""
 
-        strategy:
-          type: RollingUpdate
-          rollingUpdate:
-            maxSurge: 50%
-            maxUnavailable: 10%
+            podAnnotations: {} 
 
-        # Pod's containerPort
-        containerPort: 18080
+            strategy:
+              type: RollingUpdate
+              rollingUpdate:
+                maxSurge: 50%
+                maxUnavailable: 0%
 
-        podSecurityContext: {}
-          # fsGroup: 2000
+            # Pod's containerPort
+            containerPort: 18080
 
-        securityContext: {}
-          # capabilities:
-          #   drop:
-          #   - ALL
-          # readOnlyRootFilesystem: true
-          # runAsNonRoot: true
-          # runAsUser: 1000
+            podSecurityContext: {}
+              # fsGroup: 2000
 
-        liveness:
-          httpGet:
-            path: /healthz
-            port: http
-          periodSeconds: 10
-          successThreshold: 1
-          failureThreshold: 5
-          timeoutSeconds: 10
+            securityContext: {}
+              # capabilities:
+              #   drop:
+              #   - ALL
+              # readOnlyRootFilesystem: true
+              # runAsNonRoot: true
+              # runAsUser: 1000
 
-        readiness:
-          httpGet:
-            path: /readiness
-            port: http
-          periodSeconds: 10
-          successThreshold: 1
-          failureThreshold: 5
-          timeoutSeconds: 10
+            liveness:
+              httpGet:
+                path: /healthz
+                port: http
+              periodSeconds: 10
+              successThreshold: 1
+              failureThreshold: 5
+              timeoutSeconds: 10
 
-        startup:
-          httpGet:
-            path: /readiness
-            port: http
-          periodSeconds: 10
-          initialDelaySeconds: 5
-          successThreshold: 1
-          failureThreshold: 10
-          timeoutSeconds: 30
+            readiness:
+              httpGet:
+                path: /readiness
+                port: http
+              periodSeconds: 10
+              successThreshold: 1
+              failureThreshold: 5
+              timeoutSeconds: 10
 
-        resources:
-          # We usually recommend not to specify default resources and to leave this as a conscious
-          # choice for the user. This also increases chances charts run on environments with little
-          # resources, such as Minikube. If you do want to specify resources, uncomment the following
-          # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-          requests:
-            cpu: 100m
-            memory: 128Mi
-          limits:
-            cpu: 1000m
-            memory: 512Mi
+            startup:
+              httpGet:
+                path: /readiness
+                port: http
+              periodSeconds: 10
+              initialDelaySeconds: 5
+              successThreshold: 1
+              failureThreshold: 10
+              timeoutSeconds: 30
 
-        ## Cloud SQL Proxy sidecar
-        cloudSqlProxy:
-          enabled: true
-          image:
-            repository: gcr.io/cloud-sql-connectors/cloud-sql-proxy
-            tag: 2.7.2
-          args:
-          - "--http-address=0.0.0.0"
-          - "--structured-logs"
-          - "--private-ip"
-          - "--port=3306"
-          - "--max-sigterm-delay=10s"
-          - "--prometheus=true"
-          - "--telemetry-project=kentaiso-330205"
-          - "--disable-metrics=true"
-          - "--disable-traces=true"
-          - "--health-check=true"
-          - "kentaiso-330205:asia-northeast1:prod-mysql-instance"
+            resources:
+              # We usually recommend not to specify default resources and to leave this as a conscious
+              # choice for the user. This also increases chances charts run on environments with little
+              # resources, such as Minikube. If you do want to specify resources, uncomment the following
+              # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+              requests:
+                cpu: 100m
+                memory: 128Mi
+              limits:
+                cpu: 1000m
+                memory: 512Mi
 
-          lifecycle:
-            preStop:
-              exec:
-                command:
-                - /test/sleep
-                - "7"
+            ## Cloud SQL Proxy sidecar
+            cloudSqlProxy:
+              enabled: true
+              image:
+                repository: gcr.io/cloud-sql-connectors/cloud-sql-proxy
+                tag: 2.7.2
+              args:
+              - "--http-address=0.0.0.0"
+              - "--structured-logs"
+              - "--private-ip"
+              - "--port=3306"
+              - "--max-sigterm-delay=10s"
+              - "--prometheus=true"
+              - "--telemetry-project=kentaiso-330205"
+              - "--disable-metrics=true"
+              - "--disable-traces=true"
+              - "--health-check=true"
+              - "kentaiso-330205:asia-northeast1:prod-mysql-instance"
 
-          containerPort: 9090
+              lifecycle:
+                preStop:
+                  exec:
+                    command:
+                    - /test/sleep
+                    - "7"
 
-          securityContext:
-             # The default Cloud SQL Auth Proxy image runs as the
-             # "nonroot" user and group (uid: 65532) by default.
-             runAsNonRoot: true
-             readOnlyRootFilesystem: true
-             allowPrivilegeEscalation : false
+              containerPort: 9090
 
-          liveness:
-            httpGet:
-              path: /liveness
-              port: 9090
-            periodSeconds: 10
-            successThreshold: 1
-            failureThreshold: 5
-            timeoutSeconds: 10
+              securityContext:
+                # The default Cloud SQL Auth Proxy image runs as the
+                # "nonroot" user and group (uid: 65532) by default.
+                runAsNonRoot: true
+                readOnlyRootFilesystem: true
+                allowPrivilegeEscalation : false
 
-          readiness:
-            httpGet:
-               path: /readiness
-               port: 9090
-            periodSeconds: 10
-            successThreshold: 1
-            failureThreshold: 5
-            timeoutSeconds: 10
+              liveness:
+                httpGet:
+                  path: /liveness
+                  port: 9090
+                periodSeconds: 10
+                successThreshold: 1
+                failureThreshold: 5
+                timeoutSeconds: 10
 
-          startup:
-            httpGet:
-              path: /startup
-              port: 9090
-            periodSeconds: 10
-            initialDelaySeconds: 3
-            successThreshold: 1
-            failureThreshold: 5
-            timeoutSeconds: 10
+              readiness:
+                httpGet:
+                  path: /readiness
+                  port: 9090
+                periodSeconds: 10
+                successThreshold: 1
+                failureThreshold: 5
+                timeoutSeconds: 10
 
-          volumeMounts:
-          - name: test
-            mountPath: /test
+              startup:
+                httpGet:
+                  path: /startup
+                  port: 9090
+                periodSeconds: 10
+                initialDelaySeconds: 3
+                successThreshold: 1
+                failureThreshold: 5
+                timeoutSeconds: 10
 
-          resources:
-            requests:
-              cpu: 10m
-              memory: 10Mi
-            limits:
-              cpu: 500m
-              memory: 512Mi
+              volumeMounts:
+              - name: test
+                mountPath: /test
 
-        nodeSelector:
-          app: little-quest-server
+              resources:
+                requests:
+                  cpu: 10m
+                  memory: 10Mi
+                limits:
+                  cpu: 500m
+                  memory: 512Mi
 
-        tolerations:
-        - key: "app"
-          operator: "Equal"
-          value: "little-quest-server"
-          effect: "NoSchedule"
+            nodeSelector:
+              app: little-quest-server
 
-        affinity: {}
+            tolerations:
+            - key: "app"
+              operator: "Equal"
+              value: "little-quest-server"
+              effect: "NoSchedule"
 
-        topologySpreadConstraints:
-        - maxSkew: 1
-          topologyKey: topology.kubernetes.io/zone
-          whenUnsatisfiable: ScheduleAnyway
+            affinity: {}
 
-        terminationGracePeriodSeconds: 30
+            topologySpreadConstraints:
+            - maxSkew: 1
+              topologyKey: topology.kubernetes.io/zone
+              whenUnsatisfiable: ScheduleAnyway
 
-        ## Additional volumeMounts
-        volumeMounts:
-        - name: middleware-env
-          mountPath: /var/secrets
-          readOnly: true
+            terminationGracePeriodSeconds: 30
 
-        ## Additional Volumes
-        volumes:
-        - name: middleware-env
-          csi:
-            driver: secrets-store.csi.k8s.io
-            readOnly: true
-            volumeAttributes:
-              secretProviderClass: little-quest-server
-        - name: test
-          emptyDir: {}
+            ## Additional volumeMounts
+            volumeMounts:
+            - name: middleware-env
+              mountPath: /var/secrets
+              readOnly: true
 
-        maxUnavailable: 1
+            ## Additional Volumes
+            volumes:
+            - name: middleware-env
+              csi:
+                driver: secrets-store.csi.k8s.io
+                readOnly: true
+                volumeAttributes:
+                  secretProviderClass: little-quest-server
+            - name: test
+              emptyDir: {}
 
-        service:
-          annotations:
-            cloud.google.com/neg: '{"ingress": true}'
-            cloud.google.com/backend-config: '{"ports": {"80":"little-quest-server"}}'
-          type: ClusterIP
-          port: 80
+            maxUnavailable: 1
 
-        ingress:
-          enabled: true
-          className: ""
-          annotations:
-            kubernetes.io/ingress.global-static-ip-name: "little-quest-server-ip"
-            networking.gke.io/managed-certificates: "little-quest-server"
-            networking.gke.io/v1beta1.FrontendConfig: "little-quest-server"
-          hosts:
-            - host: little-quest-server.kentaiso.demo.altostrat.com
-              paths:
+            service:
+              annotations:
+                cloud.google.com/neg: '{"ingress": true}'
+                cloud.google.com/backend-config: '{"ports": {"80":"little-quest-server"}}'
+              type: ClusterIP
+              port: 80
+
+            ingress:
+              enabled: true
+              className: ""
+              annotations:
+                kubernetes.io/ingress.global-static-ip-name: "little-quest-server-ip"
+                networking.gke.io/managed-certificates: "little-quest-server"
+                networking.gke.io/v1beta1.FrontendConfig: "little-quest-server"
+              hosts:
+              - host: little-quest-server.kentaiso.demo.altostrat.com
+                paths:
                 - path: /*
                   pathType: ImplementationSpecific
-          tls: []
-          #  - secretName: chart-example-tls
-          #    hosts:
-          #      - chart-example.local
+              tls: []
+              #  - secretName: chart-example-tls
+              #    hosts:
+              #      - chart-example.local
 
-          managedCertificate:
-            enabled: true
-            domains:
-            - little-quest-server.kentaiso.demo.altostrat.com
-
-          backendConfig:
-            enabled: true
-            spec:
-              timeoutSec: 720
-              healthCheck:
-                checkIntervalSec: 30
-                timeoutSec: 5
-                healthyThreshold: 1
-                unhealthyThreshold: 10
-                type: HTTP
-                requestPath: /healthz
-                port: 18080
-              securityPolicy:
-                name: prod-little-quest-server-agent-restrict-policy
-
-          frontendConfig:
-            enabled: true
-            spec:
-              redirectToHttps:
+              managedCertificate:
                 enabled: true
-                responseCodeName: MOVED_PERMANENTLY_DEFAULT
+              domains:
+              - little-quest-server.kentaiso.demo.altostrat.com
 
-        autoscaling:
-          enabled: true
-          minReplicas: 2
-          maxReplicas: 100
-          targetCPUType: Utilization
-          targetCPUUtilizationPercentage: 80
-          # targetMemoryUtilizationPercentage: 70
-          targetContainerCPUType: Utilization
-          targetContainerCPUUtilizationPercentage: 80
+              backendConfig:
+                enabled: true
+                spec:
+                  timeoutSec: 720
+                  healthCheck:
+                    checkIntervalSec: 30
+                    timeoutSec: 5
+                    healthyThreshold: 1
+                    unhealthyThreshold: 10
+                    type: HTTP
+                    requestPath: /healthz
+                    port: 18080
+                  securityPolicy:
+                    name: prod-little-quest-server-agent-restrict-policy
 
-        secret:
-          annotations: {}
+              frontendConfig:
+                enabled: true
+                spec:
+                  redirectToHttps:
+                    enabled: true
+                    responseCodeName: MOVED_PERMANENTLY_DEFAULT
 
-        # environment(e.g. development, staging, production)
-        env: production
+            autoscaling:
+              enabled: true
+              minReplicas: 2
+              maxReplicas: 100
+              targetCPUType: Utilization
+              targetCPUUtilizationPercentage: 70
+              # targetMemoryUtilizationPercentage: 70
+              targetContainerCPUType: Utilization
+              targetContainerCPUUtilizationPercentage: 70
 
-        # Time Zone
-        timeZone: Asia/Tokyo
+            secret:
+              annotations: {}
 
-        # Google Cloud ProjectId
-        googleCloudProjectId: kentaiso-330205
+            # environment(e.g. development, staging, production)
+            env: production
 
-        # Trace info
-        trace:
-          exporter: opentelemetry_collector
-          endpoint: opentelemetry-collector.tracing.svc.cluster.local.:4317
-          samplingRate: 1.0
-          exemplar: false
-          exemplarFilter: trace_based
-          platform: opentelemetry
+            # Time Zone
+            timeZone: Asia/Tokyo
 
-        # Cloud Spanner info
-        spanner:
-          instance: prod-spanner-instance
-          database: user_data
+            # Google Cloud ProjectId
+            googleCloudProjectId: kentaiso-330205
 
-        # MySQL info
-        mysql:
-          host: localhost
-          port: 3306
-          dbName: master_data
-          userName: little-quest-server
+            # Trace info
+            trace:
+              exporter: opentelemetry_collector
+              endpoint: opentelemetry-collector.tracing.svc.cluster.local.:4317
+              samplingRate: 1.0
+              exemplar: false
+              exemplarFilter: trace_based
+              platform: opentelemetry
 
-        # Redis info
-        redis:
-          host: memorystore-redis-0.kentaiso.demo.altostrat.com.
-          port: 6379
-          dbNumber: 0
+            # Cloud Spanner info
+            spanner:
+              instance: prod-spanner-instance
+              database: user_data
 
-        openMatch:
-          gameFrontend:
-            host: little-quest-frontend.corp-0.svc.clusterset.local.
-            port: 18080
+            # MySQL info
+            mysql:
+              host: localhost
+              port: 3306
+              dbName: master_data
+              userName: little-quest-server
 
-  destination:
-    name: "gke_kentaiso-330205_asia-northeast1_prod-app-0"
-    namespace: little-quest-server
+            # Redis info
+            redis:
+              host: memorystore-redis-0.kentaiso.demo.altostrat.com.
+              port: 6379
+              dbNumber: 0
+
+            openMatch:
+              gameFrontend:
+                host: little-quest-frontend.corp-0.svc.clusterset.local.
+                port: 18080
+
+      destination:
+        name: "{{name}}"
+        namespace: little-quest-server
