@@ -2,11 +2,11 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: "{{ include "little-quest.fullname" . }}-test-connection"
+  namespace: {{ .Release.Namespace | quote }}
   labels:
     {{- include "little-quest.labels" . | nindent 4 }}
   annotations:
     "helm.sh/hook": test
-  namespace: {{ .Release.Namespace | quote }}
 spec:
   containers:
     - name: wget

@@ -3,9 +3,13 @@ apiVersion: networking.gke.io/v1
 kind: ManagedCertificate
 metadata:
   name: {{ include "little-quest.fullname" . }}
+  namespace: {{ .Release.Namespace | quote }}
   labels:
     {{- include "little-quest.labels" . | nindent 4 }}
-  namespace: {{ .Release.Namespace | quote }}
+  {{- if .Values.commonAnnotations }}
+  annotations:
+    {{- include "little-quest.annotations" . | nindent 4 }}
+  {{- end }}
 spec:
   domains:
     {{- with .Values.ingress.managedCertificate.domains }}

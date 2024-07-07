@@ -3,9 +3,13 @@ apiVersion: cloud.google.com/v1
 kind: BackendConfig
 metadata:
   name: {{ include "little-quest.fullname" . }}
+  namespace: {{ .Release.Namespace | quote }}
   labels:
     {{- include "little-quest.labels" . | nindent 4 }}
-  namespace: {{ .Release.Namespace | quote }}
+  {{- if .Values.commonAnnotations }}
+  annotations:
+    {{- include "little-quest.annotations" . | nindent 4 }}
+  {{- end }}
 spec:
   {{- toYaml .Values.ingress.backendConfig.spec | nindent 2 }}
 {{- end }}

@@ -2,9 +2,13 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "little-quest.fullname" . }}
+  namespace: {{ .Release.Namespace | quote }}
   labels:
     {{- include "little-quest.labels" . | nindent 4 }}
-  namespace: {{ .Release.Namespace | quote }}
+  {{- if .Values.commonAnnotations }}
+  annotations:
+    {{- include "little-quest.annotations" . | nindent 4 }}
+  {{- end }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
