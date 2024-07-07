@@ -1,0 +1,84 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: multi-cluster-gateway
+  namespace: argocd
+spec:
+  generators:
+  - list:
+      elements:
+      - cluster: app-0
+        name: gke_kentaiso-330205_asia-northeast1_prod-app-0
+  template:
+    metadata:
+      name: "multi-cluster-gateway"
+    spec:
+      project: default
+      syncPolicy:
+        syncOptions:
+        - CreateNamespace=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        repoURL: asia-northeast1-docker.pkg.dev/kentaiso-330205/multi-cluster-gateway/charts
+        chart: multi-cluster-gateway
+        targetRevision: 0.6.2
+        helm:
+          releaseName: "little-quest-server"
+          values: |
+            nameOverride: ""
+            fullnameOverride: "little-quest-server"
+
+            commonAnnotations:
+              argocd.argoproj.io/sync-wave: "2"
+
+            multiClusterGateway:
+              enabled: true
+              protocol: https
+              tls:
+                enabled: true
+                mode: Terminate
+                secretName: ""
+                options:
+                  networking.gke.io/pre-shared-certs: little-quest-server-certificate
+              namedAddress: little-quest-server-ip
+              httpRoute:
+                hosts:
+                - little-quest-server.kentaiso.demo.altostrat.com
+                path:
+                - path:
+                    type: PathPrefix
+                    value: /*
+                backendRef:
+                - group: net.gke.io
+                  kind: ServiceImport
+                  name: app-0-little-quest-server
+                  port: 18080
+                - group: net.gke.io
+                  kind: ServiceImport
+                  name: app-1-little-quest-server
+                  port: 18080
+              healthCheckPolicy:
+                enabled: true
+                checkIntervalSec: 30
+                timeoutSec: 5
+                healthyThreshold: 1
+                unhealthyThreshold: 10
+                logConfig: false
+                requestPath: /healthz
+                targetServiceImport: app-0-little-quest-server
+              gcpBackendPolicy:
+                enabled: true
+                spec:
+                  timeoutSec: 720
+                  connectionDraining:
+                    drainingTimeoutSec: 0
+                  securityPolicy: prod-little-quest-server-agent-restrict-policy
+                targetServiceImport: app-0-little-quest-server
+
+            containerPort: 18080
+
+      destination:
+        name: "{{name}}"
+        namespace: little-quest-server
