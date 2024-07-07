@@ -56,11 +56,11 @@ spec:
                 - group: net.gke.io
                   kind: ServiceImport
                   name: app-0-little-quest-server
-                  port: 18080
+                  port: 80
                 - group: net.gke.io
                   kind: ServiceImport
                   name: app-1-little-quest-server
-                  port: 18080
+                  port: 80
               healthCheckPolicy:
                 enabled: true
                 checkIntervalSec: 30
