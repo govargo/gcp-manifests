@@ -1,7 +1,7 @@
 kind: ServiceExport
 apiVersion: net.gke.io/v1
 metadata:
- name: {{ include "little-quest.fullname" . }}
+ name: {{ .Values.serviceExport.namePrefix }}-{{ include "little-quest.fullname" . }}
  namespace: {{ .Release.Namespace | quote }}
  labels:
     {{- include "little-quest.labels" . | nindent 4 }}

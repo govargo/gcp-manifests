@@ -261,3 +261,6 @@ openMatch:
   gameFrontend:
     host: little-quest-frontend.open-match.svc.cluster.local.
     port: 18080
+
+serviceExport:
+  namePrefix: example
