@@ -17,6 +17,8 @@ locals {
     "containerscanning.googleapis.com",
     "cloudresourcemanager.googleapis.com",
     "multiclusterservicediscovery.googleapis.com",
+    "multiclusteringress.googleapis.com",
+    "anthos.googleapis.com",
     "gkehub.googleapis.com",
     "trafficdirector.googleapis.com",
     "dns.googleapis.com",
