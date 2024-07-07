@@ -108,11 +108,12 @@ class TestScenarioCase(TaskSet):
     return result.json()
 
   def refresh_token(self, api_key):
-    print("start refresh token")
     # https://firebase.google.com/docs/reference/rest/auth#section-refresh-token
     uri = f"https://securetoken.googleapis.com/v1/token?key={api_key}"
     global headers, refresh_token
-    del headers["Authorization"]
+    if "Authorization" in headers:
+      del headers["Authorization"]
+
     body = "grant_type=refresh_token&refresh_token=" + refresh_token
     result = requests.post(url=uri,
                            headers={
@@ -120,10 +121,8 @@ class TestScenarioCase(TaskSet):
                            data=body)
 
     if result.status_code == 200:
-      print("call securetoken.googleapis.com/v1/token success")
       idToken = result.json()["id_token"]
       headers["Authorization"] = "Bearer " + idToken
-      print("token refreshed")
     if result.status_code == 400:
       print("error happened for refresh token")
       print(result.json())
