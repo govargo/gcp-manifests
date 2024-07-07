@@ -124,6 +124,19 @@ textPayload=~".*GET /healthz HTTP/1.1.*" OR textPayload=~".*GET /readiness HTTP/
 EOF
 }
 
+resource "google_logging_project_exclusion" "k8s_container_exclude_logurus_warning_log" {
+  name = "k8s-container-exclude-loguras-warning-log"
+
+  description = "Exclude agones-gameserver-sidecar logrus warning log"
+
+  filter = <<EOF
+resource.type="k8s_container"
+resource.labels.namespace_name="corp-0"
+resource.labels.container_name="agones-gameserver-sidecar"
+jsonPayload.message="Invalid LOG_LEVEL value. Defaulting to 'info'."
+EOF
+}
+
 ## Cloud Logging Sink for Little Quest
 resource "google_logging_project_sink" "kpi_action_log" {
   project = data.google_project.project.project_id
