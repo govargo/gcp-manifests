@@ -7,9 +7,9 @@ multiClusterGateway:
   tls:
     enabled: false
     mode: Terminate
-    secretName: example-certificate
+    secretName: ""
     options: {}
-      #  networking.gke.io/pre-shared-certs: store-example-com
+      # networking.gke.io/pre-shared-certs: store-example-com
   namedAddress: example-ipaddress
   httpRoute:
     hosts:
@@ -28,7 +28,7 @@ multiClusterGateway:
       name: example-service-import-2
       port: 8080
   healthCheckPolicy:
-    enabled: true
+    enabled: false
     checkIntervalSec: 30
     timeoutSec: 5
     healthyThreshold: 1
@@ -37,7 +37,7 @@ multiClusterGateway:
     requestPath: /healthz
     targetServiceImport: example-service-import
   gcpBackendPolicy:
-    enabled: true
+    enabled: false
     spec:
       timeoutSec: 30
       connectionDraining:

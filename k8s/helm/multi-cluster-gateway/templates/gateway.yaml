@@ -30,10 +30,14 @@ spec:
     {{- if .Values.multiClusterGateway.tls.enabled }}
     tls:
       mode: {{ .Values.multiClusterGateway.tls.mode }}
+      {{- if .Values.multiClusterGateway.tls.secretName }}
       certificateRefs:
       - name: {{ .Values.multiClusterGateway.tls.secretName }}
+      {{- end }}
+      {{- if .Values.multiClusterGateway.tls.options }}
       options:
         {{- toYaml .Values.multiClusterGateway.tls.options | nindent 8 }}
+      {{- end }}
     {{- end }}
   {{- end }}
   {{- if .Values.multiClusterGateway.namedAddress }}
