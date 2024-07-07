@@ -9,7 +9,7 @@ resource "google_project_iam_custom_role" "pubsub_custom_publisher" {
 
 module "little_quest_server_sa" {
   source     = "terraform-google-modules/service-accounts/google"
-  version    = "4.2.2"
+  version    = "4.2.3"
   project_id = data.google_project.project.project_id
 
   names        = ["little-quest-server"]
@@ -42,7 +42,7 @@ module "little_quest_server_workloadIdentity_binding" {
 
 module "opentelemetry_collector_sa" {
   source     = "terraform-google-modules/service-accounts/google"
-  version    = "4.2.2"
+  version    = "4.2.3"
   project_id = data.google_project.project.project_id
 
   names         = ["opentelemetry-collector"]
