@@ -8,6 +8,11 @@ main:
             - app_0_scale_up:
                 call: prod_app_0_scaleup
                 result: app_0_scale_up
+        - app_1:
+            steps:
+            - app_1_scale_up:
+                call: prod_app_1_scaleup
+                result: app_1_scale_up
         - corp_0:
             steps:
             - corp_0_scale_up:
@@ -60,6 +65,60 @@ prod_app_0_scaleup:
           spec:
             replicas: 2
       result: scale_up_workload
+  - scale_up_node_pool_loop:
+      for:
+        value: node_pool_value
+        in: ["app-pool", "kube-system-pool"]
+        steps:
+        - scale_up_node_pool:
+            call: googleapis.container.v1.projects.locations.clusters.nodePools.setSize
+            args:
+              name: $${"projects/"+project_id+"/locations/"+region+"/clusters/"+cluster_id+"/nodePools/"+node_pool_value}
+              body:
+                nodeCount: $${scale_up_size}
+            result: scale_up_node_pool
+
+prod_app_1_scaleup:
+  params:
+    - project_id: kentaiso-330205
+    - region: "us-central1"
+    - cluster_id: "prod-app-1"
+    - scale_up_size: 0
+  steps:
+  - enable_autoscaling_loop:
+      for:
+        value: node_pool_value
+        in: ["app-pool", "kube-system-pool"]
+        steps:
+        - enable_autoscaling:
+            call: googleapis.container.v1.projects.locations.clusters.nodePools.setAutoscaling
+            args:
+              name: $${"projects/"+project_id+"/locations/"+region+"/clusters/"+cluster_id+"/nodePools/"+node_pool_value}
+              body:
+                autoscaling:
+                  enabled: true
+                  autoprovisioned: false
+                  minNodeCount: 0
+                  maxNodeCount: 100
+            result: enable_autoscaling
+  - wait:
+      call: sys.sleep
+      args:
+        seconds: 30
+  # - scale_up_workload:
+  #     call: gke.request
+  #     args:
+  #       project: $${project_id}
+  #       location: $${region}
+  #       cluster_id: $${cluster_id}
+  #       method: "PATCH"
+  #       path: "/apis/apps/v1/namespaces/little-quest-server/deployments/little-quest-server/scale"
+  #       headers:
+  #         Content-Type: application/strategic-merge-patch+json
+  #       body:
+  #         spec:
+  #           replicas: 2
+  #     result: scale_up_workload
   - scale_up_node_pool_loop:
       for:
         value: node_pool_value

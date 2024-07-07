@@ -9,6 +9,8 @@ spec:
       elements:
       - cluster: app-0
         name: gke_kentaiso-330205_asia-northeast1_prod-app-0
+      - cluster: app-1
+        name: gke_kentaiso-330205_us-central1_prod-app-1
       - cluster: corp-0
         name: gke_kentaiso-330205_asia-northeast1_prod-corp-0
   template:

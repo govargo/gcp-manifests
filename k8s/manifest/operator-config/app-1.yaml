@@ -1,0 +1,21 @@
+apiVersion: monitoring.googleapis.com/v1
+kind: OperatorConfig
+metadata:
+  name: config
+  namespace: gmp-public
+  labels:
+    argocd.argoproj.io/instance: app-1-managed-prometheus
+collection:
+  kubeletScraping:
+    interval: 60s
+  filter:
+    matchOneOf:
+    - '{job="kubelet", __name__=~"container_cpu_cfs.*|container_memory_working_set_bytes|container_memory_rss|container_memory_cache|container_oom_events_total"}'
+    - '{job!="kubelet"}'
+features:
+  targetStatus:
+    enabled: true
+managedAlertmanager:
+  configSecret:
+    key: alertmanager.yaml
+    name: alertmanager

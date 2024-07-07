@@ -6,6 +6,11 @@ data "google_container_cluster" "app_0" {
   location = var.region
 }
 
+data "google_container_cluster" "app_1" {
+  name     = "${var.env}-app-1"
+  location = "us-central1"
+}
+
 data "google_container_cluster" "corp_0" {
   name     = "${var.env}-corp-0"
   location = var.region
@@ -36,6 +41,20 @@ resource "google_gke_hub_membership" "app_0_agones_allocator_membership" {
   depends_on = [google_gke_hub_feature.multi_cluster_service]
 }
 
+resource "google_gke_hub_membership" "app_1_agones_allocator_membership" {
+  project = data.google_project.project.project_id
+
+  membership_id = "${var.env}-app-1-agones-allocator-membership"
+  location      = "us-central1"
+  endpoint {
+    gke_cluster {
+      resource_link = "//container.googleapis.com/${data.google_container_cluster.app_1.id}"
+    }
+  }
+
+  depends_on = [google_gke_hub_feature.multi_cluster_service]
+}
+
 resource "google_gke_hub_membership" "corp_0_agones_allocator_membership" {
   project = data.google_project.project.project_id
 
@@ -54,6 +73,7 @@ resource "time_sleep" "wait_100_seconds" {
   depends_on = [
     google_gke_hub_feature.multi_cluster_service,
     google_gke_hub_membership.app_0_agones_allocator_membership,
+    google_gke_hub_membership.app_1_agones_allocator_membership,
     google_gke_hub_membership.corp_0_agones_allocator_membership
   ]
 

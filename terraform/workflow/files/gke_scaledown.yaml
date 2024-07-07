@@ -8,6 +8,11 @@ main:
             - app_0_scale_down:
                 call: prod_app_0_scaledown
                 result: app_0_scale_down
+        - app_1:
+            steps:
+            - app_1_scale_down:
+                call: prod_app_1_scaledown
+                result: app_1_scale_down
         - corp_0:
             steps:
             - corp_0_scale_down:
@@ -18,6 +23,57 @@ main:
             - misc_0_scale_down:
                 call: prod_misc_0_scaledown
                 result: misc_0_scale_down
+
+prod_app_1_scaledown:
+  params:
+    - project_id: kentaiso-330205
+    - region: "us-central1"
+    - cluster_id: "prod-app-1"
+    - scale_down_size: 0
+  steps:
+  - disable_autoscaling_loop:
+      for:
+        value: node_pool_value
+        in: ["app-pool", "kube-system-pool"]
+        steps:
+        - disable_autoscaling:
+            call: googleapis.container.v1.projects.locations.clusters.nodePools.setAutoscaling
+            args:
+              name: $${"projects/"+project_id+"/locations/"+region+"/clusters/"+cluster_id+"/nodePools/"+node_pool_value}
+              body:
+                autoscaling:
+                  enabled: false
+            result: disable_autoscaling
+  - wait:
+      call: sys.sleep
+      args:
+        seconds: 180
+  # - scale_down_workload:
+  #     call: gke.request
+  #     args:
+  #       project: $${project_id}
+  #       location: $${region}
+  #       cluster_id: $${cluster_id}
+  #       method: "PATCH"
+  #       path: "/apis/apps/v1/namespaces/little-quest-server/deployments/little-quest-server/scale"
+  #       headers: 
+  #         Content-Type: application/strategic-merge-patch+json
+  #       body:
+  #         spec:
+  #           replicas: $${scale_down_size}
+  #     result: scale_down_workload
+  - scale_down_node_pool_loop:
+      for:
+        value: node_pool_value
+        in: ["app-pool", "kube-system-pool"]
+        steps:
+        - scale_down_node_pool:
+            call: googleapis.container.v1.projects.locations.clusters.nodePools.setSize
+            args:
+              name: $${"projects/"+project_id+"/locations/"+region+"/clusters/"+cluster_id+"/nodePools/"+node_pool_value}
+              body:
+                nodeCount: $${scale_down_size}
+            result: scale_down_node_pool
 
 prod_app_0_scaledown:
   params:
