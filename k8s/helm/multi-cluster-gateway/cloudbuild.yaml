@@ -1,0 +1,66 @@
+steps:
+  # Install helm binary
+  - name: gcr.io/cloud-builders/gcloud
+    id: helm-bin
+    entrypoint: /bin/bash
+    args:
+    - -c
+    - |
+      curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+      chmod 700 get_helm.sh
+      ./get_helm.sh
+    waitFor: ['-']
+
+  # Login helm registry
+  - name: gcr.io/cloud-builders/gcloud
+    id: helm-registry-login
+    entrypoint: /bin/bash
+    args:
+    - -c
+    - |
+      curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+      chmod 700 get_helm.sh
+      ./get_helm.sh
+      gcloud auth application-default print-access-token | helm registry login -u oauth2accesstoken \
+        --password-stdin https://${LOCATION}-docker.pkg.dev
+    waitFor:
+    - helm-bin
+
+  # Lint Kuberntes manifests
+  - name: golang
+    id: lint-manifests
+    entrypoint: /bin/bash
+    args:
+      - -c
+      - |
+        go install github.com/yannh/kubeconform/cmd/kubeconform@latest
+        helm template little-quest-server ./k8s/helm/multi-cluster-gateway | kubeconform -ignore-missing-schemas -summary
+    waitFor:
+    - helm-bin
+
+  # Generate helm package for Little Quest
+  - name: gcr.io/cloud-builders/gcloud
+    id: helm-package
+    entrypoint: /bin/bash
+    args:
+    - -c
+    - |
+      helm package ./k8s/helm/multi-cluster-gateway
+    waitFor:
+    - helm-registry-login
+
+  - name: gcr.io/cloud-builders/gcloud
+    id: helm-push
+    entrypoint: /bin/bash
+    args:
+    - -c
+    - |
+      helm push ${TAG_NAME}.tgz oci://${LOCATION}-docker.pkg.dev/${PROJECT_ID}/multi-cluster-gateway/charts
+    waitFor:
+    - helm-package
+    - lint-manifests
+
+options:
+  volumes:
+  - name: bin
+    path: /usr/local/bin
