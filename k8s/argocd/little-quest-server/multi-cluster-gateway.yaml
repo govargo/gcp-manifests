@@ -51,7 +51,7 @@ spec:
                 path:
                 - path:
                     type: PathPrefix
-                    value: /*
+                    value: /
                 backendRef:
                 - group: net.gke.io
                   kind: ServiceImport
