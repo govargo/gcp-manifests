@@ -31,22 +31,28 @@ prod_app_0_scaleup:
     - cluster_id: "prod-app-0"
     - scale_up_size: 0
   steps:
-  - enable_autoscaling_loop:
-      for:
-        value: node_pool_value
-        in: ["app-pool", "kube-system-pool"]
-        steps:
-        - enable_autoscaling:
-            call: googleapis.container.v1.projects.locations.clusters.nodePools.setAutoscaling
-            args:
-              name: $${"projects/"+project_id+"/locations/"+region+"/clusters/"+cluster_id+"/nodePools/"+node_pool_value}
-              body:
-                autoscaling:
-                  enabled: true
-                  autoprovisioned: false
-                  minNodeCount: 0
-                  maxNodeCount: 100
-            result: enable_autoscaling
+  - enable_autoscaling_app_pool:
+      call: googleapis.container.v1.projects.locations.clusters.nodePools.setAutoscaling
+      args:
+        name: $${"projects/"+project_id+"/locations/"+region+"/clusters/"+cluster_id+"/nodePools/"+"app-pool"}
+        body:
+          autoscaling:
+            enabled: true
+            autoprovisioned: false
+            minNodeCount: 0
+            maxNodeCount: 100
+      result: enable_autoscaling_app_pool
+  - enable_autoscaling_kube_system:
+      call: googleapis.container.v1.projects.locations.clusters.nodePools.setAutoscaling
+      args:
+        name: $${"projects/"+project_id+"/locations/"+region+"/clusters/"+cluster_id+"/nodePools/"+"kube-system-pool"}
+        body:
+          autoscaling:
+            enabled: true
+            autoprovisioned: false
+            minNodeCount: 1
+            maxNodeCount: 100
+      result: enable_autoscaling_kube_system_pool
   - wait:
       call: sys.sleep
       args:
@@ -85,40 +91,46 @@ prod_app_1_scaleup:
     - cluster_id: "prod-app-1"
     - scale_up_size: 0
   steps:
-  - enable_autoscaling_loop:
-      for:
-        value: node_pool_value
-        in: ["app-pool", "kube-system-pool"]
-        steps:
-        - enable_autoscaling:
-            call: googleapis.container.v1.projects.locations.clusters.nodePools.setAutoscaling
-            args:
-              name: $${"projects/"+project_id+"/locations/"+region+"/clusters/"+cluster_id+"/nodePools/"+node_pool_value}
-              body:
-                autoscaling:
-                  enabled: true
-                  autoprovisioned: false
-                  minNodeCount: 0
-                  maxNodeCount: 100
-            result: enable_autoscaling
+  - enable_autoscaling_app_pool:
+      call: googleapis.container.v1.projects.locations.clusters.nodePools.setAutoscaling
+      args:
+        name: $${"projects/"+project_id+"/locations/"+region+"/clusters/"+cluster_id+"/nodePools/"+"app-pool"}
+        body:
+          autoscaling:
+            enabled: true
+            autoprovisioned: false
+            minNodeCount: 0
+            maxNodeCount: 100
+      result: enable_autoscaling_app_pool
+  - enable_autoscaling_kube_system:
+      call: googleapis.container.v1.projects.locations.clusters.nodePools.setAutoscaling
+      args:
+        name: $${"projects/"+project_id+"/locations/"+region+"/clusters/"+cluster_id+"/nodePools/"+"kube-system-pool"}
+        body:
+          autoscaling:
+            enabled: true
+            autoprovisioned: false
+            minNodeCount: 1
+            maxNodeCount: 100
+      result: enable_autoscaling_kube_system_pool
   - wait:
       call: sys.sleep
       args:
         seconds: 30
-  # - scale_up_workload:
-  #     call: gke.request
-  #     args:
-  #       project: $${project_id}
-  #       location: $${region}
-  #       cluster_id: $${cluster_id}
-  #       method: "PATCH"
-  #       path: "/apis/apps/v1/namespaces/little-quest-server/deployments/little-quest-server/scale"
-  #       headers:
-  #         Content-Type: application/strategic-merge-patch+json
-  #       body:
-  #         spec:
-  #           replicas: 2
-  #     result: scale_up_workload
+  - scale_up_workload:
+      call: gke.request
+      args:
+        project: $${project_id}
+        location: $${region}
+        cluster_id: $${cluster_id}
+        method: "PATCH"
+        path: "/apis/apps/v1/namespaces/little-quest-server/deployments/little-quest-server/scale"
+        headers:
+          Content-Type: application/strategic-merge-patch+json
+        body:
+          spec:
+            replicas: 2
+      result: scale_up_workload
   - scale_up_node_pool_loop:
       for:
         value: node_pool_value
@@ -139,22 +151,28 @@ prod_corp_0_scaleup:
     - cluster_id: "prod-corp-0"
     - scale_up_size: 0
   steps:
-  - enable_autoscaling_loop:
-      for:
-        value: node_pool_value
-        in: ["open-match-pool", "kube-system-pool"]
-        steps:
-        - enable_autoscaling:
-            call: googleapis.container.v1.projects.locations.clusters.nodePools.setAutoscaling
-            args:
-              name: $${"projects/"+project_id+"/locations/"+region+"/clusters/"+cluster_id+"/nodePools/"+node_pool_value}
-              body:
-                autoscaling:
-                  enabled: true
-                  autoprovisioned: false
-                  minNodeCount: 0
-                  maxNodeCount: 100
-            result: enable_autoscaling
+  - enable_autoscaling_open_match_pool:
+      call: googleapis.container.v1.projects.locations.clusters.nodePools.setAutoscaling
+      args:
+        name: $${"projects/"+project_id+"/locations/"+region+"/clusters/"+cluster_id+"/nodePools/"+"open-match-pool"}
+        body:
+          autoscaling:
+            enabled: true
+            autoprovisioned: false
+            minNodeCount: 0
+            maxNodeCount: 100
+      result: enable_autoscaling_open_match_pool
+  - enable_autoscaling_kube_system:
+      call: googleapis.container.v1.projects.locations.clusters.nodePools.setAutoscaling
+      args:
+        name: $${"projects/"+project_id+"/locations/"+region+"/clusters/"+cluster_id+"/nodePools/"+"kube-system-pool"}
+        body:
+          autoscaling:
+            enabled: true
+            autoprovisioned: false
+            minNodeCount: 1
+            maxNodeCount: 100
+      result: enable_autoscaling_kube_system_pool
   - wait:
       call: sys.sleep
       args:

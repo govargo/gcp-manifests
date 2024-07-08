@@ -48,20 +48,20 @@ prod_app_1_scaledown:
       call: sys.sleep
       args:
         seconds: 180
-  # - scale_down_workload:
-  #     call: gke.request
-  #     args:
-  #       project: $${project_id}
-  #       location: $${region}
-  #       cluster_id: $${cluster_id}
-  #       method: "PATCH"
-  #       path: "/apis/apps/v1/namespaces/little-quest-server/deployments/little-quest-server/scale"
-  #       headers: 
-  #         Content-Type: application/strategic-merge-patch+json
-  #       body:
-  #         spec:
-  #           replicas: $${scale_down_size}
-  #     result: scale_down_workload
+  - scale_down_workload:
+      call: gke.request
+      args:
+        project: $${project_id}
+        location: $${region}
+        cluster_id: $${cluster_id}
+        method: "PATCH"
+        path: "/apis/apps/v1/namespaces/little-quest-server/deployments/little-quest-server/scale"
+        headers:
+          Content-Type: application/strategic-merge-patch+json
+        body:
+          spec:
+            replicas: $${scale_down_size}
+      result: scale_down_workload
   - scale_down_node_pool_loop:
       for:
         value: node_pool_value
