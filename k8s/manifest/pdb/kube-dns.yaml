@@ -6,7 +6,7 @@ metadata:
   labels:
     addonmanager.kubernetes.io/mode: EnsureExists
 spec:
-  minAvailable: 1
+  maxUnavailable: 1
   selector:
     matchLabels:
       k8s-app: kube-dns
