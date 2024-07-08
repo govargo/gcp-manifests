@@ -95,7 +95,7 @@ controller:
 
   env:
   - name: ARGOCD_SYNC_WAVE_DELAY
-    value: "600"
+    value: "300"
 
   # -- Resource limits and requests for the application controller pods
   resources:
