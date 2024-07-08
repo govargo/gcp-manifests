@@ -11,7 +11,7 @@ data "google_compute_network" "vpc_network" {
 
 module "corp-0" {
   source                               = "terraform-google-modules/kubernetes-engine/google//modules/beta-public-cluster"
-  version                              = "30.2.0"
+  version                              = "31.1.0"
   project_id                           = data.google_project.project.project_id
   name                                 = "${var.env}-corp-0"
   regional                             = true
@@ -48,8 +48,8 @@ module "corp-0" {
   resource_usage_export_dataset_id     = "all_billing_data"
   enable_network_egress_export         = var.enable_network_egress_export
   remove_default_node_pool             = true
-  security_posture_mode                = "BASIC"
-  security_posture_vulnerability_mode  = "VULNERABILITY_BASIC"
+  security_posture_mode                = "ENTERPRISE"
+  security_posture_vulnerability_mode  = "VULNERABILITY_ENTERPRISE"
   workload_config_audit_mode           = "BASIC"
   workload_vulnerability_mode          = "BASIC"
   notification_config_topic            = "projects/${data.google_project.project.project_id}/topics/gke-cluster-upgrade-notification"
@@ -72,11 +72,11 @@ module "corp-0" {
   node_pools = [
     {
       name               = "kube-system-pool"
-      machine_type       = "e2-custom-2-4096"
+      machine_type       = "e2-custom-2-3072"
       node_locations     = var.node_locations
       min_count          = null
       max_count          = null
-      total_min_count    = var.total_min_count
+      total_min_count    = 2 # kube-system has kube-dns which may be SPOF, so 2 instances contributes to reliablity
       total_max_count    = var.total_max_count
       location_policy    = "ANY"
       local_ssd_count    = var.local_ssd_count
