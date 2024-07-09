@@ -110,6 +110,32 @@
         }
       },
       {
+        "xPos": 32,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "HTTP Response Code",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum by (code) (rate(http_requests_total[${__interval}]))",
+                  "unitOverride": "1"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
         "yPos": 16,
         "width": 48,
         "height": 16,
