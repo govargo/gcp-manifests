@@ -1,31 +1,34 @@
 {{- if .Values.multiClusterGateway.healthCheckPolicy.enabled }}
+{{- range $.Values.multiClusterGateway.targetCluster }}
 apiVersion: networking.gke.io/v1
 kind: HealthCheckPolicy
 metadata:
-  name: {{ include "little-quest.fullname" . }}
-  namespace: {{ .Release.Namespace | quote }}
+  name: {{ . }}-{{ include "little-quest.fullname" $ }}
+  namespace: {{ $.Release.Namespace | quote }}
   labels:
-    {{- include "little-quest.labels" . | nindent 4 }}
-  {{- if .Values.commonAnnotations }}
+    {{- include "little-quest.labels" $ | nindent 4 }}
+  {{- if $.Values.commonAnnotations }}
   annotations:
-    {{- include "little-quest.annotations" . | nindent 4 }}
+    {{- include "little-quest.annotations" $ | nindent 4 }}
   {{- end }}
 spec:
   default:
-    checkIntervalSec: {{ .Values.multiClusterGateway.healthCheckPolicy.checkIntervalSec }}
-    timeoutSec: {{ .Values.multiClusterGateway.healthCheckPolicy.timeoutSec }}
-    healthyThreshold: {{ .Values.multiClusterGateway.healthCheckPolicy.healthyThreshold }}
-    unhealthyThreshold: {{ .Values.multiClusterGateway.healthCheckPolicy.unhealthyThreshold }}
+    checkIntervalSec: {{ $.Values.multiClusterGateway.healthCheckPolicy.checkIntervalSec }}
+    timeoutSec: {{ $.Values.multiClusterGateway.healthCheckPolicy.timeoutSec }}
+    healthyThreshold: {{ $.Values.multiClusterGateway.healthCheckPolicy.healthyThreshold }}
+    unhealthyThreshold: {{ $.Values.multiClusterGateway.healthCheckPolicy.unhealthyThreshold }}
     logConfig:
-      enabled: {{ .Values.multiClusterGateway.healthCheckPolicy.logConfig }}
+      enabled: {{ $.Values.multiClusterGateway.healthCheckPolicy.logConfig }}
     config:
       type: HTTP
       httpHealthCheck:
         portSpecification: USE_FIXED_PORT
-        port: {{ .Values.containerPort }}
-        requestPath: {{ .Values.multiClusterGateway.healthCheckPolicy.requestPath }} 
+        port: {{ $.Values.containerPort }}
+        requestPath: {{ $.Values.multiClusterGateway.healthCheckPolicy.requestPath }} 
   targetRef:
     group: net.gke.io
     kind: ServiceImport
-    name: {{ .Values.multiClusterGateway.healthCheckPolicy.targetServiceImport }}
+    name: {{ . }}-{{ include "little-quest.fullname" $ }}
+---
+{{- end }}
 {{- end }}

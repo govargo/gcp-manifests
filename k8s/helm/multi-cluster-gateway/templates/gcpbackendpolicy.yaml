@@ -1,20 +1,23 @@
 {{- if .Values.multiClusterGateway.gcpBackendPolicy.enabled }}
+{{- range $.Values.multiClusterGateway.targetCluster }}
 apiVersion: networking.gke.io/v1
 kind: GCPBackendPolicy
 metadata:
-  name: {{ include "little-quest.fullname" . }}
-  namespace: {{ .Release.Namespace | quote }}
+  name: {{ include "little-quest.fullname" $ }}
+  namespace: {{ $.Release.Namespace | quote }}
   labels:
-    {{- include "little-quest.labels" . | nindent 4 }}
-  {{- if .Values.commonAnnotations }}
+    {{- include "little-quest.labels" $ | nindent 4 }}
+  {{- if $.Values.commonAnnotations }}
   annotations:
-    {{- include "little-quest.annotations" . | nindent 4 }}
+    {{- include "little-quest.annotations" $ | nindent 4 }}
   {{- end }}
 spec:
   default:
-    {{- toYaml .Values.multiClusterGateway.gcpBackendPolicy.spec | nindent 4 }}
+    {{- toYaml $.Values.multiClusterGateway.gcpBackendPolicy.spec | nindent 4 }}
   targetRef:
     group: net.gke.io
     kind: ServiceImport
-    name: {{ .Values.multiClusterGateway.gcpBackendPolicy.targetServiceImport }}
+    name: {{ . }}-{{ include "little-quest.fullname" $ }}
+---
+{{- end }}
 {{- end }}

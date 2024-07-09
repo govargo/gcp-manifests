@@ -6,6 +6,9 @@ commonAnnotations: {}
 
 multiClusterGateway:
   enabled: false
+  targetCluster:
+    - example-0
+    - example-1
   protocol: https
   tls:
     enabled: false
@@ -38,7 +41,6 @@ multiClusterGateway:
     unhealthyThreshold: 10
     logConfig: false
     requestPath: /healthz
-    targetServiceImport: example-service-import
   gcpBackendPolicy:
     enabled: false
     spec:
