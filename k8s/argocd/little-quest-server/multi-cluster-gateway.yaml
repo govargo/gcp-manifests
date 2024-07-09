@@ -25,7 +25,7 @@ spec:
       source:
         repoURL: asia-northeast1-docker.pkg.dev/kentaiso-330205/multi-cluster-gateway/charts
         chart: multi-cluster-gateway
-        targetRevision: 0.6.2
+        targetRevision: 0.6.3
         helm:
           releaseName: "little-quest-server"
           values: |
@@ -37,6 +37,9 @@ spec:
 
             multiClusterGateway:
               enabled: true
+              targetCluster:
+              - app-0
+              - app-1
               protocol: https
               tls:
                 enabled: true
@@ -69,7 +72,6 @@ spec:
                 unhealthyThreshold: 10
                 logConfig: false
                 requestPath: /healthz
-                targetServiceImport: app-0-little-quest-server
               gcpBackendPolicy:
                 enabled: true
                 spec:
@@ -77,7 +79,6 @@ spec:
                   connectionDraining:
                     drainingTimeoutSec: 0
                   securityPolicy: prod-little-quest-server-agent-restrict-policy
-                targetServiceImport: app-0-little-quest-server
 
             containerPort: 18080
 
