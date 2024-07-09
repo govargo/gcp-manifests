@@ -188,7 +188,7 @@
       {
         "yPos": 18,
         "width": 12,
-        "height": 8,
+        "height": 10,
         "widget": {
           "title": "Total Number of Nodes",
           "xyChart": {
@@ -197,9 +197,9 @@
             },
             "dataSets": [
               {
+                "legendTemplate": "nodes",
                 "plotType": "LINE",
                 "targetAxis": "Y1",
-		"legendTemplate": "nodes",
                 "timeSeriesQuery": {
                   "prometheusQuery": "sum(kube_node_info{cluster=~\"${cluster.value}\"})"
                 }
@@ -215,7 +215,7 @@
         "xPos": 12,
         "yPos": 18,
         "width": 12,
-        "height": 8,
+        "height": 10,
         "widget": {
           "title": "Nodes Unavailable",
           "xyChart": {
@@ -241,7 +241,7 @@
         "xPos": 36,
         "yPos": 18,
         "width": 12,
-        "height": 8,
+        "height": 10,
         "widget": {
           "title": "Node NotReady",
           "xyChart": {
@@ -262,7 +262,7 @@
         "xPos": 24,
         "yPos": 18,
         "width": 12,
-        "height": 8,
+        "height": 10,
         "widget": {
           "title": "Node Pressure",
           "xyChart": {
@@ -296,7 +296,7 @@
         }
       },
       {
-        "yPos": 26,
+        "yPos": 28,
         "width": 24,
         "height": 10,
         "widget": {
@@ -321,9 +321,9 @@
         }
       },
       {
-        "yPos": 36,
+        "yPos": 38,
         "width": 12,
-        "height": 10,
+        "height": 12,
         "widget": {
           "title": "Deployment Replicas",
           "xyChart": {
@@ -347,9 +347,9 @@
       },
       {
         "xPos": 12,
-        "yPos": 36,
+        "yPos": 38,
         "width": 12,
-        "height": 10,
+        "height": 12,
         "widget": {
           "title": "Deployment Replicas - Updated",
           "xyChart": {
@@ -372,10 +372,10 @@
         }
       },
       {
-	"xPos": 24,
-        "yPos": 36,
+        "xPos": 24,
+        "yPos": 38,
         "width": 12,
-        "height": 10,
+        "height": 12,
         "widget": {
           "title": "Deployment Replicas - Unavailable",
           "xyChart": {
@@ -399,7 +399,7 @@
       },
       {
         "xPos": 24,
-        "yPos": 26,
+        "yPos": 28,
         "width": 24,
         "height": 10,
         "widget": {
@@ -410,9 +410,9 @@
             },
             "dataSets": [
               {
+                "legendTemplate": "${labels.pod}",
                 "plotType": "LINE",
                 "targetAxis": "Y1",
-		"legendTemplate": "${labels.pod}",
                 "timeSeriesQuery": {
                   "prometheusQuery": "kube_statefulset_status_replicas_ready{namespace=~\"${namespace.value}\",cluster=~\"${cluster.value}\"}/kube_statefulset_status_replicas{namespace=~\"${namespace.value}\",cluster=~\"${cluster.value}\"}*100",
                   "unitOverride": "%"
@@ -426,9 +426,9 @@
         }
       },
       {
-        "yPos": 65,
+        "yPos": 73,
         "width": 12,
-        "height": 12,
+        "height": 20,
         "widget": {
           "title": "Pods Restart in 30m",
           "xyChart": {
@@ -437,9 +437,9 @@
             },
             "dataSets": [
               {
+                "legendTemplate": "${labels.exported_container}",
                 "plotType": "LINE",
                 "targetAxis": "Y1",
-		"legendTemplate": "${labels.exported_container}",
                 "timeSeriesQuery": {
                   "prometheusQuery": "changes(kube_pod_container_status_restarts_total{namespace=~\"${namespace.value}\",cluster=~\"${cluster.value}\"}[30m])>1"
                 }
@@ -453,9 +453,9 @@
       },
       {
         "xPos": 12,
-        "yPos": 65,
+        "yPos": 73,
         "width": 12,
-        "height": 12,
+        "height": 20,
         "widget": {
           "title": "Evicted",
           "xyChart": {
@@ -479,9 +479,9 @@
       },
       {
         "xPos": 36,
-        "yPos": 36,
+        "yPos": 38,
         "width": 12,
-        "height": 10,
+        "height": 12,
         "widget": {
           "title": "Pods Running",
           "xyChart": {
@@ -505,9 +505,9 @@
       },
       {
         "xPos": 24,
-        "yPos": 65,
+        "yPos": 73,
         "width": 12,
-        "height": 6,
+        "height": 10,
         "widget": {
           "title": "Pods Succeeded",
           "xyChart": {
@@ -531,9 +531,9 @@
       },
       {
         "xPos": 36,
-        "yPos": 65,
+        "yPos": 73,
         "width": 12,
-        "height": 6,
+        "height": 10,
         "widget": {
           "title": "Pods Failed",
           "xyChart": {
@@ -557,9 +557,9 @@
       },
       {
         "xPos": 24,
-        "yPos": 71,
+        "yPos": 83,
         "width": 12,
-        "height": 6,
+        "height": 10,
         "widget": {
           "title": "Pods Pending",
           "xyChart": {
@@ -583,9 +583,9 @@
       },
       {
         "xPos": 36,
-        "yPos": 71,
+        "yPos": 83,
         "width": 12,
-        "height": 6,
+        "height": 10,
         "widget": {
           "title": "Pods Unknown",
           "xyChart": {
@@ -608,9 +608,9 @@
         }
       },
       {
-        "yPos": 46,
+        "yPos": 50,
         "width": 12,
-        "height": 10,
+        "height": 12,
         "widget": {
           "title": "Containers Running",
           "xyChart": {
@@ -634,9 +634,9 @@
       },
       {
         "xPos": 24,
-        "yPos": 46,
+        "yPos": 50,
         "width": 12,
-        "height": 10,
+        "height": 12,
         "widget": {
           "title": "Containers Waiting",
           "xyChart": {
@@ -660,9 +660,9 @@
       },
       {
         "xPos": 36,
-        "yPos": 46,
+        "yPos": 50,
         "width": 12,
-        "height": 10,
+        "height": 12,
         "widget": {
           "title": "Containers Terminated",
           "xyChart": {
@@ -685,10 +685,10 @@
         }
       },
       {
-	"xPos": 12,
-        "yPos": 46,
+        "xPos": 12,
+        "yPos": 50,
         "width": 12,
-        "height": 10,
+        "height": 12,
         "widget": {
           "title": "Containers Restarts (Last 30 Minutes)",
           "xyChart": {
@@ -711,9 +711,9 @@
         }
       },
       {
-        "yPos": 56,
+        "yPos": 62,
         "width": 24,
-        "height": 9,
+        "height": 11,
         "widget": {
           "title": "CPU Cores Requested by Containers",
           "xyChart": {
@@ -737,9 +737,9 @@
       },
       {
         "xPos": 24,
-        "yPos": 56,
+        "yPos": 62,
         "width": 24,
-        "height": 9,
+        "height": 11,
         "widget": {
           "title": "Memory Requested By Containers",
           "xyChart": {
@@ -762,9 +762,9 @@
         }
       },
       {
-        "yPos": 77,
+        "yPos": 93,
         "width": 12,
-        "height": 15,
+        "height": 12,
         "widget": {
           "title": "HPA",
           "xyChart": {
@@ -773,25 +773,25 @@
             },
             "dataSets": [
               {
+                "legendTemplate": "${labels.horizontalpodautoscaler}",
                 "plotType": "LINE",
                 "targetAxis": "Y1",
-		"legendTemplate": "${labels.horizontalpodautoscaler}",
                 "timeSeriesQuery": {
                   "prometheusQuery": "kube_horizontalpodautoscaler_status_current_replicas{cluster=~\"${cluster.value}\",namespace=~\"${namespace.value}\"}"
                 }
               },
               {
+                "legendTemplate": "${labels.horizontalpodautoscaler}",
                 "plotType": "LINE",
                 "targetAxis": "Y1",
-		"legendTemplate": "${labels.horizontalpodautoscaler}",
                 "timeSeriesQuery": {
                   "prometheusQuery": "kube_horizontalpodautoscaler_spec_max_replicas{cluster=~\"${cluster.value}\",namespace=~\"${namespace.value}\"}"
                 }
               },
               {
+                "legendTemplate": "${labels.horizontalpodautoscaler}",
                 "plotType": "LINE",
                 "targetAxis": "Y1",
-		"legendTemplate": "${labels.horizontalpodautoscaler}",
                 "timeSeriesQuery": {
                   "prometheusQuery": "kube_horizontalpodautoscaler_spec_min_replicas{cluster=~\"${cluster.value}\",namespace=~\"${namespace.value}\"}"
                 }
@@ -805,9 +805,9 @@
       },
       {
         "xPos": 12,
-        "yPos": 77,
+        "yPos": 93,
         "width": 12,
-        "height": 15,
+        "height": 12,
         "widget": {
           "title": "Total HPA Current",
           "xyChart": {
@@ -816,9 +816,9 @@
             },
             "dataSets": [
               {
+                "legendTemplate": "HPA",
                 "plotType": "LINE",
                 "targetAxis": "Y1",
-		"legendTemplate": "HPA",
                 "timeSeriesQuery": {
                   "prometheusQuery": "sum(kube_horizontalpodautoscaler_status_current_replicas{horizontalpodautoscaler=~\".*\"})"
                 }
@@ -832,9 +832,9 @@
       },
       {
         "xPos": 36,
-        "yPos": 77,
+        "yPos": 93,
         "width": 12,
-        "height": 15,
+        "height": 12,
         "widget": {
           "title": "HPA Current == Max",
           "xyChart": {
@@ -843,11 +843,11 @@
             },
             "dataSets": [
               {
+                "legendTemplate": "${labels.horizontalpodautoscaler}",
                 "plotType": "LINE",
                 "targetAxis": "Y1",
-		"legendTemplate": "${labels.horizontalpodautoscaler}",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "kube_horizontalpodautoscaler_status_current_replicas{horizontalpodautoscaler=~\".*\"} == kube_horizontalpodautoscaler_spec_max_replicas{horizontalpodautoscaler=~\".*\"}\n"
+                  "prometheusQuery": "kube_horizontalpodautoscaler_status_current_replicas{horizontalpodautoscaler=~\".*\"} == kube_horizontalpodautoscaler_spec_max_replicas{horizontalpodautoscaler=~\".*\"}"
                 }
               }
             ],
@@ -859,9 +859,9 @@
       },
       {
         "xPos": 24,
-        "yPos": 77,
+        "yPos": 93,
         "width": 12,
-        "height": 15,
+        "height": 12,
         "widget": {
           "title": "HPA Current == Min",
           "xyChart": {
@@ -870,9 +870,9 @@
             },
             "dataSets": [
               {
+                "legendTemplate": "${labels.horizontalpodautoscaler}",
                 "plotType": "LINE",
                 "targetAxis": "Y1",
-		"legendTemplate": "${labels.horizontalpodautoscaler}",
                 "timeSeriesQuery": {
                   "prometheusQuery": "kube_horizontalpodautoscaler_status_current_replicas{horizontalpodautoscaler=~\".*\"} == kube_horizontalpodautoscaler_spec_min_replicas{horizontalpodautoscaler=~\".*\"}"
                 }
@@ -885,9 +885,9 @@
         }
       },
       {
-        "yPos": 92,
+        "yPos": 108,
         "width": 16,
-        "height": 6,
+        "height": 9,
         "widget": {
           "title": "Jobs Succeeded",
           "xyChart": {
@@ -910,9 +910,9 @@
         }
       },
       {
-        "yPos": 98,
+        "yPos": 117,
         "width": 16,
-        "height": 6,
+        "height": 9,
         "widget": {
           "title": "Jobs Active",
           "xyChart": {
@@ -935,9 +935,9 @@
         }
       },
       {
-        "yPos": 104,
+        "yPos": 126,
         "width": 16,
-        "height": 6,
+        "height": 8,
         "widget": {
           "title": "Jobs Failed",
           "xyChart": {
@@ -961,9 +961,9 @@
       },
       {
         "xPos": 16,
-        "yPos": 92,
+        "yPos": 108,
         "width": 16,
-        "height": 18,
+        "height": 26,
         "widget": {
           "title": "Job last success time from now",
           "timeSeriesTable": {
@@ -974,7 +974,7 @@
             ],
             "dataSets": [
               {
-		"minAlignmentPeriod": "0s",
+                "minAlignmentPeriod": "0s",
                 "timeSeriesQuery": {
                   "prometheusQuery": "(time()-kube_job_status_completion_time{namespace=~\"${namespace.value}\",cluster=~\"${cluster.value}\"})/60/60/24>1"
                 }
@@ -986,9 +986,9 @@
       },
       {
         "xPos": 32,
-        "yPos": 92,
+        "yPos": 108,
         "width": 16,
-        "height": 18,
+        "height": 26,
         "widget": {
           "title": "Job Failed",
           "timeSeriesTable": {
@@ -999,7 +999,7 @@
             ],
             "dataSets": [
               {
-		"minAlignmentPeriod": "0s",
+                "minAlignmentPeriod": "0s",
                 "timeSeriesQuery": {
                   "prometheusQuery": "kube_job_status_failed{namespace=~\"${namespace.value}\",cluster=~\"${cluster.value}\"}>1"
                 }
