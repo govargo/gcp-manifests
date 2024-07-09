@@ -64,6 +64,8 @@ spec:
                     or proc.name = gke-mcs-importe
                     or proc.name = prometheus
                     or proc.name = operator
+                    or proc.name = event-exporter
+                    or proc.name = kube-dns
 
             falcosidekick:
               enabled: false
