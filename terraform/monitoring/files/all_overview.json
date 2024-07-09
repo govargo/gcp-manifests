@@ -143,7 +143,7 @@
                       ],
                       "perSeriesAligner": "ALIGN_RATE"
                     },
-                    "filter": "metric.type=\"loadbalancing.googleapis.com/https/request_count\" resource.type=\"https_lb_rule\" resource.label.\"url_map_name\"=monitoring.regex.full_match(\"k8s2-.*-little-quest-serve-little-quest-serve-.*\")"
+                    "filter": "metric.type=\"loadbalancing.googleapis.com/https/request_count\" resource.type=\"https_lb_rule\" resource.label.\"url_map_name\"=monitoring.regex.full_match(\"gkemcg1-little-quest-server-little-quest-server-.*\")"
                   }
                 }
               }
@@ -178,7 +178,7 @@
                       "crossSeriesReducer": "REDUCE_SUM",
                       "perSeriesAligner": "ALIGN_DELTA"
                     },
-                    "filter": "metric.type=\"loadbalancing.googleapis.com/https/total_latencies\" resource.type=\"https_lb_rule\" resource.label.\"url_map_name\"=monitoring.regex.full_match(\"k8s2-.*-little-quest-serve-little-quest-serve-.*\")"
+                    "filter": "metric.type=\"loadbalancing.googleapis.com/https/total_latencies\" resource.type=\"https_lb_rule\" resource.label.\"url_map_name\"=monitoring.regex.full_match(\"gkemcg1-little-quest-server-little-quest-server-.*\")"
                   }
                 }
               }
@@ -217,7 +217,7 @@
                       ],
                       "perSeriesAligner": "ALIGN_DELTA"
                     },
-                    "filter": "metric.type=\"loadbalancing.googleapis.com/https/backend_latencies\" resource.type=\"https_lb_rule\" resource.label.\"url_map_name\"=monitoring.regex.full_match(\"k8s2-.*-little-quest-serve-little-quest-serve-.*\")"
+                    "filter": "metric.type=\"loadbalancing.googleapis.com/https/backend_latencies\" resource.type=\"https_lb_rule\" resource.label.\"url_map_name\"=monitoring.regex.full_match(\"gkemcg1-little-quest-server-little-quest-server-.*\")"
                   }
                 }
               },
@@ -236,7 +236,7 @@
                       ],
                       "perSeriesAligner": "ALIGN_DELTA"
                     },
-                    "filter": "metric.type=\"loadbalancing.googleapis.com/https/backend_latencies\" resource.type=\"https_lb_rule\" resource.label.\"url_map_name\"=monitoring.regex.full_match(\"k8s2-.*-little-quest-serve-little-quest-serve-.*\")"
+                    "filter": "metric.type=\"loadbalancing.googleapis.com/https/backend_latencies\" resource.type=\"https_lb_rule\" resource.label.\"url_map_name\"=monitoring.regex.full_match(\"gkemcg1-little-quest-server-little-quest-server-.*\")"
                   }
                 }
               },
@@ -255,7 +255,7 @@
                       ],
                       "perSeriesAligner": "ALIGN_DELTA"
                     },
-                    "filter": "metric.type=\"loadbalancing.googleapis.com/https/backend_latencies\" resource.type=\"https_lb_rule\" resource.label.\"url_map_name\"=monitoring.regex.full_match(\"k8s2-.*-little-quest-serve-little-quest-serve-.*\")"
+                    "filter": "metric.type=\"loadbalancing.googleapis.com/https/backend_latencies\" resource.type=\"https_lb_rule\" resource.label.\"url_map_name\"=monitoring.regex.full_match(\"gkemcg1-little-quest-server-little-quest-server-.*\")"
                   }
                 }
               }
@@ -272,7 +272,7 @@
         "width": 16,
         "height": 16,
         "widget": {
-          "title": "HTTP Response Code",
+          "title": "HTTP Response Code(Backend Service)",
           "xyChart": {
             "chartOptions": {
               "mode": "COLOR"
@@ -294,7 +294,7 @@
                       ],
                       "perSeriesAligner": "ALIGN_RATE"
                     },
-                    "filter": "metric.type=\"loadbalancing.googleapis.com/https/backend_request_count\" resource.type=\"https_lb_rule\" resource.label.\"url_map_name\"=monitoring.regex.full_match(\"k8s2-.*-little-quest-serve-little-quest-serve-.*\")"
+                    "filter": "metric.type=\"loadbalancing.googleapis.com/https/backend_request_count\" resource.type=\"https_lb_rule\" resource.label.\"url_map_name\"=monitoring.regex.full_match(\"gkemcg1-little-quest-server-little-quest-server-.*\")"
                   }
                 }
               }
@@ -369,6 +369,33 @@
         }
       },
       {
+        "yPos": 40,
+        "width": 16,
+        "height": 16,
+        "widget": {
+          "title": "HTTP Response Code(Little Quest Server)",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum by (code) (rate(http_requests_total[${__interval}]))",
+                  "unitOverride": "1"
+                }
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 16,
         "yPos": 40,
         "width": 16,
         "height": 16,
@@ -484,7 +511,7 @@
         }
       },
       {
-        "xPos": 16,
+        "xPos": 32,
         "yPos": 40,
         "width": 16,
         "height": 16,
@@ -519,8 +546,7 @@
         }
       },
       {
-        "xPos": 32,
-        "yPos": 40,
+        "yPos": 56,
         "width": 16,
         "height": 16,
         "widget": {
@@ -595,6 +621,7 @@
         }
       },
       {
+        "xPos": 16,
         "yPos": 56,
         "width": 16,
         "height": 16,
@@ -623,7 +650,7 @@
         }
       },
       {
-        "xPos": 16,
+        "xPos": 32,
         "yPos": 56,
         "width": 16,
         "height": 16,
