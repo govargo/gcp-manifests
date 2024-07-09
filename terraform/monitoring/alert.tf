@@ -169,7 +169,7 @@ resource "google_monitoring_alert_policy" "gce_host_preemption" {
     condition_matched_log {
       filter = "log_id(\"cloudaudit.googleapis.com/system_event\") AND operation.producer=\"compute.instances.preempted\""
       label_extractors = {
-        instance_name = "EXTRACT(protoPayload.request.resourceName)"
+        instance_name = "EXTRACT(protoPayload.resourceName)"
       }
     }
   }
@@ -239,7 +239,7 @@ resource "google_monitoring_alert_policy" "gke_container_high_memory_limit_utili
   conditions {
     display_name = "GKE Container has high memory limit utilization"
     condition_threshold {
-      filter     = "resource.type = \"k8s_container\" AND metric.type = \"kubernetes.io/container/memory/limit_utilization\""
+      filter     = "resource.type = \"k8s_container\" AND metric.type = \"kubernetes.io/container/memory/limit_utilization\" AND resource.labels.container_name != \"image-package-extractor\""
       duration   = "0s"
       comparison = "COMPARISON_GT"
       aggregations {
@@ -303,8 +303,8 @@ resource "google_monitoring_alert_policy" "gke_container_restarts" {
   notification_channels = [google_monitoring_notification_channel.email_notification.name]
 }
 
-resource "google_monitoring_alert_policy" "gke_ingress_high_latency" {
-  display_name = "GKE Ingress - High Latency"
+resource "google_monitoring_alert_policy" "gke_multi_cluster_gateway_high_latency" {
+  display_name = "GKE Multi Cluster Gateway - High Latency"
   documentation {
     content   = "If alerts tend to be false positive or noisy, consider visiting the alert policy page and changing the threshold, the rolling (alignment) window, and the retest (duration) window. [Alerting policies documentation](https://cloud.google.com/monitoring/alerts/concepts-indepth), [MQL documentation](https://cloud.google.com/monitoring/mql/alerts)"
     mime_type = "text/markdown"
@@ -313,9 +313,9 @@ resource "google_monitoring_alert_policy" "gke_ingress_high_latency" {
   severity = "ERROR"
   combiner = "OR"
   conditions {
-    display_name = "High p95 latency for a URL path in Ingress"
+    display_name = "High p95 latency for a URL path in Multi Cluster Gateway"
     condition_threshold {
-      filter = "resource.type = \"https_lb_rule\" AND resource.labels.backend_name = \"k8s1-9366847e-little-quest-server-little-quest-serve-8-c7296101\" AND resource.labels.backend_type = \"NETWORK_ENDPOINT_GROUP\" AND metric.type = \"loadbalancing.googleapis.com/https/total_latencies\""
+      filter = "resource.type = \"https_lb_rule\" AND resource.labels.url_map_name = monitoring.regex.full_match(\"gkemcg1-little-quest-server-little-quest-server-.*\") AND resource.labels.backend_type = \"NETWORK_ENDPOINT_GROUP\" AND metric.type = \"loadbalancing.googleapis.com/https/total_latencies\""
       aggregations {
         alignment_period     = "300s"
         cross_series_reducer = "REDUCE_PERCENTILE_95"
@@ -344,8 +344,8 @@ resource "google_monitoring_alert_policy" "gke_ingress_high_latency" {
   notification_channels = [google_monitoring_notification_channel.email_notification.name]
 }
 
-resource "google_monitoring_alert_policy" "gke_ingress_server_error" {
-  display_name = "GKE Ingress - High Server Error Rate(5xx)"
+resource "google_monitoring_alert_policy" "gke_multi_cluster_gateway_server_error" {
+  display_name = "GKE Multi Cluster Gateway - High Server Error Rate(5xx)"
   documentation {
     content   = "If alerts tend to be false positive or noisy, consider visiting the alert policy page and changing the threshold, the rolling (alignment) window, and the retest (duration) window. [Alerting policies documentation](https://cloud.google.com/monitoring/alerts/concepts-indepth), [MQL documentation](https://cloud.google.com/monitoring/mql/alerts)"
     mime_type = "text/markdown"
@@ -356,7 +356,7 @@ resource "google_monitoring_alert_policy" "gke_ingress_server_error" {
   conditions {
     display_name = "Server Error Rate(5xx) is high for a URL path"
     condition_threshold {
-      filter = "resource.type = \"https_lb_rule\" AND resource.labels.backend_name = \"k8s1-9366847e-little-quest-server-little-quest-serve-8-c7296101\" AND metric.labels.response_code >= 500 AND metric.type = \"loadbalancing.googleapis.com/https/request_count\""
+      filter = "resource.type = \"https_lb_rule\" AND resource.labels.url_map_name = monitoring.regex.full_match(\"gkemcg1-little-quest-server-little-quest-server-.*\") AND metric.labels.response_code_class >= 500 AND metric.type = \"loadbalancing.googleapis.com/https/request_count\""
       aggregations {
         alignment_period     = "300s"
         cross_series_reducer = "REDUCE_PERCENTILE_95"
