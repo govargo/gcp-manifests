@@ -46,15 +46,29 @@ spec:
                    requests:
                      cpu: 50m
                      memory: 126Mi
+                   limits:
+                     cpu: 50m
+                     memory: 126Mi
                  tolerations: []
                  affinity:
-                   nodeAffinity:
+                   podAntiAffinity:
                      preferredDuringSchedulingIgnoredDuringExecution:
-                     - weight: 1
-                       preference:
-                         matchExpressions:
-                           - key: agones.dev/agones-system
-                             operator: Exists
+                     - podAffinityTerm:
+                         labelSelector:
+                           matchExpressions:
+                           - key: agones.dev/role
+                             operator: In
+                             values:
+                             - controller
+                         topologyKey: kubernetes.io/hostname
+                       weight: 100
+                 topologySpreadConstraints:
+                 - maxSkew: 1
+                   topologyKey: kubernetes.io/hostname
+                   whenUnsatisfiable: ScheduleAnyway
+                   labelSelector:
+                     matchLabels:
+                       agones.dev/role: controller
                  replicas: 2
                  pdb:
                      minAvailable: 1
@@ -63,7 +77,32 @@ spec:
                    requests:
                      cpu: 50m
                      memory: 126Mi
+                   limits:
+                     cpu: 50m
+                     memory: 126Mi
                  tolerations: []
+                 affinity:
+                   podAntiAffinity:
+                     preferredDuringSchedulingIgnoredDuringExecution:
+                     - podAffinityTerm:
+                         labelSelector:
+                           matchExpressions:
+                           - key: agones.dev/role
+                             operator: In
+                             values:
+                             - extensions
+                         topologyKey: kubernetes.io/hostname
+                       weight: 100
+                 topologySpreadConstraints:
+                 - maxSkew: 1
+                   topologyKey: kubernetes.io/hostname
+                   whenUnsatisfiable: ScheduleAnyway
+                   labelSelector:
+                     matchLabels:
+                       agones.dev/role: extensions
+                 replicas: 2
+                 pdb:
+                   minAvailable: 1
                ping:
                  install: false
                allocator:
@@ -74,15 +113,29 @@ spec:
                    requests:
                      cpu: 50m
                      memory: 126Mi
+                   limits:
+                     cpu: 50m
+                     memory: 126Mi
                  tolerations: []
                  affinity:
-                   nodeAffinity:
+                   podAntiAffinity:
                      preferredDuringSchedulingIgnoredDuringExecution:
-                     - weight: 1
-                       preference:
-                         matchExpressions:
-                           - key: agones.dev/agones-system
-                             operator: Exists
+                     - podAffinityTerm:
+                         labelSelector:
+                           matchExpressions:
+                           - key: multicluster.agones.dev/role
+                             operator: In
+                             values:
+                             - allocator
+                         topologyKey: kubernetes.io/hostname
+                       weight: 100
+                 topologySpreadConstraints:
+                 - maxSkew: 1
+                   topologyKey: kubernetes.io/hostname
+                   whenUnsatisfiable: ScheduleAnyway
+                   labelSelector:
+                     matchLabels:
+                       multicluster.agones.dev/role: allocator
                  replicas: 2
                  service:
                    name: agones-allocator
