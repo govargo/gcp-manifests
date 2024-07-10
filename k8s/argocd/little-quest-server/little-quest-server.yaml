@@ -5,14 +5,6 @@ metadata:
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "1"
-    argocd-image-updater.argoproj.io/write-back-method: argocd
-    argocd-image-updater.argoproj.io/image-list: little=asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/little-quest-server
-    argocd-image-updater.argoproj.io/little.update-strategy: newest-build
-    argocd-image-updater.argoproj.io/little.ignore-tags: latest
-    argocd-image-updater.argoproj.io/little.force-update: "true"
-    argocd-image-updater.argoproj.io/little.helm.image-name: image.repository
-    argocd-image-updater.argoproj.io/little.helm.image-tag: image.tag
-    notifications.argoproj.io/subscribe.on-sync-succeeded.googlechat: spaceName
 spec:
   generators:
   - list:
@@ -24,6 +16,16 @@ spec:
   template:
     metadata:
       name: "{{cluster}}-little-quest-server"
+        annotations:
+          argocd.argoproj.io/sync-wave: "1"
+          argocd-image-updater.argoproj.io/write-back-method: argocd
+          argocd-image-updater.argoproj.io/image-list: little=asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/little-quest-server
+          argocd-image-updater.argoproj.io/little.update-strategy: newest-build
+          argocd-image-updater.argoproj.io/little.ignore-tags: latest
+          argocd-image-updater.argoproj.io/little.force-update: "true"
+          argocd-image-updater.argoproj.io/little.helm.image-name: image.repository
+          argocd-image-updater.argoproj.io/little.helm.image-tag: image.tag
+          notifications.argoproj.io/subscribe.on-sync-succeeded.googlechat: spaceName
     spec:
       project: default
       syncPolicy:
@@ -45,7 +47,6 @@ spec:
             image:
               repository: asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/little-quest-server
               pullPolicy: IfNotPresent
-              tag: dfa7506
 
             imagePullSecrets: []
             nameOverride: ""
