@@ -13,6 +13,10 @@ spec:
         name: gke_kentaiso-330205_asia-northeast1_prod-app-0
       - cluster: app-1
         name: gke_kentaiso-330205_us-central1_prod-app-1
+  ignoreApplicationDifferences:
+  - name: ignore-image-tag
+    jqPathExpressions:
+    - .spec.source.helm.values.image.tag
   template:
     metadata:
       name: "{{cluster}}-little-quest-server"
