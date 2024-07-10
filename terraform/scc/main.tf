@@ -168,3 +168,12 @@ resource "google_scc_mute_config" "gke_host_path_volumes_csi_secrets_store_provi
   filter         = "contains(kubernetes.objects, name=\"csi-secrets-store-provider-gcp\") AND category=\"GKE_HOST_PATH_VOLUMES\""
   description    = "CSI Secret Store Provider Plugin require host path volumes, so mute this GKE host path volumes alert"
 }
+
+resource "google_scc_mute_config" "gke_privilege_escalation_secrets_store_csi_driver" {
+  mute_config_id = "mute-gke-privilege-escalation-secrets-store-csi-driver"
+  parent         = "projects/${data.google_project.project.project_id}"
+  filter         = "contains(kubernetes.objects, name=\"secrets-store-csi-driver\") AND category=\"GKE_PRIVILEGE_ESCALATION\""
+  description    = "Secret Store CSI Driver require privilege escalation, so mute this GKE privilege escalation alert"
+}
+
+
