@@ -31,9 +31,6 @@ spec:
       syncPolicy:
         syncOptions:
         - CreateNamespace=true
-        automated:
-          prune: false
-          selfHeal: false
       source:
         repoURL: asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/charts
         chart: little-quest-server
@@ -47,7 +44,6 @@ spec:
             image:
               repository: asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/little-quest-server
               pullPolicy: IfNotPresent
-              tag: latest
 
             imagePullSecrets: []
             nameOverride: ""
