@@ -3,7 +3,7 @@
 apiVersion: networking.gke.io/v1
 kind: GCPBackendPolicy
 metadata:
-  name: {{ include "little-quest.fullname" $ }}
+  name: {{ . }}-{{ include "little-quest.fullname" $ }}
   namespace: {{ $.Release.Namespace | quote }}
   labels:
     {{- include "little-quest.labels" $ | nindent 4 }}
