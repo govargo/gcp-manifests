@@ -111,6 +111,27 @@ spec:
                   - /test/sleep
                   - "5"
 
+            affinity:
+              podAntiAffinity:
+                preferredDuringSchedulingIgnoredDuringExecution:
+                - podAffinityTerm:
+                    labelSelector:
+                      matchExpressions:
+                      - key: app.kubernetes.io/instance
+                        operator: In
+                        values:
+                        - opentelemetry-collector
+                    topologyKey: kubernetes.io/hostname
+                  weight: 100
+
+            topologySpreadConstraints:
+            - maxSkew: 1
+              topologyKey: kubernetes.io/hostname
+              whenUnsatisfiable: ScheduleAnyway
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/instance: opentelemetry-collector
+
             config:
               extensions:
                 # The health_check extension is mandatory for this chart.
