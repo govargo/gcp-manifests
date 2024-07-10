@@ -32,8 +32,8 @@ spec:
         syncOptions:
         - CreateNamespace=true
         automated:
-          prune: true
-          selfHeal: true
+          prune: false
+          selfHeal: false
       source:
         repoURL: asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/charts
         chart: little-quest-server
