@@ -62,6 +62,20 @@ prod_app_0_scaledown:
           spec:
             replicas: $${scale_down_size}
       result: scale_down_workload_little_quest_server
+  - scale_down_workload_otel_collector:
+      call: gke.request
+      args:
+        project: $${project_id}
+        location: $${region}
+        cluster_id: $${cluster_id}
+        method: "PATCH"
+        path: "/apis/apps/v1/namespaces/tracing/deployments/opentelemetry-collector/scale"
+        headers:
+          Content-Type: application/strategic-merge-patch+json
+        body:
+          spec:
+            replicas: $${scale_down_size}
+      result: scale_down_workload_otel_collector
   - scale_down_workload_kube_dns:
       call: gke.request
       args:
@@ -127,6 +141,20 @@ prod_app_1_scaledown:
           spec:
             replicas: $${scale_down_size}
       result: scale_down_workload_little_quest_server
+  - scale_down_workload_otel_collector:
+      call: gke.request
+      args:
+        project: $${project_id}
+        location: $${region}
+        cluster_id: $${cluster_id}
+        method: "PATCH"
+        path: "/apis/apps/v1/namespaces/tracing/deployments/opentelemetry-collector/scale"
+        headers:
+          Content-Type: application/strategic-merge-patch+json
+        body:
+          spec:
+            replicas: $${scale_down_size}
+      result: scale_down_workload_otel_collector
   - scale_down_workload_kube_dns:
       call: gke.request
       args:
@@ -216,6 +244,20 @@ prod_corp_0_scaledown:
                 spec:
                   replicas: $${scale_down_size}
             result: scale_down_agones_workload
+  - scale_down_workload_otel_collector:
+      call: gke.request
+      args:
+        project: $${project_id}
+        location: $${region}
+        cluster_id: $${cluster_id}
+        method: "PATCH"
+        path: "/apis/apps/v1/namespaces/tracing/deployments/opentelemetry-collector/scale"
+        headers:
+          Content-Type: application/strategic-merge-patch+json
+        body:
+          spec:
+            replicas: $${scale_down_size}
+      result: scale_down_workload_otel_collector
   - scale_down_workload_kube_dns:
       call: gke.request
       args:

@@ -57,7 +57,21 @@ prod_app_0_scaleup:
       call: sys.sleep
       args:
         seconds: 30
-  - scale_up_workload:
+  - scale_up_workload_otel_collector:
+      call: gke.request
+      args:
+        project: $${project_id}
+        location: $${region}
+        cluster_id: $${cluster_id}
+        method: "PATCH"
+        path: "/apis/apps/v1/namespaces/tracing/deployments/opentelemetry-collector/scale"
+        headers:
+          Content-Type: application/strategic-merge-patch+json
+        body:
+          spec:
+            replicas: 2
+      result: scale_up_workload_otel_collector
+  - scale_up_workload_little_quest_server:
       call: gke.request
       args:
         project: $${project_id}
@@ -70,7 +84,7 @@ prod_app_0_scaleup:
         body:
           spec:
             replicas: 2
-      result: scale_up_workload
+      result: scale_up_workload_little_quest_server
   - scale_up_node_pool_loop:
       for:
         value: node_pool_value
@@ -117,7 +131,21 @@ prod_app_1_scaleup:
       call: sys.sleep
       args:
         seconds: 30
-  - scale_up_workload:
+  - scale_up_workload_otel_collector:
+      call: gke.request
+      args:
+        project: $${project_id}
+        location: $${region}
+        cluster_id: $${cluster_id}
+        method: "PATCH"
+        path: "/apis/apps/v1/namespaces/tracing/deployments/opentelemetry-collector/scale"
+        headers:
+          Content-Type: application/strategic-merge-patch+json
+        body:
+          spec:
+            replicas: 2
+      result: scale_up_workload_otel_collector
+  - scale_up_workload_little_quest_server:
       call: gke.request
       args:
         project: $${project_id}
@@ -130,7 +158,7 @@ prod_app_1_scaleup:
         body:
           spec:
             replicas: 2
-      result: scale_up_workload
+      result: scale_up_workload_little_quest_server
   - scale_up_node_pool_loop:
       for:
         value: node_pool_value
@@ -177,6 +205,20 @@ prod_corp_0_scaleup:
       call: sys.sleep
       args:
         seconds: 30
+  - scale_up_workload_otel_collector:
+      call: gke.request
+      args:
+        project: $${project_id}
+        location: $${region}
+        cluster_id: $${cluster_id}
+        method: "PATCH"
+        path: "/apis/apps/v1/namespaces/tracing/deployments/opentelemetry-collector/scale"
+        headers:
+          Content-Type: application/strategic-merge-patch+json
+        body:
+          spec:
+            replicas: 2
+      result: scale_up_workload_otel_collector
   - scale_up_agones_workload_loop:
       for:
         value: workload_value
