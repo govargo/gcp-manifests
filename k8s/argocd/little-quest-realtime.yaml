@@ -147,6 +147,7 @@ spec:
             value: "agones-gameserver"
             effect: "NoSchedule"
 
+          # agones gameserver automatically create podAffinity
           affinity: {}
 
           terminationGracePeriodSeconds: 60
@@ -265,7 +266,26 @@ spec:
             value: "agones-gameserver"
             effect: "NoSchedule"
 
-          affinity: {}
+          affinity:
+            podAntiAffinity:
+              preferredDuringSchedulingIgnoredDuringExecution:
+              - podAffinityTerm:
+                  labelSelector:
+                    matchExpressions:
+                    - key: app.kubernetes.io/name
+                      operator: In
+                      values:
+                      - little-quest-frontend
+                  topologyKey: kubernetes.io/hostname
+                weight: 100
+
+          topologySpreadConstraints:
+          - maxSkew: 1
+            topologyKey: kubernetes.io/hostname
+            whenUnsatisfiable: ScheduleAnyway
+            labelSelector:
+              matchLabels:
+                app.kubernetes.io/name: little-quest-frontend
 
           terminationGracePeriodSeconds: 30
 
@@ -402,7 +422,26 @@ spec:
             value: "agones-gameserver"
             effect: "NoSchedule"
 
-          affinity: {}
+          affinity:
+            podAntiAffinity:
+              preferredDuringSchedulingIgnoredDuringExecution:
+              - podAffinityTerm:
+                  labelSelector:
+                    matchExpressions:
+                    - key: app.kubernetes.io/name
+                      operator: In
+                      values:
+                      - little-quest-mmf
+                  topologyKey: kubernetes.io/hostname
+                weight: 100
+
+          topologySpreadConstraints:
+          - maxSkew: 1
+            topologyKey: kubernetes.io/hostname
+            whenUnsatisfiable: ScheduleAnyway
+            labelSelector:
+              matchLabels:
+                app.kubernetes.io/name: little-quest-mmf
 
           terminationGracePeriodSeconds: 30
 
