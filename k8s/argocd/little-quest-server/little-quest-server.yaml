@@ -45,6 +45,7 @@ spec:
             image:
               repository: asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/little-quest-server
               pullPolicy: IfNotPresent
+              tag: dfa7506
 
             imagePullSecrets: []
             nameOverride: ""
