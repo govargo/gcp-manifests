@@ -25,7 +25,7 @@ spec:
       source:
         repoURL: asia-northeast1-docker.pkg.dev/kentaiso-330205/multi-cluster-gateway/charts
         chart: multi-cluster-gateway
-        targetRevision: 0.6.3
+        targetRevision: 0.6.4
         helm:
           releaseName: "little-quest-server"
           values: |
