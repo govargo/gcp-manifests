@@ -1583,6 +1583,10 @@ resource "google_monitoring_alert_policy" "quota_exceeded" {
         alignment_period     = "60s"
         per_series_aligner   = "ALIGN_COUNT_TRUE"
         cross_series_reducer = "REDUCE_SUM"
+        group_by_fields = [
+          "metric.label.limit_name",
+          "metric.label.quota_metric"
+        ]
       }
       comparison      = "COMPARISON_GT"
       duration        = "0s"
