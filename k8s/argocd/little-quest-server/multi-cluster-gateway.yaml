@@ -66,10 +66,10 @@ spec:
                   port: 80
               healthCheckPolicy:
                 enabled: true
-                checkIntervalSec: 30
-                timeoutSec: 5
+                checkIntervalSec: 3
+                timeoutSec: 3
                 healthyThreshold: 1
-                unhealthyThreshold: 10
+                unhealthyThreshold: 2
                 logConfig: false
                 requestPath: /healthz
               gcpBackendPolicy:
