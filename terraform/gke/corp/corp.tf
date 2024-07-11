@@ -72,7 +72,7 @@ module "corp-0" {
   node_pools = [
     {
       name               = "kube-system-pool"
-      machine_type       = "e2-custom-2-3072"
+      machine_type       = "t2d-standard-2"
       node_locations     = var.node_locations
       min_count          = null
       max_count          = null
@@ -98,7 +98,7 @@ module "corp-0" {
     },
     {
       name               = "open-match-pool"
-      machine_type       = "e2-custom-2-3072"
+      machine_type       = "t2d-standard-2"
       node_locations     = var.node_locations
       min_count          = null
       max_count          = null
@@ -124,7 +124,7 @@ module "corp-0" {
     },
     {
       name               = "agones-gameserver-pool"
-      machine_type       = "e2-custom-2-3072"
+      machine_type       = "t2d-standard-2"
       node_locations     = var.node_locations
       min_count          = null
       max_count          = null
