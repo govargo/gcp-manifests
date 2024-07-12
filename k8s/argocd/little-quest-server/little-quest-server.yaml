@@ -15,7 +15,7 @@ spec:
         name: gke_kentaiso-330205_us-central1_prod-app-1
   ignoreApplicationDifferences:
   - jqPathExpressions:
-    - .spec.source.helm.parameters.image.tag
+    - .spec.source.helm.parameters
   syncPolicy:
     preserveResourcesOnDeletion: true
   template:
