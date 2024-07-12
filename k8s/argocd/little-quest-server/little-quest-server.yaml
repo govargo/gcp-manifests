@@ -158,7 +158,7 @@ spec:
               enabled: true
               image:
                 repository: gcr.io/cloud-sql-connectors/cloud-sql-proxy
-                tag: 2.7.2
+                tag: 2.11.4
               args:
               - "--http-address=0.0.0.0"
               - "--structured-logs"
