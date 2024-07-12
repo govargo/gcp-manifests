@@ -71,7 +71,7 @@ spec:
                 checkIntervalSec: 1
                 timeoutSec: 3
                 healthyThreshold: 1
-                unhealthyThreshold: 2
+                unhealthyThreshold: 1
                 logConfig: false
                 requestPath: /healthz
               gcpBackendPolicy:
