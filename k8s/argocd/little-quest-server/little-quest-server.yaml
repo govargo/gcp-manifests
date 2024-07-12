@@ -15,6 +15,7 @@ spec:
         name: gke_kentaiso-330205_us-central1_prod-app-1
   ignoreApplicationDifferences:
   - jqPathExpressions:
+    - .spec.source.helm.values
     - .spec.source.helm.parameters
   template:
     metadata:
