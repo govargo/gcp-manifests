@@ -20,6 +20,7 @@ spec:
   strategy:
     {{- toYaml . | nindent 4 }}
   {{- end }}
+  minReadySeconds: {{ .Values.minReadySeconds }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
