@@ -55,6 +55,7 @@ spec:
                     or proc.name = controller
                     or proc.name = allocator
                     or proc.name = extensions
+                    or proc.name = argocd
                     or proc.name = argocd-server
                     or proc.name = argocd-image-up
                     or proc.name = argocd-applicat
