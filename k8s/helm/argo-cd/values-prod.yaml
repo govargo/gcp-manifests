@@ -373,6 +373,10 @@ applicationSet:
     value: "argocd"
     effect: "NoSchedule"
 
+  webhook:
+    ingress:
+      enabled: false
+
 notifications:
   # -- Configures notification services such as slack, email or custom webhook
   # @default -- See [values.yaml]

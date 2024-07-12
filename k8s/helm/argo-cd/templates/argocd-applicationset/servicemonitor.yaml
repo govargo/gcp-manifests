@@ -1,10 +1,9 @@
-{{- if .Values.applicationSet.enabled }}
 {{- if and (.Capabilities.APIVersions.Has "monitoring.coreos.com/v1") .Values.applicationSet.metrics.enabled .Values.applicationSet.metrics.serviceMonitor.enabled }}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: {{ template "argo-cd.applicationSet.fullname" . }}
-  namespace: {{ default .Release.Namespace .Values.applicationSet.metrics.serviceMonitor.namespace | quote }}
+  namespace: {{ default (include  "argo-cd.namespace" .) .Values.applicationSet.metrics.serviceMonitor.namespace | quote }}
   labels:
     {{- include "argo-cd.labels" (dict "context" . "component" .Values.applicationSet.name "name" .Values.applicationSet.name) | nindent 4 }}
     {{- with .Values.applicationSet.metrics.serviceMonitor.selector }}
@@ -22,6 +21,9 @@ spec:
     - port: {{ .Values.applicationSet.metrics.service.portName }}
       {{- with .Values.applicationSet.metrics.serviceMonitor.interval }}
       interval: {{ . }}
+      {{- end }}
+      {{- with .Values.applicationSet.metrics.serviceMonitor.scrapeTimeout }}
+      scrapeTimeout: {{ . }}
       {{- end }}
       path: /metrics
       {{- with .Values.applicationSet.metrics.serviceMonitor.relabelings }}
@@ -41,9 +43,8 @@ spec:
       {{- end }}
   namespaceSelector:
     matchNames:
-      - {{ .Release.Namespace }}
+      - {{ include "argo-cd.namespace" . }}
   selector:
     matchLabels:
       {{- include "argo-cd.selectorLabels" (dict "context" . "component" .Values.applicationSet.name "name" "metrics") | nindent 6 }}
-{{- end }}
 {{- end }}
