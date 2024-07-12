@@ -11,6 +11,8 @@ spec:
       elements:
       - cluster: app-0
         name: gke_kentaiso-330205_asia-northeast1_prod-app-0
+  syncPolicy:
+    preserveResourcesOnDeletion: true
   template:
     metadata:
       name: "multi-cluster-gateway"
