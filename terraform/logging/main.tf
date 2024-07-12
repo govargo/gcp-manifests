@@ -26,7 +26,7 @@ resource "google_logging_project_exclusion" "load_balancing_exclude_2xx_code" {
 
   filter = <<EOF
 resource.type="http_load_balancer" AND severity>=INFO
-httpRequest.status>=200 AND httpRequest.status<=400
+httpRequest.status>=200 AND httpRequest.status<400
 EOF
 }
 
