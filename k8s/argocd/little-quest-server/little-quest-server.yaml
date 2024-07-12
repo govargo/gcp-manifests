@@ -42,7 +42,7 @@ spec:
       source:
         repoURL: asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/charts
         chart: little-quest-server
-        targetRevision: 0.6.2
+        targetRevision: 0.6.3
         helm:
           releaseName: "little-quest-server"
           values: |
@@ -98,6 +98,8 @@ spec:
               rollingUpdate:
                 maxSurge: 50%
                 maxUnavailable: 0%
+
+            minReadySeconds: 60
 
             # Pod's containerPort
             containerPort: 18080
