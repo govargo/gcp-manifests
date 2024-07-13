@@ -73,7 +73,7 @@ spec:
                 healthyThreshold: 1
                 unhealthyThreshold: 1
                 logConfig: false
-                requestPath: /healthz
+                requestPath: /readiness
               gcpBackendPolicy:
                 enabled: true
                 spec:
@@ -82,7 +82,7 @@ spec:
                     enabled: true
                     sampleRate: 1000000
                   connectionDraining:
-                    drainingTimeoutSec: 10
+                    drainingTimeoutSec: 15
                   securityPolicy: prod-little-quest-server-agent-restrict-policy
 
             containerPort: 18080
