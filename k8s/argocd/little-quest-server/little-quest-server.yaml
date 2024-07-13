@@ -79,7 +79,7 @@ spec:
                 exec:
                   command:
                   - /shutdown
-                  - "5s"
+                  - "8s"
 
             serviceAccount:
               # Specifies whether a service account should be created
@@ -99,7 +99,7 @@ spec:
                 maxSurge: 50%
                 maxUnavailable: 0%
 
-            minReadySeconds: 60
+            minReadySeconds: 0
 
             # Pod's containerPort
             containerPort: 18080
@@ -119,19 +119,19 @@ spec:
               httpGet:
                 path: /healthz
                 port: http
-              periodSeconds: 10
+              periodSeconds: 3
               successThreshold: 1
-              failureThreshold: 5
-              timeoutSeconds: 10
+              failureThreshold: 2
+              timeoutSeconds: 3
 
             readiness:
               httpGet:
                 path: /readiness
                 port: http
-              periodSeconds: 10
+              periodSeconds: 3
               successThreshold: 1
-              failureThreshold: 5
-              timeoutSeconds: 10
+              failureThreshold: 2
+              timeoutSeconds: 3
 
             startup:
               httpGet:
@@ -179,7 +179,7 @@ spec:
                   exec:
                     command:
                     - /test/sleep
-                    - "7"
+                    - "9"
 
               containerPort: 9090
 
