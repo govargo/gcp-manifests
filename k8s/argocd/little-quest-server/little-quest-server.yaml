@@ -78,8 +78,8 @@ spec:
               preStop:
                 exec:
                   command:
-                  - /usr/local/bin/sleep
-                  - "5"
+                  - /shutdown
+                  - "5s"
 
             serviceAccount:
               # Specifies whether a service account should be created
