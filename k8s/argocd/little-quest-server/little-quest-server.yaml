@@ -80,8 +80,6 @@ spec:
                   command:
                   - /shutdown
                   - "5s"
-                  - >
-                  - /proc/1/fd/1
 
             serviceAccount:
               # Specifies whether a service account should be created
