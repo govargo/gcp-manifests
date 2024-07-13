@@ -79,7 +79,7 @@ spec:
                 exec:
                   command:
                   - /shutdown
-                  - "8s"
+                  - "10s"
 
             serviceAccount:
               # Specifies whether a service account should be created
@@ -181,7 +181,7 @@ spec:
                   exec:
                     command:
                     - /test/sleep
-                    - "9"
+                    - "11"
 
               containerPort: 9090
 
