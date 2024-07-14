@@ -82,7 +82,7 @@ spec:
                     enabled: true
                     sampleRate: 1000000
                   connectionDraining:
-                    drainingTimeoutSec: 15
+                    drainingTimeoutSec: 60
                   securityPolicy: prod-little-quest-server-agent-restrict-policy
 
             containerPort: 18080
