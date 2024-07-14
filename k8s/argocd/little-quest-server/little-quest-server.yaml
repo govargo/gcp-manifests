@@ -168,7 +168,7 @@ spec:
               - "--structured-logs"
               - "--private-ip"
               - "--port=3306"
-              - "--max-sigterm-delay=10s"
+              - "--max-sigterm-delay=15s"
               - "--prometheus=true"
               - "--telemetry-project=kentaiso-330205"
               - "--disable-metrics=true"
