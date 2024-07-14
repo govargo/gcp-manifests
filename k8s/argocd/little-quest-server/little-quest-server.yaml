@@ -99,7 +99,7 @@ spec:
                 maxSurge: 50%
                 maxUnavailable: 0%
 
-            minReadySeconds: 0
+            minReadySeconds: 60
 
             # Pod's containerPort
             containerPort: 18080
