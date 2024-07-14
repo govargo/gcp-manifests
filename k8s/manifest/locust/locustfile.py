@@ -65,6 +65,8 @@ class TestScenarioCase(TaskSet):
     # Tutorial
     tutorial_url = "/users/" + self.user_id + "/quests/0/tutorial"
     tutorial_response = self.client.post(tutorial_url,
+                                         name="/users/[user_id]/quests/0"
+                                              "/tutorial",
                                          headers=headers,
                                          json={
                                            "client_master_version": "2022061301"
@@ -131,6 +133,7 @@ class TestScenarioCase(TaskSet):
     try:
       # Registration
       registration_response = self.client.post("/registration", headers=headers,
+                                               name="/registration",
                                                json={"name": "test-" + str(
                                                  random.randint(0, 10000))})
     except (json.JSONDecodeError, TypeError) as e:
@@ -152,17 +155,20 @@ class TestScenarioCase(TaskSet):
     # Login
     login_url = "/users/" + self.user_id + "/login"
     self.client.post(login_url, headers=headers,
+                     name="/users/[user_id]/login",
                      json={"client_master_version": "2022061301"})
 
   def start_quest(self, quest_id):
     start_url = QUEST_DATA[quest_id]["start_url"].format(user_id=self.user_id)
     self.client.post(start_url, headers=headers,
+                     name="/users/[user_id]/quests/[quest_id]/start",
                      json={"client_master_version": "2022061301"})
 
   def end_quest(self, quest_id):
     end_url = QUEST_DATA[quest_id]["end_url"].format(user_id=self.user_id)
     self.client.post(end_url,
                      headers=headers,
+                     name="/users/[user_id]/quests/[quest_id]/end",
                      json={
                        "client_master_version": "2022061301",
                        "score": 100,
@@ -171,7 +177,8 @@ class TestScenarioCase(TaskSet):
 
   def get_quest_ranking(self, quest_id):
     ranking_url = QUEST_DATA[quest_id]["ranking_url"]
-    self.client.get(ranking_url, headers=headers)
+    self.client.get(ranking_url, headers=headers,
+                    name="/quests/[quest_id]/ranking")
 
   @task(7)
   def quest1(self):
@@ -188,7 +195,9 @@ class TestScenarioCase(TaskSet):
 
   def raid_battle(self):
     raidbattle_url = "/users/" + self.user_id + "/quests/raidbattle"
-    raidbattle_response = self.client.post(raidbattle_url, headers=headers)
+    raidbattle_response = self.client.post(raidbattle_url, headers=headers,
+                                           name="/users/[user_id]/quests"
+                                                "/raidbattle")
 
     if raidbattle_response.status_code == 200:
       pass
@@ -275,6 +284,7 @@ class TestScenarioCase(TaskSet):
   def shop_item(self, item_id='item_120'):
     shop_url = SHOP_ITEMS[item_id]
     shop_response = self.client.post(shop_url, headers=headers,
+                                     name="/shops/[shop_id]",
                                      json={
                                        "client_master_version": "2022061301",
                                        "user_id": self.user_id
@@ -302,7 +312,9 @@ class TestScenarioCase(TaskSet):
   def character(self):
     # Get Character List
     character_list_url = "/users/" + self.user_id + "/characters?client_master_version=2022061301"
-    character_response = self.client.get(character_list_url, headers=headers)
+    character_response = self.client.get(character_list_url, headers=headers,
+                                         name="/users/[user_id]/characters?["
+                                              "character_id]")
 
     if character_response.status_code == 200:
       pass
@@ -324,6 +336,9 @@ class TestScenarioCase(TaskSet):
                            character_response.json()["user_character"][0][
                              "id"] + "?client_master_version=2022061301"
       character_sell_response = self.client.delete(character_sell_url,
+                                                   name=
+                                                   "/users/[user_id]/characters"
+                                                   "/[character_id]",
                                                    headers=headers)
 
       if character_sell_response.status_code == 200:
@@ -337,6 +352,7 @@ class TestScenarioCase(TaskSet):
   def gacha(self):
     # Use shop for get user_profile
     shop_response = self.client.post("/shops/item_120", headers=headers,
+                                     name="/shops/item_120",
                                      json={
                                        "client_master_version": "2022061301",
                                        "user_id": self.user_id
@@ -365,6 +381,7 @@ class TestScenarioCase(TaskSet):
 
     if crystal > 5:
       gacha1_response = self.client.post("/gachas/1", headers=headers,
+                                         name="/gachas/1",
                                          json={
                                            "client_master_version": "2022061301",
                                            "user_id": self.user_id
@@ -378,6 +395,7 @@ class TestScenarioCase(TaskSet):
 
     if friend_coin > 5:
       gacha2_response = self.client.post("/gachas/2", headers=headers,
+                                         name="/gachas/2",
                                          json={
                                            "client_master_version": "2022061301",
                                            "user_id": self.user_id
@@ -393,7 +411,8 @@ class TestScenarioCase(TaskSet):
   def present(self):
     # Get Present List
     present_list_url = "/users/" + self.user_id + "/presents?client_master_version=2022061301"
-    present_response = self.client.get(present_list_url, headers=headers)
+    present_response = self.client.get(present_list_url, headers=headers,
+                                       name="/users/[user_id]/presents")
 
     if present_response.status_code == 200:
       pass
@@ -414,7 +433,9 @@ class TestScenarioCase(TaskSet):
       present_get_url = "/users/" + self.user_id + "/presents/" + \
                         present_response.json()["user_present"][0][
                           "present_id"] + "?client_master_version=2022061301"
-      present_get_response = self.client.get(present_get_url, headers=headers)
+      present_get_response = self.client.get(present_get_url, headers=headers,
+                                             name="/users/[user_id]/presents"
+                                                  "/[present_id]")
       if present_get_response.status_code == 200:
         pass
       elif present_get_response.status_code == 401:
