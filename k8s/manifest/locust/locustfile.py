@@ -5,11 +5,9 @@ import time
 import os
 import requests
 
-from locust import TaskSet, between, task, HttpUser
+from locust import TaskSet, between, task, HttpUser, User
 
 api_key = None
-refresh_token = None
-headers = {"Content-Type": "application/json", "User-Agent": "UnityPlayer"}
 
 # Quest Data
 QUEST_DATA = {
@@ -32,15 +30,18 @@ SHOP_ITEMS = {
   "item_360": "/shops/item_360"
 }
 
-ipaddress = None
-port = None
-
 
 class TestScenarioCase(TaskSet):
-  user_id = ""
+  def __init__(self, parent: User):
+    super().__init__(parent)
+    self.user_id = ""
+    self.ipaddress = None
+    self.port = None
+    self.tcp_client = None
+    self.headers = {"Content-Type": "application/json", "User-Agent": "UnityPlayer"}
 
   def on_start(self):
-    global api_key, refresh_token
+    global api_key
     api_key = os.getenv('API_KEY')
 
     # Check if api_key is found
@@ -51,13 +52,12 @@ class TestScenarioCase(TaskSet):
     auth_response = self.sign_in_anonymously(api_key)
     try:
       idToken = auth_response["idToken"]
-      refresh_token = auth_response["refreshToken"]
+      self.refresh_token = auth_response["refreshToken"]
     except (json.JSONDecodeError, TypeError, KeyError) as e:
       print(e)
       print("[DEBUG] Auth response: {}".format(auth_response))
 
-    global headers
-    headers["Authorization"] = "Bearer " + idToken
+    self.headers["Authorization"] = "Bearer " + idToken
 
     # Registration and Login
     self.register_and_login()
@@ -67,7 +67,7 @@ class TestScenarioCase(TaskSet):
     tutorial_response = self.client.post(tutorial_url,
                                          name="/users/[user_id]/quests/0"
                                               "/tutorial",
-                                         headers=headers,
+                                         headers=self.headers,
                                          json={
                                            "client_master_version": "2022061301"
                                          })
@@ -83,13 +83,22 @@ class TestScenarioCase(TaskSet):
             tutorial_response.json()["user_profile"]["tutorial_progress"])
 
   def on_stop(self):
-    if ipaddress is not None and port is not None:
-      print("start cleanup...")
-      tcp_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-      tcp_client.settimeout(120)
-      tcp_client.connect((ipaddress, int(port)))
-      tcp_client.send(b"battle:::end\n")
-      tcp_client.close()
+    if self.tcp_client is not None:
+      print("tcp_client found. start cleanup...")
+      self.tcp_client.send(b"battle:::end\n")
+      self.tcp_client.close()
+      self.tcp_client = None
+      self.ipaddress = None
+      self.port = None
+      print("end cleanup...")
+
+    if self.tcp_client is None and self.ipaddress is not None and self.port is not None:
+      print("start cleanup. crate new tcp_client...")
+      self.tcp_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+      self.tcp_client.settimeout(120)
+      self.tcp_client.connect((self.ipaddress, int(self.port)))
+      self.tcp_client.send(b"battle:::end\n")
+      self.tcp_client.close()
 
   def sign_in_anonymously(self, api_key):
     # https://firebase.google.com/docs/reference/rest/auth#section-sign-in-anonymously
@@ -112,11 +121,10 @@ class TestScenarioCase(TaskSet):
   def refresh_token(self, api_key):
     # https://firebase.google.com/docs/reference/rest/auth#section-refresh-token
     uri = f"https://securetoken.googleapis.com/v1/token?key={api_key}"
-    global headers, refresh_token
-    if "Authorization" in headers:
-      del headers["Authorization"]
+    if "Authorization" in self.headers:
+      del self.headers["Authorization"]
 
-    body = "grant_type=refresh_token&refresh_token=" + refresh_token
+    body = "grant_type=refresh_token&refresh_token=" + self.refresh_token
     result = requests.post(url=uri,
                            headers={
                              "Content-Type": "application/x-www-form-urlencoded"},
@@ -124,7 +132,7 @@ class TestScenarioCase(TaskSet):
 
     if result.status_code == 200:
       idToken = result.json()["id_token"]
-      headers["Authorization"] = "Bearer " + idToken
+      self.headers["Authorization"] = "Bearer " + idToken
     if result.status_code == 400:
       print("error happened for refresh token")
       print(result.json())
@@ -132,7 +140,7 @@ class TestScenarioCase(TaskSet):
   def register_and_login(self):
     try:
       # Registration
-      registration_response = self.client.post("/registration", headers=headers,
+      registration_response = self.client.post("/registration", headers=self.headers,
                                                name="/registration",
                                                json={"name": "test-" + str(
                                                  random.randint(0, 10000))})
@@ -154,20 +162,20 @@ class TestScenarioCase(TaskSet):
 
     # Login
     login_url = "/users/" + self.user_id + "/login"
-    self.client.post(login_url, headers=headers,
+    self.client.post(login_url, headers=self.headers,
                      name="/users/[user_id]/login",
                      json={"client_master_version": "2022061301"})
 
   def start_quest(self, quest_id):
     start_url = QUEST_DATA[quest_id]["start_url"].format(user_id=self.user_id)
-    self.client.post(start_url, headers=headers,
+    self.client.post(start_url, headers=self.headers,
                      name="/users/[user_id]/quests/[quest_id]/start",
                      json={"client_master_version": "2022061301"})
 
   def end_quest(self, quest_id):
     end_url = QUEST_DATA[quest_id]["end_url"].format(user_id=self.user_id)
     self.client.post(end_url,
-                     headers=headers,
+                     headers=self.headers,
                      name="/users/[user_id]/quests/[quest_id]/end",
                      json={
                        "client_master_version": "2022061301",
@@ -177,7 +185,7 @@ class TestScenarioCase(TaskSet):
 
   def get_quest_ranking(self, quest_id):
     ranking_url = QUEST_DATA[quest_id]["ranking_url"]
-    self.client.get(ranking_url, headers=headers,
+    self.client.get(ranking_url, headers=self.headers,
                     name="/quests/[quest_id]/ranking")
 
   @task(7)
@@ -195,7 +203,7 @@ class TestScenarioCase(TaskSet):
 
   def raid_battle(self):
     raidbattle_url = "/users/" + self.user_id + "/quests/raidbattle"
-    raidbattle_response = self.client.post(raidbattle_url, headers=headers,
+    raidbattle_response = self.client.post(raidbattle_url, headers=self.headers,
                                            name="/users/[user_id]/quests"
                                                 "/raidbattle")
 
@@ -213,28 +221,27 @@ class TestScenarioCase(TaskSet):
       print("[DEBUG] RaidBattle response: {}".format(raidbattle_response))
       return
 
-    global ipaddress, port
     endpoint = connection.split(":")
-    ipaddress = endpoint[0]
-    port = endpoint[1]
+    self.ipaddress = endpoint[0]
+    self.port = endpoint[1]
 
     buffer_size = 4096
 
     # Join to gameserver and start raid battle
-    tcp_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    self.tcp_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     # Set timeout to 120s
-    tcp_client.settimeout(120)
-    tcp_client.connect((ipaddress, int(port)))
-    join_response = tcp_client.recv(buffer_size)
+    self.tcp_client.settimeout(120)
+    self.tcp_client.connect((self.ipaddress, int(self.port)))
+    join_response = self.tcp_client.recv(buffer_size)
     # print("[" + ipaddress + ":" + str(
     #   port) + "] " + "Received a response: {}".format(join_response))
     player = str(join_response).split(":::")
     player_name = player[0][2:]
     # print("[{}:{},{}] Joined".format(ipaddress, str(port), player_name))
-    tcp_client.send(b"battle:::start\n")
+    self.tcp_client.send(b"battle:::start\n")
 
     boss_max_hp = 300
-    while data := tcp_client.recv(buffer_size):
+    while data := self.tcp_client.recv(buffer_size):
       if str(data).__contains__("start"):
         # print("[{}:{},{}] started raidbattle".format(ipaddress, str(port),
         #                                              player_name))
@@ -243,9 +250,10 @@ class TestScenarioCase(TaskSet):
       if str(data).__contains__("end"):
         # print("[{}:{},{}] end raidbattle".format(ipaddress, str(port),
         #                                          player_name))
-        tcp_client.close()
-        ipaddress = None
-        port = None
+        self.tcp_client.close()
+        self.ipaddress = None
+        self.port = None
+        self.tcp_client = None
         return
 
       if str(data).__contains__("join"):
@@ -258,7 +266,7 @@ class TestScenarioCase(TaskSet):
       # print(
       #   "[{}:{},{}] player attack. damage: {}".format(ipaddress, str(port),
       #                                                 player_name, damage))
-      tcp_client.send(bytes(
+      self.tcp_client.send(bytes(
         player_name + ":::" + str(damage) + "\n", encoding='utf8'))
 
       boss_hp = str(data).split(":::")
@@ -283,7 +291,7 @@ class TestScenarioCase(TaskSet):
   @task(10)
   def shop_item(self, item_id='item_120'):
     shop_url = SHOP_ITEMS[item_id]
-    shop_response = self.client.post(shop_url, headers=headers,
+    shop_response = self.client.post(shop_url, headers=self.headers,
                                      name="/shops/[shop_id]",
                                      json={
                                        "client_master_version": "2022061301",
@@ -312,7 +320,7 @@ class TestScenarioCase(TaskSet):
   def character(self):
     # Get Character List
     character_list_url = "/users/" + self.user_id + "/characters?client_master_version=2022061301"
-    character_response = self.client.get(character_list_url, headers=headers,
+    character_response = self.client.get(character_list_url, headers=self.headers,
                                          name="/users/[user_id]/characters?["
                                               "character_id]")
 
@@ -339,7 +347,7 @@ class TestScenarioCase(TaskSet):
                                                    name=
                                                    "/users/[user_id]/characters"
                                                    "/[character_id]",
-                                                   headers=headers)
+                                                   headers=self.headers)
 
       if character_sell_response.status_code == 200:
         pass
@@ -351,7 +359,7 @@ class TestScenarioCase(TaskSet):
   @task(7)
   def gacha(self):
     # Use shop for get user_profile
-    shop_response = self.client.post("/shops/item_120", headers=headers,
+    shop_response = self.client.post("/shops/item_120", headers=self.headers,
                                      name="/shops/item_120",
                                      json={
                                        "client_master_version": "2022061301",
@@ -380,7 +388,7 @@ class TestScenarioCase(TaskSet):
       return
 
     if crystal > 5:
-      gacha1_response = self.client.post("/gachas/1", headers=headers,
+      gacha1_response = self.client.post("/gachas/1", headers=self.headers,
                                          name="/gachas/1",
                                          json={
                                            "client_master_version": "2022061301",
@@ -394,7 +402,7 @@ class TestScenarioCase(TaskSet):
         return self.gacha()
 
     if friend_coin > 5:
-      gacha2_response = self.client.post("/gachas/2", headers=headers,
+      gacha2_response = self.client.post("/gachas/2", headers=self.headers,
                                          name="/gachas/2",
                                          json={
                                            "client_master_version": "2022061301",
@@ -411,7 +419,7 @@ class TestScenarioCase(TaskSet):
   def present(self):
     # Get Present List
     present_list_url = "/users/" + self.user_id + "/presents?client_master_version=2022061301"
-    present_response = self.client.get(present_list_url, headers=headers,
+    present_response = self.client.get(present_list_url, headers=self.headers,
                                        name="/users/[user_id]/presents")
 
     if present_response.status_code == 200:
@@ -433,7 +441,7 @@ class TestScenarioCase(TaskSet):
       present_get_url = "/users/" + self.user_id + "/presents/" + \
                         present_response.json()["user_present"][0][
                           "present_id"] + "?client_master_version=2022061301"
-      present_get_response = self.client.get(present_get_url, headers=headers,
+      present_get_response = self.client.get(present_get_url, headers=self.headers,
                                              name="/users/[user_id]/presents"
                                                   "/[present_id]")
       if present_get_response.status_code == 200:
