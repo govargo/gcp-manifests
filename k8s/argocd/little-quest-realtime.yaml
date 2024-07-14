@@ -168,8 +168,8 @@ spec:
           autoscaling:
             enabled: true
             type: Buffer
-            bufferSize: 6
-            minReplicas: 6
+            bufferSize: 8
+            minReplicas: 8
             maxReplicas: 100
 
         frontend:
