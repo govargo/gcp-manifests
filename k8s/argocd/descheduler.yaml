@@ -1,0 +1,83 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: descheduler
+  namespace: argocd
+spec:
+  generators:
+  - list:
+      elements:
+      - cluster: app-0
+        name: gke_kentaiso-330205_asia-northeast1_prod-app-0
+      - cluster: app-1
+        name: gke_kentaiso-330205_us-central1_prod-app-1
+      - cluster: corp-0
+        name: gke_kentaiso-330205_asia-northeast1_prod-corp-0
+  template:
+    metadata:
+      name: "{{cluster}}-descheduler"
+    spec:
+      project: default
+      syncPolicy:
+        syncOptions:
+        - CreateNamespace=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        chart: descheduler
+        repoURL: https://kubernetes-sigs.github.io/descheduler
+        targetRevision: 0.30.1
+        helm:
+          releaseName: "{{cluster}}-descheduler"
+          values: |
+            kind: "CronJob"
+            schedule: "*/10 * * * *"
+            deschedulerPolicy:
+              profiles:
+              - name: default
+                pluginConfig:
+                - name: DefaultEvictor
+                  args:
+                    ignorePvcPods: true
+                    evictSystemCriticalPods: true
+                    evictLocalStoragePods: true
+                - name: RemoveDuplicates
+                - name: RemovePodsHavingTooManyRestarts
+                  args:
+                    podRestartThreshold: 100
+                    includingInitContainers: true
+                - name: RemovePodsViolatingNodeAffinity
+                  args:
+                    nodeAffinityType:
+                    - requiredDuringSchedulingIgnoredDuringExecution
+                    - preferredDuringSchedulingIgnoredDuringExecution
+                - name: RemovePodsViolatingNodeTaints
+                - name: RemovePodsViolatingInterPodAntiAffinity
+                - name: RemovePodsViolatingTopologySpreadConstraint
+                - name: LowNodeUtilization
+                  args:
+                    thresholds:
+                      cpu: 20
+                      memory: 20
+                      pods: 20
+                    targetThresholds:
+                      cpu: 50
+                      memory: 50
+                      pods: 50
+                plugins:
+                  balance:
+                    enabled:
+                    - RemoveDuplicates
+                    - RemovePodsViolatingTopologySpreadConstraint
+                    - LowNodeUtilization
+                  deschedule:
+                    enabled:
+                    - RemovePodsHavingTooManyRestarts
+                    - RemovePodsViolatingNodeTaints
+                    - RemovePodsViolatingNodeAffinity
+                    - RemovePodsViolatingInterPodAntiAffinity
+
+      destination:
+        name: "{{name}}"
+        namespace: kube-system
