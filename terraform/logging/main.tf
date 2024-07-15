@@ -103,12 +103,26 @@ EOF
 resource "google_logging_project_exclusion" "k8s_container_exclude_little_quest_server_stdout" {
   name = "k8s-container-exclude-little-quest-server-stdout"
 
-  description = "Exclude little quest server stdout log(stdout log includes access log)"
+  description = "Exclude little quest server stdout log(stdout log includes access log with 200 status)"
 
   filter = <<EOF
 resource.type="k8s_container"
 resource.labels.namespace_name="little-quest-server"
 logName="${data.google_project.project.id}/logs/stdout"
+-textPayload=~".*HTTP/1.1\" (4[0-9][0-9]|5[0-9][0-9]).*"
+EOF
+}
+
+resource "google_logging_project_exclusion" "k8s_container_exclude_cloud_sql_proxy_stdout" {
+  name = "k8s-container-exclude-cloud-sql-proxy-stdout"
+
+  description = "Exclude cloud-sql-proxy stdout log"
+
+  filter = <<EOF
+resource.type="k8s_container"
+resource.labels.namespace_name="little-quest-server"
+logName="${data.google_project.project.id}/logs/stdout"
+resource.labels.container_name="cloud-sql-proxy"
 EOF
 }
 
