@@ -25,7 +25,7 @@ spec:
       source:
         chart: agones
         repoURL: https://agones.dev/chart/stable
-        targetRevision: 1.39.0
+        targetRevision: 1.41.0
         helm:
           releaseName: "agones"
           values: |
