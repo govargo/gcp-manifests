@@ -118,7 +118,7 @@ class TestScenarioCase(TaskSet):
 
     return result.json()
 
-  def refresh_token(self, api_key):
+  def get_refresh_token(self, api_key):
     # https://firebase.google.com/docs/reference/rest/auth#section-refresh-token
     uri = f"https://securetoken.googleapis.com/v1/token?key={api_key}"
     if "Authorization" in self.headers:
@@ -152,7 +152,7 @@ class TestScenarioCase(TaskSet):
     if registration_response.status_code == 200:
       pass
     elif registration_response.status_code == 401:
-      self.refresh_token(api_key)
+      self.get_refresh_token(api_key)
       print("token is refreshed. retry raidbattle")
       return self.register_and_login()
 
@@ -210,7 +210,7 @@ class TestScenarioCase(TaskSet):
     if raidbattle_response.status_code == 200:
       pass
     elif raidbattle_response.status_code == 401:
-      self.refresh_token(api_key)
+      self.get_refresh_token(api_key)
       print("token is refreshed. retry raidbattle")
       return self.raid_battle()
 
@@ -300,7 +300,7 @@ class TestScenarioCase(TaskSet):
     if shop_response.status_code == 200:
       pass
     elif shop_response.status_code == 401:
-      self.refresh_token(api_key)
+      self.get_refresh_token(api_key)
       print("token is refreshed. retry shop item")
       return self.shop_item()
 
@@ -327,7 +327,7 @@ class TestScenarioCase(TaskSet):
     if character_response.status_code == 200:
       pass
     elif character_response.status_code == 401:
-      self.refresh_token(api_key)
+      self.get_refresh_token(api_key)
       print("token is refreshed. retry character list")
       return self.character()
 
@@ -352,7 +352,7 @@ class TestScenarioCase(TaskSet):
       if character_sell_response.status_code == 200:
         pass
       elif character_sell_response.status_code == 401:
-        self.refresh_token(api_key)
+        self.get_refresh_token(api_key)
         print("token is refreshed. retry character sell")
         return self.character()
 
@@ -369,7 +369,7 @@ class TestScenarioCase(TaskSet):
     if shop_response.status_code == 200:
       pass
     elif shop_response.status_code == 401:
-      self.refresh_token(api_key)
+      self.get_refresh_token(api_key)
       print("token is refreshed. retry shop item for gacha")
       return self.gacha()
 
@@ -397,7 +397,7 @@ class TestScenarioCase(TaskSet):
       if gacha1_response.status_code == 200:
         pass
       elif gacha1_response.status_code == 401:
-        self.refresh_token(api_key)
+        self.get_refresh_token(api_key)
         print("token is refreshed. retry gacha1")
         return self.gacha()
 
@@ -411,7 +411,7 @@ class TestScenarioCase(TaskSet):
       if gacha2_response.status_code == 200:
         pass
       elif gacha2_response.status_code == 401:
-        self.refresh_token(api_key)
+        self.get_refresh_token(api_key)
         print("token is refreshed. retry gacha2")
         return self.gacha()
 
@@ -425,7 +425,7 @@ class TestScenarioCase(TaskSet):
     if present_response.status_code == 200:
       pass
     elif present_response.status_code == 401:
-      self.refresh_token(api_key)
+      self.get_refresh_token(api_key)
       print("token is refreshed. retry present list")
       return self.gacha()
 
@@ -447,7 +447,7 @@ class TestScenarioCase(TaskSet):
       if present_get_response.status_code == 200:
         pass
       elif present_get_response.status_code == 401:
-        self.refresh_token(api_key)
+        self.get_refresh_token(api_key)
         print("token is refreshed. retry present get")
         return self.gacha()
 
