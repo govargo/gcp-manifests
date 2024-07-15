@@ -109,7 +109,7 @@ spec:
                 exec:
                   command:
                   - /test/sleep
-                  - "5"
+                  - "20"
 
             affinity:
               podAntiAffinity:
