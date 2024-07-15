@@ -277,7 +277,7 @@
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "sum(rate(agones_gameserver_allocations_duration_seconds_count{status!=\"Allocated\"}[${__interval}]))"
+                  "prometheusQuery": "sum(rate(agones_gameserver_allocations_duration_seconds_count{status!=\"Allocated\"}[${__interval}])) by (status)"
                 }
               }
             ],
