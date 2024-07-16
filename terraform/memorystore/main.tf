@@ -3,13 +3,13 @@ data "google_project" "project" {
 
 module "memorystore_redis" {
   source  = "terraform-google-modules/memorystore/google"
-  version = "7.1.0"
+  version = "9.0.0"
 
   name          = "${var.env}-redis-instance"
   project       = data.google_project.project.project_id
   enable_apis   = var.enable_apis
   region        = var.region
-  redis_version = "REDIS_6_X"
+  redis_version = "REDIS_7_2"
 
   reserved_ip_range  = "google-managed-services-${var.gcp_project_name}"
   authorized_network = "${data.google_project.project.id}/global/networks/${var.gcp_project_name}"
