@@ -18,6 +18,7 @@ locals {
     "cloudresourcemanager.googleapis.com",
     "multiclusterservicediscovery.googleapis.com",
     "multiclusteringress.googleapis.com",
+    "mesh.googleapis.com",
     "anthos.googleapis.com",
     "gkehub.googleapis.com",
     "trafficdirector.googleapis.com",
