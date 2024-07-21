@@ -221,6 +221,9 @@ server:
   ingress:
     # -- Enable an ingress resource for the Argo CD server
     enabled: true
+    # -- Specific implementation for ingress controller. One of `generic`, `aws` or `gke`
+    ## Additional configuration might be required in related configuration sections
+    controller: gke
     # -- Additional ingress annotations
     annotations:
       kubernetes.io/ingress.global-static-ip-name: "argocd-server-ip"
@@ -231,54 +234,51 @@ server:
     ## Argo Ingress.
     ## Hostnames must be provided if Ingress is enabled.
     ## Secrets must be manually created in the namespace
-    hosts:
-    - argocd.kentaiso.demo.altostrat.com
+    hostname: argocd.kentaiso.demo.altostrat.com
 
     # -- List of ingress paths
     paths:
-    - /*
+    - "/"
     # -- Ingress path type. One of `Exact`, `Prefix` or `ImplementationSpecific`
-    pathType: ImplementationSpecific
+    pathType: Prefix
     # -- Uses `server.service.servicePortHttps` instead `server.service.servicePortHttp`
     https: false
 
-  GKEbackendConfig:
-    # -- Enable BackendConfig custom resource for Google Kubernetes Engine
-    enabled: true
-    # -- [BackendConfigSpec]
-    spec:
-      healthCheck:
-        checkIntervalSec: 30
-        timeoutSec: 5
-        healthyThreshold: 1
-        unhealthyThreshold: 10
-        type: HTTP
-        requestPath: /healthz
-        port: 8080
-      iap:
-        enabled: true
-        oauthclientCredentials:
-          secretName: argocd-dex-secrets-store
 
-  ## Create a Google Managed Certificate for use with the GKE Ingress Controller
-  ## https://cloud.google.com/kubernetes-engine/docs/how-to/managed-certs
-  GKEmanagedCertificate:
-    # -- Enable ManagedCertificate custom resource for Google Kubernetes Engine.
-    enabled: true
-    # -- Domains for the Google Managed Certificate
-    domains:
-    - argocd.kentaiso.demo.altostrat.com
+    # Google specific options for Google Application Load Balancer
+    # Applies only when `server.ingress.controller` is set to `gke`
+    ## Ref: https://argo-cd.readthedocs.io/en/stable/operator-manual/ingress/#google-cloud-load-balancers-with-kubernetes-ingress
+    gke:
+      # -- Google [BackendConfig] resource, for use with the GKE Ingress Controller
+      # @default -- `{}` (See [values.yaml])
+      ## Ref: https://cloud.google.com/kubernetes-engine/docs/how-to/ingress-features#configuring_ingress_features_through_frontendconfig_parameters
+      backendConfig:
+        healthCheck:
+          checkIntervalSec: 30
+          timeoutSec: 5
+          healthyThreshold: 1
+          unhealthyThreshold: 10
+          type: HTTP
+          requestPath: /healthz
+          port: 8080
+        iap:
+          enabled: true
+          oauthclientCredentials:
+            secretName: argocd-dex-secrets-store
 
-  ## Create a Google FrontendConfig Custom Resource, for use with the GKE Ingress Controller
-  ## https://cloud.google.com/kubernetes-engine/docs/how-to/ingress-features#configuring_ingress_features_through_frontendconfig_parameters
-  GKEfrontendConfig:
-    # -- Enable FrontConfig custom resource for Google Kubernetes Engine
-    enabled: true
-    # -- [FrontendConfigSpec]
-    spec:
-      redirectToHttps:
-        enabled: true
-  #     responseCodeName: RESPONSE_CODE
+      # -- Google [FrontendConfig] resource, for use with the GKE Ingress Controller
+      # @default -- `{}` (See [values.yaml])
+      ## Ref: https://cloud.google.com/kubernetes-engine/docs/how-to/ingress-features#configuring_ingress_features_through_frontendconfig_parameters
+      frontendConfig:
+        redirectToHttps:
+          enabled: true
+
+      # Managed GKE certificate for ingress hostname
+      managedCertificate:
+        # -- Create ManagedCertificate resource and annotations for Google Load balancer
+        ## Ref: https://cloud.google.com/kubernetes-engine/docs/how-to/managed-certs
+        create: true
+        extraDomains: []
 
 ## Repo Server
 repoServer:
