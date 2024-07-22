@@ -40,6 +40,11 @@ spec:
         grpcPort: {{ .Values.realtime.sdkServer.grpcPort }}
         httpPort: {{ .Values.realtime.sdkServer.httpPort }}
       template:
+        metadata:
+          {{- with .Values.realtime.podAnnotations }}
+          annotations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
         spec:
           serviceAccountName: {{ include "little-quest-realtime.serviceAccountName" . }}
           containers:
