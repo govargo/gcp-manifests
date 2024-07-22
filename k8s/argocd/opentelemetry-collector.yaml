@@ -27,17 +27,20 @@ spec:
       source:
         repoURL: https://open-telemetry.github.io/opentelemetry-helm-charts
         chart: opentelemetry-collector
-        targetRevision: 0.93.3
+        targetRevision: 0.97.2
         helm:
           releaseName: "opentelemetry-collector"
           values: |
             mode: deployment
             image:
               repository: otel/opentelemetry-collector-contrib
-              tag: 0.102.0
+              tag: 0.105.0
             command:
               name: otelcol-contrib
-        
+
+            podAnnotations:
+              proxy.istio.io/config: '{ "holdApplicationUntilProxyStarts": true, "drainDuration": "20s", "parentShutdownDuration": "30s", "proxyMetadata": {"MINIMUM_DRAIN_DURATION": "20s", "EXIT_ON_ZERO_ACTIVE_CONNECTIONS": "true"}}'
+
             serviceAccount:
               annotations:
                 iam.gke.io/gcp-service-account: opentelemetry-collector@kentaiso-330205.iam.gserviceaccount.com
