@@ -92,7 +92,7 @@ spec:
               name: ""
 
             podAnnotations:
-              proxy.istio.io/config: '{"holdApplicationUntilProxyStarts": true}'
+              proxy.istio.io/config: '{ "holdApplicationUntilProxyStarts": true, "drainDuration": "120s", "parentShutdownDuration": "210s", "proxyMetadata": {"MINIMUM_DRAIN_DURATION": "120s", "EXIT_ON_ZERO_ACTIVE_CONNECTIONS": "true"}}'
 
             strategy:
               type: RollingUpdate
