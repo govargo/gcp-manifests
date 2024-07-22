@@ -126,6 +126,28 @@ resource.labels.container_name="cloud-sql-proxy"
 EOF
 }
 
+resource "google_logging_project_exclusion" "csm_exclude_server_access_log" {
+  name = "csm-exclude-server-access-log"
+
+  description = "Exclude CSM server access log include health check log"
+
+  filter = <<EOF
+logName="${data.google_project.project.id}/logs/server-accesslog-stackdriver"
+EOF
+}
+
+resource "google_logging_project_exclusion" "k8s_container_exclude_csm_server_access_log" {
+  name = "k8s-container-csm-exclude-server-access-log"
+
+  description = "Exclude CSM server access log include health check log"
+
+  filter = <<EOF
+resource.type="k8s_container"
+resource.labels.namespace_name="little-quest-server"
+(textPayload=~"(\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01]))T((\d{2}):(\d{2})(?::(\d{2}(?:\.\d*)?))?(?:([+-](?:\d{2}):?(?:\d{2})?|Z)?))\] \"GET /api/podhealth HTTP/1\.1\" ((?:\d[,.]?)*\d) UF upstream_reset_before_response_started\{remote_connection_failure,delayed_connect_error:_111\} - \"delayed_connect_error:_111\" ((?:\d[,.]?)*\d) ((?:\d[,.]?)*\d) ((?:\d[,.]?)*\d) - \"-\" \"GoogleHC/1\.0\" \"([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})\" \"(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\" \"(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,5})\" InboundPassthroughClusterIpv4 - (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,5}) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,5}) - default")
+EOF
+}
+
 resource "google_logging_project_exclusion" "k8s_container_exclude_little_quest_realtime_healthcheck" {
   name = "k8s-container-exclude-little-quest-realtime-healthcheck"
 
