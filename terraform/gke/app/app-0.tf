@@ -100,7 +100,7 @@ module "app-0" {
     },
     {
       name               = "app-pool"
-      machine_type       = "t2d-standard-1"
+      machine_type       = "t2d-standard-2"
       node_locations     = var.node_locations
       min_count          = null
       max_count          = null

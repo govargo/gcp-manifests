@@ -93,7 +93,7 @@ module "app-1" {
     },
     {
       name               = "app-pool"
-      machine_type       = "t2d-standard-1"
+      machine_type       = "t2d-standard-2"
       node_locations     = "us-central1-a,us-central1-b,us-central1-c,us-central1-f"
       min_count          = null
       max_count          = null
