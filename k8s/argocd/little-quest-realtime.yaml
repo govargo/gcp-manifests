@@ -38,7 +38,7 @@ spec:
   source:
     repoURL: asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/charts
     chart: little-quest-realtime
-    targetRevision: 0.4.3
+    targetRevision: 0.5.2
     helm:
       releaseName: "little-quest-realtime"
       values: |
@@ -65,7 +65,8 @@ spec:
             # If not set and create is true, a name is generated using the fullname template
             name: ""
 
-          podAnnotations: {}
+          podAnnotations:
+            sidecar.istio.io/inject: "false"
 
           scheduling: Packed
 
