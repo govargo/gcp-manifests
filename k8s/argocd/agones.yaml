@@ -49,6 +49,8 @@ spec:
                    limits:
                      cpu: 50m
                      memory: 126Mi
+                 annotations:
+                   sidecar.istio.io/inject: "false"
                  tolerations: []
                  affinity:
                    podAntiAffinity:
@@ -80,6 +82,8 @@ spec:
                    limits:
                      cpu: 50m
                      memory: 126Mi
+                 annotations:
+                   sidecar.istio.io/inject: "false"
                  tolerations: []
                  affinity:
                    podAntiAffinity:
@@ -106,6 +110,8 @@ spec:
                ping:
                  install: false
                allocator:
+                 annotations:
+                   proxy.istio.io/config: '{"holdApplicationUntilProxyStarts": true}'
                  pdb:
                    enabled: true
                    minAvailable: 1
@@ -141,13 +147,16 @@ spec:
                    name: agones-allocator
                    serviceType: ClusterIP
                    clusterIP: None
+                   annotations: {}
                    http:
                      appProtocol: http
                      port: 18080
+                     portName: http-web
                      targetPort: 18080
                    grpc:
                      appProtocol: grpc
                      port: 8443
+                     portName: grpc
                      targetPort: 8443
                  disableMTLS: true
                  disableTLS: true
