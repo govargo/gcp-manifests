@@ -28,8 +28,19 @@ spec:
         helm:
           releaseName: "open-match"
           values: |
+             query:
+               podAnnotations:
+                 proxy.istio.io/config: '{"holdApplicationUntilProxyStarts": true}'
+             frontend:
+               podAnnotations:
+                 proxy.istio.io/config: '{"holdApplicationUntilProxyStarts": true}'
+             backend:
+               podAnnotations:
+                 proxy.istio.io/config: '{"holdApplicationUntilProxyStarts": true}'
+             synchronizer:
+               podAnnotations:
+                 proxy.istio.io/config: '{"holdApplicationUntilProxyStarts": true}'
              function: &function
-               hostName:
                grpcPort: 50502
                httpPort: 51502
 
@@ -38,6 +49,8 @@ spec:
                  maxclients 100000
                  maxmemory 500000000
                master:
+                 podAnnotations:
+                   sidecar.istio.io/inject: "false"
                  resources:
                    requests:
                      memory: 1Gi
@@ -79,6 +92,8 @@ spec:
                enabled: true
                evaluator:
                  enabled: true
+                 podAnnotations:
+                   proxy.istio.io/config: '{"holdApplicationUntilProxyStarts": true}'
                function: *function
                # You can override the evaluator/mmf image
                # evaluator:
