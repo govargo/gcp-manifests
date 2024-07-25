@@ -191,7 +191,7 @@ spec:
               exec:
                 command:
                 - /usr/local/bin/sleep
-                - "5"
+                - "120"
 
           serviceAccount:
             # Specifies whether a service account should be created
@@ -203,7 +203,8 @@ spec:
             # If not set and create is true, a name is generated using the fullname template
             name: ""
 
-          podAnnotations: {}
+          podAnnotations:
+            proxy.istio.io/config: '{ "holdApplicationUntilProxyStarts": true, "drainDuration": "120s", "parentShutdownDuration": "210s", "proxyMetadata": {"MINIMUM_DRAIN_DURATION": "120s", "EXIT_ON_ZERO_ACTIVE_CONNECTIONS": "true"}}'
 
           strategy:
             type: RollingUpdate
@@ -288,7 +289,7 @@ spec:
               matchLabels:
                 app.kubernetes.io/name: little-quest-frontend
 
-          terminationGracePeriodSeconds: 30
+          terminationGracePeriodSeconds: 210
 
           ## Additional volumeMounts
           volumeMounts: {}
@@ -343,7 +344,7 @@ spec:
               exec:
                 command:
                 - /usr/local/bin/sleep
-                - "5"
+                - "20"
 
           serviceAccount:
             # Specifies whether a service account should be created
@@ -355,7 +356,8 @@ spec:
             # If not set and create is true, a name is generated using the fullname template
             name: ""
 
-          podAnnotations: {}
+          podAnnotations:
+            proxy.istio.io/config: '{ "holdApplicationUntilProxyStarts": true, "drainDuration": "20s", "parentShutdownDuration": "30s", "proxyMetadata": {"MINIMUM_DRAIN_DURATION": "20s", "EXIT_ON_ZERO_ACTIVE_CONNECTIONS": "true"}}'
 
           replicaCount: 2
 
@@ -500,7 +502,7 @@ spec:
               exec:
                 command:
                 - /usr/local/bin/sleep
-                - "5"
+                - "20"
 
           serviceAccount:
             # Specifies whether a service account should be created
@@ -512,7 +514,8 @@ spec:
             # If not set and create is true, a name is generated using the fullname template
             name: ""
 
-          podAnnotations: {}
+          podAnnotations:
+            proxy.istio.io/config: '{ "holdApplicationUntilProxyStarts": true, "drainDuration": "20s", "parentShutdownDuration": "30s", "proxyMetadata": {"MINIMUM_DRAIN_DURATION": "20s", "EXIT_ON_ZERO_ACTIVE_CONNECTIONS": "true"}}'
 
           replicaCount: 1
 
