@@ -302,7 +302,7 @@ spec:
           service:
             annotations: {}
             type: ClusterIP
-            headless: true
+            headless: false
             port: 80
 
           autoscaling:
@@ -459,7 +459,7 @@ spec:
           service:
             annotations: {}
             type: ClusterIP
-            headless: true
+            headless: false
             port: 50502
 
           autoscaling:
