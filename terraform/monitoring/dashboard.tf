@@ -67,6 +67,12 @@ resource "google_monitoring_dashboard" "k8s_little_quest_monitoring_dashboard" {
   dashboard_json = file("files/k8s_little_quest.json")
 }
 
+## Cloud Service Mesh
+resource "google_monitoring_dashboard" "cloud_service_mesh_monitoring_dashboard" {
+  project        = data.google_project.project.project_id
+  dashboard_json = file("files/cloud_service_mesh.json")
+}
+
 ## Cloud Spanner Instance
 resource "google_monitoring_dashboard" "spanner_instance_monitoring_dashboard" {
   project        = data.google_project.project.project_id
