@@ -1,0 +1,99 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  labels:
+    istio.io/owned-by: mesh.googleapis.com
+  name: snk-little-quest-server
+  namespace: kube-system
+spec:
+  selector:
+    matchLabels:
+      k8s-app: snk
+  template:
+    metadata:
+      labels:
+        k8s-app: snk
+    spec:
+      containers:
+      - command:
+        - /snk
+        - --logtostderr
+        - --v=1
+        - --thc-port=7877
+        env:
+        - name: NODE_IP
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: status.hostIP
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: spec.nodeName
+        - name: CLUSTER_PROJECT
+          value: kentaiso-330205
+        - name: CLUSTER_LOCATION
+          value: asia-northeast1
+        - name: CLUSTER_NAME
+          value: prod-corp-0
+        image: gcr.io/gke-release/asm/snk@sha256:a7ab386d823a8df183d15ecefddb8d8e03766ff61f4448c520a58e694c9f2a0d
+        imagePullPolicy: IfNotPresent
+        name: snk
+        ports:
+        - containerPort: 7877
+          name: http
+          protocol: TCP
+        resources:
+          limits:
+            memory: 30Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - all
+          readOnlyRootFilesystem: true
+          runAsGroup: 2692
+          runAsUser: 2692
+      hostNetwork: true
+      initContainers:
+      - command:
+        - iptables-legacy
+        - -t
+        - nat
+        - -A
+        - PREROUTING
+        - -p
+        - tcp
+        - --dport
+        - "7877"
+        - -j
+        - DNAT
+        - --to-destination
+        - 127.0.0.1:7877
+        image: gcr.io/gke-release/asm/install-cni:1.18.7-asm.12
+        imagePullPolicy: IfNotPresent
+        name: init-routes
+        resources: {}
+        securityContext:
+          capabilities:
+            add:
+            - NET_ADMIN
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      serviceAccount: snk-gke
+      serviceAccountName: snk-gke
+      terminationGracePeriodSeconds: 30
+      nodeSelector:
+        app: little-quest-server
+      tolerations:
+      - key: "app"
+        operator: "Equal"
+        value: "little-quest-server"
+        effect: "NoSchedule"
+  updateStrategy:
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+    type: RollingUpdate
