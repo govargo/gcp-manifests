@@ -110,6 +110,8 @@ spec:
                ping:
                  install: false
                allocator:
+                 labels:
+                   service.istio.io/canonical-name: agones-allocator
                  annotations:
                    proxy.istio.io/config: '{"holdApplicationUntilProxyStarts": true}'
                  pdb:
@@ -146,7 +148,6 @@ spec:
                  service:
                    name: agones-allocator
                    serviceType: ClusterIP
-                   clusterIP: None
                    annotations: {}
                    http:
                      appProtocol: http
