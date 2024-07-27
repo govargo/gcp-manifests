@@ -133,6 +133,18 @@ resource "google_logging_project_exclusion" "csm_exclude_server_access_log" {
 
   filter = <<EOF
 logName="${data.google_project.project.id}/logs/server-accesslog-stackdriver"
+(httpRequest.status<"400" AND labels.response_flag="-")
+EOF
+}
+
+resource "google_logging_project_exclusion" "csm_exclude_matchmake_server_access_log" {
+  name = "csm-exclude-matchmake-server-access-log"
+
+  description = "Exclude CSM server access log of matchmake log"
+
+  filter = <<EOF
+logName="${data.google_project.project.id}/logs/server-accesslog-stackdriver"
+httpRequest.requestUrl=~"http://little-quest-frontend.corp-0.svc.clusterset.local.:18080/users/.*/matchmake"
 EOF
 }
 
