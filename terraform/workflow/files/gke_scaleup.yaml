@@ -201,10 +201,22 @@ prod_corp_0_scaleup:
             minNodeCount: 1
             maxNodeCount: 100
       result: enable_autoscaling_kube_system_pool
-  - wait:
+  - wait_autoscaling:
       call: sys.sleep
       args:
         seconds: 30
+  - scale_up_node_pool_loop:
+      for:
+        value: node_pool_value
+        in: ["open-match-pool", "kube-system-pool"]
+        steps:
+        - scale_up_node_pool:
+            call: googleapis.container.v1.projects.locations.clusters.nodePools.setSize
+            args:
+              name: $${"projects/"+project_id+"/locations/"+region+"/clusters/"+cluster_id+"/nodePools/"+node_pool_value}
+              body:
+                nodeCount: $${scale_up_size}
+            result: scale_up_node_pool
   - scale_up_workload_otel_collector:
       call: gke.request
       args:
@@ -238,6 +250,10 @@ prod_corp_0_scaleup:
                 spec:
                   replicas: 2
             result: scale_up_agones_workload
+  - wait_deploy_workload:
+      call: sys.sleep
+      args:
+        seconds: 180
   - scale_up_little_quest_workload_loop:
       for:
         value: workload_value
@@ -257,18 +273,6 @@ prod_corp_0_scaleup:
                 spec:
                   replicas: 1
             result: scale_up_little_quest_workload
-  - scale_up_node_pool_loop:
-      for:
-        value: node_pool_value
-        in: ["open-match-pool", "kube-system-pool"]
-        steps:
-        - scale_up_node_pool:
-            call: googleapis.container.v1.projects.locations.clusters.nodePools.setSize
-            args:
-              name: $${"projects/"+project_id+"/locations/"+region+"/clusters/"+cluster_id+"/nodePools/"+node_pool_value}
-              body:
-                nodeCount: $${scale_up_size}
-            result: scale_up_node_pool
 
 prod_misc_0_scaleup:
   params:
