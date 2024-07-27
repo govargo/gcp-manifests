@@ -1,0 +1,19 @@
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: agones-allocator
+  namespace: agones-system
+spec:
+  host: agones-allocator.agones-system.svc.cluster.local
+  subsets:
+  - name: agones-allocator
+    labels:
+      multicluster.agones.dev/role: allocator
+  trafficPolicy:
+    connectionPool:
+      http:
+        http2MaxRequests: 4000
+    outlierDetection:
+      baseEjectionTime: 30s
+      consecutive5xxErrors: 5
+      maxEjectionPercent: 30

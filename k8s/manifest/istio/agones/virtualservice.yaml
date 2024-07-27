@@ -1,0 +1,19 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: agones-allocator
+  namespace: agones-system
+spec:
+  hosts:
+  - agones-allocator.agones-system.svc.cluster.local
+  http:
+  - route:
+    - destination:
+        host: agones-allocator.agones-system.svc.cluster.local
+        port:
+          number: 8443
+        subset: agones-allocator
+    retries:
+      attempts: 10
+      perTryTimeout: 300ms
+      retryOn: 5xx,unavailable,internal,deadline-exceeded,cancelled
