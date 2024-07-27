@@ -30,19 +30,58 @@ spec:
           values: |
              query:
                podAnnotations:
-                 proxy.istio.io/config: '{"holdApplicationUntilProxyStarts": true}'
+                 proxy.istio.io/config: '{"holdApplicationUntilProxyStarts": true, "drainDuration": "20s", "parentShutdownDuration": "30s", "proxyMetadata": {"MINIMUM_DRAIN_DURATION": "20s", "EXIT_ON_ZERO_ACTIVE_CONNECTIONS": "true"}}'
+                 sidecar.istio.io/rewriteAppHTTPProbers: "false"
+               podLabels:
+                 service.istio.io/canonical-name: open-match-query
              frontend:
                podAnnotations:
-                 proxy.istio.io/config: '{"holdApplicationUntilProxyStarts": true}'
+                 proxy.istio.io/config: '{"holdApplicationUntilProxyStarts": true, "drainDuration": "20s", "parentShutdownDuration": "30s", "proxyMetadata": {"MINIMUM_DRAIN_DURATION": "20s", "EXIT_ON_ZERO_ACTIVE_CONNECTIONS": "true"}}'
+                 sidecar.istio.io/rewriteAppHTTPProbers: "false"
+               podLabels:
+                 service.istio.io/canonical-name: open-match-frontend
              backend:
                podAnnotations:
-                 proxy.istio.io/config: '{"holdApplicationUntilProxyStarts": true}'
+                 proxy.istio.io/config: '{"holdApplicationUntilProxyStarts": true, "drainDuration": "20s", "parentShutdownDuration": "30s", "proxyMetadata": {"MINIMUM_DRAIN_DURATION": "20s", "EXIT_ON_ZERO_ACTIVE_CONNECTIONS": "true"}}'
+                 sidecar.istio.io/rewriteAppHTTPProbers: "false"
+               podLabels:
+                 service.istio.io/canonical-name: open-match-backend
              synchronizer:
                podAnnotations:
-                 proxy.istio.io/config: '{"holdApplicationUntilProxyStarts": true}'
+                 proxy.istio.io/config: '{"holdApplicationUntilProxyStarts": true, "drainDuration": "20s", "parentShutdownDuration": "30s", "proxyMetadata": {"MINIMUM_DRAIN_DURATION": "20s", "EXIT_ON_ZERO_ACTIVE_CONNECTIONS": "true"}}'
+                 sidecar.istio.io/rewriteAppHTTPProbers: "false"
+               podLabels:
+                 service.istio.io/canonical-name: open-match-synchronizer
              function: &function
                grpcPort: 50502
                httpPort: 51502
+
+             initContainers:
+             - name: sleep
+               image: busybox:1.36-musl
+               command:
+               - cp
+               args:
+               - /bin/sleep
+               - /test/sleep
+               volumeMounts:
+               - name: test
+                 mountPath: /test
+
+             extraVolumeMounts:
+             - name: test
+               mountPath: /test
+
+             extraVolumes:
+             - name: test
+               emptyDir: {}
+
+             lifecycleHooks:
+               preStop:
+                 exec:
+                   command:
+                   - /test/sleep
+                   - "25"
 
              redis:
                configmap: |
@@ -93,7 +132,37 @@ spec:
                evaluator:
                  enabled: true
                  podAnnotations:
-                   proxy.istio.io/config: '{"holdApplicationUntilProxyStarts": true}'
+                   proxy.istio.io/config: '{"holdApplicationUntilProxyStarts": true, "drainDuration": "20s", "parentShutdownDuration": "30s", "proxyMetadata": {"MINIMUM_DRAIN_DURATION": "20s", "EXIT_ON_ZERO_ACTIVE_CONNECTIONS": "true"}}'
+                   sidecar.istio.io/rewriteAppHTTPProbers: "false"
+                 podLabels:
+                   service.istio.io/canonical-name: open-match-evaluator
+                 initContainers:
+                 - name: sleep
+                   image: busybox:1.36-musl
+                   command:
+                   - cp
+                   args:
+                   - /bin/sleep
+                   - /test/sleep
+                   volumeMounts:
+                   - name: test
+                     mountPath: /test
+
+                 extraVolumeMounts:
+                 - name: test
+                   mountPath: /test
+
+                 extraVolumes:
+                 - name: test
+                   emptyDir: {}
+
+                 lifecycleHooks:
+                   preStop:
+                     exec:
+                       command:
+                       - /test/sleep
+                       - "25"
+
                function: *function
                # You can override the evaluator/mmf image
                # evaluator:
@@ -130,7 +199,7 @@ spec:
                      targetCPUUtilizationPercentage: 50
                      targetMemoryUtilizationPercentage: 50
                    evaluator:
-                     minReplicas: 1
+                     minReplicas: 2
                      maxReplicas: 10
                      targetCPUUtilizationPercentage: 50
                      targetMemoryUtilizationPercentage: 50
@@ -152,7 +221,7 @@ spec:
 
                image:
                  registry: asia-northeast1-docker.pkg.dev/kentaiso-330205/open-match
-                 tag: 1.8.1-b315760
+                 tag: 1.8.1-a039dbc
                  pullPolicy: Always
              
                telemetry:
