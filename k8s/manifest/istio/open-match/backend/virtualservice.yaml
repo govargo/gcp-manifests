@@ -1,0 +1,36 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: open-match-backend
+  namespace: open-match
+spec:
+  hosts:
+  - open-match-backend.open-match.svc.cluster.local
+  http:
+  - name: long-connection
+    match:
+    - uri:
+        prefix: /openmatch.BackendService/FetchMatches
+    route:
+    - destination:
+        host: open-match-backend.open-match.svc.cluster.local
+        port:
+          number: 50505
+        subset: long-connection
+    timeout: 300s
+    retries:
+      attempts: 10
+      perTryTimeout: 300ms
+      retryOn: 5xx,unavailable,internal,deadline-exceeded,cancelled
+  - name: default
+    route:
+    - destination:
+        host: open-match-backend.open-match.svc.cluster.local
+        port:
+          number: 50505
+        subset: default
+    timeout: 10s
+    retries:
+      attempts: 10
+      perTryTimeout: 300ms
+      retryOn: 5xx,unavailable,internal,deadline-exceeded,cancelled

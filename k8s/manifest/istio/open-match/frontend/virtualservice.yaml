@@ -1,0 +1,36 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: open-match-frontend
+  namespace: open-match
+spec:
+  hosts:
+  - open-match-frontend.open-match.svc.cluster.local
+  http:
+  - name: long-connection
+    match:
+    - uri:
+        exact: /openmatch.FrontendService/WatchAssignments
+    route:
+    - destination:
+        host: open-match-frontend.open-match.svc.cluster.local
+        port:
+          number: 50504
+        subset: long-connection
+    timeout: 600s
+    retries:
+      attempts: 10
+      perTryTimeout: 300ms
+      retryOn: 5xx,unavailable,internal,deadline-exceeded,cancelled
+  - name: default
+    route:
+    - destination:
+        host: open-match-frontend.open-match.svc.cluster.local
+        port:
+          number: 50504
+        subset: default
+    timeout: 3s
+    retries:
+      attempts: 10
+      perTryTimeout: 300ms
+      retryOn: 5xx,unavailable,internal,deadline-exceeded,cancelled

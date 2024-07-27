@@ -1,0 +1,21 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: little-quest-mmf
+  namespace: corp-0
+spec:
+  hosts:
+  - little-quest-mmf.corp-0.svc.cluster.local
+  http:
+  - name: long-connection
+    route:
+    - destination:
+        host: little-quest-mmf.corp-0.svc.cluster.local
+        port:
+          number: 50502
+        subset: long-connection
+    timeout: 300s
+    retries:
+      attempts: 10
+      perTryTimeout: 300ms
+      retryOn: 5xx,unavailable,internal,deadline-exceeded,cancelled

@@ -1,0 +1,28 @@
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: little-quest-frontend
+  namespace: corp-0
+spec:
+  host: little-quest-frontend.corp-0.svc.cluster.local
+  subsets:
+  - name: long-connection
+    labels:
+      app.kubernetes.io/name: little-quest-frontend
+    trafficPolicy:
+      connectionPool:
+        tcp:
+          connectTimeout: 300s
+        http:
+          http2MaxRequests: 4000
+          idleTimeout: 300s
+  - name: default
+    labels:
+      app.kubernetes.io/name: little-quest-frontend
+    trafficPolicy:
+      connectionPool:
+        tcp:
+          connectTimeout: 10s
+        http:
+          http2MaxRequests: 4000
+          idleTimeout: 300s

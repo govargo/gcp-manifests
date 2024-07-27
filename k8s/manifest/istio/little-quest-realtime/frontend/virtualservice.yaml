@@ -1,0 +1,37 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: little-quest-frontend
+  namespace: corp-0
+spec:
+  hosts:
+  - little-quest-frontend.corp-0.svc.cluster.local
+  - little-quest-frontend.corp-0.svc.clusterset.local
+  http:
+  - name: long-connection
+    match:
+    - uri:
+        regex: "^/users/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/matchmake$"
+    route:
+    - destination:
+        host: little-quest-frontend.corp-0.svc.cluster.local
+        port:
+          number: 18080
+        subset: long-connection
+    timeout: 300s
+    retries:
+      attempts: 10
+      perTryTimeout: 300ms
+      retryOn: 5xx,unavailable,internal,deadline-exceeded,cancelled
+  - name: default
+    route:
+    - destination:
+        host: little-quest-frontend.corp-0.svc.cluster.local
+        port:
+          number: 18080
+        subset: default
+    timeout: 3s
+    retries:
+      attempts: 10
+      perTryTimeout: 300ms
+      retryOn: 5xx,unavailable,internal,deadline-exceeded,cancelled

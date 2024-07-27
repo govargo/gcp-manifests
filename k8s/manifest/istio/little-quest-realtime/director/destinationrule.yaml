@@ -1,0 +1,18 @@
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: little-quest-director
+  namespace: corp-0
+spec:
+  host: little-quest-director.corp-0.svc.cluster.local
+  subsets:
+  - name: default
+    labels:
+      app.kubernetes.io/name: little-quest-director
+    trafficPolicy:
+      connectionPool:
+        tcp:
+          connectTimeout: 10s
+        http:
+          http2MaxRequests: 4000
+          idleTimeout: 300s

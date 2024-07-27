@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: little-quest-director
+  namespace: corp-0
+spec:
+  hosts:
+  - little-quest-director.corp-0.svc.cluster.local
+  http:
+  - name: default
+    match:
+    route:
+    - destination:
+        host: little-quest-director.corp-0.svc.cluster.local
+        port:
+          number: 80
+        subset: default
+    timeout: 10s
+    retries:
+      attempts: 10
+      perTryTimeout: 300ms
+      retryOn: 5xx,unavailable,internal,deadline-exceeded,cancelled

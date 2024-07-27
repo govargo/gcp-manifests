@@ -1,0 +1,19 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: opentelemetry-collector
+  namespace: tracing
+spec:
+  hosts:
+  - opentelemetry-collector.tracing.svc.cluster.local
+  http:
+  - route:
+    - destination:
+        host: opentelemetry-collector.tracing.svc.cluster.local
+        port:
+          number: 4317
+        subset: opentelemetry-collector
+    retries:
+      attempts: 3
+      perTryTimeout: 300ms
+      retryOn: 5xx,unavailable,internal,deadline-exceeded,cancelled

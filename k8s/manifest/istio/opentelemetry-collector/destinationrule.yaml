@@ -1,0 +1,19 @@
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: opentelemetry-collector
+  namespace: tracing
+spec:
+  host: opentelemetry-collector.tracing.svc.cluster.local
+  subsets:
+  - name: opentelemetry-collector
+    labels:
+      app.kubernetes.io/instance: opentelemetry-collector
+  trafficPolicy:
+    connectionPool:
+      http:
+        http2MaxRequests: 4000
+    outlierDetection:
+      baseEjectionTime: 30s
+      consecutive5xxErrors: 5
+      maxEjectionPercent: 30
