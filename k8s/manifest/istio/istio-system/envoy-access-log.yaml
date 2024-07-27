@@ -1,0 +1,12 @@
+apiVersion: telemetry.istio.io/v1alpha1
+kind: Telemetry
+metadata:
+  name: enable-envoy-disable-sd
+  namespace: istio-system
+spec:
+  accessLogging:
+  - providers:
+      - name: envoy
+  - providers:
+      - name: stackdriver
+    disabled: false
