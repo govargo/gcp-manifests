@@ -7,18 +7,10 @@ spec:
   hosts:
   - open-match-synchronizer.open-match.svc.cluster.local
   http:
-  - name: long-connection
-    match:
-    - uri:
-        prefix: /openmatch.internal.Synchronizer/Synchronize
+  - name: default
     route:
     - destination:
         host: open-match-synchronizer.open-match.svc.cluster.local
         port:
           number: 50506
-        subset: long-connection
-    timeout: 300s
-    retries:
-      attempts: 10
-      perTryTimeout: 300ms
-      retryOn: 5xx,unavailable,internal,deadline-exceeded,cancelled
+        subset: default

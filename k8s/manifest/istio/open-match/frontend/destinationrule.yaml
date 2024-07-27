@@ -6,17 +6,6 @@ metadata:
 spec:
   host: open-match-frontend.open-match.svc.cluster.local
   subsets:
-  - name: long-connection
-    labels:
-      app: open-match
-      component: frontend
-      release: open-match
-    trafficPolicy:
-      connectionPool:
-        tcp:
-          connectTimeout: 300s
-        http:
-          http2MaxRequests: 4000
   - name: default
     labels:
       app: open-match
@@ -25,6 +14,7 @@ spec:
     trafficPolicy:
       connectionPool:
         tcp:
-          connectTimeout: 10s
+          connectTimeout: 600s
         http:
           http2MaxRequests: 4000
+          idleTimeout: 600s

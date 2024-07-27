@@ -7,15 +7,10 @@ spec:
   hosts:
   - little-quest-mmf.corp-0.svc.cluster.local
   http:
-  - name: long-connection
+  - name: default
     route:
     - destination:
         host: little-quest-mmf.corp-0.svc.cluster.local
         port:
-          number: 50502
-        subset: long-connection
-    timeout: 300s
-    retries:
-      attempts: 10
-      perTryTimeout: 300ms
-      retryOn: 5xx,unavailable,internal,deadline-exceeded,cancelled
+          number: 18080
+        subset: default

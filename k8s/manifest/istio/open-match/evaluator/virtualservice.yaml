@@ -7,21 +7,6 @@ spec:
   hosts:
   - open-match-evaluator.open-match.svc.cluster.local
   http:
-  - name: long-connection
-    match:
-    - uri:
-        prefix: /openmatch.Evaluator/Evaluate
-    route:
-    - destination:
-        host: open-match-evaluator.open-match.svc.cluster.local
-        port:
-          number: 50508
-        subset: long-connection
-    timeout: 300s
-    retries:
-      attempts: 10
-      perTryTimeout: 300ms
-      retryOn: 5xx,unavailable,internal,deadline-exceeded,cancelled
   - name: default
     route:
     - destination:
@@ -29,8 +14,3 @@ spec:
         port:
           number: 50508
         subset: default
-    timeout: 10s
-    retries:
-      attempts: 10
-      perTryTimeout: 300ms
-      retryOn: 5xx,unavailable,internal,deadline-exceeded,cancelled

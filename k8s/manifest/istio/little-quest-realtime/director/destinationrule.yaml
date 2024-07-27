@@ -12,7 +12,7 @@ spec:
     trafficPolicy:
       connectionPool:
         tcp:
-          connectTimeout: 10s
+          connectTimeout: 300s
         http:
           http2MaxRequests: 4000
           idleTimeout: 300s

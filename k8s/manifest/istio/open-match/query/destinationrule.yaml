@@ -6,14 +6,15 @@ metadata:
 spec:
   host: open-match-query.open-match.svc.cluster.local
   subsets:
-  - name: long-connection
+  - name: default
     labels:
       app: open-match
       component: query
       release: open-match
-  trafficPolicy:
-    connectionPool:
-      tcp:
-        connectTimeout: 300s
-      http:
-        http2MaxRequests: 4000
+    trafficPolicy:
+      connectionPool:
+        tcp:
+          connectTimeout: 300s
+        http:
+          http2MaxRequests: 4000
+          idleTimeout: 300s

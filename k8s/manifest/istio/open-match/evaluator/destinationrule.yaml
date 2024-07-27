@@ -6,18 +6,6 @@ metadata:
 spec:
   host: open-match-evaluator.open-match.svc.cluster.local
   subsets:
-  - name: long-connection
-    labels:
-      app: open-match-customize
-      component: evaluator
-      release: open-match
-    trafficPolicy:
-      connectionPool:
-        tcp:
-          connectTimeout: 300s
-        http:
-          http2MaxRequests: 4000
-          idleTimeout: 300s
   - name: default
     labels:
       app: open-match-customize
@@ -26,7 +14,7 @@ spec:
     trafficPolicy:
       connectionPool:
         tcp:
-          connectTimeout: 10s
+          connectTimeout: 300s
         http:
           http2MaxRequests: 4000
           idleTimeout: 300s

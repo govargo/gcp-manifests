@@ -6,13 +6,13 @@ metadata:
 spec:
   host: little-quest-mmf.corp-0.svc.cluster.local
   subsets:
-  - name: long-connection
+  - name: default
     labels:
       app.kubernetes.io/name: little-quest-mmf
-  trafficPolicy:
-    connectionPool:
-      tcp:
-        connectTimeout: 300s
-      http:
-        http2MaxRequests: 4000
-        idleTimeout: 300s
+    trafficPolicy:
+      connectionPool:
+        tcp:
+          connectTimeout: 300s
+        http:
+          http2MaxRequests: 4000
+          idleTimeout: 300s

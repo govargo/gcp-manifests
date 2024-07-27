@@ -15,8 +15,3 @@ spec:
         port:
           number: 80
         subset: default
-    timeout: 10s
-    retries:
-      attempts: 10
-      perTryTimeout: 300ms
-      retryOn: 5xx,unavailable,internal,deadline-exceeded,cancelled
