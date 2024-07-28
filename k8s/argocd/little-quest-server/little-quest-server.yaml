@@ -96,6 +96,12 @@ spec:
                 holdApplicationUntilProxyStarts: true
                 drainDuration": "20s"
                 parentShutdownDuration": "30s"
+                proxyStatsMatcher:
+                  inclusionRegexps:
+                  - ".*upstream_rq_.*"
+                  inclusionPrefixes:
+                  - "cluster.outbound|18080|default|little-quest-frontend.corp-0.svc.cluster.local"
+                  - "cluster.outbound|18080|default|little-quest-frontend.corp-0.svc.clusterset.local"
                 proxyMetadata:
                   MINIMUM_DRAIN_DURATION: "20s"
                   EXIT_ON_ZERO_ACTIVE_CONNECTIONS: "true"
