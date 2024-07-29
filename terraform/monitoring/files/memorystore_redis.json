@@ -14,7 +14,7 @@
         "width": 24,
         "height": 16,
         "widget": {
-          "title": "CPU 使用時間（秒）",
+          "title": "CPU seconds",
           "xyChart": {
             "chartOptions": {
               "mode": "COLOR"
@@ -48,14 +48,14 @@
         "width": 24,
         "height": 16,
         "widget": {
-          "title": "メモリ使用率",
+          "title": "Memory usage/Max memory",
           "xyChart": {
             "chartOptions": {
               "mode": "COLOR"
             },
             "dataSets": [
               {
-                "legendTemplate": "メモリ使用量",
+                "legendTemplate": "Network bytes in/out",
                 "minAlignmentPeriod": "60s",
                 "plotType": "LINE",
                 "targetAxis": "Y1",
@@ -70,7 +70,7 @@
                 }
               },
               {
-                "legendTemplate": "最大メモリ",
+                "legendTemplate": "Keys in database",
                 "minAlignmentPeriod": "60s",
                 "plotType": "LINE",
                 "targetAxis": "Y1",
@@ -97,7 +97,7 @@
         "width": 24,
         "height": 16,
         "widget": {
-          "title": "メモリ中のキー",
+          "title": "Keys in database",
           "xyChart": {
             "chartOptions": {
               "mode": "COLOR"
@@ -148,7 +148,7 @@
         "width": 24,
         "height": 16,
         "widget": {
-          "title": "強制排除されたキー / 期限切れのキー",
+          "title": "Evicted keys/Expired keys",
           "xyChart": {
             "chartOptions": {
               "mode": "COLOR"
@@ -195,7 +195,7 @@
         "width": 24,
         "height": 16,
         "widget": {
-          "title": "接続されたクライアント / ブロックされたクライアント",
+          "title": "Connected clients/Blocked clients",
           "xyChart": {
             "chartOptions": {
               "mode": "COLOR"
@@ -243,14 +243,14 @@
         "width": 24,
         "height": 16,
         "widget": {
-          "title": "受信された接続数 / 拒否された接続数",
+          "title": "Received connections/Rejected connections",
           "xyChart": {
             "chartOptions": {
               "mode": "COLOR"
             },
             "dataSets": [
               {
-                "legendTemplate": "拒否された接続数",
+                "legendTemplate": "Rejected connections",
                 "minAlignmentPeriod": "60s",
                 "plotType": "LINE",
                 "targetAxis": "Y1",
@@ -265,7 +265,7 @@
                 }
               },
               {
-                "legendTemplate": "受信された接続数",
+                "legendTemplate": "Received connections",
                 "minAlignmentPeriod": "60s",
                 "plotType": "LINE",
                 "targetAxis": "Y1",
@@ -291,7 +291,7 @@
         "width": 24,
         "height": 16,
         "widget": {
-          "title": "キャッシュ ヒット率",
+          "title": "Cache hit ratio",
           "xyChart": {
             "chartOptions": {
               "mode": "COLOR"
@@ -320,7 +320,7 @@
         "width": 24,
         "height": 16,
         "widget": {
-          "title": "キャッシュ ヒット / ミス",
+          "title": "Cache hit / miss",
           "xyChart": {
             "chartOptions": {
               "mode": "COLOR"
@@ -368,14 +368,14 @@
         "width": 24,
         "height": 16,
         "widget": {
-          "title": "レプリケーション保留中のバイト数",
+          "title": "Bytes pending replication",
           "xyChart": {
             "chartOptions": {
               "mode": "COLOR"
             },
             "dataSets": [
               {
-                "legendTemplate": "レプリケーション保留中のバイト数",
+                "legendTemplate": "Bytes pending replication",
                 "minAlignmentPeriod": "60s",
                 "plotType": "LINE",
                 "targetAxis": "Y1",
@@ -402,7 +402,7 @@
         "width": 24,
         "height": 16,
         "widget": {
-          "title": "レプリケーションラグ（秒）",
+          "title": "Replication Lags(seconds)",
           "xyChart": {
             "chartOptions": {
               "mode": "COLOR"
@@ -435,14 +435,14 @@
         "width": 24,
         "height": 16,
         "widget": {
-          "title": "インスタンス 稼働時間",
+          "title": "Instance uptime",
           "xyChart": {
             "chartOptions": {
               "mode": "COLOR"
             },
             "dataSets": [
               {
-                "legendTemplate": "稼働時間",
+                "legendTemplate": "Instance uptime",
                 "minAlignmentPeriod": "60s",
                 "plotType": "LINE",
                 "targetAxis": "Y1",
@@ -469,7 +469,7 @@
         "width": 24,
         "height": 16,
         "widget": {
-          "title": "TTL 平均",
+          "title": "TTL avarage",
           "xyChart": {
             "chartOptions": {
               "mode": "COLOR"
@@ -503,7 +503,7 @@
         "width": 24,
         "height": 16,
         "widget": {
-          "title": "ネットワークの入出力バイト",
+          "title": "Network Traffic Data In/Out bytes",
           "xyChart": {
             "chartOptions": {
               "mode": "COLOR"
@@ -536,7 +536,7 @@
         "width": 48,
         "height": 16,
         "widget": {
-          "title": "呼び出し数",
+          "title": "Calls",
           "xyChart": {
             "chartOptions": {
               "mode": "COLOR"

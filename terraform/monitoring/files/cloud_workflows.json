@@ -7,7 +7,7 @@
         "width": 16,
         "height": 16,
         "widget": {
-          "title": "完了した実行",
+          "title": "Finished execution counts",
           "xyChart": {
             "chartOptions": {
               "mode": "COLOR"
@@ -44,7 +44,7 @@
         "width": 16,
         "height": 16,
         "widget": {
-          "title": "実行時間",
+          "title": "Execution times",
           "xyChart": {
             "dataSets": [
               {
@@ -73,7 +73,7 @@
         "width": 16,
         "height": 16,
         "widget": {
-          "title": "失敗した実行",
+          "title": "Failed execution counts",
           "xyChart": {
             "dataSets": [
               {
@@ -102,7 +102,7 @@
         "width": 16,
         "height": 16,
         "widget": {
-          "title": "成功した実行",
+          "title": "Success execution counts",
           "xyChart": {
             "dataSets": [
               {
@@ -170,7 +170,7 @@
         "width": 16,
         "height": 16,
         "widget": {
-          "title": "Cloud Workflows ログ",
+          "title": "Cloud Workflows Logs",
           "logsPanel": {
             "filter": "(resource.type=\"audited_resource\" resource.labels.service=(\"workflowexecutions.googleapis.com\" OR \"workflows.googleapis.com\")) OR (resource.type=\"workflows.googleapis.com/Workflow\" resource.labels.workflow_id=\"prod-little-quest-daily-dataform\" resource.labels.location=\"asia-northeast1\") severity>=DEFAULT"
           }

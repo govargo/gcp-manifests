@@ -13,7 +13,7 @@
         "width": 24,
         "height": 16,
         "widget": {
-          "title": "リクエスト数",
+          "title": "Request count",
           "xyChart": {
             "chartOptions": {
               "mode": "COLOR"
@@ -51,7 +51,7 @@
         "width": 24,
         "height": 16,
         "widget": {
-          "title": "リクエストのレイテンシ",
+          "title": "Request latencies",
           "xyChart": {
             "chartOptions": {
               "mode": "COLOR"
@@ -126,7 +126,7 @@
         "width": 24,
         "height": 16,
         "widget": {
-          "title": " コンテナ インスタンス数",
+          "title": "Container instance count",
           "xyChart": {
             "chartOptions": {
               "mode": "COLOR"
@@ -165,7 +165,7 @@
         "width": 24,
         "height": 16,
         "widget": {
-          "title": "課金対象のコンテナ インスタンス時間",
+          "title": "Billable container instance time",
           "xyChart": {
             "chartOptions": {
               "mode": "COLOR"
@@ -202,7 +202,7 @@
         "width": 24,
         "height": 16,
         "widget": {
-          "title": "コンテナ CPU 使用率",
+          "title": "Container CPU utilization",
           "xyChart": {
             "chartOptions": {
               "mode": "COLOR"
@@ -278,7 +278,7 @@
         "width": 24,
         "height": 16,
         "widget": {
-          "title": "コンテナメモリ使用率",
+          "title": "Container memory utilization",
           "xyChart": {
             "chartOptions": {
               "mode": "COLOR"
@@ -353,7 +353,7 @@
         "width": 24,
         "height": 16,
         "widget": {
-          "title": " 送信バイト数",
+          "title": "Sent bytes",
           "xyChart": {
             "chartOptions": {
               "mode": "COLOR"
@@ -392,7 +392,7 @@
         "width": 24,
         "height": 16,
         "widget": {
-          "title": "受信バイト数",
+          "title": "Received bytes",
           "xyChart": {
             "chartOptions": {
               "mode": "COLOR"
@@ -430,7 +430,7 @@
         "width": 24,
         "height": 16,
         "widget": {
-          "title": "最大同時リクエスト",
+          "title": "Max concurrent requests",
           "xyChart": {
             "chartOptions": {
               "mode": "COLOR"
@@ -506,7 +506,7 @@
         "width": 24,
         "height": 16,
         "widget": {
-          "title": "コンテナの起動時のレイテンシ",
+          "title": "Container startup latency",
           "xyChart": {
             "chartOptions": {
               "mode": "COLOR"

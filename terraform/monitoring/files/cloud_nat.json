@@ -13,7 +13,7 @@
         "width": 24,
         "height": 16,
         "widget": {
-          "title": "オープン接続",
+          "title": "Open connections",
           "xyChart": {
             "chartOptions": {
               "mode": "COLOR"
@@ -49,7 +49,7 @@
         "width": 24,
         "height": 16,
         "widget": {
-          "title": "Cloud NAT で処理された外向きデータ（レート）",
+          "title": "Egress data processed by Cloud NAT (rate)",
           "xyChart": {
             "chartOptions": {
               "mode": "COLOR"
@@ -85,7 +85,7 @@
         "width": 24,
         "height": 16,
         "widget": {
-          "title": "Cloud NAT で処理された内向きデータ（レート）",
+          "title": "Ingress data processed by Cloud NAT (rate)",
           "xyChart": {
             "chartOptions": {
               "mode": "COLOR"
@@ -122,7 +122,7 @@
         "width": 24,
         "height": 16,
         "widget": {
-          "title": "ポートの使用状況",
+          "title": "Port usage",
           "xyChart": {
             "chartOptions": {
               "mode": "COLOR"
@@ -158,7 +158,7 @@
         "width": 24,
         "height": 16,
         "widget": {
-          "title": "Cloud NAT の割り当てエラー",
+          "title": "Cloud NAT allocation errors",
           "xyChart": {
             "chartOptions": {
               "mode": "COLOR"
@@ -195,7 +195,7 @@
         "width": 24,
         "height": 16,
         "widget": {
-          "title": "破棄された送信パケット率",
+          "title": "Dropped sent packets rate",
           "xyChart": {
             "chartOptions": {
               "mode": "COLOR"
@@ -233,7 +233,7 @@
         "width": 24,
         "height": 16,
         "widget": {
-          "title": "破棄された受信パケット率",
+          "title": "Dropped received packets rate",
           "xyChart": {
             "chartOptions": {
               "mode": "COLOR"

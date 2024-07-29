@@ -7,7 +7,7 @@
         "width": 16,
         "height": 16,
         "widget": {
-          "title": "CPU 使用率（優先度別）",
+          "title": "CPU utilization by priority",
           "xyChart": {
             "chartOptions": {
               "mode": "COLOR"
@@ -50,7 +50,7 @@
         "width": 16,
         "height": 16,
         "widget": {
-          "title": "合計 CPU 使用率",
+          "title": "Total CPU utilization",
           "xyChart": {
             "chartOptions": {
               "mode": "COLOR"
@@ -87,7 +87,7 @@
         "width": 16,
         "height": 16,
         "widget": {
-          "title": "オペレーションのタイプ別の CPU 使用率",
+          "title": "CPU utilization by operation type",
           "xyChart": {
             "chartOptions": {
               "mode": "COLOR"
@@ -124,7 +124,7 @@
         "width": 16,
         "height": 16,
         "widget": {
-          "title": "システム別の CPU 使用率",
+          "title": "CPU utilization (rolling 24-hour average)",
           "xyChart": {
             "chartOptions": {
               "mode": "COLOR"
@@ -183,14 +183,14 @@
         "width": 16,
         "height": 16,
         "widget": {
-          "title": "リクエスト レイテンシ",
+          "title": "Request Latency",
           "xyChart": {
             "chartOptions": {
               "mode": "COLOR"
             },
             "dataSets": [
               {
-                "legendTemplate": "書き込み - 50 % tile",
+                "legendTemplate": "Write: 50th",
                 "minAlignmentPeriod": "60s",
                 "plotType": "LINE",
                 "targetAxis": "Y1",
@@ -206,7 +206,7 @@
                 }
               },
               {
-                "legendTemplate": "読み取り - 50 % tile",
+                "legendTemplate": "Read: 50th",
                 "minAlignmentPeriod": "60s",
                 "plotType": "LINE",
                 "targetAxis": "Y1",
@@ -222,7 +222,7 @@
                 }
               },
               {
-                "legendTemplate": "書き込み - 95 % tile",
+                "legendTemplate": "Write: 95th",
                 "minAlignmentPeriod": "60s",
                 "plotType": "LINE",
                 "targetAxis": "Y1",
@@ -238,7 +238,7 @@
                 }
               },
               {
-                "legendTemplate": "読み取り - 95 % tile",
+                "legendTemplate": "Read: 95th",
                 "minAlignmentPeriod": "60s",
                 "plotType": "LINE",
                 "targetAxis": "Y1",
@@ -254,7 +254,7 @@
                 }
               },
               {
-                "legendTemplate": "書き込み - 99 % tile",
+                "legendTemplate": "Write: 99th",
                 "minAlignmentPeriod": "60s",
                 "plotType": "LINE",
                 "targetAxis": "Y1",
@@ -270,7 +270,7 @@
                 }
               },
               {
-                "legendTemplate": "読み取り - 99 % tile",
+                "legendTemplate": "Read: 99th",
                 "minAlignmentPeriod": "60s",
                 "plotType": "LINE",
                 "targetAxis": "Y1",
@@ -299,14 +299,14 @@
         "width": 16,
         "height": 16,
         "widget": {
-          "title": "読み取りトランザクション レイテンシ",
+          "title": "Read Transaction Latency",
           "xyChart": {
             "chartOptions": {
               "mode": "COLOR"
             },
             "dataSets": [
               {
-                "legendTemplate": "50 % tile",
+                "legendTemplate": "50th",
                 "minAlignmentPeriod": "60s",
                 "plotType": "LINE",
                 "targetAxis": "Y1",
@@ -322,7 +322,7 @@
                 }
               },
               {
-                "legendTemplate": "95 % tile",
+                "legendTemplate": "95th",
                 "minAlignmentPeriod": "60s",
                 "plotType": "LINE",
                 "targetAxis": "Y1",
@@ -338,7 +338,7 @@
                 }
               },
               {
-                "legendTemplate": "99 % tile",
+                "legendTemplate": "99th",
                 "minAlignmentPeriod": "60s",
                 "plotType": "LINE",
                 "targetAxis": "Y1",
@@ -365,14 +365,14 @@
         "width": 16,
         "height": 16,
         "widget": {
-          "title": "読み書きトランザクション レイテンシ",
+          "title": "ReadWrite Transaction Latency",
           "xyChart": {
             "chartOptions": {
               "mode": "COLOR"
             },
             "dataSets": [
               {
-                "legendTemplate": "50 % tile",
+                "legendTemplate": "50th",
                 "minAlignmentPeriod": "60s",
                 "plotType": "LINE",
                 "targetAxis": "Y1",
@@ -388,7 +388,7 @@
                 }
               },
               {
-                "legendTemplate": "95 % tile",
+                "legendTemplate": "95th",
                 "minAlignmentPeriod": "60s",
                 "plotType": "LINE",
                 "targetAxis": "Y1",
@@ -404,7 +404,7 @@
                 }
               },
               {
-                "legendTemplate": "99 % tile",
+                "legendTemplate": "99th",
                 "minAlignmentPeriod": "60s",
                 "plotType": "LINE",
                 "targetAxis": "Y1",
@@ -432,7 +432,7 @@
         "width": 16,
         "height": 16,
         "widget": {
-          "title": "読み取りレイテンシー",
+          "title": "Read Latency",
           "xyChart": {
             "chartOptions": {
               "mode": "COLOR"
@@ -466,7 +466,7 @@
         "width": 16,
         "height": 16,
         "widget": {
-          "title": "書き込みレイテンシー",
+          "title": "Write Latency",
           "xyChart": {
             "chartOptions": {
               "mode": "COLOR"
@@ -499,14 +499,14 @@
         "width": 16,
         "height": 16,
         "widget": {
-          "title": "1 秒あたりのオペレーションの回数",
+          "title": "Operations per second",
           "xyChart": {
             "chartOptions": {
               "mode": "COLOR"
             },
             "dataSets": [
               {
-                "legendTemplate": "読み取り",
+                "legendTemplate": "Read",
                 "minAlignmentPeriod": "60s",
                 "plotType": "LINE",
                 "targetAxis": "Y1",
@@ -522,7 +522,7 @@
                 }
               },
               {
-                "legendTemplate": "書き込み",
+                "legendTemplate": "Write",
                 "minAlignmentPeriod": "60s",
                 "plotType": "LINE",
                 "targetAxis": "Y1",
@@ -538,7 +538,7 @@
                 }
               },
               {
-                "legendTemplate": "読み取りエラー数",
+                "legendTemplate": "Read Error",
                 "minAlignmentPeriod": "60s",
                 "plotType": "LINE",
                 "targetAxis": "Y1",
@@ -554,7 +554,7 @@
                 }
               },
               {
-                "legendTemplate": "書き込みエラー数",
+                "legendTemplate": "Write Error",
                 "minAlignmentPeriod": "60s",
                 "plotType": "LINE",
                 "targetAxis": "Y1",
@@ -582,14 +582,14 @@
         "width": 16,
         "height": 16,
         "widget": {
-          "title": "スループット",
+          "title": "Throughput",
           "xyChart": {
             "chartOptions": {
               "mode": "COLOR"
             },
             "dataSets": [
               {
-                "legendTemplate": "読み取り",
+                "legendTemplate": "Read",
                 "minAlignmentPeriod": "60s",
                 "plotType": "LINE",
                 "targetAxis": "Y1",
@@ -605,7 +605,7 @@
                 }
               },
               {
-                "legendTemplate": "書き込み",
+                "legendTemplate": "Write",
                 "minAlignmentPeriod": "60s",
                 "plotType": "LINE",
                 "targetAxis": "Y1",
@@ -633,14 +633,14 @@
         "width": 16,
         "height": 16,
         "widget": {
-          "title": "ロック待機時間",
+          "title": "Lock wait time",
           "xyChart": {
             "chartOptions": {
               "mode": "COLOR"
             },
             "dataSets": [
               {
-                "legendTemplate": "ロック待機の合計",
+                "legendTemplate": "Total lock wait",
                 "minAlignmentPeriod": "60s",
                 "plotType": "LINE",
                 "targetAxis": "Y1",
@@ -716,14 +716,14 @@
         "width": 16,
         "height": 16,
         "widget": {
-          "title": "コンピューティング容量",
+          "title": "Compute capacity",
           "xyChart": {
             "chartOptions": {
               "mode": "COLOR"
             },
             "dataSets": [
               {
-                "legendTemplate": "ノード数",
+                "legendTemplate": "Node count",
                 "minAlignmentPeriod": "60s",
                 "plotType": "LINE",
                 "targetAxis": "Y1",
@@ -767,14 +767,14 @@
         "width": 16,
         "height": 16,
         "widget": {
-          "title": "ストレージの合計",
+          "title": "Total storage",
           "xyChart": {
             "chartOptions": {
               "mode": "COLOR"
             },
             "dataSets": [
               {
-                "legendTemplate": "ストレージの合計",
+                "legendTemplate": "Total storage",
                 "minAlignmentPeriod": "60s",
                 "plotType": "LINE",
                 "targetAxis": "Y1",
@@ -807,7 +807,7 @@
         "width": 48,
         "height": 17,
         "widget": {
-          "title": "Sessions",
+          "title": "Session counts",
           "xyChart": {
             "chartOptions": {
               "mode": "COLOR"
