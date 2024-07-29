@@ -1,0 +1,34 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: app-1-little-quest-server
+  namespace: little-quest-server
+spec:
+  hosts:
+  - little-quest-server.kentaiso.demo.altostrat.com
+  - app-1-little-quest-server.little-quest-server.svc.clusterset.local
+  - app-1-little-quest-server.little-quest-server.svc.cluster.local
+  http:
+  - name: long-connection
+    match:
+    - uri:
+        regex: "^/users/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/quests/raidbattle$"
+    route:
+    - destination:
+        host: app-1-little-quest-server.little-quest-server.svc.cluster.local
+        subset: long-connection
+    timeout: 300s
+    retries:
+      attempts: 5
+      perTryTimeout: 300ms
+      retryOn: gateway-error,connect-failure,refused-stream
+  - name: default
+    route:
+    - destination:
+        host: app-1-little-quest-server.little-quest-server.svc.cluster.local
+        subset: default
+    timeout: 5s
+    retries:
+      attempts: 3
+      perTryTimeout: 300ms
+      retryOn: gateway-error,connect-failure,refused-stream
