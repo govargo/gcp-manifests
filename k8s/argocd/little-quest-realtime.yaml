@@ -204,7 +204,18 @@ spec:
             name: ""
 
           podAnnotations:
-            proxy.istio.io/config: '{ "holdApplicationUntilProxyStarts": true, "drainDuration": "120s", "parentShutdownDuration": "210s", "proxyMetadata": {"MINIMUM_DRAIN_DURATION": "120s", "EXIT_ON_ZERO_ACTIVE_CONNECTIONS": "true"}}'
+            proxy.istio.io/config: |
+              holdApplicationUntilProxyStarts: true
+              drainDuration": "120s"
+              parentShutdownDuration": "210s"
+              proxyStatsMatcher:
+                inclusionRegexps:
+                - ".*upstream_rq_.*"
+                inclusionPrefixes:
+                - "cluster.outbound|50504|default|open-match-frontend.open-match.svc.cluster.local"
+              proxyMetadata:
+                MINIMUM_DRAIN_DURATION: "120s"
+                EXIT_ON_ZERO_ACTIVE_CONNECTIONS: "true"
 
           strategy:
             type: RollingUpdate
@@ -357,7 +368,18 @@ spec:
             name: ""
 
           podAnnotations:
-            proxy.istio.io/config: '{ "holdApplicationUntilProxyStarts": true, "drainDuration": "20s", "parentShutdownDuration": "30s", "proxyMetadata": {"MINIMUM_DRAIN_DURATION": "20s", "EXIT_ON_ZERO_ACTIVE_CONNECTIONS": "true"}}'
+            proxy.istio.io/config: |
+              holdApplicationUntilProxyStarts: true
+              drainDuration": "20s"
+              parentShutdownDuration": "30s"
+              proxyStatsMatcher:
+                inclusionRegexps:
+                - ".*upstream_rq_.*"
+                inclusionPrefixes:
+                - "cluster.outbound|50503|default|open-match-query.open-match.svc.cluster.local"
+              proxyMetadata:
+                MINIMUM_DRAIN_DURATION: "20s"
+                EXIT_ON_ZERO_ACTIVE_CONNECTIONS: "true"
 
           replicaCount: 2
 
@@ -515,7 +537,18 @@ spec:
             name: ""
 
           podAnnotations:
-            proxy.istio.io/config: '{ "holdApplicationUntilProxyStarts": true, "drainDuration": "20s", "parentShutdownDuration": "30s", "proxyMetadata": {"MINIMUM_DRAIN_DURATION": "20s", "EXIT_ON_ZERO_ACTIVE_CONNECTIONS": "true"}}'
+            proxy.istio.io/config: |
+              holdApplicationUntilProxyStarts: true
+              drainDuration": "20s"
+              parentShutdownDuration": "30s"
+              proxyStatsMatcher:
+                inclusionRegexps:
+                - ".*upstream_rq_.*"
+                inclusionPrefixes:
+                - "cluster.outbound|50505|default|open-match-backend.open-match.svc.cluster.local"
+              proxyMetadata:
+                MINIMUM_DRAIN_DURATION: "20s"
+                EXIT_ON_ZERO_ACTIVE_CONNECTIONS: "true"
 
           replicaCount: 1
 
