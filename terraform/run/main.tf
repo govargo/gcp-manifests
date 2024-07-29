@@ -22,14 +22,14 @@ resource "google_secret_manager_secret" "cloud_build_notifier_url" {
   }
 
   replication {
-    automatic = true
+    auto {}
   }
 }
 
 ## Service Account
 module "cloud_build_notifier_sa" {
   source     = "terraform-google-modules/service-accounts/google"
-  version    = "4.1.1"
+  version    = "4.2.3"
   project_id = data.google_project.project.project_id
 
   names         = ["cloud-build-notifier"]
@@ -39,7 +39,7 @@ module "cloud_build_notifier_sa" {
 
 module "cloud_build_notifier_secret_accessor_binding" {
   source  = "terraform-google-modules/iam/google//modules/secret_manager_iam"
-  version = "7.6.0"
+  version = "7.7.1"
   project = data.google_project.project.project_id
 
   secrets = [google_secret_manager_secret.cloud_build_notifier_url.secret_id]
@@ -54,7 +54,7 @@ module "cloud_build_notifier_secret_accessor_binding" {
 
 module "cloud_run_pubsub_invoker_sa" {
   source     = "terraform-google-modules/service-accounts/google"
-  version    = "4.1.1"
+  version    = "4.2.3"
   project_id = data.google_project.project.project_id
 
   names        = ["cloud-run-pubsub-invoker"]
@@ -100,7 +100,7 @@ resource "google_cloud_run_v2_service" "cloud_build_notifier" {
 ## Cloud Pub/Sub
 module "cloud_builds_notifier" {
   source     = "terraform-google-modules/pubsub/google"
-  version    = "5.0.0"
+  version    = "6.0.0"
   project_id = data.google_project.project.project_id
 
   topic                            = "cloud-builds"

@@ -14,7 +14,7 @@ resource "google_secret_manager_secret" "github_token_dataform" {
   }
 
   replication {
-    automatic = true
+    auto {}
   }
 }
 

@@ -15,7 +15,7 @@ resource "google_secret_manager_secret" "gke_cluster_upgrade_notifier_url" {
   }
 
   replication {
-    automatic = true
+    auto {}
   }
 }
 
@@ -32,14 +32,14 @@ resource "google_secret_manager_secret" "alertmanager_to_google_chat_url" {
   }
 
   replication {
-    automatic = true
+    auto {}
   }
 }
 
 ## Service Account
 module "gke_cluster_upgrade_notifier_sa" {
   source     = "terraform-google-modules/service-accounts/google"
-  version    = "4.1.1"
+  version    = "4.2.3"
   project_id = data.google_project.project.project_id
 
   names         = ["gke-cluster-upgrade-notifier"]
@@ -49,7 +49,7 @@ module "gke_cluster_upgrade_notifier_sa" {
 
 module "gke_cluster_upgrade_notifier_secret_accessor_binding" {
   source  = "terraform-google-modules/iam/google//modules/secret_manager_iam"
-  version = "7.6.0"
+  version = "7.7.1"
   project = data.google_project.project.project_id
 
   secrets = [google_secret_manager_secret.gke_cluster_upgrade_notifier_url.secret_id]
@@ -64,7 +64,7 @@ module "gke_cluster_upgrade_notifier_secret_accessor_binding" {
 
 module "alertmanager_to_google_chat_sa" {
   source     = "terraform-google-modules/service-accounts/google"
-  version    = "4.1.1"
+  version    = "4.2.3"
   project_id = data.google_project.project.project_id
 
   names         = ["alertmanager-to-google-chat"]
@@ -74,7 +74,7 @@ module "alertmanager_to_google_chat_sa" {
 
 module "alertmanager_to_google_chat_url_secret_accessor_binding" {
   source  = "terraform-google-modules/iam/google//modules/secret_manager_iam"
-  version = "7.6.0"
+  version = "7.7.1"
   project = data.google_project.project.project_id
 
   secrets = [google_secret_manager_secret.alertmanager_to_google_chat_url.secret_id]
@@ -124,7 +124,6 @@ resource "google_eventarc_trigger" "gke_cluster_upgrade_notifier" {
   }
   service_account = module.gke_cluster_upgrade_notifier_sa.email
   destination {
-    cloud_function = "projects/${data.google_project.project.project_id}/locations/${var.region}/functions/gke-cluster-upgrade-notifier"
   }
 }
 

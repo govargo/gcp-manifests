@@ -3,7 +3,7 @@ data "google_project" "project" {
 
 module "pubsub_gacha" {
   source     = "terraform-google-modules/pubsub/google"
-  version    = "5.0.0"
+  version    = "6.0.0"
   project_id = data.google_project.project.project_id
 
   topic                            = "${var.env}-realtime-da-gacha"
@@ -46,7 +46,7 @@ module "pubsub_gacha" {
 
 module "pubsub_quest_status" {
   source     = "terraform-google-modules/pubsub/google"
-  version    = "5.0.0"
+  version    = "6.0.0"
   project_id = data.google_project.project.project_id
 
   topic                            = "${var.env}-realtime-da-quest-status"
@@ -89,7 +89,7 @@ module "pubsub_quest_status" {
 
 module "pubsub_quest_award" {
   source     = "terraform-google-modules/pubsub/google"
-  version    = "5.0.0"
+  version    = "6.0.0"
   project_id = data.google_project.project.project_id
 
   topic                            = "${var.env}-realtime-da-quest-award"
@@ -132,7 +132,7 @@ module "pubsub_quest_award" {
 
 module "pubsub_revenue" {
   source     = "terraform-google-modules/pubsub/google"
-  version    = "5.0.0"
+  version    = "6.0.0"
   project_id = data.google_project.project.project_id
 
   topic                            = "${var.env}-realtime-da-revenue"
@@ -175,7 +175,7 @@ module "pubsub_revenue" {
 
 module "dead_letter" {
   source     = "terraform-google-modules/pubsub/google"
-  version    = "5.0.0"
+  version    = "6.0.0"
   project_id = data.google_project.project.project_id
 
   topic                            = "${var.env}-dead-letter"

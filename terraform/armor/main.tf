@@ -8,6 +8,12 @@ resource "google_compute_security_policy" "little_quest_server_agent_restrict_po
   type        = "CLOUD_ARMOR"
   description = "Security Policy for Little Quest Server with specific agent restrict"
 
+  adaptive_protection_config {
+    layer_7_ddos_defense_config {
+      enable = false
+    }
+  }
+
   rule {
     action      = "allow"
     description = "Unity application can access to the backend"

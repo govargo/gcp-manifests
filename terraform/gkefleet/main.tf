@@ -114,7 +114,7 @@ resource "google_gke_hub_feature_membership" "app_0_service_mesh_member" {
     management = "MANAGEMENT_AUTOMATIC"
   }
 
-  depends_on = [google_gke_hub_feature.cloud_service_mesh,google_gke_hub_feature.cloud_service_mesh]
+  depends_on = [google_gke_hub_feature.cloud_service_mesh, google_gke_hub_feature.cloud_service_mesh]
 }
 
 resource "google_gke_hub_feature_membership" "app_1_service_mesh_member" {
@@ -127,7 +127,7 @@ resource "google_gke_hub_feature_membership" "app_1_service_mesh_member" {
     management = "MANAGEMENT_AUTOMATIC"
   }
 
-  depends_on = [google_gke_hub_feature.cloud_service_mesh,google_gke_hub_feature.cloud_service_mesh]
+  depends_on = [google_gke_hub_feature.cloud_service_mesh, google_gke_hub_feature.cloud_service_mesh]
 }
 
 resource "google_gke_hub_feature_membership" "corp_0_service_mesh_member" {
@@ -140,7 +140,7 @@ resource "google_gke_hub_feature_membership" "corp_0_service_mesh_member" {
     management = "MANAGEMENT_AUTOMATIC"
   }
 
-  depends_on = [google_gke_hub_feature.cloud_service_mesh,google_gke_hub_feature.cloud_service_mesh]
+  depends_on = [google_gke_hub_feature.cloud_service_mesh, google_gke_hub_feature.cloud_service_mesh]
 }
 
 resource "time_sleep" "wait_100_seconds" {

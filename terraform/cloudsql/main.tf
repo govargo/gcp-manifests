@@ -15,7 +15,7 @@ data "google_secret_manager_secret_version" "mysql_datastream_user_password" {
 
 module "private-service-access" {
   source     = "GoogleCloudPlatform/sql-db/google//modules/private_service_access"
-  version    = "20.1.0"
+  version    = "20.2.0"
   project_id = data.google_project.project.project_id
 
   vpc_network   = var.gcp_project_name
@@ -26,7 +26,7 @@ module "private-service-access" {
 
 module "cloudsql_mysql" {
   source               = "GoogleCloudPlatform/sql-db/google//modules/mysql"
-  version              = "20.1.0"
+  version              = "20.2.0"
   name                 = "${var.env}-mysql-instance"
   random_instance_name = false
   project_id           = data.google_project.project.project_id
@@ -80,7 +80,7 @@ module "cloudsql_mysql" {
   backup_configuration = {
     enabled                        = true
     binary_log_enabled             = true
-    point_in_time_recovery_enabled = true
+    point_in_time_recovery_enabled = false
     start_time                     = "23:00"
     location                       = null
     transaction_log_retention_days = 1
@@ -109,7 +109,7 @@ module "cloudsql_mysql" {
       backup_configuration = {
         enabled                        = true
         binary_log_enabled             = true
-        point_in_time_recovery_enabled = true
+        point_in_time_recovery_enabled = false
         start_time                     = "23:00"
         location                       = null
         transaction_log_retention_days = 1
