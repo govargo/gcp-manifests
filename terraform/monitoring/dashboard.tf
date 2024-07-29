@@ -67,6 +67,18 @@ resource "google_monitoring_dashboard" "k8s_little_quest_monitoring_dashboard" {
   dashboard_json = file("files/k8s_little_quest.json")
 }
 
+## Kubernetes - Istio Service
+resource "google_monitoring_dashboard" "k8s_istio_service_monitoring_dashboard" {
+  project        = data.google_project.project.project_id
+  dashboard_json = file("files/k8s_istio_service.json")
+}
+
+## Kubernetes - Envoy Network
+resource "google_monitoring_dashboard" "k8s_envoy_network_monitoring_dashboard" {
+  project        = data.google_project.project.project_id
+  dashboard_json = file("files/k8s_envoy_network.json")
+}
+
 ## Cloud Service Mesh
 resource "google_monitoring_dashboard" "cloud_service_mesh_monitoring_dashboard" {
   project        = data.google_project.project.project_id
