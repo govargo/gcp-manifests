@@ -1,0 +1,17 @@
+apiVersion: monitoring.googleapis.com/v1
+kind: PodMonitoring
+metadata:
+  name: opentelemetry-collector-envoy
+  namespace: tracing
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: opentelemetry-collector
+  endpoints:
+  - port: http-envoy-prom
+    path: /stats/prometheus
+    interval: 60s
+    metricRelabeling:
+    - sourceLabels: [__name__]
+      action: keep
+      regex: envoy_cluster_upstream_rq.*|envoy_cluster_upstream_cx_.*|envoy_cluster_circuit_breakers.*|istio_requests_total|istio_request_duration_milliseconds_.*|istio_request_duration_seconds_.*|istio_tcp_received_bytes_total|istio_tcp_sent_bytes_total|istio_request_bytes_.*|istio_response_bytes_.*
