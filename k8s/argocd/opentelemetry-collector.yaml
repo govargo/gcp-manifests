@@ -39,7 +39,13 @@ spec:
               name: otelcol-contrib
 
             podAnnotations:
-              proxy.istio.io/config: '{ "holdApplicationUntilProxyStarts": true, "drainDuration": "20s", "parentShutdownDuration": "30s", "proxyMetadata": {"MINIMUM_DRAIN_DURATION": "20s", "EXIT_ON_ZERO_ACTIVE_CONNECTIONS": "true"}}'
+              proxy.istio.io/config: |
+                holdApplicationUntilProxyStarts: true
+                drainDuration": "20s"
+                parentShutdownDuration": "30s"
+                proxyMetadata:
+                  MINIMUM_DRAIN_DURATION: "20s"
+                  EXIT_ON_ZERO_ACTIVE_CONNECTIONS: "true"
 
             serviceAccount:
               annotations:
