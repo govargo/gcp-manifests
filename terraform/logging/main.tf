@@ -30,15 +30,24 @@ httpRequest.status>=200 AND httpRequest.status<400
 EOF
 }
 
+resource "google_logging_project_exclusion" "gce_instance_exclude_all_logs" {
+  name = "gce-instance-exclude-all-logs"
+
+  description = "Exclude GCE instance logs"
+
+  filter = <<EOF
+resource.type="gce_instance"
+EOF
+}
+
 resource "google_logging_project_exclusion" "k8s_container_exclude_kube_system" {
   name = "k8s-container-exclude-kube-system"
 
-  description = "Exclude kube-system info log for all clusters"
+  description = "Exclude kube-system all logs for all clusters"
 
   filter = <<EOF
 resource.type="k8s_container"
 resource.labels.namespace_name="kube-system"
-severity=INFO
 EOF
 }
 
