@@ -30,25 +30,60 @@ spec:
           values: |
              query:
                podAnnotations:
-                 proxy.istio.io/config: '{"holdApplicationUntilProxyStarts": true, "drainDuration": "20s", "parentShutdownDuration": "30s", "proxyMetadata": {"MINIMUM_DRAIN_DURATION": "20s", "EXIT_ON_ZERO_ACTIVE_CONNECTIONS": "true"}}'
+                 proxy.istio.io/config: |
+                   holdApplicationUntilProxyStarts: true
+                   drainDuration": "20s"
+                   parentShutdownDuration": "30s"
+                   proxyMetadata:
+                     MINIMUM_DRAIN_DURATION: "20s"
+                     EXIT_ON_ZERO_ACTIVE_CONNECTIONS: "true"
                  sidecar.istio.io/rewriteAppHTTPProbers: "false"
                podLabels:
                  service.istio.io/canonical-name: open-match-query
              frontend:
                podAnnotations:
-                 proxy.istio.io/config: '{"holdApplicationUntilProxyStarts": true, "drainDuration": "20s", "parentShutdownDuration": "30s", "proxyMetadata": {"MINIMUM_DRAIN_DURATION": "20s", "EXIT_ON_ZERO_ACTIVE_CONNECTIONS": "true"}}'
+                 proxy.istio.io/config: |
+                   holdApplicationUntilProxyStarts: true
+                   drainDuration": "20s"
+                   parentShutdownDuration": "30s"
+                   proxyMetadata:
+                     MINIMUM_DRAIN_DURATION: "20s"
+                     EXIT_ON_ZERO_ACTIVE_CONNECTIONS: "true"
                  sidecar.istio.io/rewriteAppHTTPProbers: "false"
                podLabels:
                  service.istio.io/canonical-name: open-match-frontend
              backend:
                podAnnotations:
-                 proxy.istio.io/config: '{"holdApplicationUntilProxyStarts": true, "drainDuration": "20s", "parentShutdownDuration": "30s", "proxyMetadata": {"MINIMUM_DRAIN_DURATION": "20s", "EXIT_ON_ZERO_ACTIVE_CONNECTIONS": "true"}}'
+                 proxy.istio.io/config: |
+                   holdApplicationUntilProxyStarts: true
+                   drainDuration": "20s"
+                   parentShutdownDuration": "30s"
+                   proxyStatsMatcher:
+                     inclusionRegexps:
+                     - ".*upstream_rq_.*"
+                     inclusionPrefixes:
+                     - "cluster.outbound|50506|default|open-match-synchronizer.open-match.svc.cluster.local"
+                     - "cluster.outbound|50502|default|little-quest-mmf.corp-0.svc.cluster.local"
+                   proxyMetadata:
+                     MINIMUM_DRAIN_DURATION: "20s"
+                     EXIT_ON_ZERO_ACTIVE_CONNECTIONS: "true"
                  sidecar.istio.io/rewriteAppHTTPProbers: "false"
                podLabels:
                  service.istio.io/canonical-name: open-match-backend
              synchronizer:
                podAnnotations:
-                 proxy.istio.io/config: '{"holdApplicationUntilProxyStarts": true, "drainDuration": "20s", "parentShutdownDuration": "30s", "proxyMetadata": {"MINIMUM_DRAIN_DURATION": "20s", "EXIT_ON_ZERO_ACTIVE_CONNECTIONS": "true"}}'
+                 proxy.istio.io/config: |
+                   holdApplicationUntilProxyStarts: true
+                   drainDuration": "20s"
+                   parentShutdownDuration": "30s"
+                   proxyStatsMatcher:
+                     inclusionRegexps:
+                     - ".*upstream_rq_.*"
+                     inclusionPrefixes:
+                     - "cluster.outbound|50508|default|open-match-evaluator.open-match.svc.cluster.local"
+                   proxyMetadata:
+                     MINIMUM_DRAIN_DURATION: "20s"
+                     EXIT_ON_ZERO_ACTIVE_CONNECTIONS: "true"
                  sidecar.istio.io/rewriteAppHTTPProbers: "false"
                podLabels:
                  service.istio.io/canonical-name: open-match-synchronizer
@@ -132,7 +167,18 @@ spec:
                evaluator:
                  enabled: true
                  podAnnotations:
-                   proxy.istio.io/config: '{"holdApplicationUntilProxyStarts": true, "drainDuration": "20s", "parentShutdownDuration": "30s", "proxyMetadata": {"MINIMUM_DRAIN_DURATION": "20s", "EXIT_ON_ZERO_ACTIVE_CONNECTIONS": "true"}}'
+                   proxy.istio.io/config: |
+                     holdApplicationUntilProxyStarts: true
+                     drainDuration": "20s"
+                     parentShutdownDuration": "30s"
+                     proxyStatsMatcher:
+                       inclusionRegexps:
+                       - ".*upstream_rq_.*"
+                       inclusionPrefixes:
+                       - "cluster.outbound|50508|default|open-match-evaluator.open-match.svc.cluster.local"
+                     proxyMetadata:
+                       MINIMUM_DRAIN_DURATION: "20s"
+                       EXIT_ON_ZERO_ACTIVE_CONNECTIONS: "true"
                    sidecar.istio.io/rewriteAppHTTPProbers: "false"
                  podLabels:
                    service.istio.io/canonical-name: open-match-evaluator
@@ -161,7 +207,7 @@ spec:
                      exec:
                        command:
                        - /test/sleep
-                       - "25"
+                       - "20"
 
                function: *function
                # You can override the evaluator/mmf image
