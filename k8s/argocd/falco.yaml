@@ -67,6 +67,9 @@ spec:
                     or proc.name = operator
                     or proc.name = event-exporter
                     or proc.name = kube-dns
+                    or proc.name = envoy
+                    or proc.name = wrk:worker
+                    or proc.name = cluster-proport
                 - macro: user_expected_terminal_shell_in_container_conditions
                   condition: >
                     container.image.repository = docker.io/govargo/bpf-tools
