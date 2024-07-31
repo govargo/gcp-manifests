@@ -1,6 +1,22 @@
 data "google_project" "project" {
 }
 
+## Cloud Pub/Sub
+module "gke_cluster_upgrade_notification" {
+  source     = "terraform-google-modules/pubsub/google"
+  version    = "6.0.0"
+  project_id = data.google_project.project.project_id
+
+  topic                            = "gke-cluster-upgrade-notification"
+  create_topic                     = true
+  grant_token_creator              = true
+  topic_message_retention_duration = "604800s"
+  topic_labels = {
+    env  = "production",
+    case = "gke-cluster-upgrade-notification"
+  }
+}
+
 module "pubsub_gacha" {
   source     = "terraform-google-modules/pubsub/google"
   version    = "6.0.0"

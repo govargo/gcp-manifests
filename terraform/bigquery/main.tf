@@ -1,6 +1,35 @@
 data "google_project" "project" {
 }
 
+## BigQuery dataset
+resource "google_bigquery_dataset" "billing_export" {
+  project = data.google_project.project.project_id
+
+  dataset_id            = "all_billing_data"
+  friendly_name         = "cloud_billing_billing_export"
+  description           = "Cloud Billing data export to BigQuery"
+  location              = var.region
+  storage_billing_model = "PHYSICAL"
+
+  labels = {
+    role = "billing"
+  }
+}
+
+resource "google_bigquery_dataset" "billing_board" {
+  project = data.google_project.project.project_id
+
+  dataset_id    = "billing_board"
+  friendly_name = "Cloud Billing Dashboard"
+  description   = "BigQuery dataset where the BigQuery views for the billing dashboard"
+  location      = var.region
+
+  labels = {
+    role = "billing"
+  }
+}
+
+# BigQuery dataset and tables
 module "little_quest_datalake" {
   source     = "terraform-google-modules/bigquery/google"
   version    = "8.0.0"
