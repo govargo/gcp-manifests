@@ -9,7 +9,7 @@ resource "google_cloudbuild_trigger" "little_quest_server_build_trigger" {
     owner = "govargo"
     name  = "little-quest-server"
     push {
-      branch = "^main$"
+      branch = "(main|renovate/.*)"
     }
   }
 
@@ -72,7 +72,7 @@ resource "google_cloudbuild_trigger" "little_quest_realtime_build_trigger" {
     owner = "govargo"
     name  = "little-quest-realtime"
     push {
-      branch = "^main$"
+      branch = "(main|renovate/.*)"
     }
   }
 
