@@ -2,5 +2,39 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:recommended"
+  ],
+  "timezone": "Asia/Tokyo",
+  "prConcurrentLimit": 10,
+  "major": {
+    "enabled": false
+  },
+  "platformAutomerge": false,
+  "packageRules": [
+    {
+      "matchManagers": ["dockerfile"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "docker dependency"
+    },
+    {
+      "matchManagers": ["helmv3"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "helm3 dependency"
+    },
+    {
+      "matchManagers": ["helm-values"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "helm values dependency"
+    },
+    {
+      "matchManagers": ["cloudbuild"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "Cloud Build dependency"
+    },
+    {
+      "matchManagers": ["terraform"],
+      "matchPackageNames": ["google", "google-beta"],
+      "groupName": "Google Terraform providers"
+    }
   ]
 }
+
