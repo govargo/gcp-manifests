@@ -201,8 +201,8 @@ resource "google_logging_project_sink" "kpi_action_log" {
   destination = "bigquery.googleapis.com/projects/${data.google_project.project.project_id}/datasets/prod_little_quest_datalake"
   filter      = <<EOF
 resource.type="k8s_container"
-resource.labels.namespace_name="little-quest"
-resource.labels.container_name="little-quest"
+resource.labels.namespace_name="little-quest-server"
+resource.labels.container_name="little-quest-server"
 jsonPayload.message=~"(\[Action\]|\[KPI\])"
 EOF
 
