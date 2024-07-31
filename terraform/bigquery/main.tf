@@ -3,7 +3,7 @@ data "google_project" "project" {
 
 module "little_quest_datalake" {
   source     = "terraform-google-modules/bigquery/google"
-  version    = "7.0.0"
+  version    = "8.0.0"
   project_id = data.google_project.project.project_id
 
   dataset_id   = "${var.env}_little_quest_datalake"
@@ -104,7 +104,7 @@ module "little_quest_datalake" {
 # ELT and table definitions are done by Dataform
 module "little_quest_datawarehouse" {
   source     = "terraform-google-modules/bigquery/google"
-  version    = "7.0.0"
+  version    = "8.0.0"
   project_id = data.google_project.project.project_id
 
   dataset_id   = "${var.env}_little_quest_datawarehouse"
@@ -122,7 +122,7 @@ module "little_quest_datawarehouse" {
 # ELT and table definitions are done by Dataform
 module "little_quest_datamart" {
   source     = "terraform-google-modules/bigquery/google"
-  version    = "7.0.0"
+  version    = "8.0.0"
   project_id = data.google_project.project.project_id
 
   dataset_id   = "${var.env}_little_quest_datamart"
@@ -140,7 +140,7 @@ module "little_quest_datamart" {
 # BigQuery cost analysis dataset
 module "bigquery_cost_analysis" {
   source     = "terraform-google-modules/bigquery/google"
-  version    = "7.0.0"
+  version    = "8.0.0"
   project_id = data.google_project.project.project_id
 
   dataset_id   = "bigquery_cost_analysis"
