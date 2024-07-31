@@ -34,6 +34,7 @@ spec:
           releaseName: "{{cluster}}"
           values: |
             extraArgs:
+            - --log.format=json
             - --collector.disable-defaults
             - --collector.cpu
             - --collector.conntrack
