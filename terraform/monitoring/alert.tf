@@ -1569,6 +1569,45 @@ resource "google_monitoring_alert_policy" "datastream_old_stream_freshness" {
   notification_channels = [google_monitoring_notification_channel.email_notification.name]
 }
 
+## Dataform
+resource "google_monitoring_alert_policy" "dataform_workflow_error" {
+  display_name = "Dataform - Workflow Error"
+  documentation {
+    content   = "This alert fires when detecting Dataform Workflow failed with error log for 5 minutes or more."
+    mime_type = "text/markdown"
+  }
+  enabled  = true
+  severity = "ERROR"
+  combiner = "OR"
+  conditions {
+    display_name = "Dataform - Workflow Error"
+    condition_threshold {
+      filter     = "resource.type = \"dataform.googleapis.com/Repository\" AND metric.type = \"logging.googleapis.com/log_entry_count\" AND metric.labels.severity = \"ERROR\""
+      duration   = "300s"
+      comparison = "COMPARISON_GT"
+      aggregations {
+        alignment_period     = "300s"
+        per_series_aligner   = "ALIGN_SUM"
+        cross_series_reducer = "REDUCE_SUM"
+      }
+      trigger {
+        count = 1
+      }
+      threshold_value = 1
+    }
+  }
+
+  user_labels = {
+    product = "dataform"
+  }
+
+  alert_strategy {
+    auto_close = "604800s"
+  }
+
+  notification_channels = [google_monitoring_notification_channel.email_notification.name]
+}
+
 ## Quota
 resource "google_monitoring_alert_policy" "quota_exceeded" {
   display_name = "Quota Exceeded"
