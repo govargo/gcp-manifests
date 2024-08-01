@@ -33,7 +33,7 @@
     },
     {
       "matchManagers": ["terraform"],
-      "matchPackageNames": ["google", "google-beta"],
+      "matchDepNames": ["google", "google-beta"],
       "groupName": "Google Terraform providers"
     }
   ]
