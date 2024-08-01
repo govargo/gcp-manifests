@@ -18,7 +18,7 @@
     {
       "matchManagers": ["helmv3"],
       "matchUpdateTypes": ["minor", "patch"],
-      "groupName": "helm3 dependency"
+      "groupName": "helm3 dependency",
       "enabled": false
     },
     {
