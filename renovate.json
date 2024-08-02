@@ -36,6 +36,17 @@
       "matchDepNames": ["google", "google-beta"],
       "groupName": "Google Terraform providers"
     }
+  ],
+  "regexManagers": [
+    {
+      "datasourceTemplate": "github-releases",
+      "fileMatch": [
+        "k8s/argocd/.*\\.yaml"
+      ],
+      "matchStrings": [
+        " +targetRevision: +(?<currentValue>[^'\" ]+) +# renovate: depName=(?<depName>[^ \\n]+) +(extractVersion=(?<extractVersion>[^\\n]+))?",
+      ]
+    }
   ]
 }
 
