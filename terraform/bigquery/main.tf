@@ -181,3 +181,34 @@ module "bigquery_cost_analysis" {
     billable = "true"
   }
 }
+
+module "scheduled_query_sa" {
+  source     = "terraform-google-modules/service-accounts/google"
+  version    = "4.2.3"
+  project_id = data.google_project.project.project_id
+
+  names        = ["bigquery-scheduled-query"]
+  display_name = "BigQuery Sceduled Query ServiceAccount"
+  project_roles = [
+    "${data.google_project.project.project_id}=>roles/bigquery.jobUser",
+    "${data.google_project.project.project_id}=>roles/bigquery.dataEditor",
+  ]
+}
+
+# Scheduled query for GKE Metering
+resource "google_bigquery_data_transfer_config" "gke_metering_scheduled_query" {
+  project                = data.google_project.project.project_id
+  location               = var.region
+  data_source_id         = "scheduled_query"
+  destination_dataset_id = "all_billing_data"
+  schedule               = "every 24 hours"
+  display_name           = "GKE Usage Metering Cost Breakdown Scheduled Query"
+  params = {
+    destination_table_name_template = "gke_metering_cost_breakdown"
+    write_disposition               = "WRITE_TRUNCATE"
+    query                           = file("files/gke_cost_breakdown_query.sql")
+  }
+  service_account_name = module.scheduled_query_sa.email
+
+  depends_on = [module.scheduled_query_sa]
+}
