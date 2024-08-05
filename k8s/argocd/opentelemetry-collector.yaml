@@ -34,7 +34,7 @@ spec:
             mode: deployment
             image:
               repository: otel/opentelemetry-collector-contrib
-              tag: 0.105.0
+              tag: 0.106.1
             command:
               name: otelcol-contrib
 
@@ -223,7 +223,7 @@ spec:
                     level: "info"
                     encoding: json
                   metrics: null
-                extensions: [health_check, memory_ballast]
+                extensions: [health_check]
                 pipelines:
                   traces:
                     receivers: [otlp]
