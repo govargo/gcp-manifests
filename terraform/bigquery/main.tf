@@ -184,7 +184,7 @@ module "bigquery_cost_analysis" {
 
 module "scheduled_query_sa" {
   source     = "terraform-google-modules/service-accounts/google"
-  version    = "4.2.3"
+  version    = "4.3.0"
   project_id = data.google_project.project.project_id
 
   names        = ["bigquery-scheduled-query"]
