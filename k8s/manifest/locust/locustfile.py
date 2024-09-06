@@ -38,7 +38,8 @@ class TestScenarioCase(TaskSet):
     self.ipaddress = None
     self.port = None
     self.tcp_client = None
-    self.headers = {"Content-Type": "application/json", "User-Agent": "UnityPlayer"}
+    self.headers = {"Content-Type": "application/json",
+                    "User-Agent": "UnityPlayer"}
 
   def on_start(self):
     global api_key
@@ -140,21 +141,25 @@ class TestScenarioCase(TaskSet):
   def register_and_login(self):
     try:
       # Registration
-      registration_response = self.client.post("/registration", headers=self.headers,
-                                               name="/registration",
-                                               json={"name": "test-" + str(
-                                                 random.randint(0, 10000))})
+      with self.client.post("/registration",
+                            headers=self.headers,
+                            name="/registration",
+                            json={"name": "test-" + str(
+                              random.randint(0, 10000))
+                                  },
+                            catch_response=True) as registration_response:
+        if registration_response.status_code == 200:
+          registration_response.success()
+          pass
+        elif registration_response.status_code == 401:
+          self.get_refresh_token(api_key)
+          print("token is refreshed. retry registration")
+          registration_response.success()
+          return self.register_and_login()
     except (json.JSONDecodeError, TypeError) as e:
       print(e)
       print("[DEBUG] Registration response: {}".format(registration_response))
       return
-
-    if registration_response.status_code == 200:
-      pass
-    elif registration_response.status_code == 401:
-      self.get_refresh_token(api_key)
-      print("token is refreshed. retry raidbattle")
-      return self.register_and_login()
 
     # Get user_id
     self.user_id = (registration_response.json()["user_profile"]["user_id"])
@@ -162,31 +167,74 @@ class TestScenarioCase(TaskSet):
 
     # Login
     login_url = "/users/" + self.user_id + "/login"
-    self.client.post(login_url, headers=self.headers,
-                     name="/users/[user_id]/login",
-                     json={"client_master_version": "2022061301"})
+    with self.client.post(login_url,
+                          headers=self.headers,
+                          name="/users/[user_id]/login",
+                          json={
+                            "client_master_version": "2022061301"
+                          },
+                          catch_response=True) as login_response:
+      if login_response.status_code == 200:
+        login_response.success()
+        pass
+      elif login_response.status_code == 401:
+        self.get_refresh_token(api_key)
+        print("token is refreshed. retry login")
+        login_response.success()
+        return self.register_and_login()
 
   def start_quest(self, quest_id):
     start_url = QUEST_DATA[quest_id]["start_url"].format(user_id=self.user_id)
-    self.client.post(start_url, headers=self.headers,
-                     name="/users/[user_id]/quests/[quest_id]/start",
-                     json={"client_master_version": "2022061301"})
+    with self.client.post(start_url,
+                          headers=self.headers,
+                          name="/users/[user_id]/quests/[quest_id]/start",
+                          json={
+                            "client_master_version": "2022061301"
+                          },
+                          catch_response=True) as start_response:
+      if start_response.status_code == 200:
+        start_response.success()
+        pass
+      elif start_response.status_code == 401:
+        self.get_refresh_token(api_key)
+        print("token is refreshed. retry quest_start")
+        start_response.success()
+        return self.register_and_login()
 
   def end_quest(self, quest_id):
     end_url = QUEST_DATA[quest_id]["end_url"].format(user_id=self.user_id)
-    self.client.post(end_url,
-                     headers=self.headers,
-                     name="/users/[user_id]/quests/[quest_id]/end",
-                     json={
-                       "client_master_version": "2022061301",
-                       "score": 100,
-                       "clear_time": 20
-                     })
+    with self.client.post(end_url,
+                          headers=self.headers,
+                          name="/users/[user_id]/quests/[quest_id]/end",
+                          json={
+                            "client_master_version": "2022061301",
+                            "score": 100,
+                            "clear_time": 20
+                          },
+                          catch_response=True) as end_response:
+      if end_response.status_code == 200:
+        end_response.success()
+        pass
+      elif end_response.status_code == 401:
+        self.get_refresh_token(api_key)
+        print("token is refreshed. retry quest_end")
+        end_response.success()
+        return self.register_and_login()
 
   def get_quest_ranking(self, quest_id):
     ranking_url = QUEST_DATA[quest_id]["ranking_url"]
-    self.client.get(ranking_url, headers=self.headers,
-                    name="/quests/[quest_id]/ranking")
+    with self.client.get(ranking_url,
+                         headers=self.headers,
+                         name="/quests/[quest_id]/ranking",
+                         catch_response=True) as ranking_response:
+      if ranking_response.status_code == 200:
+        ranking_response.success()
+        pass
+      elif ranking_response.status_code == 401:
+        self.get_refresh_token(api_key)
+        print("token is refreshed. retry ranking")
+        ranking_response.success()
+        return self.register_and_login()
 
   @task(7)
   def quest1(self):
@@ -203,16 +251,19 @@ class TestScenarioCase(TaskSet):
 
   def raid_battle(self):
     raidbattle_url = "/users/" + self.user_id + "/quests/raidbattle"
-    raidbattle_response = self.client.post(raidbattle_url, headers=self.headers,
-                                           name="/users/[user_id]/quests"
-                                                "/raidbattle")
-
-    if raidbattle_response.status_code == 200:
-      pass
-    elif raidbattle_response.status_code == 401:
-      self.get_refresh_token(api_key)
-      print("token is refreshed. retry raidbattle")
-      return self.raid_battle()
+    with self.client.post(raidbattle_url,
+                          headers=self.headers,
+                          name="/users/[user_id]/quests"
+                               "/raidbattle",
+                          catch_response=True) as raidbattle_response:
+      if raidbattle_response.status_code == 200:
+        raidbattle_response.success()
+        pass
+      elif raidbattle_response.status_code == 401:
+        self.get_refresh_token(api_key)
+        print("token is refreshed. retry raidbattle")
+        raidbattle_response.success()
+        return self.raid_battle()
 
     try:
       connection = raidbattle_response.json()["connection"]
@@ -291,18 +342,22 @@ class TestScenarioCase(TaskSet):
   @task(10)
   def shop_item(self, item_id='item_120'):
     shop_url = SHOP_ITEMS[item_id]
-    shop_response = self.client.post(shop_url, headers=self.headers,
-                                     name="/shops/[shop_id]",
-                                     json={
-                                       "client_master_version": "2022061301",
-                                       "user_id": self.user_id
-                                     })
-    if shop_response.status_code == 200:
-      pass
-    elif shop_response.status_code == 401:
-      self.get_refresh_token(api_key)
-      print("token is refreshed. retry shop item")
-      return self.shop_item()
+    with self.client.post(shop_url,
+                          headers=self.headers,
+                          name="/shops/[shop_id]",
+                          json={
+                            "client_master_version": "2022061301",
+                            "user_id": self.user_id
+                          },
+                          catch_response=True) as shop_response:
+      if shop_response.status_code == 200:
+        shop_response.success()
+        pass
+      elif shop_response.status_code == 401:
+        self.get_refresh_token(api_key)
+        print("token is refreshed. retry shop item")
+        shop_response.success()
+        return self.shop_item()
 
   @task(10)
   def shop_item_120(self):
@@ -320,16 +375,19 @@ class TestScenarioCase(TaskSet):
   def character(self):
     # Get Character List
     character_list_url = "/users/" + self.user_id + "/characters?client_master_version=2022061301"
-    character_response = self.client.get(character_list_url, headers=self.headers,
-                                         name="/users/[user_id]/characters?["
-                                              "character_id]")
-
-    if character_response.status_code == 200:
-      pass
-    elif character_response.status_code == 401:
-      self.get_refresh_token(api_key)
-      print("token is refreshed. retry character list")
-      return self.character()
+    with self.client.get(character_list_url,
+                         headers=self.headers,
+                         name="/users/[user_id]/characters?["
+                              "character_id]",
+                         catch_response=True) as character_response:
+      if character_response.status_code == 200:
+        character_response.success()
+        pass
+      elif character_response.status_code == 401:
+        self.get_refresh_token(api_key)
+        print("token is refreshed. retry character list")
+        character_response.success()
+        return self.character()
 
     try:
       user_character = character_response.json()["user_character"]
@@ -343,35 +401,40 @@ class TestScenarioCase(TaskSet):
       character_sell_url = "/users/" + self.user_id + "/characters/" + \
                            character_response.json()["user_character"][0][
                              "id"] + "?client_master_version=2022061301"
-      character_sell_response = self.client.delete(character_sell_url,
-                                                   name=
-                                                   "/users/[user_id]/characters"
-                                                   "/[character_id]",
-                                                   headers=self.headers)
-
-      if character_sell_response.status_code == 200:
-        pass
-      elif character_sell_response.status_code == 401:
-        self.get_refresh_token(api_key)
-        print("token is refreshed. retry character sell")
-        return self.character()
+      with self.client.delete(character_sell_url,
+                              name=
+                              "/users/[user_id]/characters"
+                              "/[character_id]",
+                              headers=self.headers,
+                              catch_response=True) as character_sell_response:
+        if character_sell_response.status_code == 200:
+          character_sell_response.success()
+          pass
+        elif character_sell_response.status_code == 401:
+          self.get_refresh_token(api_key)
+          print("token is refreshed. retry character sell")
+          character_sell_response.success()
+          return self.character()
 
   @task(7)
   def gacha(self):
     # Use shop for get user_profile
-    shop_response = self.client.post("/shops/item_120", headers=self.headers,
-                                     name="/shops/item_120",
-                                     json={
-                                       "client_master_version": "2022061301",
-                                       "user_id": self.user_id
-                                     })
-
-    if shop_response.status_code == 200:
-      pass
-    elif shop_response.status_code == 401:
-      self.get_refresh_token(api_key)
-      print("token is refreshed. retry shop item for gacha")
-      return self.gacha()
+    with self.client.post("/shops/item_120",
+                          headers=self.headers,
+                          name="/shops/item_120",
+                          json={
+                            "client_master_version": "2022061301",
+                            "user_id": self.user_id
+                          },
+                          catch_response=True) as shop_response:
+      if shop_response.status_code == 200:
+        shop_response.success()
+        pass
+      elif shop_response.status_code == 401:
+        self.get_refresh_token(api_key)
+        print("token is refreshed. retry shop item for gacha")
+        shop_response.success()
+        return self.gacha()
 
     try:
       crystal = shop_response.json()["user_profile"]["crystal"]
@@ -388,46 +451,57 @@ class TestScenarioCase(TaskSet):
       return
 
     if crystal > 5:
-      gacha1_response = self.client.post("/gachas/1", headers=self.headers,
-                                         name="/gachas/1",
-                                         json={
-                                           "client_master_version": "2022061301",
-                                           "user_id": self.user_id
-                                         })
-      if gacha1_response.status_code == 200:
-        pass
-      elif gacha1_response.status_code == 401:
-        self.get_refresh_token(api_key)
-        print("token is refreshed. retry gacha1")
-        return self.gacha()
+      with self.client.post("/gachas/1",
+                            headers=self.headers,
+                            name="/gachas/1",
+                            json={
+                              "client_master_version": "2022061301",
+                              "user_id": self.user_id
+                            },
+                            catch_response=True) as gacha1_response:
+        if gacha1_response.status_code == 200:
+          gacha1_response.success()
+          pass
+        elif gacha1_response.status_code == 401:
+          self.get_refresh_token(api_key)
+          print("token is refreshed. retry gacha1")
+          gacha1_response.success()
+          return self.gacha()
 
     if friend_coin > 5:
-      gacha2_response = self.client.post("/gachas/2", headers=self.headers,
-                                         name="/gachas/2",
-                                         json={
-                                           "client_master_version": "2022061301",
-                                           "user_id": self.user_id
-                                         })
-      if gacha2_response.status_code == 200:
-        pass
-      elif gacha2_response.status_code == 401:
-        self.get_refresh_token(api_key)
-        print("token is refreshed. retry gacha2")
-        return self.gacha()
+      with self.client.post("/gachas/2",
+                            headers=self.headers,
+                            name="/gachas/2",
+                            json={
+                              "client_master_version": "2022061301",
+                              "user_id": self.user_id
+                            },
+                            catch_response=True) as gacha2_response:
+        if gacha2_response.status_code == 200:
+          gacha2_response.success()
+          pass
+        elif gacha2_response.status_code == 401:
+          self.get_refresh_token(api_key)
+          print("token is refreshed. retry gacha2")
+          gacha2_response.success()
+          return self.gacha()
 
   @task(5)
   def present(self):
     # Get Present List
     present_list_url = "/users/" + self.user_id + "/presents?client_master_version=2022061301"
-    present_response = self.client.get(present_list_url, headers=self.headers,
-                                       name="/users/[user_id]/presents")
-
-    if present_response.status_code == 200:
-      pass
-    elif present_response.status_code == 401:
-      self.get_refresh_token(api_key)
-      print("token is refreshed. retry present list")
-      return self.gacha()
+    with self.client.get(present_list_url,
+                                       headers=self.headers,
+                                       name="/users/[user_id]/presents",
+                                       catch_response=True) as present_response:
+      if present_response.status_code == 200:
+        present_response.success()
+        pass
+      elif present_response.status_code == 401:
+        self.get_refresh_token(api_key)
+        print("token is refreshed. retry present list")
+        present_response.success()
+        return self.gacha()
 
     try:
       present = present_response.json()["user_present"]
@@ -441,15 +515,18 @@ class TestScenarioCase(TaskSet):
       present_get_url = "/users/" + self.user_id + "/presents/" + \
                         present_response.json()["user_present"][0][
                           "present_id"] + "?client_master_version=2022061301"
-      present_get_response = self.client.get(present_get_url, headers=self.headers,
-                                             name="/users/[user_id]/presents"
-                                                  "/[present_id]")
-      if present_get_response.status_code == 200:
-        pass
-      elif present_get_response.status_code == 401:
-        self.get_refresh_token(api_key)
-        print("token is refreshed. retry present get")
-        return self.gacha()
+      with self.client.get(present_get_url,
+                           headers=self.headers,
+                           name="/users/[user_id]/presents/[present_id]",
+                           catch_response=True) as present_get_response:
+        if present_get_response.status_code == 200:
+          present_get_response.success()
+          pass
+        elif present_get_response.status_code == 401:
+          self.get_refresh_token(api_key)
+          print("token is refreshed. retry present get")
+          present_get_response.success()
+          return self.gacha()
 
 
 class Run(HttpUser):
