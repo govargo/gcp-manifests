@@ -29,7 +29,7 @@ spec:
           selfHeal: true
       source:
         repoURL: https://github.com/GoogleCloudPlatform/prometheus-engine.git
-        targetRevision: v0.12.0
+        targetRevision: v0.13.0
         path: manifests
         directory:
           include: '*.yaml'
