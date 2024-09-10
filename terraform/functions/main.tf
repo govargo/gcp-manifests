@@ -39,7 +39,7 @@ resource "google_secret_manager_secret" "alertmanager_to_google_chat_url" {
 ## Service Account
 module "gke_cluster_upgrade_notifier_sa" {
   source     = "terraform-google-modules/service-accounts/google"
-  version    = "4.3.0"
+  version    = "4.4.0"
   project_id = data.google_project.project.project_id
 
   names         = ["gke-cluster-upgrade-notifier"]
@@ -64,7 +64,7 @@ module "gke_cluster_upgrade_notifier_secret_accessor_binding" {
 
 module "alertmanager_to_google_chat_sa" {
   source     = "terraform-google-modules/service-accounts/google"
-  version    = "4.3.0"
+  version    = "4.4.0"
   project_id = data.google_project.project.project_id
 
   names         = ["alertmanager-to-google-chat"]
