@@ -34,7 +34,7 @@ spec:
             mode: deployment
             image:
               repository: otel/opentelemetry-collector-contrib
-              tag: 0.106.1
+              tag: 0.108.0
             command:
               name: otelcol-contrib
 
