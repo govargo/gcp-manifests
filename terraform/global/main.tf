@@ -90,7 +90,7 @@ resource "google_storage_bucket" "project_storage" {
 ## Org Policy
 module "disable_policy_requireOsLogin" {
   source     = "terraform-google-modules/org-policy/google"
-  version    = "~> 5.3.0"
+  version    = "~> 5.4.0"
   project_id = data.google_project.project.project_id
 
   constraint       = "constraints/compute.requireOsLogin"
@@ -103,7 +103,7 @@ module "disable_policy_requireOsLogin" {
 
 module "disable_policy_vmExternalIpAccess" {
   source     = "terraform-google-modules/org-policy/google"
-  version    = "~> 5.3.0"
+  version    = "~> 5.4.0"
   project_id = data.google_project.project.project_id
 
   constraint       = "constraints/compute.vmExternalIpAccess"
@@ -116,7 +116,7 @@ module "disable_policy_vmExternalIpAccess" {
 
 module "disable_policy_requireShieldedVm" {
   source     = "terraform-google-modules/org-policy/google"
-  version    = "~> 5.3.0"
+  version    = "~> 5.4.0"
   project_id = data.google_project.project.project_id
 
   constraint       = "constraints/compute.requireShieldedVm"
@@ -129,7 +129,7 @@ module "disable_policy_requireShieldedVm" {
 
 module "disable_policy_restrictVpcPeering" {
   source     = "terraform-google-modules/org-policy/google"
-  version    = "~> 5.3.0"
+  version    = "~> 5.4.0"
   project_id = data.google_project.project.project_id
 
   constraint       = "constraints/compute.restrictVpcPeering"
@@ -142,7 +142,7 @@ module "disable_policy_restrictVpcPeering" {
 
 module "disable_policy_uniformBucketLevelAccess" {
   source     = "terraform-google-modules/org-policy/google"
-  version    = "~> 5.3.0"
+  version    = "~> 5.4.0"
   project_id = data.google_project.project.project_id
 
   constraint       = "constraints/storage.uniformBucketLevelAccess"
@@ -155,7 +155,7 @@ module "disable_policy_uniformBucketLevelAccess" {
 
 module "disable_policy_publicAccessPrevention" {
   source     = "terraform-google-modules/org-policy/google"
-  version    = "~> 5.3.0"
+  version    = "~> 5.4.0"
   project_id = data.google_project.project.project_id
 
   constraint       = "constraints/storage.publicAccessPrevention"
@@ -168,7 +168,7 @@ module "disable_policy_publicAccessPrevention" {
 
 module "allowed-policy-member-domains" {
   source     = "terraform-google-modules/org-policy/google"
-  version    = "5.3.0"
+  version    = "5.4.0"
   project_id = data.google_project.project.project_id
 
   constraint      = "constraints/iam.allowedPolicyMemberDomains"
