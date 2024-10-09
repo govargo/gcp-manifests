@@ -15,7 +15,7 @@ data "google_secret_manager_secret_version" "mysql_datastream_user_password" {
 
 module "private-service-access" {
   source     = "GoogleCloudPlatform/sql-db/google//modules/private_service_access"
-  version    = "22.0.0"
+  version    = "22.1.0"
   project_id = data.google_project.project.project_id
 
   vpc_network   = var.gcp_project_name
@@ -26,7 +26,7 @@ module "private-service-access" {
 
 module "cloudsql_mysql" {
   source               = "GoogleCloudPlatform/sql-db/google//modules/mysql"
-  version              = "22.0.0"
+  version              = "22.1.0"
   name                 = "${var.env}-mysql-instance"
   random_instance_name = false
   project_id           = data.google_project.project.project_id
