@@ -15,7 +15,7 @@ data "google_secret_manager_secret_version" "mysql_datastream_user_password" {
 
 module "private-service-access" {
   source     = "GoogleCloudPlatform/sql-db/google//modules/private_service_access"
-  version    = "20.2.0"
+  version    = "22.0.0"
   project_id = data.google_project.project.project_id
 
   vpc_network   = var.gcp_project_name
@@ -26,14 +26,14 @@ module "private-service-access" {
 
 module "cloudsql_mysql" {
   source               = "GoogleCloudPlatform/sql-db/google//modules/mysql"
-  version              = "20.2.0"
+  version              = "22.0.0"
   name                 = "${var.env}-mysql-instance"
   random_instance_name = false
   project_id           = data.google_project.project.project_id
 
   deletion_protection = true
 
-  database_version                = var.database_version
+  database_version                = "MYSQL_8_0_31"
   edition                         = "ENTERPRISE"
   region                          = var.region
   zone                            = var.zone
@@ -89,7 +89,7 @@ module "cloudsql_mysql" {
   }
 
   ## Read replica configurations
-  replica_database_version = var.database_version
+  replica_database_version = "MYSQL_8_0_31"
   read_replicas = [
     {
       name              = "-0"
@@ -101,7 +101,7 @@ module "cloudsql_mysql" {
       ip_configuration = {
         ipv4_enabled                                  = var.ipv4_enabled
         enable_private_path_for_google_cloud_services = true
-        require_ssl                                   = true # `require_ssl` will be fully deprecated in a future major release, however, new ssl_mode doesn't exist in read_replicas
+        ssl_mode                                      = "ENCRYPTED_ONLY"
         private_network                               = "projects/${data.google_project.project.project_id}/global/networks/${var.gcp_project_name}"
         allocated_ip_range                            = "google-managed-services-${var.gcp_project_name}"
         authorized_networks                           = []
