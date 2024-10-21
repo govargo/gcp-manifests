@@ -1,0 +1,19 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: failed-job-cleaner
+  namespace: kube-system
+spec:
+  timeZone: 'Asia/Tokyo'
+  schedule: "30 9 * * *"
+  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: kubectl-runner
+            image: bitnami/kubectl:latest
+            command: ["sh", "-c", "kubectl delete jobs.batch --field-selector status.successful==0"]
+          restartPolicy: OnFailure
