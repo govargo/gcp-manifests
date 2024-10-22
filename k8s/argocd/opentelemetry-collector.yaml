@@ -172,7 +172,7 @@ spec:
                             {
                                name: server-and-mmf,
                                type: string_attribute,
-                               string_attribute: { key: service.name, values: [little-quest-server, little-quest-mmf] }
+                               string_attribute: { key: service.name, values: [little-quest-server, little-quest-mmf, spanner_api_frontend] }
                             },
                             {
                                name: longer-than-600ms,
