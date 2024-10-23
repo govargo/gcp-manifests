@@ -92,8 +92,8 @@ spec:
               name: ""
 
             podAnnotations:
-              traffic.sidecar.istio.io/excludeInboundPorts: 3306
-              traffic.sidecar.istio.io/excludeOutboundPorts: 3306
+              traffic.sidecar.istio.io/excludeInboundPorts: "3306"
+              traffic.sidecar.istio.io/excludeOutboundPorts: "3306"
               proxy.istio.io/config: |
                 holdApplicationUntilProxyStarts: true
                 drainDuration": "20s"
