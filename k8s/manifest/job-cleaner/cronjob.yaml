@@ -5,7 +5,7 @@ metadata:
   namespace: kube-system
 spec:
   timeZone: 'Asia/Tokyo'
-  schedule: "30 9 * * *"
+  schedule: "0 10 * * *"
   failedJobsHistoryLimit: 1
   successfulJobsHistoryLimit: 1
   jobTemplate:
