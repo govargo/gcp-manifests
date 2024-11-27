@@ -29,7 +29,7 @@ resource "google_secret_manager_secret" "cloud_build_notifier_url" {
 ## Service Account
 module "cloud_build_notifier_sa" {
   source     = "terraform-google-modules/service-accounts/google"
-  version    = "4.4.1"
+  version    = "4.4.2"
   project_id = data.google_project.project.project_id
 
   names         = ["cloud-build-notifier"]
@@ -54,7 +54,7 @@ module "cloud_build_notifier_secret_accessor_binding" {
 
 module "cloud_run_pubsub_invoker_sa" {
   source     = "terraform-google-modules/service-accounts/google"
-  version    = "4.4.1"
+  version    = "4.4.2"
   project_id = data.google_project.project.project_id
 
   names        = ["cloud-run-pubsub-invoker"]
