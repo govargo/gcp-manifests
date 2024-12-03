@@ -1,21 +1,8 @@
 data "google_project" "project" {
 }
 
-resource "google_secret_manager_secret" "github_token_dataform" {
-  project   = data.google_project.project.project_id
+data "google_secret_manager_secret" "github_token_dataform" {
   secret_id = "github_token_dataform"
-
-  labels = {
-    role = "github_token_dataform"
-  }
-
-  lifecycle {
-    prevent_destroy = true
-  }
-
-  replication {
-    auto {}
-  }
 }
 
 data "google_secret_manager_secret_version" "github_token_dataform" {
@@ -24,7 +11,7 @@ data "google_secret_manager_secret_version" "github_token_dataform" {
 
 resource "google_secret_manager_secret_iam_member" "secretemanager_accessor" {
   project   = data.google_project.project.project_id
-  secret_id = google_secret_manager_secret.github_token_dataform.secret_id
+  secret_id = data.google_secret_manager_secret.github_token_dataform.secret_id
   role      = "roles/secretmanager.secretAccessor"
   member    = "serviceAccount:service-${data.google_project.project.number}@gcp-sa-dataform.iam.gserviceaccount.com"
 }

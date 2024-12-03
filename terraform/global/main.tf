@@ -333,6 +333,25 @@ resource "google_secret_manager_secret" "redis_password" {
   depends_on = [google_project_service.service, time_sleep.wait_150_seconds]
 }
 
+resource "google_secret_manager_secret" "github_token_dataform" {
+  project   = data.google_project.project.project_id
+  secret_id = "github_token_dataform"
+
+  labels = {
+    role = "github_token_dataform"
+  }
+
+  replication {
+    auto {}
+  } 
+    
+  lifecycle {
+    prevent_destroy = true
+  }
+
+  depends_on = [google_project_service.service, time_sleep.wait_150_seconds]
+}
+
 ## BigQuery dataset
 resource "google_bigquery_dataset" "billing_export" {
   project = data.google_project.project.project_id

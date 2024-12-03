@@ -1,6 +1,6 @@
 terraform {
   backend "gcs" {
-    bucket = "kentaiso-terraform-bucket"
+    bucket = "prd-little-quest-terraform-bucket"
     prefix = "terraform/dataform"
   }
   required_providers {
