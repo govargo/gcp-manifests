@@ -105,8 +105,10 @@ resource "google_monitoring_dashboard" "memorystore_redis_monitoring_dashboard" 
 
 ## Cloud Pub/Sub
 resource "google_monitoring_dashboard" "pubsub_monitoring_dashboard" {
-  project        = data.google_project.project.project_id
-  dashboard_json = file("files/cloud_pubsub.json")
+  project = data.google_project.project.project_id
+  dashboard_json = templatefile("${path.module}/files/cloud_pubsub.json", {
+    project_id = data.google_project.project.project_id
+  })
 }
 
 ## Cloud Run
