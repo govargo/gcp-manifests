@@ -1,6 +1,14 @@
 data "google_project" "project" {
 }
 
+resource "time_sleep" "wait_150_seconds" {
+  depends_on = [
+    google_project_service.service
+  ]
+
+  create_duration = "150s"
+}
+
 ## Service APIs
 locals {
   services = toset([
@@ -54,6 +62,7 @@ locals {
     "cloudscheduler.googleapis.com",
     "firebase.googleapis.com",
     "firestore.googleapis.com",
+    "secretmanager.googleapis.com",
     "securitycenter.googleapis.com",
     "websecurityscanner.googleapis.com",
     "cloudaicompanion.googleapis.com",
@@ -180,42 +189,71 @@ module "allowed-policy-member-domains" {
 
 ## Service Acount
 data "google_compute_default_service_account" "default" {
+  depends_on = [google_project_service.service, time_sleep.wait_150_seconds]
 }
 
 resource "google_project_iam_member" "allow_image_pull" {
   project = data.google_project.project.project_id
   role    = "roles/artifactregistry.reader"
   member  = "serviceAccount:${data.google_compute_default_service_account.default.email}"
+
+  depends_on = [google_project_service.service, time_sleep.wait_150_seconds]
 }
 
 resource "google_project_iam_member" "allow_logging_writer" {
   project = data.google_project.project.project_id
   role    = "roles/logging.logWriter"
   member  = "serviceAccount:${data.google_compute_default_service_account.default.email}"
+
+  depends_on = [google_project_service.service, time_sleep.wait_150_seconds]
 }
 
 resource "google_project_iam_member" "allow_pubsub_publisher" {
   project = data.google_project.project.project_id
   role    = "roles/pubsub.publisher"
   member  = "serviceAccount:${data.google_compute_default_service_account.default.email}"
+
+  depends_on = [google_project_service.service, time_sleep.wait_150_seconds]
 }
 
 resource "google_project_iam_member" "allow_monitoring_writer" {
   project = data.google_project.project.project_id
   role    = "roles/monitoring.metricWriter"
   member  = "serviceAccount:${data.google_compute_default_service_account.default.email}"
+
+  depends_on = [google_project_service.service, time_sleep.wait_150_seconds]
 }
 
 resource "google_project_iam_member" "allow_cloudsql_client" {
   project = data.google_project.project.project_id
   role    = "roles/cloudsql.client"
   member  = "serviceAccount:${data.google_compute_default_service_account.default.email}"
+
+  depends_on = [google_project_service.service, time_sleep.wait_150_seconds]
 }
 
-resource "google_project_iam_member" "allow_securitycommandcenter_agent" {
+resource "google_project_iam_member" "allow_securitycommandcenter_serviceagent" {
   project = data.google_project.project.project_id
   role    = "roles/securitycenter.serviceAgent"
   member  = "serviceAccount:service-project-${data.google_project.project.number}@security-center-api.iam.gserviceaccount.com"
+
+  depends_on = [google_project_service.service, time_sleep.wait_150_seconds]
+}
+
+resource "google_project_iam_member" "allow_securitycommandcenter_containerthreatagent" {
+  project = data.google_project.project.project_id
+  role    = "roles/containerthreatdetection.serviceAgent"
+  member  = "serviceAccount:service-project-${data.google_project.project.number}@gcp-sa-ktd-hpsa.iam.gserviceaccount.com"
+
+  depends_on = [google_project_service.service, time_sleep.wait_150_seconds]
+}
+
+resource "google_project_iam_member" "allow_securitycommandcenter_dspmagent" {
+  project = data.google_project.project.project_id
+  role    = "roles/dspm.serviceAgent"
+  member  = "serviceAccount:service-project-${data.google_project.project.number}@gcp-sa-dspm-hpsa.iam.gserviceaccount.com"
+
+  depends_on = [google_project_service.service, time_sleep.wait_150_seconds]
 }
 
 ## Secret
@@ -234,6 +272,8 @@ resource "google_secret_manager_secret" "mysql_little_quest_user_password" {
   lifecycle {
     prevent_destroy = true
   }
+
+  depends_on = [google_project_service.service, time_sleep.wait_150_seconds]
 }
 
 resource "google_secret_manager_secret" "mysql_datastream_user_password" {
@@ -251,6 +291,8 @@ resource "google_secret_manager_secret" "mysql_datastream_user_password" {
   lifecycle {
     prevent_destroy = true
   }
+
+  depends_on = [google_project_service.service, time_sleep.wait_150_seconds]
 }
 
 resource "google_secret_manager_secret" "mysql_root_password" {
@@ -268,6 +310,8 @@ resource "google_secret_manager_secret" "mysql_root_password" {
   lifecycle {
     prevent_destroy = true
   }
+
+  depends_on = [google_project_service.service, time_sleep.wait_150_seconds]
 }
 
 resource "google_secret_manager_secret" "redis_password" {
@@ -285,5 +329,7 @@ resource "google_secret_manager_secret" "redis_password" {
   lifecycle {
     prevent_destroy = true
   }
+
+  depends_on = [google_project_service.service, time_sleep.wait_150_seconds]
 }
 
