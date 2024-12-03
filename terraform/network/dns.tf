@@ -1,7 +1,7 @@
 module "demo_dns_zone" {
   source     = "terraform-google-modules/cloud-dns/google"
   version    = "5.3.0"
-  project_id = data.google_project.project.project_id
+  project_id = "kentaiso-330205"
 
   type           = "public"
   name           = "kentaiso-demo"
