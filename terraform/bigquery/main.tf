@@ -1,38 +1,10 @@
 data "google_project" "project" {
 }
 
-## BigQuery dataset
-resource "google_bigquery_dataset" "billing_export" {
-  project = data.google_project.project.project_id
-
-  dataset_id            = "all_billing_data"
-  friendly_name         = "cloud_billing_billing_export"
-  description           = "Cloud Billing data export to BigQuery"
-  location              = var.region
-  storage_billing_model = "PHYSICAL"
-
-  labels = {
-    role = "billing"
-  }
-}
-
-resource "google_bigquery_dataset" "billing_board" {
-  project = data.google_project.project.project_id
-
-  dataset_id    = "billing_board"
-  friendly_name = "Cloud Billing Dashboard"
-  description   = "BigQuery dataset where the BigQuery views for the billing dashboard"
-  location      = var.region
-
-  labels = {
-    role = "billing"
-  }
-}
-
 # BigQuery dataset and tables
 module "little_quest_datalake" {
   source     = "terraform-google-modules/bigquery/google"
-  version    = "8.1.0"
+  version    = "9.0.0"
   project_id = data.google_project.project.project_id
 
   dataset_id   = "${var.env}_little_quest_datalake"
@@ -133,7 +105,7 @@ module "little_quest_datalake" {
 # ELT and table definitions are done by Dataform
 module "little_quest_datawarehouse" {
   source     = "terraform-google-modules/bigquery/google"
-  version    = "8.1.0"
+  version    = "9.0.0"
   project_id = data.google_project.project.project_id
 
   dataset_id   = "${var.env}_little_quest_datawarehouse"
@@ -151,7 +123,7 @@ module "little_quest_datawarehouse" {
 # ELT and table definitions are done by Dataform
 module "little_quest_datamart" {
   source     = "terraform-google-modules/bigquery/google"
-  version    = "8.1.0"
+  version    = "9.0.0"
   project_id = data.google_project.project.project_id
 
   dataset_id   = "${var.env}_little_quest_datamart"
@@ -169,7 +141,7 @@ module "little_quest_datamart" {
 # BigQuery cost analysis dataset
 module "bigquery_cost_analysis" {
   source     = "terraform-google-modules/bigquery/google"
-  version    = "8.1.0"
+  version    = "9.0.0"
   project_id = data.google_project.project.project_id
 
   dataset_id   = "bigquery_cost_analysis"
@@ -206,7 +178,9 @@ resource "google_bigquery_data_transfer_config" "gke_metering_scheduled_query" {
   params = {
     destination_table_name_template = "gke_metering_cost_breakdown"
     write_disposition               = "WRITE_TRUNCATE"
-    query                           = file("files/gke_cost_breakdown_query.sql")
+    query = templatefile("${path.module}/files/gke_cost_breakdown_query.sql", {
+      project_id = data.google_project.project.project_id
+    })
   }
   service_account_name = module.scheduled_query_sa.email
 

@@ -12,10 +12,10 @@ WITH
     SUM(cost) AS cost,
     IFNULL(SAFE_DIVIDE(SUM(cost),SUM(usage.amount)),0) AS rate
   FROM
-    `kentaiso-330205.all_billing_data.gcp_billing_export_v1_019B74_9E7498_BF7883`
+    `${project_id}.all_billing_data.gcp_billing_export_v1_019B74_9E7498_BF7883`
   WHERE
-    usage_start_time >= TIMESTAMP("2023-06-07")
-    AND project.id = "kentaiso-330205"
+    usage_start_time >= TIMESTAMP("2024-12-02")
+    AND project.id = ${project_id}
   GROUP BY
     project.id,
     sku.id,
@@ -37,7 +37,7 @@ WITH
     NULL as amount_with_untracked,
     billing_table.rate
   FROM
-    `kentaiso-330205.all_billing_data.gke_cluster_resource_usage` AS resource_usage
+    `${project_id}.all_billing_data.gke_cluster_resource_usage` AS resource_usage
   INNER JOIN
     billing_table
   ON
@@ -135,7 +135,7 @@ WITH
     FROM
       billing_table
     INNER JOIN
-      `kentaiso-330205.all_billing_data.gke_cluster_resource_usage` AS resource_usage
+      `${project_id}.all_billing_data.gke_cluster_resource_usage` AS resource_usage
     ON
       resource_usage.project.id = billing_table.project_id
       AND resource_usage.end_time <= billing_table.max_usage_end_time
@@ -232,7 +232,7 @@ WITH
           resource_usage.usage.amount AS amount,
           billing_table.rate
         FROM
-          `kentaiso-330205.all_billing_data.gke_cluster_resource_consumption` AS resource_usage
+          `${project_id}.all_billing_data.gke_cluster_resource_consumption` AS resource_usage
         INNER JOIN
           billing_table
         ON
