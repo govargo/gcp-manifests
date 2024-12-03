@@ -138,7 +138,9 @@ resource "google_monitoring_dashboard" "dns_monitoring_dashboard" {
 ## DataStream
 resource "google_monitoring_dashboard" "datastream_monitoring_dashboard" {
   project        = data.google_project.project.project_id
-  dashboard_json = file("files/datastream.json")
+  dashboard_json = templatefile("${path.module}/files/datastream.json", {
+    project_id = data.google_project.project.project_id
+  })
 }
 
 ## Cloud Scheduler + Cloud Workflows
