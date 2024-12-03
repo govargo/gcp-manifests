@@ -2,7 +2,7 @@ data "google_project" "project" {
 }
 
 import {
-  id = "projects/kentaiso-330205/locations/global/buckets/_Default"
+  id = "projects/prd-little-quest/locations/global/buckets/_Default"
   to = google_logging_project_bucket_config._default_bucket_log_analytics_enabled
 }
 
