@@ -4,10 +4,11 @@ data "google_project" "project" {
 resource "google_spanner_instance" "prod_instance" {
   project = data.google_project.project.project_id
 
-  name             = "${var.env}-spanner-instance"
-  config           = "regional-asia-northeast1"
-  display_name     = "Spanner Production Instance"
-  processing_units = 100
+  name                         = "${var.env}-spanner-instance"
+  config                       = "regional-asia-northeast1"
+  display_name                 = "Spanner Production Instance"
+  default_backup_schedule_type = "AUTOMATIC"
+  processing_units             = 100
   labels = {
     "env" = "production"
   }
