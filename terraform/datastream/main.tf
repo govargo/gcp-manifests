@@ -94,7 +94,7 @@ curl -sSO https://dl.google.com/cloudagents/add-google-cloud-ops-agent-repo.sh
 sudo bash add-google-cloud-ops-agent-repo.sh --also-install
 
 sudo apt -y install wget
-wget https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.11.4/cloud-sql-proxy.linux.amd64 -O /usr/local/bin/cloud-sql-proxy
+wget https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.14.1/cloud-sql-proxy.linux.amd64 -O /usr/local/bin/cloud-sql-proxy
 chmod +x /usr/local/bin/cloud-sql-proxy
 cloud-sql-proxy --http-address=0.0.0.0 --address 0.0.0.0 --port 3306 --private-ip \
   --structured-logs --max-sigterm-delay=10s --health-check=true \
@@ -168,10 +168,10 @@ data "google_compute_instance" "datastream_cloudsql_proxy_instance" {
 }
 
 resource "google_dns_record_set" "datastream_cloudsql_proxy" {
-  project      = data.google_project.project.project_id
-  managed_zone = "${var.gcp_project_name}-demo"
+  project      = "kentaiso-330205"
+  managed_zone = "kentaiso-demo"
 
-  name = "datastream-cloudsql-proxy.${var.gcp_project_name}.demo.altostrat.com."
+  name = "datastream-cloudsql-proxy.kentaiso.demo.altostrat.com."
   type = "A"
   ttl  = 60
 
@@ -196,6 +196,8 @@ resource "google_compute_firewall" "allow_datastream_to_cloudsql" {
 
   source_ranges = [var.datastream_cidr]
   target_tags   = ["allow-datastream-to-cloudsql"]
+
+  depends_on = [google_compute_instance_group_manager.datastream_cloudsql_proxy_mig]
 }
 
 resource "google_datastream_private_connection" "private_mysql_connection" {
@@ -213,6 +215,8 @@ resource "google_datastream_private_connection" "private_mysql_connection" {
     vpc    = data.google_compute_network.vpc_network.id
     subnet = var.datastream_cidr
   }
+
+  depends_on = [google_compute_instance_group_manager.datastream_cloudsql_proxy_mig, google_dns_record_set.datastream_cloudsql_proxy]
 }
 
 resource "google_datastream_connection_profile" "private_mysql_profile" {
@@ -238,6 +242,8 @@ resource "google_datastream_connection_profile" "private_mysql_profile" {
   private_connectivity {
     private_connection = google_datastream_private_connection.private_mysql_connection.id
   }
+
+  depends_on = [google_datastream_private_connection.private_mysql_connection]
 }
 
 resource "google_datastream_connection_profile" "destination_bigquery_profile" {
@@ -254,6 +260,8 @@ resource "google_datastream_connection_profile" "destination_bigquery_profile" {
   }
 
   bigquery_profile {}
+
+  depends_on = [google_datastream_private_connection.private_mysql_connection, google_datastream_connection_profile.private_mysql_profile]
 }
 
 resource "google_datastream_stream" "masterdata_stream" {
@@ -290,4 +298,6 @@ resource "google_datastream_stream" "masterdata_stream" {
 
   backfill_all {}
   timeouts {}
+
+  depends_on = [google_datastream_connection_profile.destination_bigquery_profile]
 }
