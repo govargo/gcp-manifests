@@ -6,7 +6,7 @@ data "google_compute_default_service_account" "default" {
 
 module "misc-0" {
   source                               = "terraform-google-modules/kubernetes-engine/google//modules/beta-private-cluster"
-  version                              = "33.1.0"
+  version                              = "34.0.0"
   project_id                           = data.google_project.project.project_id
   name                                 = "${var.env}-misc-0"
   regional                             = false
@@ -160,4 +160,92 @@ module "misc-0" {
       "argocd",
     ]
   }
+}
+
+data "google_client_config" "default" {}
+
+provider "kubernetes" {
+  alias                  = "misc0"
+  host                   = "https://${module.misc-0.endpoint}"
+  token                  = data.google_client_config.default.access_token
+  cluster_ca_certificate = base64decode(module.misc-0.ca_certificate)
+
+  ignore_annotations = [
+    "^cloud\\.google\\.com\\/.*"
+  ]
+}
+
+resource "kubernetes_namespace" "misc0_argocd" {
+  provider = kubernetes.misc0
+
+  metadata {
+    name = "argocd"
+  }
+
+  depends_on = [module.misc-0]
+}
+
+resource "kubernetes_service_account" "misc0_argocd_dex_server" {
+  provider = kubernetes.misc0
+
+  metadata {
+    name      = "argocd-dex-server"
+    namespace = "argocd"
+  }
+
+  depends_on = [kubernetes_namespace.misc0_argocd]
+}
+
+resource "kubernetes_service_account" "misc0_argocd_repo_server" {
+  provider = kubernetes.misc0
+
+  metadata {
+    name      = "argocd-repo-server"
+    namespace = "argocd"
+  }
+
+  depends_on = [kubernetes_namespace.misc0_argocd]
+}
+
+resource "kubernetes_service_account" "misc0_argocd_argocd_notifications" {
+  provider = kubernetes.misc0
+
+  metadata {
+    name      = "argocd-notifications"
+    namespace = "argocd"
+  }
+
+  depends_on = [kubernetes_namespace.misc0_argocd]
+}
+
+resource "kubernetes_service_account" "misc0_argocd_argocd_image_updater" {
+  provider = kubernetes.misc0
+
+  metadata {
+    name      = "argocd-image-updater"
+    namespace = "argocd"
+  }
+
+  depends_on = [kubernetes_namespace.misc0_argocd]
+}
+
+resource "kubernetes_namespace" "misc0_gmp_system" {
+  provider = kubernetes.misc0
+
+  metadata {
+    name = "gmp-system"
+  }
+
+  depends_on = [module.misc-0]
+}
+
+resource "kubernetes_service_account" "misc0_gmp_collector" {
+  provider = kubernetes.misc0
+
+  metadata {
+    name      = "collector"
+    namespace = "gmp-system"
+  }
+
+  depends_on = [kubernetes_namespace.misc0_argocd]
 }

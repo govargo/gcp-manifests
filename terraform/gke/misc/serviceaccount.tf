@@ -23,7 +23,7 @@ module "argocd_dex_server_workloadIdentity_binding" {
     ]
   }
 
-  depends_on = [module.argocd_dex_server_sa]
+  depends_on = [module.argocd_dex_server_sa, kubernetes_service_account.misc0_argocd_dex_server]
 }
 
 module "argocd_dex_server_secret_accessor_binding" {
@@ -71,7 +71,7 @@ module "argocd_repo_server_workloadIdentity_binding" {
     ]
   }
 
-  depends_on = [module.argocd_repo_server_sa]
+  depends_on = [module.argocd_repo_server_sa, kubernetes_service_account.misc0_argocd_repo_server]
 }
 
 # argocd-notification-controller
@@ -97,7 +97,7 @@ module "argocd_notifications_controller_workloadIdentity_binding" {
     ]
   }
 
-  depends_on = [module.argocd_notifications_controller_sa]
+  depends_on = [module.argocd_notifications_controller_sa, kubernetes_service_account.misc0_argocd_argocd_notifications]
 }
 
 module "argocd_notifications_controller_secret_accessor_binding" {
@@ -106,13 +106,16 @@ module "argocd_notifications_controller_secret_accessor_binding" {
   project = data.google_project.project.project_id
 
   secrets = [google_secret_manager_secret.argocd_notification_webhook_url.secret_id]
-  mode    = "additive"
+  mode    = "authoritative"
   bindings = {
     "roles/secretmanager.secretAccessor" = [
       "serviceAccount:${module.argocd_notifications_controller_sa.email}"
     ]
   }
-  depends_on = [module.argocd_notifications_controller_sa, google_secret_manager_secret.argocd_notification_webhook_url]
+  depends_on = [
+    module.argocd_notifications_controller_sa,
+    google_secret_manager_secret.argocd_notification_webhook_url
+  ]
 }
 
 # argocd-image-updater
@@ -138,7 +141,7 @@ module "argocd_image_updater_workloadIdentity_binding" {
       "serviceAccount:${data.google_project.project.project_id}.svc.id.goog[argocd/argocd-image-updater]"
     ]
   }
-  depends_on = [module.argocd_image_updater_sa]
+  depends_on = [module.argocd_image_updater_sa, kubernetes_service_account.misc0_argocd_argocd_image_updater]
 }
 
 # google managed prometheus(GMP) rule-evaluator
@@ -177,5 +180,5 @@ module "gmp_collector_workloadIdentity_binding" {
       "serviceAccount:${data.google_project.project.project_id}.svc.id.goog[gmp-system/collector]"
     ]
   }
-  depends_on = [module.gmp_collector_sa]
+  depends_on = [module.gmp_collector_sa, kubernetes_service_account.misc0_gmp_collector]
 }

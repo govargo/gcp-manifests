@@ -8,10 +8,10 @@ resource "google_compute_global_address" "argocd_server_ip" {
 }
 
 resource "google_dns_record_set" "argocd_server" {
-  project      = data.google_project.project.project_id
-  managed_zone = "${var.gcp_project_name}-demo"
+  project      = "kentaiso-330205"
+  managed_zone = "kentaiso-demo"
 
-  name = "argocd.${var.gcp_project_name}.demo.altostrat.com."
+  name = "argocd.kentaiso.demo.altostrat.com."
   type = "A"
   ttl  = 60
 
