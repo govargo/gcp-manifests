@@ -23,7 +23,7 @@ module "little_quest_realtime_workloadIdentity_binding" {
       "serviceAccount:${data.google_project.project.project_id}.svc.id.goog[corp-0/little-quest-realtime]"
     ]
   }
-  depends_on = [module.little_quest_realtime_sa]
+  depends_on = [module.little_quest_realtime_sa, kubernetes_service_account.corp0_little_quest_realtime]
 }
 
 # little-quest-frontend
@@ -52,7 +52,7 @@ module "little_quest_frontend_workloadIdentity_binding" {
       "serviceAccount:${data.google_project.project.project_id}.svc.id.goog[corp-0/little-quest-frontend]"
     ]
   }
-  depends_on = [module.little_quest_frontend_sa]
+  depends_on = [module.little_quest_frontend_sa, kubernetes_service_account.corp0_little_quest_frontend]
 }
 
 # little-quest-mmf
@@ -81,7 +81,7 @@ module "little_quest_mmf_workloadIdentity_binding" {
       "serviceAccount:${data.google_project.project.project_id}.svc.id.goog[corp-0/little-quest-mmf]"
     ]
   }
-  depends_on = [module.little_quest_mmf_sa]
+  depends_on = [module.little_quest_mmf_sa, kubernetes_service_account.corp0_little_quest_mmf]
 }
 
 # little-quest-director
@@ -110,7 +110,7 @@ module "little_quest_director_workloadIdentity_binding" {
       "serviceAccount:${data.google_project.project.project_id}.svc.id.goog[corp-0/little-quest-director]"
     ]
   }
-  depends_on = [module.little_quest_director_sa]
+  depends_on = [module.little_quest_director_sa, kubernetes_service_account.corp0_little_quest_director]
 }
 
 # agones-allocator
@@ -136,7 +136,7 @@ module "agones_allocator_workloadIdentity_binding" {
       "serviceAccount:${data.google_project.project.project_id}.svc.id.goog[agones-system/agones-allocator]"
     ]
   }
-  depends_on = [module.agones_allocator_sa]
+  depends_on = [module.agones_allocator_sa, kubernetes_service_account.corp0_agones_allocator]
 }
 
 # agones-controller
@@ -162,7 +162,7 @@ module "agones_controller_workloadIdentity_binding" {
       "serviceAccount:${data.google_project.project.project_id}.svc.id.goog[agones-system/agones-controller]"
     ]
   }
-  depends_on = [module.agones_controller_sa]
+  depends_on = [module.agones_controller_sa, kubernetes_service_account.corp0_agones_controller]
 }
 
 # open-match
@@ -191,5 +191,5 @@ module "openmatch_workloadIdentity_binding" {
       "serviceAccount:${data.google_project.project.project_id}.svc.id.goog[open-match/open-match-service]"
     ]
   }
-  depends_on = [module.openmatch_sa]
+  depends_on = [module.openmatch_sa, kubernetes_service_account.corp0_open_match_service]
 }

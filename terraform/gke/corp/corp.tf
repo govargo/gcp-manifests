@@ -11,7 +11,7 @@ data "google_compute_network" "vpc_network" {
 
 module "corp-0" {
   source                               = "terraform-google-modules/kubernetes-engine/google//modules/beta-public-cluster"
-  version                              = "33.1.0"
+  version                              = "34.0.0"
   project_id                           = data.google_project.project.project_id
   name                                 = "${var.env}-corp-0"
   regional                             = true
@@ -206,3 +206,124 @@ module "corp-0" {
     ]
   }
 }
+
+data "google_client_config" "default" {}
+
+provider "kubernetes" {
+  alias                  = "corp0"
+  host                   = "https://${module.corp-0.endpoint}"
+  token                  = data.google_client_config.default.access_token
+  cluster_ca_certificate = base64decode(module.corp-0.ca_certificate)
+
+  ignore_annotations = [
+    "^cloud\\.google\\.com\\/.*"
+  ]
+}
+
+resource "kubernetes_namespace" "corp0_corp_0" {
+  provider = kubernetes.corp0
+
+  metadata {
+    name = "corp-0"
+  }
+
+  depends_on = [module.corp-0]
+}
+
+resource "kubernetes_service_account" "corp0_little_quest_realtime" {
+  provider = kubernetes.corp0
+
+  metadata {
+    name      = "little-quest-realtime"
+    namespace = "corp-0"
+  }
+
+  depends_on = [kubernetes_namespace.corp0_corp_0]
+}
+
+resource "kubernetes_service_account" "corp0_little_quest_frontend" {
+  provider = kubernetes.corp0
+
+  metadata {
+    name      = "little-quest-frontend"
+    namespace = "corp-0"
+  }
+
+  depends_on = [kubernetes_namespace.corp0_corp_0]
+}
+
+resource "kubernetes_service_account" "corp0_little_quest_mmf" {
+  provider = kubernetes.corp0
+
+  metadata {
+    name      = "little-quest-mmf"
+    namespace = "corp-0"
+  }
+
+  depends_on = [kubernetes_namespace.corp0_corp_0]
+}
+
+resource "kubernetes_service_account" "corp0_little_quest_director" {
+  provider = kubernetes.corp0
+
+  metadata {
+    name      = "little-quest-director"
+    namespace = "corp-0"
+  }
+
+  depends_on = [kubernetes_namespace.corp0_corp_0]
+}
+
+resource "kubernetes_namespace" "corp0_agones_system" {
+  provider = kubernetes.corp0
+
+  metadata {
+    name = "agones-system"
+  }
+
+  depends_on = [module.corp-0]
+}
+
+resource "kubernetes_service_account" "corp0_agones_allocator" {
+  provider = kubernetes.corp0
+
+  metadata {
+    name      = "agones-allocator"
+    namespace = "agones-system"
+  }
+
+  depends_on = [kubernetes_namespace.corp0_agones_system]
+}
+
+resource "kubernetes_service_account" "corp0_agones_controller" {
+  provider = kubernetes.corp0
+
+  metadata {
+    name      = "agones-controller"
+    namespace = "agones-system"
+  }
+
+  depends_on = [kubernetes_namespace.corp0_agones_system]
+}
+
+resource "kubernetes_namespace" "corp0_open_match" {
+  provider = kubernetes.corp0
+
+  metadata {
+    name = "open-match"
+  }
+
+  depends_on = [module.corp-0]
+}
+
+resource "kubernetes_service_account" "corp0_open_match_service" {
+  provider = kubernetes.corp0
+
+  metadata {
+    name      = "open-match-service"
+    namespace = "open-match"
+  }
+
+  depends_on = [kubernetes_namespace.corp0_open_match]
+}
+
