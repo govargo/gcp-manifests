@@ -191,6 +191,13 @@ resource "kubernetes_service_account" "misc0_argocd_dex_server" {
   metadata {
     name      = "argocd-dex-server"
     namespace = "argocd"
+    labels = {
+      "app.kubernetes.io/managed-by" = "Helm"
+    }
+    annotations = {
+      "meta.helm.sh/release-name"      = "argocd"
+      "meta.helm.sh/release-namespace" = "argocd"
+    }
   }
 
   depends_on = [kubernetes_namespace.misc0_argocd]
@@ -202,6 +209,13 @@ resource "kubernetes_service_account" "misc0_argocd_repo_server" {
   metadata {
     name      = "argocd-repo-server"
     namespace = "argocd"
+    labels = {
+      "app.kubernetes.io/managed-by" = "Helm"
+    }
+    annotations = {
+      "meta.helm.sh/release-name"      = "argocd"
+      "meta.helm.sh/release-namespace" = "argocd"
+    }
   }
 
   depends_on = [kubernetes_namespace.misc0_argocd]
@@ -213,6 +227,13 @@ resource "kubernetes_service_account" "misc0_argocd_argocd_notifications" {
   metadata {
     name      = "argocd-notifications"
     namespace = "argocd"
+    labels = {
+      "app.kubernetes.io/managed-by" = "Helm"
+    }
+    annotations = {
+      "meta.helm.sh/release-name"      = "argocd"
+      "meta.helm.sh/release-namespace" = "argocd"
+    }
   }
 
   depends_on = [kubernetes_namespace.misc0_argocd]
@@ -224,6 +245,13 @@ resource "kubernetes_service_account" "misc0_argocd_argocd_image_updater" {
   metadata {
     name      = "argocd-image-updater"
     namespace = "argocd"
+    labels = {
+      "app.kubernetes.io/managed-by" = "Helm"
+    }
+    annotations = {
+      "meta.helm.sh/release-name"      = "argocd"
+      "meta.helm.sh/release-namespace" = "argocd"
+    }
   }
 
   depends_on = [kubernetes_namespace.misc0_argocd]
