@@ -45,8 +45,6 @@ module "app-1" {
   remove_default_node_pool                 = true
   security_posture_mode                    = "ENTERPRISE"
   security_posture_vulnerability_mode      = "VULNERABILITY_ENTERPRISE"
-  workload_config_audit_mode               = "ENTERPRISE"
-  workload_vulnerability_mode              = "VULNERABILITY_ENTERPRISE"
   notification_config_topic                = "projects/${data.google_project.project.project_id}/topics/gke-cluster-upgrade-notification"
   deletion_protection                      = false
 
@@ -196,8 +194,18 @@ resource "kubernetes_service_account" "app1_little_quest_server" {
   metadata {
     name      = "little-quest-server"
     namespace = "little-quest-server"
+    labels = {
+      "app.kubernetes.io/managed-by" = "Helm"
+    }
+    annotations = {
+      "meta.helm.sh/release-name"      = "little-quest-server"
+      "meta.helm.sh/release-namespace" = "little-quest-server"
+    }
   }
 
+  lifecycle {
+    ignore_changes = [metadata["labels"], metadata["annotations"]]
+  }
   depends_on = [kubernetes_namespace.app1_little_quest_server]
 }
 
@@ -217,8 +225,18 @@ resource "kubernetes_service_account" "app1_opentelemetry_collector" {
   metadata {
     name      = "opentelemetry-collector"
     namespace = "tracing"
+    labels = {
+      "app.kubernetes.io/managed-by" = "Helm"
+    }
+    annotations = {
+      "meta.helm.sh/release-name"      = "opentelemetry-collector"
+      "meta.helm.sh/release-namespace" = "tracing"
+    }
   }
 
+  lifecycle {
+    ignore_changes = [metadata["labels"], metadata["annotations"]]
+  }
   depends_on = [kubernetes_namespace.app1_tracing]
 }
 
