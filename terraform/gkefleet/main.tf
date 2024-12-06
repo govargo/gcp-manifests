@@ -21,6 +21,43 @@ data "google_container_cluster" "corp_0" {
   location = var.region
 }
 
+## Fleet membership
+resource "google_gke_hub_membership" "app_0_membership" {
+  project = data.google_project.project.project_id
+
+  membership_id = "${var.env}-app-0-membership"
+  location      = var.region
+  endpoint {
+    gke_cluster {
+      resource_link = "//container.googleapis.com/${data.google_container_cluster.app_0.id}"
+    }
+  }
+}
+
+resource "google_gke_hub_membership" "app_1_membership" {
+  project = data.google_project.project.project_id
+
+  membership_id = "${var.env}-app-1-membership"
+  location      = "us-central1"
+  endpoint {
+    gke_cluster {
+      resource_link = "//container.googleapis.com/${data.google_container_cluster.app_1.id}"
+    }
+  }
+}
+
+resource "google_gke_hub_membership" "corp_0_membership" {
+  project = data.google_project.project.project_id
+
+  membership_id = "${var.env}-corp-0-membership"
+  location      = var.region
+  endpoint {
+    gke_cluster {
+      resource_link = "//container.googleapis.com/${data.google_container_cluster.corp_0.id}"
+    }
+  }
+}
+
 ## MultiClusterService
 resource "google_gke_hub_feature" "multi_cluster_service" {
   project = data.google_project.project.project_id
@@ -30,6 +67,8 @@ resource "google_gke_hub_feature" "multi_cluster_service" {
   labels = {
     env = "production"
   }
+
+  depends_on = [google_gke_hub_membership.app_0_membership, google_gke_hub_membership.app_1_membership, google_gke_hub_membership.corp_0_membership]
 }
 
 ## MultiClusterGateway(Ingress)
@@ -47,6 +86,13 @@ resource "google_gke_hub_feature" "multi_cluster_gateway" {
       config_membership = google_gke_hub_membership.app_0_membership.id
     }
   }
+
+  depends_on = [
+    google_gke_hub_membership.app_0_membership,
+    google_gke_hub_membership.app_1_membership,
+    google_gke_hub_membership.corp_0_membership,
+    google_gke_hub_feature.multi_cluster_service
+  ]
 }
 
 ## Cloud Service Mesh
@@ -58,49 +104,13 @@ resource "google_gke_hub_feature" "cloud_service_mesh" {
   labels = {
     env = "production"
   }
-}
 
-## Fleet membership
-resource "google_gke_hub_membership" "app_0_membership" {
-  project = data.google_project.project.project_id
-
-  membership_id = "${var.env}-app-0-membership"
-  location      = var.region
-  endpoint {
-    gke_cluster {
-      resource_link = "//container.googleapis.com/${data.google_container_cluster.app_0.id}"
-    }
-  }
-
-  depends_on = [google_gke_hub_feature.multi_cluster_service]
-}
-
-resource "google_gke_hub_membership" "app_1_membership" {
-  project = data.google_project.project.project_id
-
-  membership_id = "${var.env}-app-1-membership"
-  location      = "us-central1"
-  endpoint {
-    gke_cluster {
-      resource_link = "//container.googleapis.com/${data.google_container_cluster.app_1.id}"
-    }
-  }
-
-  depends_on = [google_gke_hub_feature.multi_cluster_service]
-}
-
-resource "google_gke_hub_membership" "corp_0_membership" {
-  project = data.google_project.project.project_id
-
-  membership_id = "${var.env}-corp-0-membership"
-  location      = var.region
-  endpoint {
-    gke_cluster {
-      resource_link = "//container.googleapis.com/${data.google_container_cluster.corp_0.id}"
-    }
-  }
-
-  depends_on = [google_gke_hub_feature.multi_cluster_service]
+  depends_on = [
+    google_gke_hub_membership.app_0_membership,
+    google_gke_hub_membership.app_1_membership,
+    google_gke_hub_membership.corp_0_membership,
+    google_gke_hub_feature.multi_cluster_gateway
+  ]
 }
 
 ## Service Mesh Member
@@ -114,7 +124,7 @@ resource "google_gke_hub_feature_membership" "app_0_service_mesh_member" {
     management = "MANAGEMENT_AUTOMATIC"
   }
 
-  depends_on = [google_gke_hub_feature.cloud_service_mesh, google_gke_hub_feature.cloud_service_mesh]
+  depends_on = [google_gke_hub_feature.cloud_service_mesh, google_gke_hub_membership.app_0_membership]
 }
 
 resource "google_gke_hub_feature_membership" "app_1_service_mesh_member" {
@@ -127,7 +137,7 @@ resource "google_gke_hub_feature_membership" "app_1_service_mesh_member" {
     management = "MANAGEMENT_AUTOMATIC"
   }
 
-  depends_on = [google_gke_hub_feature.cloud_service_mesh, google_gke_hub_feature.cloud_service_mesh]
+  depends_on = [google_gke_hub_feature.cloud_service_mesh, google_gke_hub_membership.app_1_membership]
 }
 
 resource "google_gke_hub_feature_membership" "corp_0_service_mesh_member" {
@@ -140,26 +150,27 @@ resource "google_gke_hub_feature_membership" "corp_0_service_mesh_member" {
     management = "MANAGEMENT_AUTOMATIC"
   }
 
-  depends_on = [google_gke_hub_feature.cloud_service_mesh, google_gke_hub_feature.cloud_service_mesh]
+  depends_on = [google_gke_hub_feature.cloud_service_mesh, google_gke_hub_membership.corp_0_membership]
 }
 
-resource "time_sleep" "wait_100_seconds" {
+resource "time_sleep" "wait_120_seconds" {
   depends_on = [
-    google_gke_hub_feature.multi_cluster_service,
     google_gke_hub_membership.app_0_membership,
     google_gke_hub_membership.app_1_membership,
-    google_gke_hub_membership.corp_0_membership
+    google_gke_hub_membership.corp_0_membership,
+    google_gke_hub_feature.multi_cluster_service
   ]
 
-  create_duration = "100s"
+  create_duration = "120s"
 }
 
+## IAM role for gke-mcs-importer
 resource "google_project_iam_member" "allow_network_viewer" {
   project = data.google_project.project.project_id
   role    = "roles/compute.networkViewer"
   member  = "serviceAccount:${data.google_project.project.project_id}.svc.id.goog[gke-mcs/gke-mcs-importer]"
 
-  depends_on = [time_sleep.wait_100_seconds]
+  depends_on = [time_sleep.wait_120_seconds]
 }
 
 resource "google_project_iam_member" "allow_trafficdirector_client" {
@@ -167,7 +178,7 @@ resource "google_project_iam_member" "allow_trafficdirector_client" {
   role    = "roles/trafficdirector.client"
   member  = "serviceAccount:${data.google_project.project.project_id}.svc.id.goog[gke-mcs/gke-mcs-importer]"
 
-  depends_on = [time_sleep.wait_100_seconds]
+  depends_on = [time_sleep.wait_120_seconds]
 }
 
 resource "google_project_iam_member" "allow_container_admin" {
@@ -175,7 +186,7 @@ resource "google_project_iam_member" "allow_container_admin" {
   role    = "roles/container.admin"
   member  = "serviceAccount:service-${data.google_project.project.number}@gcp-sa-multiclusteringress.iam.gserviceaccount.com"
 
-  depends_on = [time_sleep.wait_100_seconds]
+  depends_on = [time_sleep.wait_120_seconds]
 }
 
 resource "google_project_iam_member" "allow_service_agent" {
@@ -183,7 +194,7 @@ resource "google_project_iam_member" "allow_service_agent" {
   role    = "roles/anthosservicemesh.serviceAgent"
   member  = "serviceAccount:service-${data.google_project.project.number}@gcp-sa-servicemesh.iam.gserviceaccount.com"
 
-  depends_on = [time_sleep.wait_100_seconds]
+  depends_on = [time_sleep.wait_120_seconds]
 }
 
 ## Firewall
@@ -304,3 +315,4 @@ resource "google_compute_firewall" "allow_prod_app_1_istioctl_proxy_debug" {
     data.google_container_cluster.app_1.node_config[0].tags[0],
   ]
 }
+
