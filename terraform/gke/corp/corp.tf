@@ -50,8 +50,6 @@ module "corp-0" {
   remove_default_node_pool             = true
   security_posture_mode                = "ENTERPRISE"
   security_posture_vulnerability_mode  = "VULNERABILITY_ENTERPRISE"
-  workload_config_audit_mode           = "BASIC"
-  workload_vulnerability_mode          = "BASIC"
   notification_config_topic            = "projects/${data.google_project.project.project_id}/topics/gke-cluster-upgrade-notification"
   deletion_protection                  = false
 
@@ -236,8 +234,18 @@ resource "kubernetes_service_account" "corp0_little_quest_realtime" {
   metadata {
     name      = "little-quest-realtime"
     namespace = "corp-0"
+    labels = {
+      "app.kubernetes.io/managed-by" = "Helm"
+    }
+    annotations = {
+      "meta.helm.sh/release-name"      = "little-quest-realtime"
+      "meta.helm.sh/release-namespace" = "corp-0"
+    }
   }
 
+  lifecycle {
+    ignore_changes = [metadata["labels"], metadata["annotations"]]
+  }
   depends_on = [kubernetes_namespace.corp0_corp_0]
 }
 
@@ -247,8 +255,18 @@ resource "kubernetes_service_account" "corp0_little_quest_frontend" {
   metadata {
     name      = "little-quest-frontend"
     namespace = "corp-0"
+    labels = {
+      "app.kubernetes.io/managed-by" = "Helm"
+    }
+    annotations = {
+      "meta.helm.sh/release-name"      = "little-quest-realtime"
+      "meta.helm.sh/release-namespace" = "corp-0"
+    }
   }
 
+  lifecycle {
+    ignore_changes = [metadata["labels"], metadata["annotations"]]
+  }
   depends_on = [kubernetes_namespace.corp0_corp_0]
 }
 
@@ -258,8 +276,18 @@ resource "kubernetes_service_account" "corp0_little_quest_mmf" {
   metadata {
     name      = "little-quest-mmf"
     namespace = "corp-0"
+    labels = {
+      "app.kubernetes.io/managed-by" = "Helm"
+    }
+    annotations = {
+      "meta.helm.sh/release-name"      = "little-quest-realtime"
+      "meta.helm.sh/release-namespace" = "corp-0"
+    }
   }
 
+  lifecycle {
+    ignore_changes = [metadata["labels"], metadata["annotations"]]
+  }
   depends_on = [kubernetes_namespace.corp0_corp_0]
 }
 
@@ -269,8 +297,18 @@ resource "kubernetes_service_account" "corp0_little_quest_director" {
   metadata {
     name      = "little-quest-director"
     namespace = "corp-0"
+    labels = {
+      "app.kubernetes.io/managed-by" = "Helm"
+    }
+    annotations = {
+      "meta.helm.sh/release-name"      = "little-quest-realtime"
+      "meta.helm.sh/release-namespace" = "corp-0"
+    }
   }
 
+  lifecycle {
+    ignore_changes = [metadata["labels"], metadata["annotations"]]
+  }
   depends_on = [kubernetes_namespace.corp0_corp_0]
 }
 
@@ -290,8 +328,18 @@ resource "kubernetes_service_account" "corp0_agones_allocator" {
   metadata {
     name      = "agones-allocator"
     namespace = "agones-system"
+    labels = {
+      "app.kubernetes.io/managed-by" = "Helm"
+    }
+    annotations = {
+      "meta.helm.sh/release-name"      = "agones"
+      "meta.helm.sh/release-namespace" = "agones-system"
+    }
   }
 
+  lifecycle {
+    ignore_changes = [metadata["labels"], metadata["annotations"]]
+  }
   depends_on = [kubernetes_namespace.corp0_agones_system]
 }
 
@@ -301,8 +349,18 @@ resource "kubernetes_service_account" "corp0_agones_controller" {
   metadata {
     name      = "agones-controller"
     namespace = "agones-system"
+    labels = {
+      "app.kubernetes.io/managed-by" = "Helm"
+    }
+    annotations = {
+      "meta.helm.sh/release-name"      = "agones"
+      "meta.helm.sh/release-namespace" = "agones-system"
+    }
   }
 
+  lifecycle {
+    ignore_changes = [metadata["labels"], metadata["annotations"]]
+  }
   depends_on = [kubernetes_namespace.corp0_agones_system]
 }
 
@@ -322,8 +380,18 @@ resource "kubernetes_service_account" "corp0_open_match_service" {
   metadata {
     name      = "open-match-service"
     namespace = "open-match"
+    labels = {
+      "app.kubernetes.io/managed-by" = "Helm"
+    }
+    annotations = {
+      "meta.helm.sh/release-name"      = "open-match"
+      "meta.helm.sh/release-namespace" = "open-match"
+    }
   }
 
+  lifecycle {
+    ignore_changes = [metadata["labels"], metadata["annotations"]]
+  }
   depends_on = [kubernetes_namespace.corp0_open_match]
 }
 
