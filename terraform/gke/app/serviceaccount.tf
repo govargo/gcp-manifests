@@ -37,7 +37,7 @@ module "little_quest_server_workloadIdentity_binding" {
       "serviceAccount:${data.google_project.project.project_id}.svc.id.goog[little-quest-server/little-quest-server]"
     ]
   }
-  depends_on = [module.little_quest_server_sa]
+  depends_on = [module.little_quest_server_sa, kubernetes_service_account.app0_little_quest_server, kubernetes_service_account.app1_little_quest_server]
 }
 
 module "opentelemetry_collector_sa" {
@@ -62,5 +62,5 @@ module "opentelemetry_collector_workloadIdentity_binding" {
       "serviceAccount:${data.google_project.project.project_id}.svc.id.goog[tracing/opentelemetry-collector]"
     ]
   }
-  depends_on = [module.opentelemetry_collector_sa]
+  depends_on = [module.opentelemetry_collector_sa, kubernetes_service_account.app0_opentelemetry_collector, kubernetes_service_account.app1_opentelemetry_collector]
 }

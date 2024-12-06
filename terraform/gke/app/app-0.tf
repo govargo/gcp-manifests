@@ -6,7 +6,7 @@ data "google_compute_default_service_account" "default" {
 
 module "app-0" {
   source                                   = "terraform-google-modules/kubernetes-engine/google//modules/beta-private-cluster"
-  version                                  = "33.1.0"
+  version                                  = "34.0.0"
   project_id                               = data.google_project.project.project_id
   name                                     = "${var.env}-app-0"
   regional                                 = true
@@ -165,3 +165,69 @@ module "app-0" {
     ]
   }
 }
+
+data "google_client_config" "default" {}
+
+provider "kubernetes" {
+  alias                  = "app0"
+  host                   = "https://${module.app-0.endpoint}"
+  token                  = data.google_client_config.default.access_token
+  cluster_ca_certificate = base64decode(module.app-0.ca_certificate)
+
+  ignore_annotations = [
+    "^cloud\\.google\\.com\\/.*"
+  ]
+}
+
+resource "kubernetes_namespace" "app0_corp_0" {
+  provider = kubernetes.app0
+
+  metadata {
+    name = "corp-0"
+  }
+
+  depends_on = [module.app-0]
+}
+
+resource "kubernetes_namespace" "app0_little_quest_server" {
+  provider = kubernetes.app0
+
+  metadata {
+    name = "little-quest-server"
+  }
+
+  depends_on = [module.app-0]
+}
+
+resource "kubernetes_service_account" "app0_little_quest_server" {
+  provider = kubernetes.app0
+
+  metadata {
+    name      = "little-quest-server"
+    namespace = "little-quest-server"
+  }
+
+  depends_on = [kubernetes_namespace.app0_little_quest_server]
+}
+
+resource "kubernetes_namespace" "app0_tracing" {
+  provider = kubernetes.app0
+
+  metadata {
+    name = "tracing"
+  }
+
+  depends_on = [module.app-0]
+}
+
+resource "kubernetes_service_account" "app0_opentelemetry_collector" {
+  provider = kubernetes.app0
+
+  metadata {
+    name      = "opentelemetry-collector"
+    namespace = "tracing"
+  }
+
+  depends_on = [kubernetes_namespace.app0_tracing]
+}
+

@@ -8,10 +8,10 @@ resource "google_compute_global_address" "little_quest_server_ip" {
 }
 
 resource "google_dns_record_set" "little_quest" {
-  project      = data.google_project.project.project_id
-  managed_zone = "${var.gcp_project_name}-demo"
+  project      = "kentaiso-330205"
+  managed_zone = "kentaiso-demo"
 
-  name = "little-quest-server.${var.gcp_project_name}.demo.altostrat.com."
+  name = "little-quest-server.kentaiso.demo.altostrat.com."
   type = "A"
   ttl  = 60
 
@@ -25,7 +25,9 @@ resource "google_compute_managed_ssl_certificate" "little_quest_server_certifica
   name    = "little-quest-server-certificate"
 
   managed {
-    domains = ["little-quest-server.${var.gcp_project_name}.demo.altostrat.com."]
+    domains = ["little-quest-server.kentaiso.demo.altostrat.com."]
   }
+
+  depends_on = [google_dns_record_set.little_quest]
 }
 

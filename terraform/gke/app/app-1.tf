@@ -45,8 +45,8 @@ module "app-1" {
   remove_default_node_pool                 = true
   security_posture_mode                    = "ENTERPRISE"
   security_posture_vulnerability_mode      = "VULNERABILITY_ENTERPRISE"
-  workload_config_audit_mode               = "BASIC"
-  workload_vulnerability_mode              = "BASIC"
+  workload_config_audit_mode               = "ENTERPRISE"
+  workload_vulnerability_mode              = "VULNERABILITY_ENTERPRISE"
   notification_config_topic                = "projects/${data.google_project.project.project_id}/topics/gke-cluster-upgrade-notification"
   deletion_protection                      = false
 
@@ -158,3 +158,67 @@ module "app-1" {
     ]
   }
 }
+
+provider "kubernetes" {
+  alias                  = "app1"
+  host                   = "https://${module.app-1.endpoint}"
+  token                  = data.google_client_config.default.access_token
+  cluster_ca_certificate = base64decode(module.app-1.ca_certificate)
+
+  ignore_annotations = [
+    "^cloud\\.google\\.com\\/.*"
+  ]
+}
+
+resource "kubernetes_namespace" "app1_corp_0" {
+  provider = kubernetes.app1
+
+  metadata {
+    name = "corp-0"
+  }
+
+  depends_on = [module.app-1]
+}
+
+resource "kubernetes_namespace" "app1_little_quest_server" {
+  provider = kubernetes.app1
+
+  metadata {
+    name = "little-quest-server"
+  }
+
+  depends_on = [module.app-1]
+}
+
+resource "kubernetes_service_account" "app1_little_quest_server" {
+  provider = kubernetes.app1
+
+  metadata {
+    name      = "little-quest-server"
+    namespace = "little-quest-server"
+  }
+
+  depends_on = [kubernetes_namespace.app1_little_quest_server]
+}
+
+resource "kubernetes_namespace" "app1_tracing" {
+  provider = kubernetes.app1
+
+  metadata {
+    name = "tracing"
+  }
+
+  depends_on = [module.app-0]
+}
+
+resource "kubernetes_service_account" "app1_opentelemetry_collector" {
+  provider = kubernetes.app1
+
+  metadata {
+    name      = "opentelemetry-collector"
+    namespace = "tracing"
+  }
+
+  depends_on = [kubernetes_namespace.app1_tracing]
+}
+
