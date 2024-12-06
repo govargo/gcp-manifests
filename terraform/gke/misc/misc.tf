@@ -200,6 +200,9 @@ resource "kubernetes_service_account" "misc0_argocd_dex_server" {
     }
   }
 
+  lifecycle {
+    ignore_changes = [metadata["labels"], metadata["annotations"]]
+  }
   depends_on = [kubernetes_namespace.misc0_argocd]
 }
 
@@ -218,6 +221,9 @@ resource "kubernetes_service_account" "misc0_argocd_repo_server" {
     }
   }
 
+  lifecycle {
+    ignore_changes = [metadata["labels"], metadata["annotations"]]
+  }
   depends_on = [kubernetes_namespace.misc0_argocd]
 }
 
@@ -236,6 +242,9 @@ resource "kubernetes_service_account" "misc0_argocd_argocd_notifications" {
     }
   }
 
+  lifecycle {
+    ignore_changes = [metadata["labels"], metadata["annotations"]]
+  }
   depends_on = [kubernetes_namespace.misc0_argocd]
 }
 
@@ -254,6 +263,9 @@ resource "kubernetes_service_account" "misc0_argocd_argocd_image_updater" {
     }
   }
 
+  lifecycle {
+    ignore_changes = [metadata["labels"], metadata["annotations"]]
+  }
   depends_on = [kubernetes_namespace.misc0_argocd]
 }
 
@@ -275,5 +287,8 @@ resource "kubernetes_service_account" "misc0_gmp_collector" {
     namespace = "gmp-system"
   }
 
+  lifecycle {
+    ignore_changes = [metadata["labels"], metadata["annotations"]]
+  }
   depends_on = [kubernetes_namespace.misc0_argocd]
 }
