@@ -55,9 +55,9 @@ extraObjects:
     provider: gcp
     parameters:
       secrets: |
-        - resourceName: "projects/kentaiso-330205/secrets/argocd_client_id/versions/latest"
+        - resourceName: "projects/prd-little-quest/secrets/argocd_client_id/versions/latest"
           path: client_id
-        - resourceName: "projects/kentaiso-330205/secrets/argocd_client_secret/versions/latest"
+        - resourceName: "projects/prd-little-quest/secrets/argocd_client_secret/versions/latest"
           path: client_secret
     secretObjects:
     - secretName: argocd-dex-secrets-store
@@ -79,7 +79,7 @@ extraObjects:
     provider: gcp
     parameters:
       secrets: |
-        - resourceName: "projects/kentaiso-330205/secrets/argocd_notification_webhook_url/versions/latest"
+        - resourceName: "projects/prd-little-quest/secrets/argocd_notification_webhook_url/versions/latest"
           path: google_chat_webhook_url
     secretObjects:
     - secretName: argocd-notifications-secret
@@ -126,7 +126,7 @@ dex:
 
   serviceAccount:
     annotations:
-      iam.gke.io/gcp-service-account: argocd-dex-server@kentaiso-330205.iam.gserviceaccount.com
+      iam.gke.io/gcp-service-account: argocd-dex-server@prd-little-quest.iam.gserviceaccount.com
 
   # -- Additional volumeMounts to the dex main container
   volumeMounts:
@@ -284,7 +284,7 @@ server:
 repoServer:
   serviceAccount:
     annotations:
-      iam.gke.io/gcp-service-account: argocd-repo-server@kentaiso-330205.iam.gserviceaccount.com
+      iam.gke.io/gcp-service-account: argocd-repo-server@prd-little-quest.iam.gserviceaccount.com
 
   initContainers:
   - name: download-tools
@@ -432,7 +432,7 @@ notifications:
     name: argocd-notifications
     # -- Annotations applied to created service account
     annotations:
-      iam.gke.io/gcp-service-account: argocd-notifications@kentaiso-330205.iam.gserviceaccount.com
+      iam.gke.io/gcp-service-account: argocd-notifications@prd-little-quest.iam.gserviceaccount.com
     # -- Labels applied to created service account
     labels: {}
     # -- Automount API credentials for the Service Account
