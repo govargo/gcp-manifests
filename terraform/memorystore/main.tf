@@ -3,10 +3,10 @@ data "google_project" "project" {
 
 module "memorystore_redis" {
   source  = "terraform-google-modules/memorystore/google"
-  version = "10.0.0"
+  version = "12.0.1"
 
   name          = "${var.env}-redis-instance"
-  project       = data.google_project.project.project_id
+  project_id    = data.google_project.project.project_id
   enable_apis   = var.enable_apis
   region        = var.region
   redis_version = "REDIS_7_2"
