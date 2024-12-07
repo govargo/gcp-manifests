@@ -343,8 +343,46 @@ resource "google_secret_manager_secret" "github_token_dataform" {
 
   replication {
     auto {}
-  } 
-    
+  }
+
+  lifecycle {
+    prevent_destroy = true
+  }
+
+  depends_on = [google_project_service.service, time_sleep.wait_150_seconds]
+}
+
+resource "google_secret_manager_secret" "argocd_client_id" {
+  project   = data.google_project.project.project_id
+  secret_id = "argocd_client_id"
+
+  labels = {
+    role = "argocd_client_id"
+  }
+
+  replication {
+    auto {}
+  }
+
+  lifecycle {
+    prevent_destroy = true
+  }
+
+  depends_on = [google_project_service.service, time_sleep.wait_150_seconds]
+}
+
+resource "google_secret_manager_secret" "argocd_client_secret" {
+  project   = data.google_project.project.project_id
+  secret_id = "argocd_client_secret"
+
+  labels = {
+    role = "argocd_client_secret"
+  }
+
+  replication {
+    auto {}
+  }
+
   lifecycle {
     prevent_destroy = true
   }
