@@ -7,17 +7,13 @@ spec:
   generators:
   - list:
       elements:
-      - cluster: app-0
-        name: gke_kentaiso-330205_asia-northeast1_prod-app-0
-      - cluster: app-1
-        name: gke_kentaiso-330205_us-central1_prod-app-1
-      - cluster: corp-0
-        name: gke_kentaiso-330205_asia-northeast1_prod-corp-0
-      - cluster: misc-0
-        name: gke_kentaiso-330205_asia-northeast1-a_prod-misc-0
+      - name: app-0
+      - name: app-1
+      - name: corp-0
+      - name: misc-0
   template:
     metadata:
-      name: "{{cluster}}-node-exporter"
+      name: "{{name}}-node-exporter"
     spec:
       project: default
       syncPolicy:
@@ -31,7 +27,7 @@ spec:
         repoURL: https://prometheus-community.github.io/helm-charts
         targetRevision: 4.42.0
         helm:
-          releaseName: "{{cluster}}"
+          releaseName: "{{name}}"
           values: |
             extraArgs:
             - --log.format=json

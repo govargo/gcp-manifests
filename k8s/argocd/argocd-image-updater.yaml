@@ -7,8 +7,7 @@ spec:
   generators:
   - list:
       elements:
-      - cluster: misc-0
-        name: gke_kentaiso-330205_asia-northeast1-a_prod-misc-0
+      - name: misc-0
   template:
     metadata:
       name: "argocd-image-updater"
@@ -45,7 +44,7 @@ spec:
 
             serviceAccount:
               annotations:
-                iam.gke.io/gcp-service-account: argocd-image-updater@kentaiso-330205.iam.gserviceaccount.com
+                iam.gke.io/gcp-service-account: argocd-image-updater@prd-little-quest.iam.gserviceaccount.com
 
             resources:
               requests:

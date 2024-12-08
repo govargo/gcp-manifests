@@ -7,8 +7,7 @@ spec:
   generators:
   - list:
       elements:
-      - cluster: corp-0
-        name: gke_kentaiso-330205_asia-northeast1_prod-corp-0
+      - name: corp-0
   template:
     metadata:
       name: "agones"
@@ -36,11 +35,11 @@ spec:
                  allocator:
                    name: agones-allocator
                    annotations:
-                     iam.gke.io/gcp-service-account: agones-allocator@kentaiso-330205.iam.gserviceaccount.com
+                     iam.gke.io/gcp-service-account: agones-allocator@prd-little-quest.iam.gserviceaccount.com
                  controller:
                    name: agones-controller
                    annotations:
-                     iam.gke.io/gcp-service-account: agones-controller@kentaiso-330205.iam.gserviceaccount.com
+                     iam.gke.io/gcp-service-account: agones-controller@prd-little-quest.iam.gserviceaccount.com
                controller:
                  resources:
                    requests:

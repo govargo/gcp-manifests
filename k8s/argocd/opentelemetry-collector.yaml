@@ -7,15 +7,12 @@ spec:
   generators:
   - list:
       elements:
-      - cluster: app-0
-        name: gke_kentaiso-330205_asia-northeast1_prod-app-0
-      - cluster: app-1
-        name: gke_kentaiso-330205_us-central1_prod-app-1
-      - cluster: corp-0
-        name: gke_kentaiso-330205_asia-northeast1_prod-corp-0
+      - name: app-0
+      - name: app-1
+      - name: corp-0
   template:
     metadata:
-      name: "{{cluster}}-opentelemetry-collector"
+      name: "{{name}}-opentelemetry-collector"
     spec:
       project: default
       syncPolicy:
@@ -27,14 +24,14 @@ spec:
       source:
         repoURL: https://open-telemetry.github.io/opentelemetry-helm-charts
         chart: opentelemetry-collector
-        targetRevision: 0.110.3
+        targetRevision: 0.110.5
         helm:
           releaseName: "opentelemetry-collector"
           values: |
             mode: deployment
             image:
               repository: otel/opentelemetry-collector-contrib
-              tag: 0.108.0
+              tag: 0.114.0
             command:
               name: otelcol-contrib
 
@@ -49,7 +46,7 @@ spec:
 
             serviceAccount:
               annotations:
-                iam.gke.io/gcp-service-account: opentelemetry-collector@kentaiso-330205.iam.gserviceaccount.com
+                iam.gke.io/gcp-service-account: opentelemetry-collector@prd-little-quest.iam.gserviceaccount.com
         
             resources:
               requests:

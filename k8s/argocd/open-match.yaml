@@ -7,8 +7,7 @@ spec:
   generators:
   - list:
       elements:
-      - cluster: corp-0
-        name: gke_kentaiso-330205_asia-northeast1_prod-corp-0
+      - name: corp-0
   template:
     metadata:
       name: "open-match"
@@ -22,7 +21,7 @@ spec:
           prune: true
           selfHeal: true
       source:
-        repoURL: asia-northeast1-docker.pkg.dev/kentaiso-330205/open-match/charts
+        repoURL: asia-northeast1-docker.pkg.dev/prd-little-quest/open-match/charts
         chart: open-match
         targetRevision: 1.8.1
         helm:
@@ -258,15 +257,15 @@ spec:
                      cpu: '1'
                  serviceAccount: open-match-service
                  serviceAccountAnnotations:
-                   iam.gke.io/gcp-service-account: open-match-service@kentaiso-330205.iam.gserviceaccount.com
+                   iam.gke.io/gcp-service-account: open-match-service@prd-little-quest.iam.gserviceaccount.com
 
-               gcpProjectId: "kentaiso-330205"
+               gcpProjectId: "prd-little-quest"
 
                logging:
                  level: info
 
                image:
-                 registry: asia-northeast1-docker.pkg.dev/kentaiso-330205/open-match
+                 registry: asia-northeast1-docker.pkg.dev/prd-little-quest/open-match
                  tag: 1.8.1-a039dbc
                  pullPolicy: Always
              

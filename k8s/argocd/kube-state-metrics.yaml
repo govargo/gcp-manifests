@@ -7,17 +7,13 @@ spec:
   generators:
   - list:
       elements:
-      - cluster: app-0
-        name: gke_kentaiso-330205_asia-northeast1_prod-app-0
-      - cluster: app-1
-        name: gke_kentaiso-330205_us-central1_prod-app-1
-      - cluster: corp-0
-        name: gke_kentaiso-330205_asia-northeast1_prod-corp-0
-      - cluster: misc-0
-        name: gke_kentaiso-330205_asia-northeast1-a_prod-misc-0
+      - name: app-0
+      - name: app-1
+      - name: corp-0
+      - name: misc-0
   template:
     metadata:
-      name: "{{cluster}}-kube-state-metrics"
+      name: "{{name}}-kube-state-metrics"
     spec:
       project: default
       syncPolicy:
@@ -31,7 +27,7 @@ spec:
         repoURL: https://prometheus-community.github.io/helm-charts
         targetRevision: 5.27.0
         helm:
-          releaseName: "{{cluster}}-kube-state-metrics"
+          releaseName: "{{name}}-kube-state-metrics"
           values: |
             selfMonitor:
               enabled: false # kube-state-metrics self metrics(e.g. kube_state_metrics_list_total) needed for monitoring, however, disable due to reducing costs
