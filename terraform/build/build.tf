@@ -19,6 +19,30 @@ resource "google_project_iam_member" "logs_writer" {
   depends_on = [google_service_account.cloudbuild_service_account]
 }
 
+resource "google_project_iam_member" "artifact_writer" {
+  project = data.google_project.project.project_id
+  role    = "roles/artifactregistry.writer"
+  member  = "serviceAccount:${google_service_account.cloudbuild_service_account.email}"
+
+  depends_on = [google_service_account.cloudbuild_service_account]
+}
+
+data "google_iam_policy" "object_creator" {
+  binding {
+    role = "roles/storage.objectCreator"
+    members = [
+      "serviceAccount:${google_service_account.cloudbuild_service_account.email}",
+    ]
+  }
+
+  depends_on = [google_service_account.cloudbuild_service_account]
+}
+
+resource "google_storage_bucket_iam_policy" "policy" {
+  bucket      = data.google_project.project.project_id
+  policy_data = data.google_iam_policy.object_creator.policy_data
+}
+
 ## Connect to repository
 data "google_secret_manager_secret_version" "github_token_govargo_repository" {
   project = data.google_project.project.project_id
