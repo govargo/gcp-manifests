@@ -185,6 +185,48 @@ resource "kubernetes_namespace" "misc0_argocd" {
   depends_on = [module.misc-0]
 }
 
+resource "kubernetes_service_account" "misc0_argocd_server" {
+  provider = kubernetes.misc0
+
+  metadata {
+    name      = "argocd-server"
+    namespace = "argocd"
+    labels = {
+      "app.kubernetes.io/managed-by" = "Helm"
+    }
+    annotations = {
+      "meta.helm.sh/release-name"      = "argocd"
+      "meta.helm.sh/release-namespace" = "argocd"
+    }
+  }
+
+  lifecycle {
+    ignore_changes = [metadata["labels"], metadata["annotations"]]
+  }
+  depends_on = [kubernetes_namespace.misc0_argocd]
+}
+
+resource "kubernetes_service_account" "misc0_argocd_application_controller" {
+  provider = kubernetes.misc0
+
+  metadata {
+    name      = "argocd-application-controller"
+    namespace = "argocd"
+    labels = {
+      "app.kubernetes.io/managed-by" = "Helm"
+    }
+    annotations = {
+      "meta.helm.sh/release-name"      = "argocd"
+      "meta.helm.sh/release-namespace" = "argocd"
+    }
+  }
+
+  lifecycle {
+    ignore_changes = [metadata["labels"], metadata["annotations"]]
+  }
+  depends_on = [kubernetes_namespace.misc0_argocd]
+}
+
 resource "kubernetes_service_account" "misc0_argocd_dex_server" {
   provider = kubernetes.misc0
 

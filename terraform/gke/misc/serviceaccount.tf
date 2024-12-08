@@ -1,5 +1,65 @@
 ## ServiceAccount
 
+# argocd-server
+module "argocd_server_sa" {
+  source     = "terraform-google-modules/service-accounts/google"
+  version    = "4.4.2"
+  project_id = data.google_project.project.project_id
+
+  names         = ["argocd-server"]
+  display_name  = "ArgoCD Server ServiceAccount"
+  project_roles = [
+    "${data.google_project.project.project_id}=>roles/container.admin",
+    "${data.google_project.project.project_id}=>roles/gkehub.gatewayEditor"
+  ]
+}
+
+module "argocd_server_workloadIdentity_binding" {
+  source  = "terraform-google-modules/iam/google//modules/service_accounts_iam"
+  version = "8.0.0"
+  project = data.google_project.project.project_id
+
+  service_accounts = [module.argocd_server_sa.email]
+  mode             = "additive"
+  bindings = {
+    "roles/iam.workloadIdentityUser" = [
+      "serviceAccount:${data.google_project.project.project_id}.svc.id.goog[argocd/argocd-server]"
+    ]
+  }
+
+  depends_on = [module.argocd_server_sa, kubernetes_service_account.misc0_argocd_server]
+}
+
+# argocd-application-controller
+module "argocd_application_controller_sa" {
+  source     = "terraform-google-modules/service-accounts/google"
+  version    = "4.4.2"
+  project_id = data.google_project.project.project_id
+
+  names         = ["argocd-application-controller"]
+  display_name  = "ArgoCD Application Controller ServiceAccount"
+  project_roles = [
+    "${data.google_project.project.project_id}=>roles/container.admin",
+    "${data.google_project.project.project_id}=>roles/gkehub.gatewayEditor"
+  ]
+}
+
+module "argocd_application_controller_sa_workloadIdentity_binding" {
+  source  = "terraform-google-modules/iam/google//modules/service_accounts_iam"
+  version = "8.0.0"
+  project = data.google_project.project.project_id
+
+  service_accounts = [module.argocd_application_controller_sa.email]
+  mode             = "additive"
+  bindings = {
+    "roles/iam.workloadIdentityUser" = [
+      "serviceAccount:${data.google_project.project.project_id}.svc.id.goog[argocd/argocd-application-controller]"
+    ]
+  }
+
+  depends_on = [module.argocd_server_sa, kubernetes_service_account.misc0_argocd_application_controller]
+}
+
 # argocd-dex-server
 module "argocd_dex_server_sa" {
   source     = "terraform-google-modules/service-accounts/google"

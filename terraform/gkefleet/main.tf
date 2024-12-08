@@ -21,6 +21,11 @@ data "google_container_cluster" "corp_0" {
   location = var.region
 }
 
+data "google_container_cluster" "misc_0" {
+  name     = "${var.env}-misc-0"
+  location = "asia-northeast1-a"
+}
+
 ## Fleet membership
 resource "google_gke_hub_membership" "app_0_membership" {
   project = data.google_project.project.project_id
@@ -54,6 +59,19 @@ resource "google_gke_hub_membership" "corp_0_membership" {
   endpoint {
     gke_cluster {
       resource_link = "//container.googleapis.com/${data.google_container_cluster.corp_0.id}"
+    }
+  }
+}
+
+# Register misc-0 to Fleet for only connectgateway API for ArgoCD
+resource "google_gke_hub_membership" "misc_0_membership" {
+  project = data.google_project.project.project_id
+
+  membership_id = "${var.env}-misc-0-membership"
+  location      = var.region
+  endpoint {
+    gke_cluster {
+      resource_link = "//container.googleapis.com/${data.google_container_cluster.misc_0.id}"
     }
   }
 }
