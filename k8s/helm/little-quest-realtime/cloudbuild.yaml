@@ -61,3 +61,4 @@ options:
   volumes:
   - name: bin
     path: /usr/local/bin
+  logging: CLOUD_LOGGING_ONLY
