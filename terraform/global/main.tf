@@ -403,6 +403,8 @@ resource "google_bigquery_dataset" "billing_export" {
   labels = {
     role = "billing"
   }
+
+  depends_on = [google_project_service.service, time_sleep.wait_150_seconds]
 }
 
 resource "google_bigquery_dataset" "billing_board" {
@@ -417,5 +419,7 @@ resource "google_bigquery_dataset" "billing_board" {
   labels = {
     role = "billing"
   }
+
+  depends_on = [google_project_service.service, time_sleep.wait_150_seconds]
 }
 
