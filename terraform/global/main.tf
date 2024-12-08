@@ -390,6 +390,25 @@ resource "google_secret_manager_secret" "argocd_client_secret" {
   depends_on = [google_project_service.service, time_sleep.wait_150_seconds]
 }
 
+resource "google_secret_manager_secret" "github_token_govargo_repository" {
+  project   = data.google_project.project.project_id
+  secret_id = "github_token_govargo_repository"
+
+  labels = {
+    role = "github_token_govargo_repository"
+  }
+
+  replication {
+    auto {}
+  }
+
+  lifecycle {
+    prevent_destroy = true
+  }
+
+  depends_on = [google_project_service.service, time_sleep.wait_150_seconds]
+}
+
 ## BigQuery dataset
 resource "google_bigquery_dataset" "billing_export" {
   project = data.google_project.project.project_id
