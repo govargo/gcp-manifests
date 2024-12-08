@@ -1,12 +1,12 @@
 terraform {
   backend "gcs" {
-    bucket = "kentaiso-terraform-bucket"
+    bucket = "prd-little-quest-terraform-bucket"
     prefix = "terraform/build"
   }
   required_providers {
     google = {
       source  = "hashicorp/google"
-      version = "5.45.0"
+      version = "6.12.0"
     }
   }
 }
