@@ -1,6 +1,6 @@
 {{- if .Values.multiClusterGateway.enabled }}
 kind: HTTPRoute
-apiVersion: gateway.networking.k8s.io/v1beta1
+apiVersion: gateway.networking.k8s.io/v1
 metadata:
   name: {{ include "little-quest.fullname" . }}
   namespace: {{ .Release.Namespace | quote }}
