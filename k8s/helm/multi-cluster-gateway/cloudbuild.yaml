@@ -34,7 +34,7 @@ steps:
       - -c
       - |
         go install github.com/yannh/kubeconform/cmd/kubeconform@latest
-        helm template little-quest-server ./k8s/helm/multi-cluster-gateway | kubeconform -ignore-missing-schemas -summary
+        helm template little-quest-server --set multiClusterGateway.enabled=true ./k8s/helm/multi-cluster-gateway | kubeconform -ignore-missing-schemas -summary
     waitFor:
     - helm-bin
 
