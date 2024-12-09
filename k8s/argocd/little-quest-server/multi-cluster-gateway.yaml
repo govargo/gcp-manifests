@@ -9,8 +9,7 @@ spec:
   generators:
   - list:
       elements:
-      - cluster: app-0
-        name: gke_kentaiso-330205_asia-northeast1_prod-app-0
+      - name: app-0
   syncPolicy:
     preserveResourcesOnDeletion: true
   template:
@@ -25,9 +24,9 @@ spec:
           prune: true
           selfHeal: true
       source:
-        repoURL: asia-northeast1-docker.pkg.dev/kentaiso-330205/multi-cluster-gateway/charts
+        repoURL: asia-northeast1-docker.pkg.dev/prd-little-quest/multi-cluster-gateway/charts
         chart: multi-cluster-gateway
-        targetRevision: 0.6.4
+        targetRevision: 1.0.0
         helm:
           releaseName: "little-quest-server"
           values: |

@@ -9,10 +9,8 @@ spec:
   generators:
   - list:
       elements:
-      - cluster: app-0
-        name: gke_kentaiso-330205_asia-northeast1_prod-app-0
-      - cluster: app-1
-        name: gke_kentaiso-330205_us-central1_prod-app-1
+      - name: app-0
+      - name: app-1
   ignoreApplicationDifferences:
   - jqPathExpressions:
     - .spec.source.helm.parameters
@@ -20,11 +18,11 @@ spec:
     preserveResourcesOnDeletion: true
   template:
     metadata:
-      name: "{{cluster}}-little-quest-server"
+      name: "{{name}}-little-quest-server"
       annotations:
         argocd.argoproj.io/sync-wave: "1"
         argocd-image-updater.argoproj.io/write-back-method: argocd
-        argocd-image-updater.argoproj.io/image-list: little=asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/little-quest-server
+        argocd-image-updater.argoproj.io/image-list: little=asia-northeast1-docker.pkg.dev/prd-little-quest/little-quest/little-quest-server
         argocd-image-updater.argoproj.io/little.update-strategy: newest-build
         argocd-image-updater.argoproj.io/little.ignore-tags: latest
         argocd-image-updater.argoproj.io/little.force-update: "true"
@@ -40,7 +38,7 @@ spec:
           prune: true
           selfHeal: true
       source:
-        repoURL: asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/charts
+        repoURL: asia-northeast1-docker.pkg.dev/prd-little-quest/little-quest/charts
         chart: little-quest-server
         targetRevision: 1.0.0
         helm:
@@ -50,7 +48,7 @@ spec:
             # This is a YAML-formatted file.
             # Declare variables to be passed into your templates.
             image:
-              repository: asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/little-quest-server
+              repository: asia-northeast1-docker.pkg.dev/prd-little-quest/little-quest/little-quest-server
               pullPolicy: IfNotPresent
 
             imagePullSecrets: []
@@ -86,7 +84,7 @@ spec:
               create: true
               # Annotations to add to the service account
               annotations:
-                iam.gke.io/gcp-service-account: little-quest-server@kentaiso-330205.iam.gserviceaccount.com
+                iam.gke.io/gcp-service-account: little-quest-server@prd-little-quest.iam.gserviceaccount.com
               # The name of the service account to use.
               # If not set and create is true, a name is generated using the fullname template
               name: ""
@@ -185,11 +183,11 @@ spec:
               - "--port=3306"
               - "--max-sigterm-delay=15s"
               - "--prometheus=true"
-              - "--telemetry-project=kentaiso-330205"
+              - "--telemetry-project=prd-little-quest"
               - "--disable-metrics=true"
               - "--disable-traces=true"
               - "--health-check=true"
-              - "kentaiso-330205:asia-northeast1:prod-mysql-instance"
+              - "prd-little-quest:asia-northeast1:prod-mysql-instance"
 
               lifecycle:
                 preStop:
@@ -369,7 +367,7 @@ spec:
             timeZone: Asia/Tokyo
 
             # Google Cloud ProjectId
-            googleCloudProjectId: kentaiso-330205
+            googleCloudProjectId: prd-little-quest
 
             # Trace info
             trace:
@@ -404,7 +402,7 @@ spec:
                 port: 18080
 
             serviceExport:
-              namePrefix: "{{cluster}}"
+              namePrefix: "{{name}}"
 
       destination:
         name: "{{name}}"

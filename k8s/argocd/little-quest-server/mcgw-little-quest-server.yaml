@@ -7,8 +7,7 @@ spec:
   generators:
   - list:
       elements:
-      - cluster: misc-0
-        name: gke_kentaiso-330205_asia-northeast1-a_prod-misc-0
+      - name: misc-0
   syncPolicy:
     preserveResourcesOnDeletion: true
   template:
