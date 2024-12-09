@@ -223,6 +223,9 @@ resource "kubernetes_namespace" "corp0_corp_0" {
 
   metadata {
     name = "corp-0"
+    labels = {
+      "istio-injection" = "enabled"
+    }
   }
 
   depends_on = [module.corp-0]
@@ -317,6 +320,9 @@ resource "kubernetes_namespace" "corp0_agones_system" {
 
   metadata {
     name = "agones-system"
+    labels = {
+      "istio-injection" = "enabled"
+    }
   }
 
   depends_on = [module.corp-0]
@@ -369,6 +375,9 @@ resource "kubernetes_namespace" "corp0_open_match" {
 
   metadata {
     name = "open-match"
+    labels = {
+      "istio-injection" = "enabled"
+    }
   }
 
   depends_on = [module.corp-0]

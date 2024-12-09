@@ -316,6 +316,9 @@ resource "kubernetes_namespace" "misc0_gmp_system" {
 
   metadata {
     name = "gmp-system"
+    labels = {
+      "argocd.argoproj.io/instance" = "misc-0-managed-prometheus"
+    }
   }
 
   depends_on = [module.misc-0]

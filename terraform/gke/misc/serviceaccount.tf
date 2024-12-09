@@ -6,8 +6,8 @@ module "argocd_server_sa" {
   version    = "4.4.2"
   project_id = data.google_project.project.project_id
 
-  names         = ["argocd-server"]
-  display_name  = "ArgoCD Server ServiceAccount"
+  names        = ["argocd-server"]
+  display_name = "ArgoCD Server ServiceAccount"
   project_roles = [
     "${data.google_project.project.project_id}=>roles/container.admin",
     "${data.google_project.project.project_id}=>roles/gkehub.gatewayEditor"
@@ -36,8 +36,8 @@ module "argocd_application_controller_sa" {
   version    = "4.4.2"
   project_id = data.google_project.project.project_id
 
-  names         = ["argocd-application-controller"]
-  display_name  = "ArgoCD Application Controller ServiceAccount"
+  names        = ["argocd-application-controller"]
+  display_name = "ArgoCD Application Controller ServiceAccount"
   project_roles = [
     "${data.google_project.project.project_id}=>roles/container.admin",
     "${data.google_project.project.project_id}=>roles/gkehub.gatewayEditor"

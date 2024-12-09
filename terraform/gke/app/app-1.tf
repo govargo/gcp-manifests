@@ -183,6 +183,9 @@ resource "kubernetes_namespace" "app1_little_quest_server" {
 
   metadata {
     name = "little-quest-server"
+    labels = {
+      "istio-injection" = "enabled"
+    }
   }
 
   depends_on = [module.app-1]
@@ -214,6 +217,9 @@ resource "kubernetes_namespace" "app1_tracing" {
 
   metadata {
     name = "tracing"
+    labels = {
+      "istio-injection" = "enabled"
+    }
   }
 
   depends_on = [module.app-0]
