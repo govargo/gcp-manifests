@@ -146,38 +146,6 @@ extraObjects:
       - objectName: google_chat_webhook_url
         key: google_chat_webhook_url
 
-- apiVersion: secrets-store.csi.x-k8s.io/v1
-  kind: SecretProviderClass
-  metadata:
-    name: gke-cluster-endpoint-secret
-    namespace: argocd
-  spec:
-    provider: gcp
-    parameters:
-      secrets: |
-        - resourceName: "projects/prd-little-quest/secrets/gke_app_0_endpoint/versions/latest"
-          path: gke_app_0_endpoint
-        - resourceName: "projects/prd-little-quest/secrets/gke_app_1_endpoint/versions/latest"
-          path: gke_app_1_endpoint
-        - resourceName: "projects/prd-little-quest/secrets/gke_corp_0_endpoint/versions/latest"
-          path: gke_corp_0_endpoint
-        - resourceName: "projects/prd-little-quest/secrets/gke_misc_0_endpoint/versions/latest"
-          path: gke_misc_0_endpoint
-    secretObjects:
-    - secretName: gke-cluster-endpoint-secret
-      type: Opaque
-      labels:
-        app.kubernetes.io/part-of: argocd
-      data:
-      - objectName: gke_app_0_endpoint
-        key: gke_app_0_endpoint
-      - objectName: gke_app_1_endpoint
-        key: gke_app_1_endpoint
-      - objectName: gke_corp_0_endpoint
-        key: gke_corp_0_endpoint
-      - objectName: gke_misc_0_endpoint
-        key: gke_misc_0_endpoint
-
 ## Controller
 controller:
   serviceAccount:
@@ -187,21 +155,6 @@ controller:
   # -- Annotations to be added to application controller pods
   podAnnotations:
     cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
-
-  # -- Additional volumeMounts to the controller main container
-  volumeMounts:
-  - name: gke-cluster-endpoint-secret
-    mountPath: /var/secrets
-    readOnly: true
-
-  # -- Extra volumes to the controller pod
-  volumes:
-  - name: gke-cluster-endpoint-secret
-    csi:
-      driver: secrets-store.csi.k8s.io
-      readOnly: true
-      volumeAttributes:
-        secretProviderClass: gke-cluster-endpoint-secret
 
   # -- Resource limits and requests for the application controller pods
   resources:
@@ -302,21 +255,6 @@ server:
     minReplicas: 1
     # -- Maximum number of replicas for the Argo CD server [HPA]
     maxReplicas: 2
-
-  # -- Additional volumeMounts to the server main container
-  volumeMounts:
-  - name: gke-cluster-endpoint-secret
-    mountPath: /var/secrets
-    readOnly: true
-
-  # -- Extra volumes to the server pod
-  volumes:
-  - name: gke-cluster-endpoint-secret
-    csi:
-      driver: secrets-store.csi.k8s.io
-      readOnly: true
-      volumeAttributes:
-        secretProviderClass: gke-cluster-endpoint-secret
 
   # -- Resource limits and requests for the Argo CD server
   resources:
