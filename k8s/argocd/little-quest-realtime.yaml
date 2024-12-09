@@ -5,7 +5,7 @@ metadata:
   namespace: argocd
   annotations:
     argocd-image-updater.argoproj.io/write-back-method: argocd
-    argocd-image-updater.argoproj.io/image-list: realtime=asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/little-quest-realtime,frontend=asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/little-quest-frontend,mmf=asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/little-quest-mmf,director=asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/little-quest-director
+    argocd-image-updater.argoproj.io/image-list: realtime=asia-northeast1-docker.pkg.dev/prd-little-quest/little-quest/little-quest-realtime,frontend=asia-northeast1-docker.pkg.dev/prd-little-quest/little-quest/little-quest-frontend,mmf=asia-northeast1-docker.pkg.dev/prd-little-quest/little-quest/little-quest-mmf,director=asia-northeast1-docker.pkg.dev/prd-little-quest/little-quest/little-quest-director
     argocd-image-updater.argoproj.io/realtime.update-strategy: newest-build
     argocd-image-updater.argoproj.io/realtime.ignore-tags: latest
     argocd-image-updater.argoproj.io/realtime.force-update: "true"
@@ -36,9 +36,9 @@ spec:
       prune: true
       selfHeal: true
   source:
-    repoURL: asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/charts
+    repoURL: asia-northeast1-docker.pkg.dev/prd-little-quest/little-quest/charts
     chart: little-quest-realtime
-    targetRevision: 0.5.2
+    targetRevision: 1.0.0
     helm:
       releaseName: "little-quest-realtime"
       values: |
@@ -46,7 +46,7 @@ spec:
           serviceName: little-quest-realtime
 
           image:
-            repository: asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/little-quest-realtime
+            repository: asia-northeast1-docker.pkg.dev/prd-little-quest/little-quest/little-quest-realtime
             pullPolicy: IfNotPresent
             # Overrides the image tag whose default is the chart appVersion.
             tag: ""
@@ -60,7 +60,7 @@ spec:
             create: true
             # Annotations to add to the service account
             annotations:
-              iam.gke.io/gcp-service-account: little-quest-realtime@kentaiso-330205.iam.gserviceaccount.com
+              iam.gke.io/gcp-service-account: little-quest-realtime@prd-little-quest.iam.gserviceaccount.com
             # The name of the service account to use.
             # If not set and create is true, a name is generated using the fullname template
             name: ""
@@ -198,7 +198,7 @@ spec:
             create: true
             # Annotations to add to the service account
             annotations:
-              iam.gke.io/gcp-service-account: little-quest-frontend@kentaiso-330205.iam.gserviceaccount.com
+              iam.gke.io/gcp-service-account: little-quest-frontend@prd-little-quest.iam.gserviceaccount.com
             # The name of the service account to use.
             # If not set and create is true, a name is generated using the fullname template
             name: ""
@@ -341,7 +341,7 @@ spec:
           serviceName: little-quest-mmf
 
           image:
-            repository: asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/little-quest-mmf
+            repository: asia-northeast1-docker.pkg.dev/prd-little-quest/little-quest/little-quest-mmf
             pullPolicy: IfNotPresent
             # Overrides the image tag whose default is the chart appVersion.
             tag: ""
@@ -362,7 +362,7 @@ spec:
             create: true
             # Annotations to add to the service account
             annotations:
-              iam.gke.io/gcp-service-account: little-quest-mmf@kentaiso-330205.iam.gserviceaccount.com
+              iam.gke.io/gcp-service-account: little-quest-mmf@prd-little-quest.iam.gserviceaccount.com
             # The name of the service account to use.
             # If not set and create is true, a name is generated using the fullname template
             name: ""
@@ -510,7 +510,7 @@ spec:
           serviceName: little-quest-director
 
           image:
-            repository: asia-northeast1-docker.pkg.dev/kentaiso-330205/little-quest/little-quest-director
+            repository: asia-northeast1-docker.pkg.dev/prd-little-quest/little-quest/little-quest-director
             pullPolicy: IfNotPresent
             # Overrides the image tag whose default is the chart appVersion.
             tag: ""
@@ -531,7 +531,7 @@ spec:
             create: true
             # Annotations to add to the service account
             annotations:
-              iam.gke.io/gcp-service-account: little-quest-director@kentaiso-330205.iam.gserviceaccount.com
+              iam.gke.io/gcp-service-account: little-quest-director@prd-little-quest.iam.gserviceaccount.com
             # The name of the service account to use.
             # If not set and create is true, a name is generated using the fullname template
             name: ""
@@ -657,7 +657,7 @@ spec:
         env: production
 
         # Google Cloud ProjectId
-        googleCloudProjectId: kentaiso-330205
+        googleCloudProjectId: prd-little-quest
 
   ignoreDifferences:
   - group: agones.dev
@@ -668,5 +668,5 @@ spec:
     - /spec/replicas
 
   destination:
-    name: "gke_kentaiso-330205_asia-northeast1_prod-corp-0"
+    name: corp-0
     namespace: corp-0
