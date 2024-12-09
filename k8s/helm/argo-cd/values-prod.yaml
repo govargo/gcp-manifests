@@ -152,6 +152,11 @@ controller:
     annotations:
       iam.gke.io/gcp-service-account: argocd-application-controller@prd-little-quest.iam.gserviceaccount.com
 
+## comment-out when first creation
+# env:
+# - name: ARGOCD_SYNC_WAVE_DELAY
+#   value: "300"
+
   # -- Annotations to be added to application controller pods
   podAnnotations:
     cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
