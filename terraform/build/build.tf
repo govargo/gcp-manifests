@@ -27,9 +27,9 @@ resource "google_project_iam_member" "artifact_writer" {
   depends_on = [google_service_account.cloudbuild_service_account]
 }
 
-data "google_iam_policy" "object_creator" {
+data "google_iam_policy" "storage_admin" {
   binding {
-    role = "roles/storage.objectCreator"
+    role = "roles/storage.admin"
     members = [
       "serviceAccount:${google_service_account.cloudbuild_service_account.email}",
     ]
@@ -40,7 +40,7 @@ data "google_iam_policy" "object_creator" {
 
 resource "google_storage_bucket_iam_policy" "policy" {
   bucket      = data.google_project.project.project_id
-  policy_data = data.google_iam_policy.object_creator.policy_data
+  policy_data = data.google_iam_policy.storage_admin.policy_data
 }
 
 ## Connect to repository
