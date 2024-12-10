@@ -49,11 +49,11 @@ module "gke_cluster_upgrade_notifier_sa" {
 
 module "gke_cluster_upgrade_notifier_secret_accessor_binding" {
   source  = "terraform-google-modules/iam/google//modules/secret_manager_iam"
-  version = "7.7.1"
+  version = "8.0.0"
   project = data.google_project.project.project_id
 
   secrets = [google_secret_manager_secret.gke_cluster_upgrade_notifier_url.secret_id]
-  mode    = "additive"
+  mode    = "authoritative"
   bindings = {
     "roles/secretmanager.secretAccessor" = [
       "serviceAccount:${module.gke_cluster_upgrade_notifier_sa.email}"
@@ -74,11 +74,11 @@ module "alertmanager_to_google_chat_sa" {
 
 module "alertmanager_to_google_chat_url_secret_accessor_binding" {
   source  = "terraform-google-modules/iam/google//modules/secret_manager_iam"
-  version = "7.7.1"
+  version = "8.0.0"
   project = data.google_project.project.project_id
 
   secrets = [google_secret_manager_secret.alertmanager_to_google_chat_url.secret_id]
-  mode    = "additive"
+  mode    = "authoritative"
   bindings = {
     "roles/secretmanager.secretAccessor" = [
       "serviceAccount:${module.alertmanager_to_google_chat_sa.email}"
@@ -89,11 +89,11 @@ module "alertmanager_to_google_chat_url_secret_accessor_binding" {
 
 module "alertmanager_to_google_chat_workloadIdentity_binding" {
   source  = "terraform-google-modules/iam/google//modules/service_accounts_iam"
-  version = "7.7.1"
+  version = "8.0.0"
   project = data.google_project.project.project_id
 
   service_accounts = [module.alertmanager_to_google_chat_sa.email]
-  mode             = "additive"
+  mode             = "authoritative"
   bindings = {
     "roles/iam.workloadIdentityUser" = [
       "serviceAccount:${data.google_project.project.project_id}.svc.id.goog[gmp-system/default]"
@@ -109,22 +109,17 @@ resource "google_eventarc_google_channel_config" "google_config" {
   name     = "projects/${data.google_project.project.project_id}/locations/${var.region}/googleChannelConfig"
 }
 
-resource "google_eventarc_trigger" "gke_cluster_upgrade_notifier" {
-  project  = data.google_project.project.project_id
-  name     = "gke-cluster-upgrade-notifier-446780"
-  location = var.region
+## Object Upload to Cloud Storage
+resource "google_storage_bucket_object" "gke_cluster_upgrade_notifier_source" {
+  name   = "gke-cluster-upgrade-notifier/function-source.zip"
+  source = "files/gke-cluster-upgrade-notifier/function-source.zip"
+  bucket = data.google_project.project.project_id
+}
 
-  labels = {
-    "goog-managed-by" = "cloudfunctions"
-  }
-
-  matching_criteria {
-    attribute = "type"
-    value     = "google.cloud.pubsub.topic.v1.messagePublished"
-  }
-  service_account = module.gke_cluster_upgrade_notifier_sa.email
-  destination {
-  }
+resource "google_storage_bucket_object" "alertmanager_to_google_chat_source" {
+  name   = "alertmanager-to-google-chat/function-source.zip"
+  source = "files/alertmanager-to-google-chat/function-source.zip"
+  bucket = data.google_project.project.project_id
 }
 
 ## Cloud Functions
@@ -146,7 +141,7 @@ resource "google_cloudfunctions2_function" "gke_cluster_upgrade_notifier" {
     docker_repository = "projects/${data.google_project.project.project_id}/locations/${var.region}/repositories/gcf-artifacts"
     source {
       storage_source {
-        bucket = "gcf-v2-sources-${data.google_project.project.number}-${var.region}"
+        bucket = data.google_project.project.project_id
         object = "gke-cluster-upgrade-notifier/function-source.zip"
       }
     }
@@ -185,7 +180,8 @@ resource "google_cloudfunctions2_function" "gke_cluster_upgrade_notifier" {
   depends_on = [
     module.gke_cluster_upgrade_notifier_sa,
     google_secret_manager_secret.gke_cluster_upgrade_notifier_url,
-    google_eventarc_trigger.gke_cluster_upgrade_notifier
+    google_storage_bucket_object.gke_cluster_upgrade_notifier_source,
+    google_eventarc_google_channel_config.google_config
   ]
 }
 
@@ -207,7 +203,7 @@ resource "google_cloudfunctions2_function" "alertmanager_to_google_chat" {
     docker_repository = "projects/${data.google_project.project.project_id}/locations/${var.region}/repositories/gcf-artifacts"
     source {
       storage_source {
-        bucket = "gcf-v2-sources-${data.google_project.project.number}-${var.region}"
+        bucket = data.google_project.project.project_id
         object = "alertmanager-to-google-chat/function-source.zip"
       }
     }
@@ -237,6 +233,8 @@ resource "google_cloudfunctions2_function" "alertmanager_to_google_chat" {
 
   depends_on = [
     module.alertmanager_to_google_chat_sa,
-    google_secret_manager_secret.alertmanager_to_google_chat_url
+    google_secret_manager_secret.alertmanager_to_google_chat_url,
+    google_storage_bucket_object.alertmanager_to_google_chat_source
   ]
 }
+
