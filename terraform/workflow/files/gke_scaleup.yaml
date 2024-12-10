@@ -26,7 +26,7 @@ main:
 
 prod_app_0_scaleup:
   params:
-    - project_id: kentaiso-330205
+    - project_id: prd-little-quest
     - region: "asia-northeast1"
     - cluster_id: "prod-app-0"
     - scale_up_size: 0
@@ -100,7 +100,7 @@ prod_app_0_scaleup:
 
 prod_app_1_scaleup:
   params:
-    - project_id: kentaiso-330205
+    - project_id: prd-little-quest
     - region: "us-central1"
     - cluster_id: "prod-app-1"
     - scale_up_size: 0
@@ -174,7 +174,7 @@ prod_app_1_scaleup:
 
 prod_corp_0_scaleup:
   params:
-    - project_id: kentaiso-330205
+    - project_id: prd-little-quest
     - region: "asia-northeast1"
     - cluster_id: "prod-corp-0"
     - scale_up_size: 0
@@ -276,7 +276,7 @@ prod_corp_0_scaleup:
 
 prod_misc_0_scaleup:
   params:
-    - project_id: kentaiso-330205
+    - project_id: prd-little-quest
     - zone: "asia-northeast1-a"
     - cluster_id: "prod-misc-0"
     - scale_up_size: 0

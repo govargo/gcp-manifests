@@ -200,3 +200,4 @@ resource "google_cloud_scheduler_job" "gke_scaleup_workflow_job" {
 
   depends_on = [module.workflow_scheduler_sa, google_workflows_workflow.scale_up_gke_workloads_workflow]
 }
+
