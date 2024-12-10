@@ -39,11 +39,11 @@ module "cloud_build_notifier_sa" {
 
 module "cloud_build_notifier_secret_accessor_binding" {
   source  = "terraform-google-modules/iam/google//modules/secret_manager_iam"
-  version = "7.7.1"
+  version = "8.0.0"
   project = data.google_project.project.project_id
 
   secrets = [google_secret_manager_secret.cloud_build_notifier_url.secret_id]
-  mode    = "additive"
+  mode    = "authoritative"
   bindings = {
     "roles/secretmanager.secretAccessor" = [
       "serviceAccount:${module.cloud_build_notifier_sa.email}"
@@ -95,12 +95,16 @@ resource "google_cloud_run_v2_service" "cloud_build_notifier" {
     service_account = module.cloud_build_notifier_sa.email
   }
   timeouts {}
+
+  deletion_protection = false
+
+  depends_on = [google_storage_bucket_object.cloud_build_notifier_yaml]
 }
 
 ## Cloud Pub/Sub
 module "cloud_builds_notifier" {
   source     = "terraform-google-modules/pubsub/google"
-  version    = "6.0.0"
+  version    = "7.0.0"
   project_id = data.google_project.project.project_id
 
   topic                            = "cloud-builds"

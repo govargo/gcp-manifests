@@ -10,4 +10,4 @@ spec:
         secretRef: webhook-url
   secrets:
   - name: webhook-url
-    value: projects/kentaiso-330205/secrets/cloud_build_notifier_url/versions/latest
+    value: projects/prd-little-quest/secrets/cloud_build_notifier_url/versions/latest
