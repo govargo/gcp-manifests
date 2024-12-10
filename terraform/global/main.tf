@@ -232,6 +232,24 @@ resource "google_project_iam_member" "allow_cloudsql_client" {
   depends_on = [google_project_service.service, time_sleep.wait_150_seconds]
 }
 
+# This binding is needed for build Cloud Run functions
+resource "google_project_iam_member" "allow_build_builder" {
+  project = data.google_project.project.project_id
+  role    = "roles/cloudbuild.builds.builder"
+  member  = "serviceAccount:${data.google_compute_default_service_account.default.email}"
+
+  depends_on = [google_project_service.service, time_sleep.wait_150_seconds]
+}
+
+# This binding is needed for build Cloud Run functions deploy
+resource "google_project_iam_member" "allow_secret_accessor" {
+  project = data.google_project.project.project_id
+  role    = "roles/secretmanager.secretAccessor"
+  member  = "serviceAccount:${data.google_compute_default_service_account.default.email}"
+
+  depends_on = [google_project_service.service, time_sleep.wait_150_seconds]
+}
+
 resource "google_project_iam_member" "allow_securitycommandcenter_serviceagent" {
   project = data.google_project.project.project_id
   role    = "roles/securitycenter.serviceAgent"
