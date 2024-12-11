@@ -231,6 +231,9 @@ frontend:
     port: 80
     nodePort:
 
+  serviceexport:
+    enabled: false
+
   autoscaling:
     enabled: false
     minReplicas: 1

@@ -1,0 +1,7 @@
+{{- if .Values.frontend.serviceexport.enabled }}
+kind: ServiceExport
+apiVersion: net.gke.io/v1
+metadata:
+ namespace: 
+ name: {{ include "little-quest-frontend.fullname" . }}
+{{- end }}
