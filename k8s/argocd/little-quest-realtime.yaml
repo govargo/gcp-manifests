@@ -38,7 +38,7 @@ spec:
   source:
     repoURL: asia-northeast1-docker.pkg.dev/prd-little-quest/little-quest/charts
     chart: little-quest-realtime
-    targetRevision: 1.0.0
+    targetRevision: 1.0.1
     helm:
       releaseName: "little-quest-realtime"
       values: |
@@ -315,6 +315,9 @@ spec:
             type: ClusterIP
             headless: false
             port: 80
+
+          serviceexport:
+            enabled: true
 
           autoscaling:
             enabled: true
