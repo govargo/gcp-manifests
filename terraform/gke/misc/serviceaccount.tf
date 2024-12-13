@@ -3,7 +3,7 @@
 # argocd-server
 module "argocd_server_sa" {
   source     = "terraform-google-modules/service-accounts/google"
-  version    = "4.4.2"
+  version    = "4.4.3"
   project_id = data.google_project.project.project_id
 
   names        = ["argocd-server"]
@@ -33,7 +33,7 @@ module "argocd_server_workloadIdentity_binding" {
 # argocd-application-controller
 module "argocd_application_controller_sa" {
   source     = "terraform-google-modules/service-accounts/google"
-  version    = "4.4.2"
+  version    = "4.4.3"
   project_id = data.google_project.project.project_id
 
   names        = ["argocd-application-controller"]
@@ -63,7 +63,7 @@ module "argocd_application_controller_sa_workloadIdentity_binding" {
 # argocd-dex-server
 module "argocd_dex_server_sa" {
   source     = "terraform-google-modules/service-accounts/google"
-  version    = "4.4.2"
+  version    = "4.4.3"
   project_id = data.google_project.project.project_id
 
   names        = ["argocd-dex-server"]
@@ -106,7 +106,7 @@ module "argocd_dex_server_secret_accessor_binding" {
 # argocd-repo-server
 module "argocd_repo_server_sa" {
   source     = "terraform-google-modules/service-accounts/google"
-  version    = "4.4.2"
+  version    = "4.4.3"
   project_id = data.google_project.project.project_id
 
   names         = ["argocd-repo-server"]
@@ -133,7 +133,7 @@ module "argocd_repo_server_workloadIdentity_binding" {
 # argocd-notification-controller
 module "argocd_notifications_controller_sa" {
   source     = "terraform-google-modules/service-accounts/google"
-  version    = "4.4.2"
+  version    = "4.4.3"
   project_id = data.google_project.project.project_id
 
   names        = ["argocd-notifications"]
@@ -177,7 +177,7 @@ module "argocd_notifications_controller_secret_accessor_binding" {
 # argocd-image-updater
 module "argocd_image_updater_sa" {
   source     = "terraform-google-modules/service-accounts/google"
-  version    = "4.4.2"
+  version    = "4.4.3"
   project_id = data.google_project.project.project_id
 
   names         = ["argocd-image-updater"]
@@ -213,7 +213,7 @@ resource "google_project_iam_custom_role" "gmp_rule_evaluator_role" {
 # Kubernetes deployment rule-evaluator uses collector service account
 module "gmp_collector_sa" {
   source       = "terraform-google-modules/service-accounts/google"
-  version      = "4.4.2"
+  version      = "4.4.3"
   project_id   = data.google_project.project.project_id
   names        = ["collector"]
   display_name = "Google Managed Prometheus Collector ServiceAccount"
