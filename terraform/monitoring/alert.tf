@@ -1581,19 +1581,8 @@ resource "google_monitoring_alert_policy" "dataform_workflow_error" {
   combiner = "OR"
   conditions {
     display_name = "Dataform - Workflow Error"
-    condition_threshold {
-      filter     = "resource.type = \"dataform.googleapis.com/Repository\" AND metric.type = \"logging.googleapis.com/log_entry_count\" AND metric.labels.severity = \"ERROR\""
-      duration   = "300s"
-      comparison = "COMPARISON_GT"
-      aggregations {
-        alignment_period     = "300s"
-        per_series_aligner   = "ALIGN_SUM"
-        cross_series_reducer = "REDUCE_SUM"
-      }
-      trigger {
-        count = 1
-      }
-      threshold_value = 1
+    condition_matched_log {
+      filter = "resource.type = \"dataform.googleapis.com/Repository\" AND jsonPayload.@type = \"type.googleapis.com/google.cloud.dataform.logging.v1.WorkflowInvocationCompletionLogEntry\" AND jsonPayload.terminalState = \"FAILED\""
     }
   }
 
@@ -1602,6 +1591,9 @@ resource "google_monitoring_alert_policy" "dataform_workflow_error" {
   }
 
   alert_strategy {
+    notification_rate_limit {
+      period = "3600s"
+    }
     auto_close = "604800s"
   }
 
