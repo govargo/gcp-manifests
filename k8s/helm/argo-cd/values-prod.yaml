@@ -44,62 +44,6 @@ configs:
     # If omitted or empty, users may be still be able to login, but will see no apps, projects, etc...
     policy.default: 'role:admin'
 
-  # -- Provide one or multiple [external cluster credentials]
-  # @default -- `{}` (See [values.yaml])
-  ## Ref:
-  ## - https://argo-cd.readthedocs.io/en/stable/operator-manual/declarative-setup/#clusters
-  ## - https://argo-cd.readthedocs.io/en/stable/operator-manual/security/#external-cluster-credentials
-  ## - https://argo-cd.readthedocs.io/en/stable/user-guide/projects/#project-scoped-repositories-and-clusters
-  clusterCredentials:
-    app-0:
-      server: https://connectgateway.googleapis.com/v1/projects/953010146297/locations/asia-northeast1/gkeMemberships/prod-app-0-membership
-      labels:
-        argocd.argoproj.io/secret-type: cluster
-      config:
-        execProviderConfig:
-          command: "argocd-k8s-auth"
-          args: ["gcp"]
-          apiVersion: "client.authentication.k8s.io/v1beta1"
-        tlsClientConfig:
-          insecure: false
-          caData: ""
-    app-1:
-      server: https://connectgateway.googleapis.com/v1/projects/953010146297/locations/us-central1/gkeMemberships/prod-app-1-membership
-      labels:
-        argocd.argoproj.io/secret-type: cluster
-      config:
-        execProviderConfig:
-          command: "argocd-k8s-auth"
-          args: ["gcp"]
-          apiVersion: "client.authentication.k8s.io/v1beta1"
-        tlsClientConfig:
-          insecure: false
-          caData: ""
-    corp-0:
-      server: https://connectgateway.googleapis.com/v1/projects/953010146297/locations/asia-northeast1/gkeMemberships/prod-corp-0-membership
-      labels:
-        argocd.argoproj.io/secret-type: cluster
-      config:
-        execProviderConfig:
-          command: "argocd-k8s-auth"
-          args: ["gcp"]
-          apiVersion: "client.authentication.k8s.io/v1beta1"
-        tlsClientConfig:
-          insecure: false
-          caData: ""
-    misc-0:
-      server: https://connectgateway.googleapis.com/v1/projects/953010146297/locations/asia-northeast1/gkeMemberships/prod-misc-0-membership
-      labels:
-        argocd.argoproj.io/secret-type: cluster
-      config:
-        execProviderConfig:
-          command: "argocd-k8s-auth"
-          args: ["gcp"]
-          apiVersion: "client.authentication.k8s.io/v1beta1"
-        tlsClientConfig:
-          insecure: false
-          caData: ""
-
 # -- Array of extra K8s manifests to deploy
 extraObjects:
 - apiVersion: secrets-store.csi.x-k8s.io/v1
@@ -146,6 +90,122 @@ extraObjects:
       - objectName: google_chat_webhook_url
         key: google_chat_webhook_url
 
+- apiVersion: secrets-store.csi.x-k8s.io/v1
+  kind: SecretProviderClass
+  metadata:
+    name: argocd-cluster-app-0
+    namespace: argocd
+  spec:
+    provider: gcp
+    parameters:
+      secrets: |
+        - resourceName: "projects/prd-little-quest/secrets/gke_app_0_clustername/versions/latest"
+          path: name
+        - resourceName: "projects/prd-little-quest/secrets/gke_app_0_endpoint/versions/latest"
+          path: server
+        - resourceName: "projects/prd-little-quest/secrets/gke_app_0_clusterconfig/versions/latest"
+          path: config
+    secretObjects:
+    - secretName: argocd-cluster-app-0
+      type: Opaque
+      labels:
+        app.kubernetes.io/part-of: argocd
+        argocd.argoproj.io/secret-type: cluster
+      data:
+      - objectName: name
+        key: name
+      - objectName: server
+        key: server
+      - objectName: config
+        key: config
+
+- apiVersion: secrets-store.csi.x-k8s.io/v1
+  kind: SecretProviderClass
+  metadata:
+    name: argocd-cluster-app-1
+    namespace: argocd
+  spec:
+    provider: gcp
+    parameters:
+      secrets: |
+        - resourceName: "projects/prd-little-quest/secrets/gke_app_1_clustername/versions/latest"
+          path: name
+        - resourceName: "projects/prd-little-quest/secrets/gke_app_1_endpoint/versions/latest"
+          path: server
+        - resourceName: "projects/prd-little-quest/secrets/gke_app_1_clusterconfig/versions/latest"
+          path: config
+    secretObjects:
+    - secretName: argocd-cluster-app-1
+      type: Opaque
+      labels:
+        app.kubernetes.io/part-of: argocd
+        argocd.argoproj.io/secret-type: cluster
+      data:
+      - objectName: name
+        key: name
+      - objectName: server
+        key: server
+      - objectName: config
+        key: config
+
+- apiVersion: secrets-store.csi.x-k8s.io/v1
+  kind: SecretProviderClass
+  metadata:
+    name: argocd-cluster-corp-0
+    namespace: argocd
+  spec:
+    provider: gcp
+    parameters:
+      secrets: |
+        - resourceName: "projects/prd-little-quest/secrets/gke_corp_0_clustername/versions/latest"
+          path: name
+        - resourceName: "projects/prd-little-quest/secrets/gke_corp_0_endpoint/versions/latest"
+          path: server
+        - resourceName: "projects/prd-little-quest/secrets/gke_corp_0_clusterconfig/versions/latest"
+          path: config
+    secretObjects:
+    - secretName: argocd-cluster-corp-0
+      type: Opaque
+      labels:
+        app.kubernetes.io/part-of: argocd
+        argocd.argoproj.io/secret-type: cluster
+      data:
+      - objectName: name
+        key: name
+      - objectName: server
+        key: server
+      - objectName: config
+        key: config
+
+- apiVersion: secrets-store.csi.x-k8s.io/v1
+  kind: SecretProviderClass
+  metadata:
+    name: argocd-cluster-misc-0
+    namespace: argocd
+  spec:
+    provider: gcp
+    parameters:
+      secrets: |
+        - resourceName: "projects/prd-little-quest/secrets/gke_misc_0_clustername/versions/latest"
+          path: name
+        - resourceName: "projects/prd-little-quest/secrets/gke_misc_0_endpoint/versions/latest"
+          path: server
+        - resourceName: "projects/prd-little-quest/secrets/gke_misc_0_clusterconfig/versions/latest"
+          path: config
+    secretObjects:
+    - secretName: argocd-cluster-misc-0
+      type: Opaque
+      labels:
+        app.kubernetes.io/part-of: argocd
+        argocd.argoproj.io/secret-type: cluster
+      data:
+      - objectName: name
+        key: name
+      - objectName: server
+        key: server
+      - objectName: config
+        key: config
+
 ## Controller
 controller:
   serviceAccount:
@@ -160,6 +220,48 @@ controller:
   # -- Annotations to be added to application controller pods
   podAnnotations:
     cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+
+  # -- Additional volumeMounts to the controller main container
+  volumeMounts:
+  - name: argocd-cluster-app-0
+    mountPath: /var/secrets/app-0
+    readOnly: true
+  - name: argocd-cluster-app-1
+    mountPath: /var/secrets/app-1
+    readOnly: true
+  - name: argocd-cluster-corp-0
+    mountPath: /var/secrets/corp-0
+    readOnly: true
+  - name: argocd-cluster-misc-0
+    mountPath: /var/secrets/misc-0
+    readOnly: true
+
+  # -- Extra volumes to the controller pod
+  volumes:
+  - name: argocd-cluster-app-0
+    csi:
+      driver: secrets-store.csi.k8s.io
+      readOnly: true
+      volumeAttributes:
+        secretProviderClass: argocd-cluster-app-0
+  - name: argocd-cluster-app-1
+    csi:
+      driver: secrets-store.csi.k8s.io
+      readOnly: true
+      volumeAttributes:
+        secretProviderClass: argocd-cluster-app-1
+  - name: argocd-cluster-corp-0
+    csi:
+      driver: secrets-store.csi.k8s.io
+      readOnly: true
+      volumeAttributes:
+        secretProviderClass: argocd-cluster-corp-0
+  - name: argocd-cluster-misc-0
+    csi:
+      driver: secrets-store.csi.k8s.io
+      readOnly: true
+      volumeAttributes:
+        secretProviderClass: argocd-cluster-misc-0
 
   # -- Resource limits and requests for the application controller pods
   resources:

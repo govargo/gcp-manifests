@@ -9,8 +9,7 @@ module "argocd_server_sa" {
   names        = ["argocd-server"]
   display_name = "ArgoCD Server ServiceAccount"
   project_roles = [
-    "${data.google_project.project.project_id}=>roles/container.admin",
-    "${data.google_project.project.project_id}=>roles/gkehub.gatewayEditor"
+    "${data.google_project.project.project_id}=>roles/container.developer"
   ]
 }
 
@@ -39,8 +38,7 @@ module "argocd_application_controller_sa" {
   names        = ["argocd-application-controller"]
   display_name = "ArgoCD Application Controller ServiceAccount"
   project_roles = [
-    "${data.google_project.project.project_id}=>roles/container.admin",
-    "${data.google_project.project.project_id}=>roles/gkehub.gatewayEditor"
+    "${data.google_project.project.project_id}=>roles/container.developer"
   ]
 }
 
@@ -57,7 +55,42 @@ module "argocd_application_controller_sa_workloadIdentity_binding" {
     ]
   }
 
-  depends_on = [module.argocd_server_sa, kubernetes_service_account.misc0_argocd_application_controller]
+  depends_on = [module.argocd_application_controller_sa, kubernetes_service_account.misc0_argocd_application_controller]
+}
+
+module "argocd_application_controller_secret_accessor_binding" {
+  source  = "terraform-google-modules/iam/google//modules/secret_manager_iam"
+  version = "8.0.0"
+  project = data.google_project.project.project_id
+
+  secrets = [
+    "gke_app_0_clustername",
+    "gke_app_0_endpoint",
+    "gke_app_0_clusterconfig",
+    "gke_app_1_clustername",
+    "gke_app_1_endpoint",
+    "gke_app_1_clusterconfig",
+    "gke_corp_0_clustername",
+    "gke_corp_0_endpoint",
+    "gke_corp_0_clusterconfig",
+    "gke_misc_0_clustername",
+    "gke_misc_0_endpoint",
+    "gke_misc_0_clusterconfig"
+  ]
+  mode = "authoritative"
+
+  bindings = {
+    "roles/secretmanager.secretAccessor" = [
+      "serviceAccount:${module.argocd_application_controller_sa.service_account.email}"
+    ]
+  }
+
+  depends_on = [
+    module.argocd_application_controller_sa,
+    google_secret_manager_secret.gke_misc_0_clustername,
+    google_secret_manager_secret.gke_misc_0_endpoint,
+    google_secret_manager_secret.gke_misc_0_clusterconfig
+  ]
 }
 
 # argocd-dex-server

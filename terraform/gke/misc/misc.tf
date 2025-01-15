@@ -162,6 +162,94 @@ module "misc-0" {
   }
 }
 
+resource "google_secret_manager_secret" "gke_misc_0_clustername" {
+  project   = data.google_project.project.project_id
+  secret_id = "gke_misc_0_clustername"
+
+  labels = {
+    role = "gke_misc_0_clustername"
+  }
+
+  replication {
+    auto {}
+  }
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
+resource "google_secret_manager_secret_version" "gke_misc_0_clustername" {
+  secret = google_secret_manager_secret.gke_misc_0_clustername.id
+
+  secret_data = "misc-0"
+
+  depends_on = [module.misc-0, google_secret_manager_secret.gke_misc_0_clustername]
+}
+
+resource "google_secret_manager_secret" "gke_misc_0_endpoint" {
+  project   = data.google_project.project.project_id
+  secret_id = "gke_misc_0_endpoint"
+
+  labels = {
+    role = "gke_misc_0_endpoint"
+  }
+
+  replication {
+    auto {}
+  }
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
+resource "google_secret_manager_secret_version" "gke_misc_0_endpoint" {
+  secret = google_secret_manager_secret.gke_misc_0_endpoint.id
+
+  secret_data = "https://${module.misc-0.endpoint}"
+
+  depends_on = [module.misc-0, google_secret_manager_secret.gke_misc_0_endpoint]
+}
+
+resource "google_secret_manager_secret" "gke_misc_0_clusterconfig" {
+  project   = data.google_project.project.project_id
+  secret_id = "gke_misc_0_clusterconfig"
+
+  labels = {
+    role = "gke_misc_0_clusterconfig"
+  }
+
+  replication {
+    auto {}
+  }
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
+resource "google_secret_manager_secret_version" "gke_misc_0_clusterconfig" {
+  secret = google_secret_manager_secret.gke_misc_0_clusterconfig.id
+
+  secret_data = <<EOF
+{
+  "execProviderConfig": {
+    "command": "argocd-k8s-auth",
+    "args": ["gcp"],
+    "apiVersion": "client.authentication.k8s.io/v1beta1"
+  },
+  "tlsClientConfig": {
+    "insecure": false,
+    "caData": "${module.misc-0.ca_certificate}"
+  }
+}
+EOF
+
+
+  depends_on = [module.misc-0, google_secret_manager_secret.gke_misc_0_clusterconfig]
+}
+
 data "google_client_config" "default" {}
 
 provider "kubernetes" {
