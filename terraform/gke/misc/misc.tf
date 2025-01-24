@@ -46,10 +46,8 @@ module "misc-0" {
   resource_usage_export_dataset_id     = "all_billing_data"
   enable_network_egress_export         = var.enable_network_egress_export
   remove_default_node_pool             = true
-  security_posture_mode                = "BASIC"
-  security_posture_vulnerability_mode  = "VULNERABILITY_BASIC"
-  workload_config_audit_mode           = "BASIC"
-  workload_vulnerability_mode          = "BASIC"
+  security_posture_mode                = "DISABLED"
+  security_posture_vulnerability_mode  = "VULNERABILITY_DISABLED"
   notification_config_topic            = "projects/${data.google_project.project.project_id}/topics/gke-cluster-upgrade-notification"
   deletion_protection                  = false
 
