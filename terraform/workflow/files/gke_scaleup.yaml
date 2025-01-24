@@ -39,8 +39,8 @@ prod_app_0_scaleup:
           autoscaling:
             enabled: true
             autoprovisioned: false
-            minNodeCount: 0
-            maxNodeCount: 100
+            totalMinNodeCount: 0
+            totalMaxNodeCount: 100
       result: enable_autoscaling_app_pool
   - enable_autoscaling_kube_system:
       call: googleapis.container.v1.projects.locations.clusters.nodePools.setAutoscaling
@@ -50,8 +50,8 @@ prod_app_0_scaleup:
           autoscaling:
             enabled: true
             autoprovisioned: false
-            minNodeCount: 1
-            maxNodeCount: 100
+            totalMinNodeCount: 2
+            totalMaxNodeCount: 100
       result: enable_autoscaling_kube_system_pool
   - wait:
       call: sys.sleep
@@ -113,8 +113,8 @@ prod_app_1_scaleup:
           autoscaling:
             enabled: true
             autoprovisioned: false
-            minNodeCount: 0
-            maxNodeCount: 100
+            totalMinNodeCount: 0
+            totalMaxNodeCount: 100
       result: enable_autoscaling_app_pool
   - enable_autoscaling_kube_system:
       call: googleapis.container.v1.projects.locations.clusters.nodePools.setAutoscaling
@@ -124,8 +124,8 @@ prod_app_1_scaleup:
           autoscaling:
             enabled: true
             autoprovisioned: false
-            minNodeCount: 1
-            maxNodeCount: 100
+            totalMinNodeCount: 2
+            totalMaxNodeCount: 100
       result: enable_autoscaling_kube_system_pool
   - wait:
       call: sys.sleep
@@ -187,8 +187,8 @@ prod_corp_0_scaleup:
           autoscaling:
             enabled: true
             autoprovisioned: false
-            minNodeCount: 0
-            maxNodeCount: 100
+            totalMinNodeCount: 0
+            totalMaxNodeCount: 100
       result: enable_autoscaling_open_match_pool
   - enable_autoscaling_kube_system:
       call: googleapis.container.v1.projects.locations.clusters.nodePools.setAutoscaling
@@ -198,8 +198,8 @@ prod_corp_0_scaleup:
           autoscaling:
             enabled: true
             autoprovisioned: false
-            minNodeCount: 1
-            maxNodeCount: 100
+            totalMinNodeCount: 2
+            totalMaxNodeCount: 100
       result: enable_autoscaling_kube_system_pool
   - wait_autoscaling:
       call: sys.sleep
@@ -298,8 +298,8 @@ prod_misc_0_scaleup:
                 autoscaling:
                   enabled: true
                   autoprovisioned: false
-                  minNodeCount: 0
-                  maxNodeCount: 100
+                  totalMinNodeCount: 0
+                  totalMaxNodeCount: 1
             result: enable_autoscaling
   - wait:
       call: sys.sleep
