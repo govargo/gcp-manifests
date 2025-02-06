@@ -38,7 +38,7 @@ module "argocd_application_controller_sa" {
   names        = ["argocd-application-controller"]
   display_name = "ArgoCD Application Controller ServiceAccount"
   project_roles = [
-    "${data.google_project.project.project_id}=>roles/container.developer"
+    "${data.google_project.project.project_id}=>roles/container.admin"
   ]
 }
 
