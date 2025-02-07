@@ -23,6 +23,7 @@ module "gke_node_scaler_workflow_sa" {
   project_roles = [
     "${data.google_project.project.project_id}=>roles/container.clusterAdmin",
     "${data.google_project.project.project_id}=>roles/container.developer",
+    "${data.google_project.project.project_id}=>roles/cloudsql.editor",
   ]
 }
 

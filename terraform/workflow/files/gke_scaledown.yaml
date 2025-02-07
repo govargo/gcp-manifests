@@ -23,6 +23,14 @@ main:
             - misc_0_scale_down:
                 call: prod_misc_0_scaledown
                 result: misc_0_scale_down
+  - stop_cloudsql_instance:
+      call: googleapis.sqladmin.v1beta4.instances.patch
+      args:
+        project: prd-little-quest
+        instance: prod-mysql-instance
+        body:
+          settings:
+            activationPolicy: "NEVER"
 
 prod_app_0_scaledown:
   params:
