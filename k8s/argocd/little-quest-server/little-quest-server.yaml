@@ -90,6 +90,7 @@ spec:
               name: ""
 
             podAnnotations:
+              sidecar.istio.io/rewriteAppHTTPProbers: "false"
               traffic.sidecar.istio.io/excludeOutboundPorts: "3306,3307"
               proxy.istio.io/config: |
                 holdApplicationUntilProxyStarts: true
