@@ -974,7 +974,6 @@
             ],
             "dataSets": [
               {
-                "minAlignmentPeriod": "0s",
                 "timeSeriesQuery": {
                   "prometheusQuery": "(time()-kube_job_status_completion_time{exported_namespace=~\"${exported_namespace.value}\",cluster=~\"${cluster.value}\"})/60/60/24>1"
                 }
@@ -999,7 +998,6 @@
             ],
             "dataSets": [
               {
-                "minAlignmentPeriod": "0s",
                 "timeSeriesQuery": {
                   "prometheusQuery": "kube_job_status_failed{exported_namespace=~\"${exported_namespace.value}\",cluster=~\"${cluster.value}\"}>1"
                 }
