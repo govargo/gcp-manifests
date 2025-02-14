@@ -12,9 +12,9 @@
       "templateVariable": "node"
     },
     {
-      "filterType": "RESOURCE_LABEL",
-      "labelKey": "namespace",
-      "templateVariable": "namespace"
+      "filterType": "METRIC_LABEL",
+      "labelKey": "exported_namespace",
+      "templateVariable": "exported_namespace"
     }
   ],
   "mosaicLayout": {
@@ -335,7 +335,7 @@
                 "plotType": "STACKED_AREA",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "sum(kube_deployment_status_replicas{namespace=~\"${namespace.value}\",cluster=~\"${cluster.value}\"}) by (cluster)"
+                  "prometheusQuery": "sum(kube_deployment_status_replicas{exported_namespace=~\"${exported_namespace.value}\",cluster=~\"${cluster.value}\"}) by (cluster)"
                 }
               }
             ],
@@ -361,7 +361,7 @@
                 "plotType": "STACKED_AREA",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "sum(kube_deployment_status_replicas_updated{namespace=~\"${namespace.value}\",cluster=~\"${cluster.value}\"}) by (cluster)"
+                  "prometheusQuery": "sum(kube_deployment_status_replicas_updated{exported_namespace=~\"${exported_namespace.value}\",cluster=~\"${cluster.value}\"}) by (cluster)"
                 }
               }
             ],
@@ -387,7 +387,7 @@
                 "plotType": "STACKED_AREA",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "sum(kube_deployment_status_replicas_unavailable{namespace=~\"${namespace.value}\",cluster=~\"${cluster.value}\"}) by (cluster,deployment)"
+                  "prometheusQuery": "sum(kube_deployment_status_replicas_unavailable{exported_namespace=~\"${exported_namespace.value}\",cluster=~\"${cluster.value}\"}) by (cluster,deployment)"
                 }
               }
             ],
@@ -414,7 +414,7 @@
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "kube_statefulset_status_replicas_ready{namespace=~\"${namespace.value}\",cluster=~\"${cluster.value}\"}/kube_statefulset_status_replicas{namespace=~\"${namespace.value}\",cluster=~\"${cluster.value}\"}*100",
+                  "prometheusQuery": "kube_statefulset_status_replicas_ready{exported_namespace=~\"${exported_namespace.value}\",cluster=~\"${cluster.value}\"}/kube_statefulset_status_replicas{exported_namespace=~\"${exported_namespace.value}\",cluster=~\"${cluster.value}\"}*100",
                   "unitOverride": "%"
                 }
               }
@@ -441,7 +441,7 @@
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "changes(kube_pod_container_status_restarts_total{namespace=~\"${namespace.value}\",cluster=~\"${cluster.value}\"}[30m])>1"
+                  "prometheusQuery": "changes(kube_pod_container_status_restarts_total{exported_namespace=~\"${exported_namespace.value}\",cluster=~\"${cluster.value}\"}[30m])>1"
                 }
               }
             ],
@@ -467,7 +467,7 @@
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "kube_pod_status_reason{cluster=~\"${cluster.value}\",namespace=~\"${namespace.value}\", reason=\"Evicted\"}==1"
+                  "prometheusQuery": "kube_pod_status_reason{cluster=~\"${cluster.value}\",exported_namespace=~\"${exported_namespace.value}\", reason=\"Evicted\"}==1"
                 }
               }
             ],
@@ -493,7 +493,7 @@
                 "plotType": "STACKED_AREA",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "sum(kube_pod_status_phase{cluster=~\"${cluster.value}\",namespace=~\"${namespace.value}\", phase=\"Running\"}) by (cluster)"
+                  "prometheusQuery": "sum(kube_pod_status_phase{cluster=~\"${cluster.value}\",exported_namespace=~\"${exported_namespace.value}\", phase=\"Running\"}) by (cluster)"
                 }
               }
             ],
@@ -519,7 +519,7 @@
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "sum(kube_pod_status_phase{cluster=~\"${cluster.value}\",namespace=~\"${namespace.value}\", phase=\"Succeeded\"}) by (exported_pod)"
+                  "prometheusQuery": "sum(kube_pod_status_phase{cluster=~\"${cluster.value}\",exported_namespace=~\"${exported_namespace.value}\", phase=\"Succeeded\"}) by (exported_pod)"
                 }
               }
             ],
@@ -545,7 +545,7 @@
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "sum(kube_pod_status_phase{cluster=~\"${cluster.value}\",namespace=~\"${namespace.value}\", phase=\"Failed\"}) by (exported_pod)"
+                  "prometheusQuery": "sum(kube_pod_status_phase{cluster=~\"${cluster.value}\",exported_namespace=~\"${exported_namespace.value}\", phase=\"Failed\"}) by (exported_pod)"
                 }
               }
             ],
@@ -571,7 +571,7 @@
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "sum(kube_pod_status_phase{cluster=~\"${cluster.value}\",namespace=~\"${namespace.value}\", phase=\"Pending\"}) by (exported_pod)"
+                  "prometheusQuery": "sum(kube_pod_status_phase{cluster=~\"${cluster.value}\",exported_namespace=~\"${exported_namespace.value}\", phase=\"Pending\"}) by (exported_pod)"
                 }
               }
             ],
@@ -597,7 +597,7 @@
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "sum(kube_pod_status_phase{cluster=~\"${cluster.value}\",namespace=~\"${namespace.value}\", phase=\"Unknown\"}) by (exported_pod)"
+                  "prometheusQuery": "sum(kube_pod_status_phase{cluster=~\"${cluster.value}\",exported_namespace=~\"${exported_namespace.value}\", phase=\"Unknown\"}) by (exported_pod)"
                 }
               }
             ],
@@ -622,7 +622,7 @@
                 "plotType": "STACKED_AREA",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "sum(kube_pod_container_status_running{namespace=~\"${namespace.value}\",cluster=~\"${cluster.value}\"}) by (cluster)"
+                  "prometheusQuery": "sum(kube_pod_container_status_running{exported_namespace=~\"${exported_namespace.value}\",cluster=~\"${cluster.value}\"}) by (cluster)"
                 }
               }
             ],
@@ -648,7 +648,7 @@
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "sum(kube_pod_container_status_waiting{namespace=~\"${namespace.value}\",cluster=~\"${cluster.value}\"}) by (exported_container)"
+                  "prometheusQuery": "sum(kube_pod_container_status_waiting{exported_namespace=~\"${exported_namespace.value}\",cluster=~\"${cluster.value}\"}) by (exported_container)"
                 }
               }
             ],
@@ -674,7 +674,7 @@
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "sum(kube_pod_container_status_terminated{namespace=~\"${namespace.value}\",cluster=~\"${cluster.value}\"}) by (exported_container)"
+                  "prometheusQuery": "sum(kube_pod_container_status_terminated{exported_namespace=~\"${exported_namespace.value}\",cluster=~\"${cluster.value}\"}) by (exported_container)"
                 }
               }
             ],
@@ -700,7 +700,7 @@
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "sum(changes(kube_pod_container_status_restarts_total{namespace=~\"${namespace.value}\",cluster=~\"${cluster.value}\"}[30m])) by (exported_container)"
+                  "prometheusQuery": "sum(changes(kube_pod_container_status_restarts_total{exported_namespace=~\"${exported_namespace.value}\",cluster=~\"${cluster.value}\"}[30m])) by (exported_container)"
                 }
               }
             ],
@@ -725,7 +725,7 @@
                 "plotType": "STACKED_AREA",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "sum(kube_pod_container_resource_requests{namespace=~\"${namespace.value}\",cluster=~\"${cluster.value}\",resource=\"cpu\"}) by (cluster)"
+                  "prometheusQuery": "sum(kube_pod_container_resource_requests{exported_namespace=~\"${exported_namespace.value}\",cluster=~\"${cluster.value}\",resource=\"cpu\"}) by (cluster)"
                 }
               }
             ],
@@ -751,7 +751,7 @@
                 "plotType": "STACKED_AREA",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "sum(kube_pod_container_resource_requests{namespace=~\"${namespace.value}\",cluster=~\"${cluster.value}\",resource=\"memory\"}) by (cluster)"
+                  "prometheusQuery": "sum(kube_pod_container_resource_requests{exported_namespace=~\"${exported_namespace.value}\",cluster=~\"${cluster.value}\",resource=\"memory\"}) by (cluster)"
                 }
               }
             ],
@@ -777,7 +777,7 @@
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "kube_horizontalpodautoscaler_status_current_replicas{cluster=~\"${cluster.value}\",namespace=~\"${namespace.value}\"}"
+                  "prometheusQuery": "kube_horizontalpodautoscaler_status_current_replicas{cluster=~\"${cluster.value}\",exported_namespace=~\"${exported_namespace.value}\"}"
                 }
               },
               {
@@ -785,7 +785,7 @@
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "kube_horizontalpodautoscaler_spec_max_replicas{cluster=~\"${cluster.value}\",namespace=~\"${namespace.value}\"}"
+                  "prometheusQuery": "kube_horizontalpodautoscaler_spec_max_replicas{cluster=~\"${cluster.value}\",exported_namespace=~\"${exported_namespace.value}\"}"
                 }
               },
               {
@@ -793,7 +793,7 @@
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "kube_horizontalpodautoscaler_spec_min_replicas{cluster=~\"${cluster.value}\",namespace=~\"${namespace.value}\"}"
+                  "prometheusQuery": "kube_horizontalpodautoscaler_spec_min_replicas{cluster=~\"${cluster.value}\",exported_namespace=~\"${exported_namespace.value}\"}"
                 }
               }
             ],
@@ -899,7 +899,7 @@
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "sum(kube_job_status_succeeded{namespace=~\"${namespace.value}\",cluster=~\"${cluster.value}\"}) by (job_name)"
+                  "prometheusQuery": "sum(kube_job_status_succeeded{exported_namespace=~\"${exported_namespace.value}\",cluster=~\"${cluster.value}\"}) by (job_name)"
                 }
               }
             ],
@@ -924,7 +924,7 @@
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "sum(kube_job_status_active{namespace=~\"${namespace.value}\",cluster=~\"${cluster.value}\"}) by (job_name)"
+                  "prometheusQuery": "sum(kube_job_status_active{exported_namespace=~\"${exported_namespace.value}\",cluster=~\"${cluster.value}\"}) by (job_name)"
                 }
               }
             ],
@@ -949,7 +949,7 @@
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "sum(kube_job_status_failed{namespace=~\"${namespace.value}\",cluster=~\"${cluster.value}\"}) by (job_name)"
+                  "prometheusQuery": "sum(kube_job_status_failed{exported_namespace=~\"${exported_namespace.value}\",cluster=~\"${cluster.value}\"}) by (job_name)"
                 }
               }
             ],
@@ -976,7 +976,7 @@
               {
                 "minAlignmentPeriod": "0s",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "(time()-kube_job_status_completion_time{namespace=~\"${namespace.value}\",cluster=~\"${cluster.value}\"})/60/60/24>1"
+                  "prometheusQuery": "(time()-kube_job_status_completion_time{exported_namespace=~\"${exported_namespace.value}\",cluster=~\"${cluster.value}\"})/60/60/24>1"
                 }
               }
             ],
@@ -1001,7 +1001,7 @@
               {
                 "minAlignmentPeriod": "0s",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "kube_job_status_failed{namespace=~\"${namespace.value}\",cluster=~\"${cluster.value}\"}>1"
+                  "prometheusQuery": "kube_job_status_failed{exported_namespace=~\"${exported_namespace.value}\",cluster=~\"${cluster.value}\"}>1"
                 }
               }
             ],
