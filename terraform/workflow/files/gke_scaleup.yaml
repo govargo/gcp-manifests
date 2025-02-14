@@ -1,5 +1,13 @@
 main:
   steps:
+  - start_cloudsql_instance:
+      call: googleapis.sqladmin.v1beta4.instances.patch
+      args:
+        project: prd-little-quest
+        instance: prod-mysql-instance
+        body:
+          settings:
+            activationPolicy: "ALWAYS"
   - prallel_scale_up:
       parallel:
         branches:
@@ -23,14 +31,6 @@ main:
             - misc_0_scale_up:
                 call: prod_misc_0_scaleup
                 result: misc_0_scale_up
-  - start_cloudsql_instance:
-      call: googleapis.sqladmin.v1beta4.instances.patch
-      args:
-        project: prd-little-quest
-        instance: prod-mysql-instance
-        body:
-          settings:
-            activationPolicy: "ALWAYS"
 
 prod_app_0_scaleup:
   params:
