@@ -211,6 +211,11 @@ spec:
               proxyStatsMatcher:
                 inclusionRegexps:
                 - ".*upstream_rq_.*"
+                - "envoy_cluster_circuit_breakers_.*"
+                - "envoy_cluster_upstream_cx_overflow"
+                - "envoy_cluster_upstream_cx_pool_overflow"
+                - "envoy_cluster_upstream_rq_pending_overflow"
+                - "envoy_cluster_upstream_rq_retry_overflow"
                 inclusionPrefixes:
                 - "cluster.outbound|50504|default|open-match-frontend.open-match.svc.cluster.local"
               proxyMetadata:
@@ -378,6 +383,11 @@ spec:
               proxyStatsMatcher:
                 inclusionRegexps:
                 - ".*upstream_rq_.*"
+                - "envoy_cluster_circuit_breakers_.*"
+                - "envoy_cluster_upstream_cx_overflow"
+                - "envoy_cluster_upstream_cx_pool_overflow"
+                - "envoy_cluster_upstream_rq_pending_overflow"
+                - "envoy_cluster_upstream_rq_retry_overflow"
                 inclusionPrefixes:
                 - "cluster.outbound|50503|default|open-match-query.open-match.svc.cluster.local"
               proxyMetadata:
@@ -547,6 +557,11 @@ spec:
               proxyStatsMatcher:
                 inclusionRegexps:
                 - ".*upstream_rq_.*"
+                - "envoy_cluster_circuit_breakers_.*"
+                - "envoy_cluster_upstream_cx_overflow"
+                - "envoy_cluster_upstream_cx_pool_overflow"
+                - "envoy_cluster_upstream_rq_pending_overflow"
+                - "envoy_cluster_upstream_rq_retry_overflow"
                 inclusionPrefixes:
                 - "cluster.outbound|50505|default|open-match-backend.open-match.svc.cluster.local"
               proxyMetadata:
