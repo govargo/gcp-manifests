@@ -2,7 +2,7 @@
   "displayName": "Cloud NAT",
   "dashboardFilters": [
     {
-      "filterType": "METRIC_LABEL",
+      "filterType": "RESOURCE_LABEL",
       "labelKey": "gateway_name"
     }
   ],
