@@ -90,8 +90,7 @@ spec:
               name: ""
 
             podAnnotations:
-              traffic.sidecar.istio.io/excludeInboundPorts: "3306"
-              traffic.sidecar.istio.io/excludeOutboundPorts: "3306"
+              traffic.sidecar.istio.io/excludeOutboundPorts: "3306,3307"
               proxy.istio.io/config: |
                 holdApplicationUntilProxyStarts: true
                 drainDuration": "20s"
@@ -99,9 +98,11 @@ spec:
                 proxyStatsMatcher:
                   inclusionRegexps:
                   - ".*upstream_rq_.*"
-                  inclusionPrefixes:
-                  - "cluster.outbound|18080|default|little-quest-frontend.corp-0.svc.cluster.local"
-                  - "cluster.outbound|18080|default|little-quest-frontend.corp-0.svc.clusterset.local"
+                  - "envoy_cluster_circuit_breakers_.*"
+                  - "envoy_cluster_upstream_cx_overflow"
+                  - "envoy_cluster_upstream_cx_pool_overflow"
+                  - "envoy_cluster_upstream_rq_pending_overflow"
+                  - "envoy_cluster_upstream_rq_retry_overflow"
                 proxyMetadata:
                   MINIMUM_DRAIN_DURATION: "20s"
                   EXIT_ON_ZERO_ACTIVE_CONNECTIONS: "true"
