@@ -15,7 +15,7 @@ WITH
     `${project_id}.all_billing_data.gcp_billing_export_v1_019B74_9E7498_BF7883`
   WHERE
     usage_start_time >= TIMESTAMP("2024-12-02")
-    AND project.id = ${project_id}
+    AND project.id = "${project_id}"
   GROUP BY
     project.id,
     sku.id,
