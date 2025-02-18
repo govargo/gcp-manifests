@@ -68,7 +68,8 @@ locals {
     "cloudaicompanion.googleapis.com",
     "servicehealth.googleapis.com",
     "recommender.googleapis.com",
-    "identitytoolkit.googleapis.com"
+    "identitytoolkit.googleapis.com",
+    "developerconnect.googleapis.com"
   ])
 }
 
