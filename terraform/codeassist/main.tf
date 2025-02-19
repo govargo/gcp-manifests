@@ -7,6 +7,7 @@ resource "null_resource" "get_current_google_account" {
   }
 }
 
+## Developer Connect
 resource "google_developer_connect_connection" "developer_connection_github" {
   provider      = google-beta
   location      = "asia-southeast1"
@@ -34,6 +35,14 @@ resource "google_project_iam_member" "devconnect-secret" {
   project  = data.google_project.project.id
   role     = "roles/secretmanager.admin"
   member   = google_project_service_identity.devconnect-p4sa.member
+
+  depends_on = [google_project_service_identity.devconnect-p4sa]
+}
+
+## Repository Index
+resource "google_gemini_code_repository_index" "little_quest_index" {
+  location                 = "asia-southeast1"
+  code_repository_index_id = "little-quest-index"
 }
 
 ## Repository Groups
@@ -51,6 +60,11 @@ resource "google_gemini_repository_group" "little_quest_group" {
     resource       = "projects/prd-little-quest/locations/asia-southeast1/connections/github-little-quest/gitRepositoryLinks/govargo-little-quest-realtime"
     branch_pattern = "main"
   }
+
+  depends_on = [
+    google_developer_connect_connection.developer_connection_github,
+    google_gemini_code_repository_index.little_quest_index,
+  ]
 }
 
 ## IAM to Repository Groups
