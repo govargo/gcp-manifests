@@ -80,10 +80,18 @@ resource "google_project_service" "service" {
 }
 
 ## OAuth Consent
+resource "null_resource" "get_current_google_account" {
+  provisioner "local-exec" {
+    command = "gcloud config get core/account > /tmp/gcloud_account.txt"
+  }
+}
+
 resource "google_iap_brand" "project_brand" {
   project           = data.google_project.project.number
-  support_email     = "admin@kentaiso.altostrat.com"
+  support_email     = trimspace(file("/tmp/gcloud_account.txt"))
   application_title = "OAuth Consent"
+
+  depends_on = [null_resource.get_current_google_account]
 }
 
 ## Storage
