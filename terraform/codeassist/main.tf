@@ -91,3 +91,11 @@ resource "google_gemini_repository_group_iam_policy" "admin" {
 
   depends_on = [google_gemini_repository_group.little_quest_group]
 }
+
+resource "google_gemini_logging_setting" "gemini_logging" {
+  provider                  = google-beta
+  logging_setting_id        = "google-gemini-logging"
+  location                  = "global"
+  log_prompts_and_responses = true
+  log_metadata              = true
+}
