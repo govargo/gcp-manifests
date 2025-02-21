@@ -1,6 +1,7 @@
 data "google_project" "project" {
 }
 
+## Get current google user account
 resource "null_resource" "get_current_google_account" {
   provisioner "local-exec" {
     command = "gcloud config get core/account > /tmp/gcloud_account.txt"
