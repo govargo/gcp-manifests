@@ -171,11 +171,11 @@ resource "google_cloudfunctions2_function" "gke_cluster_upgrade_notifier" {
     }
   }
 
-  lifecycle {
-    ignore_changes = [
-      build_config[0].source[0].storage_source[0].generation
-    ]
-  }
+  #lifecycle {
+  #  ignore_changes = [
+  #    build_config[0].source[0].storage_source[0].generation
+  #  ]
+  #}
 
   depends_on = [
     module.gke_cluster_upgrade_notifier_sa,
@@ -225,11 +225,11 @@ resource "google_cloudfunctions2_function" "alertmanager_to_google_chat" {
     }
   }
 
-  lifecycle {
-    ignore_changes = [
-      build_config[0].source[0].storage_source[0].generation
-    ]
-  }
+  #lifecycle {
+  #  ignore_changes = [
+  #    build_config[0].source[0].storage_source[0].generation
+  #  ]
+  #}
 
   depends_on = [
     module.alertmanager_to_google_chat_sa,
