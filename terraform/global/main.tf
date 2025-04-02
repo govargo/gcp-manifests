@@ -66,6 +66,7 @@ locals {
     "securitycenter.googleapis.com",
     "websecurityscanner.googleapis.com",
     "cloudaicompanion.googleapis.com",
+    "geminicloudassist.googleapis.com",
     "servicehealth.googleapis.com",
     "recommender.googleapis.com",
     "identitytoolkit.googleapis.com",
