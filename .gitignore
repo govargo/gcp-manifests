@@ -34,3 +34,4 @@ override.tf.json
 **/pubsub/files/*.json
 
 **/.idea
+**/.vscode
