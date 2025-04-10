@@ -94,11 +94,11 @@ curl -sSO https://dl.google.com/cloudagents/add-google-cloud-ops-agent-repo.sh
 sudo bash add-google-cloud-ops-agent-repo.sh --also-install
 
 sudo apt -y install wget
-wget https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.14.1/cloud-sql-proxy.linux.amd64 -O /usr/local/bin/cloud-sql-proxy
+wget https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.15.2/cloud-sql-proxy.linux.amd64 -O /usr/local/bin/cloud-sql-proxy
 chmod +x /usr/local/bin/cloud-sql-proxy
 cloud-sql-proxy --http-address=0.0.0.0 --address 0.0.0.0 --port 3306 --private-ip \
   --structured-logs --max-sigterm-delay=10s --health-check=true \
-  ${data.google_project.project.project_id}:${var.region}:prod-mysql-instance-read-replica-0
+  ${data.google_project.project.project_id}:${var.region}:prod-mysql-instance
 EOF
 
   service_account {
