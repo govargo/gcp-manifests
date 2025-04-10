@@ -37,6 +37,7 @@ module "cloudsql_mysql" {
   edition                         = "ENTERPRISE"
   region                          = var.region
   zone                            = var.zone
+  secondary_zone                  = "asia-northeast1-b"
   tier                            = var.tier
   availability_type               = var.availability_type
   maintenance_window_day          = 7
