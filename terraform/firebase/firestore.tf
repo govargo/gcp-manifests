@@ -27,6 +27,7 @@ resource "google_firebaserules_ruleset" "firestore" {
       name    = "firestore.rules"
       content = <<EOF
 rules_version = '2';
+
 service cloud.firestore {
   match /databases/{database}/documents {
     function isValidCreated() {
