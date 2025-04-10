@@ -15,6 +15,3 @@ provider "google" {
   # Configuration options
 }
 
-provider "google-beta" {
-  billing_project = data.google_project.project.project_id
-}
