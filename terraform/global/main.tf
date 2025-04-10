@@ -70,7 +70,8 @@ locals {
     "servicehealth.googleapis.com",
     "recommender.googleapis.com",
     "identitytoolkit.googleapis.com",
-    "developerconnect.googleapis.com"
+    "developerconnect.googleapis.com",
+    "maintenance.googleapis.com"
   ])
 }
 
