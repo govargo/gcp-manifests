@@ -23,6 +23,15 @@ main:
             - misc_0_scale_down:
                 call: prod_misc_0_scaledown
                 result: misc_0_scale_down
+  - datastream_pause:
+      call: http.patch
+      args:
+          url: https://datastream.googleapis.com/v1/projects/prd-little-quest/locations/asia-northeast1/streams/little-quest-masterdata-stream?updateMask=state
+          auth:
+              type: OAuth2
+          body:
+            state: PAUSED
+      result: pause_result
   - stop_cloudsql_instance:
       call: googleapis.sqladmin.v1beta4.instances.patch
       args:
