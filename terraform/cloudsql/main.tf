@@ -26,7 +26,7 @@ module "private-service-access" {
 
 module "cloudsql_mysql" {
   source               = "GoogleCloudPlatform/sql-db/google//modules/mysql"
-  version              = "22.1.0"
+  version              = "25.2.2"
   name                 = "${var.env}-mysql-instance"
   random_instance_name = false
   project_id           = data.google_project.project.project_id
@@ -35,6 +35,7 @@ module "cloudsql_mysql" {
 
   database_version                = "MYSQL_8_0_31"
   edition                         = "ENTERPRISE_PLUS"
+  data_cache_enabled              = false
   region                          = var.region
   zone                            = var.zone
   secondary_zone                  = "asia-northeast1-b"
@@ -67,7 +68,7 @@ module "cloudsql_mysql" {
     query_string_length     = 1024
     record_application_tags = true
     record_client_address   = true
-    query_plans_per_minute  = 5
+    query_plans_per_minute  = 200
   }
 
   ip_configuration = {
@@ -84,7 +85,7 @@ module "cloudsql_mysql" {
     binary_log_enabled             = true
     point_in_time_recovery_enabled = false
     start_time                     = "23:00"
-    location                       = null
+    location                       = "asia"
     transaction_log_retention_days = 1
     retained_backups               = 2
     retention_unit                 = "COUNT"
