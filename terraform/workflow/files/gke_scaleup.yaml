@@ -8,6 +8,15 @@ main:
         body:
           settings:
             activationPolicy: "ALWAYS"
+  - datastream_active:
+      call: http.patch
+      args:
+          url: https://datastream.googleapis.com/v1/projects/prd-little-quest/locations/asia-northeast1/streams/little-quest-masterdata-stream?updateMask=state
+          auth:
+              type: OAuth2
+          body:
+            state: RUNNING
+      result: active_result
   - prallel_scale_up:
       parallel:
         branches:
