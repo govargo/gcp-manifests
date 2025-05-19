@@ -46,7 +46,7 @@ prod_app_0_scaleup:
     - project_id: prd-little-quest
     - region: "asia-northeast1"
     - cluster_id: "prod-app-0"
-    - scale_up_size: 0
+    - node_scale_up_size: 0
   steps:
   - enable_autoscaling_app_pool:
       call: googleapis.container.v1.projects.locations.clusters.nodePools.setAutoscaling
@@ -56,7 +56,7 @@ prod_app_0_scaleup:
           autoscaling:
             enabled: true
             autoprovisioned: false
-            totalMinNodeCount: 0
+            totalMinNodeCount: 2
             totalMaxNodeCount: 100
       result: enable_autoscaling_app_pool
   - enable_autoscaling_kube_system:
@@ -112,7 +112,7 @@ prod_app_0_scaleup:
             args:
               name: $${"projects/"+project_id+"/locations/"+region+"/clusters/"+cluster_id+"/nodePools/"+node_pool_value}
               body:
-                nodeCount: $${scale_up_size}
+                nodeCount: $${node_scale_up_size}
             result: scale_up_node_pool
 
 prod_app_1_scaleup:
@@ -120,7 +120,7 @@ prod_app_1_scaleup:
     - project_id: prd-little-quest
     - region: "us-central1"
     - cluster_id: "prod-app-1"
-    - scale_up_size: 0
+    - node_scale_up_size: 0
   steps:
   - enable_autoscaling_app_pool:
       call: googleapis.container.v1.projects.locations.clusters.nodePools.setAutoscaling
@@ -130,7 +130,7 @@ prod_app_1_scaleup:
           autoscaling:
             enabled: true
             autoprovisioned: false
-            totalMinNodeCount: 0
+            totalMinNodeCount: 2
             totalMaxNodeCount: 100
       result: enable_autoscaling_app_pool
   - enable_autoscaling_kube_system:
@@ -186,7 +186,7 @@ prod_app_1_scaleup:
             args:
               name: $${"projects/"+project_id+"/locations/"+region+"/clusters/"+cluster_id+"/nodePools/"+node_pool_value}
               body:
-                nodeCount: $${scale_up_size}
+                nodeCount: $${node_scale_up_size}
             result: scale_up_node_pool
 
 prod_corp_0_scaleup:
@@ -194,7 +194,7 @@ prod_corp_0_scaleup:
     - project_id: prd-little-quest
     - region: "asia-northeast1"
     - cluster_id: "prod-corp-0"
-    - scale_up_size: 0
+    - node_scale_up_size: 0
   steps:
   - enable_autoscaling_open_match_pool:
       call: googleapis.container.v1.projects.locations.clusters.nodePools.setAutoscaling
@@ -204,7 +204,7 @@ prod_corp_0_scaleup:
           autoscaling:
             enabled: true
             autoprovisioned: false
-            totalMinNodeCount: 0
+            totalMinNodeCount: 2
             totalMaxNodeCount: 100
       result: enable_autoscaling_open_match_pool
   - enable_autoscaling_kube_system:
@@ -232,7 +232,7 @@ prod_corp_0_scaleup:
             args:
               name: $${"projects/"+project_id+"/locations/"+region+"/clusters/"+cluster_id+"/nodePools/"+node_pool_value}
               body:
-                nodeCount: $${scale_up_size}
+                nodeCount: $${node_scale_up_size}
             result: scale_up_node_pool
   - scale_up_workload_otel_collector:
       call: gke.request
@@ -296,7 +296,7 @@ prod_misc_0_scaleup:
     - project_id: prd-little-quest
     - zone: "asia-northeast1-a"
     - cluster_id: "prod-misc-0"
-    - scale_up_size: 0
+    - node_scale_up_size: 0
   steps:
   - enable_autoscaling_loop:
       for:
@@ -336,5 +336,5 @@ prod_misc_0_scaleup:
               nodePoolId: $${node_pool_value}
               body:
                 name: projects/$${project_id}/locations/$${zone}/clusters/$${cluster_id}/nodePools/$${node_pool_value}
-                nodeCount: $${scale_up_size}
+                nodeCount: $${node_scale_up_size}
             result: scale_up_node_pool
