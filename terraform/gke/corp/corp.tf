@@ -100,7 +100,7 @@ module "corp-0" {
       node_locations          = var.node_locations
       min_count               = null
       max_count               = null
-      total_min_count         = var.total_min_count
+      total_min_count         = 2
       total_max_count         = var.total_max_count
       location_policy         = "ANY"
       local_ssd_count         = var.local_ssd_count
