@@ -122,7 +122,7 @@ resource "google_storage_bucket_object" "alertmanager_to_google_chat_source" {
   bucket = data.google_project.project.project_id
 }
 
-## Cloud Functions
+## Cloud Functions v2
 resource "google_cloudfunctions2_function" "gke_cluster_upgrade_notifier" {
   project     = data.google_project.project.project_id
   name        = "gke-cluster-upgrade-notifier"
@@ -138,7 +138,7 @@ resource "google_cloudfunctions2_function" "gke_cluster_upgrade_notifier" {
   build_config {
     runtime           = "nodejs20"
     entry_point       = "sendNotificationForGKEClussterUpgradeToChat"
-    docker_repository = "projects/${data.google_project.project.project_id}/locations/${var.region}/repositories/gcf-artifacts"
+    docker_repository = "projects/${data.google_project.project.project_id}/locations/${var.region}/repositories/cloud-run-source-deploy"
     source {
       storage_source {
         bucket = data.google_project.project.project_id
@@ -162,6 +162,7 @@ resource "google_cloudfunctions2_function" "gke_cluster_upgrade_notifier" {
     timeout_seconds                  = 60
     ingress_settings                 = "ALLOW_INTERNAL_ONLY"
     max_instance_request_concurrency = 1
+    service_account_email            = module.gke_cluster_upgrade_notifier_sa.email
 
     secret_environment_variables {
       project_id = data.google_project.project.project_id
@@ -200,7 +201,7 @@ resource "google_cloudfunctions2_function" "alertmanager_to_google_chat" {
   build_config {
     runtime           = "nodejs20"
     entry_point       = "sendNotificationForAlertmanagerToChat"
-    docker_repository = "projects/${data.google_project.project.project_id}/locations/${var.region}/repositories/gcf-artifacts"
+    docker_repository = "projects/${data.google_project.project.project_id}/locations/${var.region}/repositories/cloud-run-source-deploy"
     source {
       storage_source {
         bucket = data.google_project.project.project_id
@@ -217,6 +218,7 @@ resource "google_cloudfunctions2_function" "alertmanager_to_google_chat" {
     timeout_seconds                  = 120
     ingress_settings                 = "ALLOW_INTERNAL_ONLY"
     max_instance_request_concurrency = 10
+    service_account_email            = module.alertmanager_to_google_chat_sa.email
     secret_environment_variables {
       project_id = data.google_project.project.project_id
       key        = "WEBHOOK_URL"
