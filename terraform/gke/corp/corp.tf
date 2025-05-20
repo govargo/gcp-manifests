@@ -11,7 +11,7 @@ data "google_compute_network" "vpc_network" {
 
 module "corp-0" {
   source                               = "terraform-google-modules/kubernetes-engine/google//modules/beta-public-cluster"
-  version                              = "36.2.0"
+  version                              = "36.3.0"
   project_id                           = data.google_project.project.project_id
   name                                 = "${var.env}-corp-0"
   regional                             = true
