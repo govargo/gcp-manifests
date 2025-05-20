@@ -13,7 +13,7 @@ module "little_quest_realtime_sa" {
 
 module "little_quest_realtime_workloadIdentity_binding" {
   source  = "terraform-google-modules/iam/google//modules/service_accounts_iam"
-  version = "8.0.0"
+  version = "8.1.0"
   project = data.google_project.project.project_id
 
   service_accounts = [module.little_quest_realtime_sa.email]
@@ -42,7 +42,7 @@ module "little_quest_frontend_sa" {
 
 module "little_quest_frontend_workloadIdentity_binding" {
   source  = "terraform-google-modules/iam/google//modules/service_accounts_iam"
-  version = "8.0.0"
+  version = "8.1.0"
   project = data.google_project.project.project_id
 
   service_accounts = [module.little_quest_frontend_sa.email]
@@ -71,7 +71,7 @@ module "little_quest_mmf_sa" {
 
 module "little_quest_mmf_workloadIdentity_binding" {
   source  = "terraform-google-modules/iam/google//modules/service_accounts_iam"
-  version = "8.0.0"
+  version = "8.1.0"
   project = data.google_project.project.project_id
 
   service_accounts = [module.little_quest_mmf_sa.email]
@@ -100,7 +100,7 @@ module "little_quest_director_sa" {
 
 module "little_quest_director_workloadIdentity_binding" {
   source  = "terraform-google-modules/iam/google//modules/service_accounts_iam"
-  version = "8.0.0"
+  version = "8.1.0"
   project = data.google_project.project.project_id
 
   service_accounts = [module.little_quest_director_sa.email]
@@ -126,7 +126,7 @@ module "agones_allocator_sa" {
 
 module "agones_allocator_workloadIdentity_binding" {
   source  = "terraform-google-modules/iam/google//modules/service_accounts_iam"
-  version = "8.0.0"
+  version = "8.1.0"
   project = data.google_project.project.project_id
 
   service_accounts = [module.agones_allocator_sa.email]
@@ -152,7 +152,7 @@ module "agones_controller_sa" {
 
 module "agones_controller_workloadIdentity_binding" {
   source  = "terraform-google-modules/iam/google//modules/service_accounts_iam"
-  version = "8.0.0"
+  version = "8.1.0"
   project = data.google_project.project.project_id
 
   service_accounts = [module.agones_controller_sa.email]
@@ -181,7 +181,7 @@ module "openmatch_sa" {
 
 module "openmatch_workloadIdentity_binding" {
   source  = "terraform-google-modules/iam/google//modules/service_accounts_iam"
-  version = "8.0.0"
+  version = "8.1.0"
   project = data.google_project.project.project_id
 
   service_accounts = [module.openmatch_sa.email]

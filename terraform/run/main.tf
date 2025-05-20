@@ -39,7 +39,7 @@ module "cloud_build_notifier_sa" {
 
 module "cloud_build_notifier_secret_accessor_binding" {
   source  = "terraform-google-modules/iam/google//modules/secret_manager_iam"
-  version = "8.0.0"
+  version = "8.1.0"
   project = data.google_project.project.project_id
 
   secrets = [google_secret_manager_secret.cloud_build_notifier_url.secret_id]
