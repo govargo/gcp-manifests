@@ -49,7 +49,7 @@ resource "google_compute_subnetwork" "subnetwork_app_1" {
 
 module "cloud_router_app_0" {
   source  = "terraform-google-modules/cloud-router/google"
-  version = "~> 6.2.0"
+  version = "~> 6.3.0"
   project = data.google_project.project.project_id
 
   name    = "${var.env}-app-0-router"
@@ -81,7 +81,7 @@ module "cloud_router_app_0" {
 
 module "cloud_router_app_1" {
   source  = "terraform-google-modules/cloud-router/google"
-  version = "~> 6.2.0"
+  version = "~> 6.3.0"
   project = data.google_project.project.project_id
 
   name    = "${var.env}-app-1-router"
@@ -149,7 +149,7 @@ resource "google_compute_subnetwork" "subnetwork_misc_0" {
 
 module "cloud_router_misc_0" {
   source  = "terraform-google-modules/cloud-router/google"
-  version = "~> 6.2.0"
+  version = "~> 6.3.0"
   project = data.google_project.project.project_id
 
   name    = "${var.env}-misc-0-router"
