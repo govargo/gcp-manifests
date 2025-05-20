@@ -1,6 +1,6 @@
 module "app-1" {
   source                                   = "terraform-google-modules/kubernetes-engine/google//modules/beta-private-cluster"
-  version                                  = "36.2.0"
+  version                                  = "36.3.0"
   project_id                               = data.google_project.project.project_id
   name                                     = "${var.env}-app-1"
   enterprise_config                        = "ENTERPRISE"
