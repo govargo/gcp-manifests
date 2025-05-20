@@ -1,7 +1,7 @@
 # little-quest-realtime
 module "little_quest_realtime_sa" {
   source     = "terraform-google-modules/service-accounts/google"
-  version    = "4.4.2"
+  version    = "4.5.3"
   project_id = data.google_project.project.project_id
 
   names        = ["little-quest-realtime"]
@@ -29,7 +29,7 @@ module "little_quest_realtime_workloadIdentity_binding" {
 # little-quest-frontend
 module "little_quest_frontend_sa" {
   source     = "terraform-google-modules/service-accounts/google"
-  version    = "4.4.2"
+  version    = "4.5.3"
   project_id = data.google_project.project.project_id
 
   names        = ["little-quest-frontend"]
@@ -58,7 +58,7 @@ module "little_quest_frontend_workloadIdentity_binding" {
 # little-quest-mmf
 module "little_quest_mmf_sa" {
   source     = "terraform-google-modules/service-accounts/google"
-  version    = "4.4.2"
+  version    = "4.5.3"
   project_id = data.google_project.project.project_id
 
   names        = ["little-quest-mmf"]
@@ -87,7 +87,7 @@ module "little_quest_mmf_workloadIdentity_binding" {
 # little-quest-director
 module "little_quest_director_sa" {
   source     = "terraform-google-modules/service-accounts/google"
-  version    = "4.4.2"
+  version    = "4.5.3"
   project_id = data.google_project.project.project_id
 
   names        = ["little-quest-director"]
@@ -116,7 +116,7 @@ module "little_quest_director_workloadIdentity_binding" {
 # agones-allocator
 module "agones_allocator_sa" {
   source     = "terraform-google-modules/service-accounts/google"
-  version    = "4.4.2"
+  version    = "4.5.3"
   project_id = data.google_project.project.project_id
 
   names         = ["agones-allocator"]
@@ -142,7 +142,7 @@ module "agones_allocator_workloadIdentity_binding" {
 # agones-controller
 module "agones_controller_sa" {
   source     = "terraform-google-modules/service-accounts/google"
-  version    = "4.4.2"
+  version    = "4.5.3"
   project_id = data.google_project.project.project_id
 
   names         = ["agones-controller"]
@@ -168,7 +168,7 @@ module "agones_controller_workloadIdentity_binding" {
 # open-match
 module "openmatch_sa" {
   source     = "terraform-google-modules/service-accounts/google"
-  version    = "4.4.2"
+  version    = "4.5.3"
   project_id = data.google_project.project.project_id
 
   names        = ["open-match-service"]
