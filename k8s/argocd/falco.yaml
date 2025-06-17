@@ -70,6 +70,9 @@ spec:
                 - macro: user_expected_terminal_shell_in_container_conditions
                   condition: >
                     container.image.repository = docker.io/govargo/bpf-tools
+                - macro: user_known_stand_streams_redirect_activities
+                  condition: >
+                    proc.name = pilot-agent
 
             falcosidekick:
               enabled: false
