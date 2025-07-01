@@ -40,6 +40,29 @@ main:
             - misc_0_scale_up:
                 call: prod_misc_0_scaleup
                 result: misc_0_scale_up
+  - get_stream_status:
+       call: http.get
+       args:
+         url: https://datastream.googleapis.com/v1/projects/prd-little-quest/locations/asia-northeast1/streams/little-quest-masterdata-stream
+         auth:
+           type: OAuth2
+       result: stream_status
+  - check_stream_status:
+       switch:
+       - condition: $${stream_status.body.state != "RUNNING"}
+         steps:
+         - datastream_recover:
+              call: http.post
+              args:
+                url: https://datastream.googleapis.com/v1/projects/prd-little-quest/locations/asia-northeast1/streams/little-quest-masterdata-stream:run
+                auth:
+                  type: OAuth2
+                headers:
+                  Content-Type: "application/json"
+                body:
+                  cdcStrategy:
+                    nextAvailableStartPosition: {}
+              result: recover_result
 
 prod_app_0_scaleup:
   params:
