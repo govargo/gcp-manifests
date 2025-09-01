@@ -245,6 +245,7 @@ trace:
 spanner:
   instance: dev-spanner-instance
   database: user_data
+  multiPlexedSessionsEnabled: false
 
 # MySQL info
 mysql:
