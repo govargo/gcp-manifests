@@ -40,7 +40,7 @@ spec:
       source:
         repoURL: asia-northeast1-docker.pkg.dev/prd-little-quest/little-quest/charts
         chart: little-quest-server
-        targetRevision: 1.1.0
+        targetRevision: 1.1.1
         helm:
           releaseName: "little-quest-server"
           values: |
@@ -384,6 +384,7 @@ spec:
               instance: prod-spanner-instance
               database: user_data
               multiPlexedSessionsEnabled: false
+              multiPlexedSessionsRWEnabled: false
 
             # MySQL info
             mysql:
