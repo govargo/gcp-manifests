@@ -246,6 +246,7 @@ spanner:
   instance: dev-spanner-instance
   database: user_data
   multiPlexedSessionsEnabled: false
+  multiPlexedSessionsRWEnabled: false
 
 # MySQL info
 mysql:

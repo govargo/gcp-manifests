@@ -78,7 +78,9 @@ spec:
           - name: SPANNER_DATABASE
             value: {{ .Values.spanner.database | quote }}
           - name: GOOGLE_CLOUD_SPANNER_MULTIPLEXED_SESSIONS
-            value: {{ .Values.spanner.multiPlexedSessionsEnabled | default "false" | quote }}
+            value: {{ .Values.spanner.multiPlexedSessionsROEnabled | default "false" | quote }}
+          - name: GOOGLE_CLOUD_SPANNER_MULTIPLEXED_SESSIONS_FOR_RW
+            value: {{ .Values.spanner.multiPlexedSessionsRWEnabled | default "false" | quote }}
           - name: MASTER_MYSQL_HOST
             value: {{ .Values.mysql.host | quote }}
           - name: MASTER_MYSQL_PORT
