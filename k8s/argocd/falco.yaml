@@ -64,6 +64,7 @@ spec:
                     or proc.name = event-exporter
                     or proc.name = kube-dns
                     or proc.name = envoy
+                    or proc.name = mdp
                     or proc.name = wrk:worker
                     or proc.name = cluster-proport
                     or proc.name = secrets-store-c
