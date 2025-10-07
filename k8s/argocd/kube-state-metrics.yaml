@@ -25,7 +25,7 @@ spec:
       source:
         chart: kube-state-metrics
         repoURL: https://prometheus-community.github.io/helm-charts
-        targetRevision: 5.33.1
+        targetRevision: 5.37.0
         helm:
           releaseName: "{{name}}-kube-state-metrics"
           values: |
