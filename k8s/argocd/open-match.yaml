@@ -118,7 +118,11 @@ spec:
                    - "25"
 
              redis:
-               configmap: |
+               image:
+                 registry: docker.io
+                 repository:  redis
+                 tag: 7.2.11
+               commonConfiguration: |
                  maxclients 100000
                  maxmemory 500000000
                master:
@@ -138,6 +142,8 @@ spec:
                    operator: "Equal"
                    value: "open-match"
                    effect: "NoSchedule" 
+               metrics:
+                 enabled: false
 
              open-match-core:
                swaggerui:
