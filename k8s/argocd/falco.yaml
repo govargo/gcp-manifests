@@ -70,6 +70,7 @@ spec:
                     or proc.name = secrets-store-c
                     or proc.name = otelsvc
                     or proc.name = proxy-agent
+                    or proc.name = netd
                 - macro: user_expected_terminal_shell_in_container_conditions
                   condition: >
                     container.image.repository = docker.io/govargo/bpf-tools
