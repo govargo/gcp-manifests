@@ -24,7 +24,8 @@ module "gke_node_scaler_workflow_sa" {
     "${data.google_project.project.project_id}=>roles/container.clusterAdmin",
     "${data.google_project.project.project_id}=>roles/container.developer",
     "${data.google_project.project.project_id}=>roles/cloudsql.editor",
-    "${data.google_project.project.project_id}=>roles/datastream.admin"
+    "${data.google_project.project.project_id}=>roles/datastream.admin",
+    "${data.google_project.project.project_id}=>roles/iam.serviceAccountUser"
   ]
 }
 
