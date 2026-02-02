@@ -27,7 +27,7 @@ module "little_quest_server_sa" {
 
 module "little_quest_server_workloadIdentity_binding" {
   source  = "terraform-google-modules/iam/google//modules/service_accounts_iam"
-  version = "8.1.0"
+  version = "8.2.0"
   project = data.google_project.project.project_id
 
   service_accounts = [module.little_quest_server_sa.email]
@@ -52,7 +52,7 @@ module "opentelemetry_collector_sa" {
 
 module "opentelemetry_collector_workloadIdentity_binding" {
   source  = "terraform-google-modules/iam/google//modules/service_accounts_iam"
-  version = "8.1.0"
+  version = "8.2.0"
   project = data.google_project.project.project_id
 
   service_accounts = [module.opentelemetry_collector_sa.email]

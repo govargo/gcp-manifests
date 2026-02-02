@@ -49,7 +49,7 @@ module "gke_cluster_upgrade_notifier_sa" {
 
 module "gke_cluster_upgrade_notifier_secret_accessor_binding" {
   source  = "terraform-google-modules/iam/google//modules/secret_manager_iam"
-  version = "8.1.0"
+  version = "8.2.0"
   project = data.google_project.project.project_id
 
   secrets = [google_secret_manager_secret.gke_cluster_upgrade_notifier_url.secret_id]
@@ -74,7 +74,7 @@ module "alertmanager_to_google_chat_sa" {
 
 module "alertmanager_to_google_chat_url_secret_accessor_binding" {
   source  = "terraform-google-modules/iam/google//modules/secret_manager_iam"
-  version = "8.1.0"
+  version = "8.2.0"
   project = data.google_project.project.project_id
 
   secrets = [google_secret_manager_secret.alertmanager_to_google_chat_url.secret_id]
@@ -89,7 +89,7 @@ module "alertmanager_to_google_chat_url_secret_accessor_binding" {
 
 module "alertmanager_to_google_chat_workloadIdentity_binding" {
   source  = "terraform-google-modules/iam/google//modules/service_accounts_iam"
-  version = "8.1.0"
+  version = "8.2.0"
   project = data.google_project.project.project_id
 
   service_accounts = [module.alertmanager_to_google_chat_sa.email]
