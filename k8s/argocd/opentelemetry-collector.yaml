@@ -24,7 +24,7 @@ spec:
       source:
         repoURL: https://open-telemetry.github.io/opentelemetry-helm-charts
         chart: opentelemetry-collector
-        targetRevision: 0.125.0
+        targetRevision: 0.145.0
         helm:
           releaseName: "opentelemetry-collector"
           values: |
