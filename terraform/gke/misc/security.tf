@@ -25,17 +25,8 @@ data "google_secret_manager_secret_version" "argocd_client_id" {
   secret = "argocd_client_id"
 }
 
-## IAP Client
-## You must create OAuth Client Credential via Cloud Console, because terraform resource creation has limitations
-import {
-  id = "projects/${data.google_project.project.number}/brands/${data.google_project.project.number}/identityAwareProxyClients/${data.google_secret_manager_secret_version.argocd_client_id.secret_data}"
-  to = google_iap_client.argocd_iap_oauth_client
-}
-
-resource "google_iap_client" "argocd_iap_oauth_client" {
-  display_name = "ArgoCD"
-  brand        = "projects/${data.google_project.project.number}/brands/${data.google_project.project.number}"
-}
+## IAP Client was removed from terraform due to deprecation of OAuth Admin API. You have to create OAuth client/secret in Cloud Console
+## https://docs.cloud.google.com/iap/docs/deprecations/migrate-oauth-client
 
 ## Secret
 resource "google_secret_manager_secret" "argocd_notification_webhook_url" {
