@@ -287,6 +287,15 @@ dex:
   # -- Enable dex
   enabled: true
 
+  # -- Dex container-level security context
+  containerSecurityContext:
+    runAsNonRoot: true
+    runAsUser: 1001
+    readOnlyRootFilesystem: true
+    allowPrivilegeEscalation: false
+    seccompProfile:
+      type: RuntimeDefault
+
   extraArgs:
   - --logformat=json
 
