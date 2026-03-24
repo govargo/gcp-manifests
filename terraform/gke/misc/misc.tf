@@ -78,7 +78,7 @@ module "misc-0" {
       location_policy    = "ANY"
       local_ssd_count    = var.local_ssd_count
       spot               = var.spot
-      disk_size_gb       = var.disk_size_gb
+      disk_size_gb       = 20
       disk_type          = var.disk_type
       image_type         = var.image_type
       enable_gcfs        = var.enable_gcfs
@@ -104,7 +104,7 @@ module "misc-0" {
       location_policy    = "ANY"
       local_ssd_count    = var.local_ssd_count
       spot               = var.spot
-      disk_size_gb       = var.disk_size_gb
+      disk_size_gb       = 20
       disk_type          = var.disk_type
       image_type         = var.image_type
       enable_gcfs        = var.enable_gcfs
